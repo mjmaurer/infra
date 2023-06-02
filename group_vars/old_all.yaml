@@ -5,6 +5,8 @@ main_groupname: "{{ main_username }}"
 main_uid: "1000"
 main_gid: "{{ main_uid }}"
 
+docker_compose_generator_output_path: "~/compose/"
+
 # ferrarimarco.bash-aliases
 bash_aliases:
   - { alias: "dtail", command: "docker logs -tf --tail='50' "}

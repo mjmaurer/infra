@@ -1,3 +1,6 @@
+elspeth:
+	ansible-playbook -b run.yaml --limit elspeth
+
 dhcpdns:
 	ansible-playbook -b run.yaml --limit dhcp-dns --tags dhcpdns
 

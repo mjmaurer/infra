@@ -2,6 +2,8 @@
 # ^ A shebang isn't required, but allows a justfile to be executed
 #   like a script, with `./justfile test`, for example.
 
+# TODO: not sure if this adds much on top of makefile
+
 #alias t := test
 
 #alias c := check
