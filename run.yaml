@@ -8,7 +8,7 @@
     connection: local 
     vars_files:
       - 'vars/vault.yaml'
-    tasks:
+    pre_tasks:
       - name: Sync nix-home 
         ansible.builtin.git:
           repo: 'https://github.com/mjmaurer/nix-home.git'
@@ -16,11 +16,6 @@
           update: yes
     roles:
       - role: danielrolls.nix
-        nix-commands:
-        - "nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager"
-        - "nix-channel --update"
-        - "nix-shell '<home-manager>' -A install"
-        - "home-manager -f ~/.config/nixpkgs/hoss.nix switch"
       - role: artis3n.tailscale
       # - role: ktz-htop
       - role: geerlingguy.docker

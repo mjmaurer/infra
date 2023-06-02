@@ -74,10 +74,10 @@ forcereqs:
 	ansible-galaxy install -r requirements.yaml --force
 
 decrypt:
-	ansible-vault decrypt vars/vault.yaml
+	ansible-vault decrypt vars/vault.yaml --output vault.yaml
 
 encrypt:
-	ansible-vault encrypt vars/vault.yaml
+	ansible-vault encrypt vault.yaml --output vars/vault.yaml
 
 # cloud:
 # 	cd terraform/cloud; terraform apply
