@@ -9,7 +9,7 @@
     vars_files:
       - 'vars/vault.yaml'
       - 'group_vars/all.yaml'
-      - 'group_vars/elspeth.yaml'
+      # - 'group_vars/elspeth.yaml'
     pre_tasks:
       - name: Sync nix-home 
         ansible.builtin.git:
@@ -19,8 +19,8 @@
       - name: Print variable
         debug:
           var: nix_commands
-    roles:
-      - role: danielrolls.nix
+    # roles:
+    #   - role: danielrolls.nix
       # - role: artis3n.tailscale
       # - role: ktz-htop
       # - role: geerlingguy.docker
