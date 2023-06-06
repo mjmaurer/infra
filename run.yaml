@@ -21,9 +21,9 @@
           var: nix_commands
     roles:
       - role: danielrolls.nix
-      - role: artis3n.tailscale
+      # - role: artis3n.tailscale
       # - role: ktz-htop
-      - role: geerlingguy.docker
+      # - role: geerlingguy.docker
       # - role: grog.package
       # - role: ironicbadger.hddtemp
       # - role: rossmcdonald.telegraf
