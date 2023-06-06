@@ -16,6 +16,9 @@
           repo: 'https://github.com/mjmaurer/nix-home.git'
           dest: ~/.config/nixpkgs
           update: yes
+      - name: Print variable
+        debug:
+          var: nix_commands
     roles:
       - role: danielrolls.nix
       - role: artis3n.tailscale
