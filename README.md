@@ -8,4 +8,5 @@ Steps:
 - Clone on host
 - Add PW to .vault-password
 - Install Ansible: https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu
+- sudo apt upgrade ansible 
 - make 'host'
