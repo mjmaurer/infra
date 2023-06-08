@@ -1,3 +1,6 @@
+bobby:
+	ansible-playbook -i hosts.ini -b run.yaml --limit bobby --ask-become-pass
+
 elspeth:
 	ansible-playbook -i hosts.ini -vvv -b run.yaml --limit elspeth --ask-become-pass
 
