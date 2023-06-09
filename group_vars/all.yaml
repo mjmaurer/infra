@@ -6,3 +6,10 @@ docker_users:
   - "{{ main_user }}"
 docker_install_compose: false
 docker_install_compose_plugin: true
+
+# Nix
+nix_commands:
+  - "nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager"
+  - "nix-channel --update"
+  - "nix-shell '<home-manager>' -A install"
+  - "home-manager -f ~/.config/nixpkgs/machines/${MACHINE_NAME}.nix switch -b backup"
