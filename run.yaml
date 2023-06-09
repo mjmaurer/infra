@@ -9,7 +9,7 @@
     vars_files:
       - 'vars/vault.yaml'
       - 'group_vars/all.yaml'
-      - 'group_vars/earth.yaml'
+      # - 'group_vars/earth.yaml'
     roles:
       - role: nix-symlink 
       - role: danielrolls.nix
