@@ -1,4 +1,8 @@
 ---
+# Docker
+docker_users: [mjmaurer]
+docker_install_compose: false
+docker_install_compose_plugin: true
 
 nix_commands:
   - "nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager"
