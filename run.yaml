@@ -14,8 +14,13 @@
       - name: Sync nix-home 
         ansible.builtin.git:
           repo: 'https://github.com/mjmaurer/nix-home.git'
-          dest: "/home/{{ main_user }}/.config/nixpkgs"
+          dest: "/home/{{ main_user }}/nixpkgs-home"
           update: yes
+      - name: Create nix-home symlink
+        ansible.builtin.file:
+          src: "~/nixpkgs-home"
+          dest: "~/.config/nixpkgs"
+          state: link
     roles:
       - role: danielrolls.nix
       - role: artis3n.tailscale
