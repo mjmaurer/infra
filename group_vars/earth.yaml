@@ -4,7 +4,7 @@ nix_commands:
   - "nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager"
   - "nix-channel --update"
   - "nix-shell '<home-manager>' -A install"
-  - "home-manager -f ~/.config/nixpkgs/hoss.nix switch"
+  - "home-manager -f ~/.config/nixpkgs/earth.nix switch -b backup"
 # target_os: debian
 # hostname_morpheus: morpheus
 # hostname_cartman: "{{ hostname_morpheus }}" #todo fix
