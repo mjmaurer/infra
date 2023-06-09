@@ -9,4 +9,6 @@ Steps:
 - Add PW to .vault-password
 - Install Ansible: https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu
 - sudo apt upgrade ansible 
+- copy .vault-password
+- make reqs
 - make 'host'

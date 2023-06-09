@@ -4,26 +4,22 @@
   #     - 'vars/vault.yaml'
   #   roles:
   #     - role: artis3n.tailscale
-  - hosts: elspeth 
+  - hosts: sky 
     connection: local 
     vars_files:
       - 'vars/vault.yaml'
       - 'group_vars/all.yaml'
-      # - 'group_vars/elspeth.yaml'
+      - 'group_vars/sky.yaml'
     pre_tasks:
       - name: Sync nix-home 
         ansible.builtin.git:
           repo: 'https://github.com/mjmaurer/nix-home.git'
           dest: ~/.config/nixpkgs
           update: yes
-      - name: Print variable
-        debug:
-          var: nix_commands
-    # roles:
-    #   - role: danielrolls.nix
-      # - role: artis3n.tailscale
-      # - role: ktz-htop
-      # - role: geerlingguy.docker
+    roles:
+      - role: danielrolls.nix
+      - role: artis3n.tailscale
+      - role: geerlingguy.docker
       # - role: grog.package
       # - role: ironicbadger.hddtemp
       # - role: rossmcdonald.telegraf
