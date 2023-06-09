@@ -1,5 +1,8 @@
 ---
+main_user: "mjmaurer"
+
 # Docker
-docker_users: [mjmaurer]
+docker_users:
+  - "{{ main_user }}"
 docker_install_compose: false
 docker_install_compose_plugin: true

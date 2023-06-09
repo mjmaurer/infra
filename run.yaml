@@ -14,7 +14,7 @@
       - name: Sync nix-home 
         ansible.builtin.git:
           repo: 'https://github.com/mjmaurer/nix-home.git'
-          dest: ~/.config/nixpkgs
+          dest: "/home/{{ main_user }}/.config/nixpkgs"
           update: yes
     roles:
       - role: danielrolls.nix
