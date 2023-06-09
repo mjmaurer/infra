@@ -4,12 +4,12 @@
   #     - 'vars/vault.yaml'
   #   roles:
   #     - role: artis3n.tailscale
-  - hosts: sky 
+  - hosts: earth 
     connection: local 
     vars_files:
       - 'vars/vault.yaml'
       - 'group_vars/all.yaml'
-      - 'group_vars/sky.yaml'
+      - 'group_vars/earth.yaml'
     pre_tasks:
       - name: Sync nix-home 
         ansible.builtin.git:
