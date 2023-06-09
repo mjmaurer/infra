@@ -10,18 +10,8 @@
       - 'vars/vault.yaml'
       - 'group_vars/all.yaml'
       - 'group_vars/earth.yaml'
-    pre_tasks:
-      - name: Sync nix-home 
-        ansible.builtin.git:
-          repo: 'https://github.com/mjmaurer/nix-home.git'
-          dest: "/home/{{ main_user }}/nixpkgs-home"
-          update: yes
-      - name: Create nix-home symlink
-        ansible.builtin.file:
-          src: "/home/{{ main_user }}/nixpkgs-home"
-          dest: "/home/{{ main_user }}/.config/nixpkgs"
-          state: link
     roles:
+      - role: nix-symlink 
       - role: danielrolls.nix
       - role: artis3n.tailscale
       - role: geerlingguy.docker
@@ -50,13 +40,8 @@
     vars_files:
       - 'vars/vault.yaml'
       - 'group_vars/all.yaml'
-    pre_tasks:
-      - name: Sync nix-home 
-        ansible.builtin.git:
-          repo: 'https://github.com/mjmaurer/nix-home.git'
-          dest: ~/.config/nixpkgs
-          update: yes
     roles:
+      - role: nix-symlink 
       - role: danielrolls.nix
       - role: artis3n.tailscale
       - role: geerlingguy.docker
