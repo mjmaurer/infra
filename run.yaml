@@ -18,8 +18,8 @@
           update: yes
       - name: Create nix-home symlink
         ansible.builtin.file:
-          src: "~/nixpkgs-home"
-          dest: "~/.config/nixpkgs"
+          src: "/home/{{ main_user }}/nixpkgs-home"
+          dest: "/home/{{ main_user }}/.config/nixpkgs"
           state: link
     roles:
       - role: danielrolls.nix
