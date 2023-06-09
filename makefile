@@ -1,8 +1,8 @@
 bobby:
 	ansible-playbook -i hosts.ini -b run.yaml --limit bobby --ask-become-pass
 
-sky:
-	ansible-playbook -i hosts.ini -b run.yaml --limit sky --ask-become-pass
+earth:
+	ansible-playbook -i hosts.ini -b run.yaml --limit earth --ask-become-pass
 
 dhcpdns:
 	ansible-playbook -b run.yaml --limit dhcp-dns --tags dhcpdns
