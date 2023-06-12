@@ -1,3 +1,8 @@
+### These folders have per-machine repos that are pulled into this folder for convenience ###
+./bobby
+earth
+sky
+
 # Created by https://www.gitignore.io/api/macos,linux,vagrant,windows,visualstudiocode
 
 ### Linux ###

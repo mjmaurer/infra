@@ -1,8 +1,7 @@
-TODO: maybe have to create docker user: https://github.com/ironicbadger/infra/issues/6
+TODO: bring in github actions and terraform from gm? Then could call them
+in different projects (or even create modules in the projects when we import and manage here)
 
-TODO: run localhost bootstrap then reg playbook (see chatgpt):
-- Confirm dependencies of both
-- See if 
+TODO: how do I run migrate / collectstatic (or any arbitrary) command before compose-up?
 
 Steps:
 - Clone on host (https://github.com/mjmaurer/infra.git)
