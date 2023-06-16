@@ -17,6 +17,8 @@
     neofetch
     unzip
     speedtest-cli
+    git-lfs
+    p7zip
   ];
 
   services.gpg-agent = {
