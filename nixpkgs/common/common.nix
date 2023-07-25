@@ -47,6 +47,11 @@
       "hmswitch" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
       "dtail" = "docker logs -tf --tail='50'";
       "dstop" = "docker stop `docker ps -aq`";
+      "dlog" = "docker logs ";
+      "dps" = "docker ps ";
+      "dcrneup" = "docker compose up -f ~/docker-compose.yml -d ";
+      "dcup" = "docker compose up -d ";
+      "dcreup" = "docker compose up -d --build --force-recreate ";
       "drm" = "docker rm `docker ps -aq`";
       "dcp" = "docker compose -f ~/docker-compose.yml ";
       "dcporph" = "docker compose -f ~/docker-compose.yml --remove-orphans ";
