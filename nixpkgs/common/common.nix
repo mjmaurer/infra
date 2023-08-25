@@ -48,6 +48,7 @@
       "dtail" = "docker logs -tf --tail='50'";
       "dstop" = "docker stop `docker ps -aq`";
       "dlog" = "docker logs ";
+      "dtop" = "docker run --name ctop  -it --rm -v /var/run/docker.sock:/var/run/docker.sock quay.io/vektorlab/ctop";
       "dps" = "docker ps ";
       "dcrneup" = "docker compose up -f ~/docker-compose.yml -d ";
       "dcup" = "docker compose up -d ";
