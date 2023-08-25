@@ -10,6 +10,7 @@
     ripgrep
     vulnix
     youtube-dl
+    gdown
     nixfmt
     bat
     htop
