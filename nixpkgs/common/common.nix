@@ -19,6 +19,7 @@
     unzip
     speedtest-cli
     git-lfs
+    gh
     p7zip
   ];
 
@@ -68,6 +69,7 @@
   programs.git = {
     enable = true;
     userName = "Michael Maurer";
+    package = pkgs.gitFull;
     userEmail = "mjmaurer777@gmail.com";
     aliases = {
       pr = "pull --rebase";
@@ -83,6 +85,7 @@
     extraConfig = {
       init.defaultBranch = "main";
       core.editor = "nvim";
+      credential.helper = "store";
     };
   };
 
