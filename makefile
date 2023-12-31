@@ -1,8 +1,12 @@
+# TODO delete this file
 bobby:
-	ansible-playbook -i hosts.ini -b run.yaml --limit bobby --ask-become-pass
+	ansible-playbook -i hosts.ini run.yaml --limit bobby --become --ask-become-pass
 
 earth:
 	ansible-playbook -i hosts.ini -b run.yaml --limit earth --ask-become-pass
+
+proxy:
+	ansible-playbook run.yaml--limit proxy -i hosts.ini --become --ask-become-pass
 
 dhcpdns:
 	ansible-playbook -b run.yaml --limit dhcp-dns --tags dhcpdns
@@ -77,10 +81,10 @@ forcereqs:
 	ansible-galaxy install -r requirements.yaml --force
 
 decrypt:
-	ansible-vault decrypt vars/vault.yaml --output vault.yaml
+	ansible-vault decrypt vault/vault.yaml --output vault.yaml
 
 encrypt:
-	ansible-vault encrypt vault.yaml --output vars/vault.yaml
+	ansible-vault encrypt vault.yaml --output vault/vault.yaml
 
 # cloud:
 # 	cd terraform/cloud; terraform apply

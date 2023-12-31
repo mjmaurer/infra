@@ -34,6 +34,9 @@
     sessionVariables = {
       EDITOR = "nvim";
       VISUAL = "nvim";
+      BOBBY_PORT = 7850;
+      AUTOMATIC_PORT = 7860;
+      RVC_PORT = 7865;
     };
     initExtra = builtins.readFile ../config/bash/bashrc;
     profileExtra = builtins.readFile ../config/bash/profile;

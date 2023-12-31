@@ -1,14 +1,8 @@
 ---
-  # - hosts: local 
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: artis3n.tailscale
   - hosts: earth 
     connection: local 
     vars_files:
-      - 'vars/vault.yaml'
-      - 'group_vars/all.yaml'
+      - 'vault/vault.yaml'
       # - 'group_vars/earth.yaml'
     roles:
       - role: nix-symlink 
@@ -38,8 +32,16 @@
   - hosts: bobby 
     connection: local 
     vars_files:
-      - 'vars/vault.yaml'
-      - 'group_vars/all.yaml'
+      - 'vault/vault.yaml'
+    roles:
+      - role: nix-symlink 
+      - role: danielrolls.nix
+      - role: artis3n.tailscale
+      - role: geerlingguy.docker
+  - hosts: proxy 
+    connection: local 
+    vars_files:
+      - 'vault/vault.yaml'
     roles:
       - role: nix-symlink 
       - role: danielrolls.nix

@@ -1,5 +1,5 @@
 ---
-machine_dir: "{{ main_user_home }}/infra/bobby"
+machine_name: "earth"
 
 ## snapraid
 # snapraid_config_excludes:

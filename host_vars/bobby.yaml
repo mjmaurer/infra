@@ -1,0 +1,5 @@
+---
+# Should really be called "deploy_dir"
+# (but need to move to something better that supports compose in a repo under deploy)
+machine_dir: "{{ main_user_home }}/infra/bobby"
+machine_name: "bobby"

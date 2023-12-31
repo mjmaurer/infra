@@ -1,25 +1,12 @@
 { config, pkgs, ... }:
 
-let
-  domain = "howell.haus";
-in
 {
-  imports = [ ../common.nix ../common-linux.nix ];
+  imports = [ ../common/common.nix ../common/common-linux.nix ];
 
   home.username = pkgs.lib.mkForce "ubuntu";
 
-  # home.packages = with pkgs; [
-  # ];
-
   programs.bash.sessionVariables = {
-    MACHINE_NAME = "homelab-proxy";
-    # See docker-compose for most environment variables needed 
-    # MAKE SURE TO ADD THEM THERE TOO
-    DOMAIN = domain;
-    # VOUCH_DOMAINS = domain; not need for allUIsers
-    VOUCH_DOCUMENT_ROOT = "/vp_in_a_path";
-    VOUCH_COOKIE_DOMAIN = domain;
-    OAUTH_CALLBACK_URL = "https://${domain}/vp_in_a_path/auth";
+    MACHINE_NAME = "proxy";
   };
 
   programs.bash.initExtra = ''
