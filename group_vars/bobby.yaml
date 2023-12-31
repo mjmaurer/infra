@@ -1,2 +1,0 @@
----
-machine_dir: "{{ main_user_home }}/infra/bobby"
