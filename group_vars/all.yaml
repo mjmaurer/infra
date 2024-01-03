@@ -9,6 +9,8 @@ docker_install_compose: false
 docker_install_compose_plugin: true
 
 # Nix
+nix_version: 2.19.2
+installer_checksum: sha256:9b2fc17c7fd21da2899e23a3b324b7445d41a2ce4d648dedb28cf88b2809e32f
 nix_commands:
   - "nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager"
   - "nix-channel --update"
