@@ -25,6 +25,12 @@ fi
 PS1+="\[\e[1;36m\]\w\\$ \[\e[0m\]"
 export PS1
 
+# ----- bash functions ----- 
+dexec() {
+    docker exec -it "$1" /bin/bash
+}
+# -------------------------- 
+
 # If not running interactively, don't do anything
 case $- in
     *i*) ;;
