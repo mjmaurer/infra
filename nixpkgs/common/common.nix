@@ -37,7 +37,7 @@
       BOBBY_PORT = 7850;
       AUTOMATIC_PORT = 7860;
       RVC_PORT = 7865;
-      PLEX_PROXY_PORT = 32401;
+      PLEX_WEB_PORT = 32400;
     };
     initExtra = builtins.readFile ../config/bash/bashrc;
     profileExtra = builtins.readFile ../config/bash/profile;
