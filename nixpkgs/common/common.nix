@@ -38,6 +38,7 @@
       AUTOMATIC_PORT = 7860;
       RVC_PORT = 7865;
       PLEX_WEB_PORT = 32400;
+      JELLYFIN_WEB_PORT = 8096;
     };
     initExtra = builtins.readFile ../config/bash/bashrc;
     profileExtra = builtins.readFile ../config/bash/profile;
