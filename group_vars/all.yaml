@@ -1,5 +1,7 @@
 ---
 main_user: "mjmaurer"
+main_user_gid: 1000
+main_user_uid: 1000
 main_user_home: "/home/{{ main_user }}"
 
 # Docker
