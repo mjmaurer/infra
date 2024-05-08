@@ -38,6 +38,7 @@
       - role: danielrolls.nix
       - role: artis3n.tailscale
       - role: geerlingguy.docker
+      - role: samba-client 
   - hosts: proxy 
     connection: local 
     vars_files:
