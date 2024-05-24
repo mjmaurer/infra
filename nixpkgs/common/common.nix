@@ -8,6 +8,7 @@
 
   home.packages = with pkgs; [
     ripgrep
+    rclone
     vulnix
     youtube-dl
     gdown
