@@ -63,7 +63,10 @@
       "hig" = "bat ~/.bash_history | grep";
       "la" = lib.mkDefault "ls -A --color";
       "ls" = lib.mkDefault "ls --color";
-      "hmswitch" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
+      "hmswitch" = ''
+        home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup;
+        source ~/.bashrc;
+      '';
       "dtail" = "docker logs -tf --tail='50'";
       "dstop" = "docker stop `docker ps -aq`";
       "dlog" = "docker logs ";
