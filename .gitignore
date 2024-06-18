@@ -3,6 +3,7 @@
 earth
 sky
 vault.yaml
+.env
 
 # Created by https://www.gitignore.io/api/macos,linux,vagrant,windows,visualstudiocode
 
