@@ -35,6 +35,15 @@
     p7zip
   ];
 
+  home.file = {
+    ".continue/config.json" = {
+      source = ../config/continuedev/config.json;
+    };
+    ".continue/config.ts" = {
+      source = ../config/continuedev/config.ts;
+    };
+  };
+
   services.gpg-agent = {
     enable = lib.mkDefault true;
     defaultCacheTtl = 1800;

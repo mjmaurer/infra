@@ -2,6 +2,11 @@ set -o vi
 
 inwsl=$(test -f /proc/version && grep Microsoft /proc/version)
 
+if [ -n "~/.config/local_bash_env" ]; then
+    # Make sure to use 'export' in the local_bash_env file
+    source ~/.config/local_bash_env
+fi
+
 if [ ! -z "$inwsl" ]; then
     export DISPLAY=:0.0
 fi
