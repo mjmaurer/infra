@@ -1,17 +1,16 @@
 {
-    "models": [
-    ],
+    "models": [],
     "customCommands": [
         {
             "name": "test",
             "prompt": "{{{ input }}}\n\nWrite a comprehensive set of unit tests for the selected code. It should setup, run tests that check for correctness including important edge cases, and teardown. Ensure that the tests are complete and sophisticated. Give the tests just as chat output, don't edit any file.",
             "description": "Write unit tests for highlighted code"
+        },
+        {
+            "name": "check",
+            "description": "Check for mistakes in my code",
+            "prompt": "{{{ input }}}\n\nPlease read the highlighted code and check for any mistakes. You should look for the following, and be extremely vigilant:\n- Syntax errors\n- Logic errors\n- Security vulnerabilities\n- Performance issues\n- Anything else that looks wrong\n\nOnce you find an error, please explain it as clearly as possible, but without using extra words. For example, instead of saying 'I think there is a syntax error on line 5', you should say 'Syntax error on line 5'. Give your answer as one bullet point per mistake found."
         }
     ],
-    "tabAutocompleteModel": {
-        "title": "Starcoder2 3b",
-        "provider": "ollama",
-        "model": "starcoder2:3b"
-    },
     "allowAnonymousTelemetry": false
 }
