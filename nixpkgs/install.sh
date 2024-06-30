@@ -3,6 +3,7 @@ mkdir -p ~/.config
 # From mjmaurer/nix-home 
 ln -s `pwd` ~/.config/nixpkgs
 nix-channel --add https://github.com/nix-community/home-manager/archive/master.tar.gz home-manager
+# nix-channel --add https://github.com/ryantm/agenix/archive/main.tar.gz agenix
 nix-channel --update
 # Might have to run the following or reboot
 # export NIX_PATH=$HOME/.nix-defexpr/channels_root${NIX_PATH:+:}$NIX_PATH
