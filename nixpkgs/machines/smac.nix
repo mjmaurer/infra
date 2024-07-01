@@ -10,6 +10,10 @@
   # TODO remove this https://github.com/nix-community/home-manager/issues/3342
   manual.manpages.enable = false;
 
+  home.packages = with pkgs; [
+    pipx
+  ];
+
   programs.bash = {
     sessionVariables = { MACHINE_NAME = "smac"; };
     shellAliases = {

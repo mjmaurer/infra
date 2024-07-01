@@ -35,7 +35,7 @@ export function modifyConfig(config: Config): Config {
   } else {
     console.error("Missing VOYAGE_API_KEY");
   }
-  const openAiKey = process.env.OPEN_AI_API_KEY;
+  const openAiKey = process.env.OPENAI_API_KEY;
   if (openAiKey) {
     config.models.push({
       title: "GPT 4",
