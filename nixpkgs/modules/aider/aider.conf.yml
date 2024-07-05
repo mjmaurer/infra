@@ -3,12 +3,12 @@
 # This file lists *all* the valid configuration entries.
 # Place in your home dir, or at the root of your git repo.
 ##########################################################
-
+model: "gpt-4"
 ## Use claude-3-5-sonnet-20240620 model for the main chat
 #sonnet: false
 
 ## Use gpt-4-0613 model for the main chat
-4: true
+# "4": true
 
 ## Specify a file with aider model settings for unknown models
 #model-settings-file: .aider.model.settings.yml
@@ -110,7 +110,7 @@ attribute-author: false
 attribute-committer: false
 
 ## Prefix commit messages with 'aider: ' (default: False)
-attribute-commit-message: false
+# attribute-commit-message: false
 
 ## Perform a dry run without modifying files (default: False)
 #dry-run: false
@@ -161,7 +161,7 @@ vim: true
 #apply:
 
 ## Always say yes to every confirmation
-yes: false
+# "yes": false
 
 ## Enable verbose output
 #verbose: false

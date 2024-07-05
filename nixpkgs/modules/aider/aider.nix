@@ -6,8 +6,8 @@ in
     ".config/aider/.aiderignore" = {
       source = ./.aiderignore;
     };
-    ".aider.conf.yaml" = {
-      source = ./aider.conf.yaml;
+    ".aider.conf.yml" = {
+      source = ./aider.conf.yml;
     };
   };
 }
