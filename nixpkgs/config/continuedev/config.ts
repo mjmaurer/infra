@@ -50,7 +50,7 @@ export function modifyConfig(config: Config): Config {
       apiKey: openAiKey,
     });
   } else {
-    console.error("Missing OPEN_AI_API_KEY");
+    console.error("Missing OPENAI_API_KEY");
   }
 
   return config;
