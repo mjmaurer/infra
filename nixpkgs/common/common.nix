@@ -69,6 +69,7 @@
       "gcs" = "git commit -v --gpg-sign";
       "ga" = "git add --all";
       "gs" = "git status";
+      "rg" = "rg --hidden";
       "hig" = "bat ~/.bash_history | grep";
       "la" = lib.mkDefault "ls -A --color";
       "ls" = lib.mkDefault "ls --color";
