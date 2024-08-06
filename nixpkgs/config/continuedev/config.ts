@@ -8,6 +8,7 @@ export function modifyConfig(config: Config): Config {
       model: "claude-3-5-sonnet-20240620",
       apiKey: anthropicKey,
     });
+    console.info("Antropic loaded");
   } else {
     console.error("Missing ANTHROPIC_API_KEY");
   }
@@ -21,6 +22,7 @@ export function modifyConfig(config: Config): Config {
     };
     config.models.push(codstral);
     config.tabAutocompleteModel = codstral;
+    console.info("Codestral loaded");
   } else {
     console.error("Missing CODESTRAL_API_KEY");
   }
@@ -32,6 +34,7 @@ export function modifyConfig(config: Config): Config {
       apiBase: "https://api.voyageai.com/v1/",
       apiKey: voyageKey,
     };
+    console.info("Voyage loaded");
   } else {
     console.error("Missing VOYAGE_API_KEY");
   }
@@ -49,6 +52,7 @@ export function modifyConfig(config: Config): Config {
       model: "gpt-4o",
       apiKey: openAiKey,
     });
+    console.info("OpenAI loaded");
   } else {
     console.error("Missing OPENAI_API_KEY");
   }
