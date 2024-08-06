@@ -4,6 +4,7 @@ earth
 sky
 vault.yaml
 .env
+*.log
 
 # Created by https://www.gitignore.io/api/macos,linux,vagrant,windows,visualstudiocode
 
