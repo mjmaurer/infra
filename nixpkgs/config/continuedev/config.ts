@@ -1,4 +1,4 @@
-/// <reference types="../../../../../.continue/types/core/index.d.ts" />
+/// <reference types="/Users/mmaurer7/.continue/types/core/index.d.ts" />
 export function modifyConfig(config: Config): Config {
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (anthropicKey) {

@@ -17,6 +17,7 @@
 
   home.packages = with pkgs; [
     duplicacy
+    nil
     nixpkgs-fmt
     ripgrep
     rclone
