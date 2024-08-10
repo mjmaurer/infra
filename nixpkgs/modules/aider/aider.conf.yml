@@ -95,7 +95,7 @@ git: true
 gitignore: true
 
 ## Specify the aider ignore file (default: .aiderignore in git root)
-aiderignore: ~/.config/aider/.aiderignore
+aiderignore: .gitignore 
 
 ## Enable/disable auto commit of LLM changes (default: True)
 auto-commits: false
