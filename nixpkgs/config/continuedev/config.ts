@@ -1,5 +1,6 @@
 /// <reference types="/Users/mmaurer7/.continue/types/core/index.d.ts" />
 export function modifyConfig(config: Config): Config {
+  config.disableIndexing = true;
   const anthropicKey = process.env.ANTHROPIC_API_KEY;
   if (anthropicKey) {
     config.models.push({
