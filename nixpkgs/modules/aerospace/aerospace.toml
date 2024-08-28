@@ -7,6 +7,14 @@
 #enable-normalization-flatten-containers = false
 #enable-normalization-opposite-orientation-for-nested-containers = false
 
+start-at-login = true
+# The 'accordion-padding' specifies the size of accordion padding
+# accordion is the default mode for default workspace 1. Not sure why.
+accordion-padding = 0
+
+# I'm not sure why workspace 1 is accordion even though this is the default: 
+# default-root-container-layout = 'tiles'
+
 [mode.main.binding]
 alt-shift-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
 
@@ -29,6 +37,8 @@ alt-shift-f = 'fullscreen'
 # alt-shift-s = 'layout v_accordion'               # 'layout stacking' in i3
 # alt-shift-w = 'layout h_accordion'               # 'layout tabbed' in i3
 alt-shift-e = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
+
+# TODO Could make some apps (Finder) float by default maybe: https://nikitabobko.github.io/AeroSpace/guide#dialog-heuristics
 
 alt-shift-space = 'layout floating tiling' # 'floating toggle' in i3
 
