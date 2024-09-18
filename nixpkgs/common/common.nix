@@ -22,7 +22,7 @@
     ripgrep
     rclone
     vulnix
-    youtube-dl
+    yt-dlp
     gdown
     nixfmt
     bat
