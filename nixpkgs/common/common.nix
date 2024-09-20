@@ -7,7 +7,7 @@
         builtins.elem (pkgs.lib.getName pkg) [
           "duplicacy"
         ];
-      };
+    };
   };
 
   programs.home-manager.enable = true;
@@ -42,6 +42,12 @@
     };
     ".continue/config.ts" = {
       source = ../config/continuedev/config.ts;
+    };
+    ".config/nix/nix.conf" = {
+      text = ''
+        # Enable flakes
+        experimental-features = nix-command flakes
+      '';
     };
   };
 
