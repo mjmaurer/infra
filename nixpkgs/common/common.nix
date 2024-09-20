@@ -27,6 +27,7 @@
     nixfmt
     bat
     htop
+    devenv
     wget
     neofetch
     unzip
