@@ -32,6 +32,7 @@
     neofetch
     unzip
     speedtest-cli
+    nix-prefetch-git
     git-lfs
     gh
     p7zip
