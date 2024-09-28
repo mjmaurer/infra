@@ -6,6 +6,7 @@ vault.yaml
 .env
 *.log
 dev
+.aider*
 
 # Created by https://www.gitignore.io/api/macos,linux,vagrant,windows,visualstudiocode
 
