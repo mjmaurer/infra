@@ -1,226 +1,30 @@
 ---
-  - hosts: earth 
-    connection: local 
-    vars_files:
-      - 'vault/vault.yaml'
-      # - 'group_vars/earth.yaml'
-    roles:
-      - role: nix-symlink 
-      - role: danielrolls.nix
-      - role: artis3n.tailscale
-      - role: geerlingguy.docker
-      # - role: grog.package
-      # - role: ironicbadger.hddtemp
-      # - role: rossmcdonald.telegraf
-      # - role: prometheus.prometheus.node_exporter
-        # tags: prom
-      # - role: ironicbadger.bash_aliases
-      # - role: ironicbadger.apprise_boot_notification
-      # - role: elspeth TODO
-      # - role: geerlingguy.nfs TODO
-      # - role: ktz-authelia
-      #   tags: compose
-      # - role: ironicbadger.docker_compose_generator TODO
-      #   tags: compose
-      # - role: ktz-traefik TODO but nginx
-      #   tags: compose
-      # - role: ironicbadger.snapraid TODO
-      # - role: ktz-plexmetamanager TODO
-      #   tags: compose
-      # - role: ktz-autorestic TODO
-      #   tags: replication
-  - hosts: bobby 
-    connection: local 
-    vars_files:
-      - 'vault/vault.yaml'
-    roles:
-      - role: nix-symlink 
-      - role: danielrolls.nix
-      - role: artis3n.tailscale
-      - role: geerlingguy.docker
-      - role: samba-client 
-  - hosts: proxy 
-    connection: local 
-    vars_files:
-      - 'vault/vault.yaml'
-    roles:
-      - role: nix-symlink 
-      - role: danielrolls.nix
-      - role: artis3n.tailscale
-      - role: geerlingguy.docker
-  # - hosts: c137
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: grog.package
-  #     - role: ironicbadger.proxmox_nag_removal
-  #     - role: ironicbadger.bash_aliases
-  #     - role: ironicbadger.figurine
-
-  # - hosts: pihole
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     #- role: geerlingguy.ntp
-  #     #- role: ironicbadger.figurine
-  #     - role: ktz-dhcp-dns
-  #       tags: pihole, dns, dhcp
-
-  # - hosts: caddy
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: geerlingguy.ntp
-  #     - role: ironicbadger.figurine
-  #     - role: ktz-caddy
-  #       tags: caddy
-
-  # - hosts: unifi
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: geerlingguy.docker
-  #     #- role: ironicbadger.figurine
-  #     - role: ironicbadger.bash_aliases
-  #       tags: bash
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-
-  # - hosts: morpheus
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: ironicbadger.proxmox_nag_removal
-  #     - role: ktz-htop
-  #     - role: geerlingguy.docker
-  #     - role: grog.package
-  #     - role: ironicbadger.hddtemp
-  #     - role: rossmcdonald.telegraf
-  #     - role: prometheus.prometheus.node_exporter
-  #       tags: prom
-  #     - role: ironicbadger.bash_aliases
-  #     - role: ironicbadger.figurine
-  #     - role: ironicbadger.apprise_boot_notification
-  #     - role: ktz-sanoid
-  #       tags: replication
-  #     - role: ktz-morpheus
-  #     - role: geerlingguy.nfs
-  #     - role: ktz-authelia
-  #       tags: compose
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-  #     - role: ktz-traefik
-  #       tags: compose
-  #     - role: ironicbadger.snapraid
-  #     - role: ktz-plexmetamanager
-  #       tags: compose
-  #     - role: ktz-autorestic
-  #       tags: replication
-
-  # - hosts: pennywise
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: ironicbadger.proxmox_nag_removal
-  #     - role: geerlingguy.docker
-  #     - role: grog.package
-  #     - role: ironicbadger.hddtemp
-  #     - role: ktz-htop
-  #     - role: ironicbadger.bash_aliases
-  #     - role: ironicbadger.figurine
-  #     - role: ironicbadger.apprise_boot_notification
-  #     - role: ktz-sanoid
-  #     - role: ktz-traefik
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-
-  # - hosts: anton
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: ironicbadger.proxmox_nag_removal
-  #     - role: geerlingguy.docker
-  #     #- role: artis3n.tailscale
-  #     - role: grog.package
-  #     - role: ktz-htop
-  #     - role: ironicbadger.hddtemp
-  #     - role: ironicbadger.bash_aliases
-  #     - role: ironicbadger.figurine
-  #     #- role: ironicbadger.apprise_boot_notification
-  #     - role: ktz-sanoid
-
-  # - hosts: m1
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: ironicbadger.proxmox_nag_removal
-  #     - role: geerlingguy.docker
-  #     - role: grog.package
-  #     - role: ironicbadger.figurine
-  #     - role: ktz-htop
-
-  # - hosts: cloud
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: geerlingguy.docker
-  #     - role: artis3n.tailscale
-  #     - role: grog.package
-  #     - role: ironicbadger.bash_aliases
-  #     - role: ironicbadger.figurine
-  #     #- role: ktz-sanoid
-  #     - role: ktz-traefik
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-
-  # - hosts: elrond
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     #- role: ironicbadger.bash_aliases
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-
-  # - hosts: opnsensewd
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: ironicbadger.figurine
-  #     - role: geerlingguy.ntp
-  #     - role: ktz-opnsense-caddy
-
-  # - hosts: pi8
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: grog.package
-  #       tags: packages
-  #     - role: geerlingguy.ntp
-  #     - role: geerlingguy.docker
-  #     - role: ironicbadger.figurine
-  #       tags: figurine
-  #     - role: ironicbadger.bash_aliases
-  #       tags: bash
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-  #     - role: ktz-dhcp-dns
-  #       tags: pihole, dns, dhcp
-
-  # - hosts: zoidberg
-  #   vars_files:
-  #     - 'vars/vault.yaml'
-  #   roles:
-  #     - role: ironicbadger.proxmox_nag_removal
-  #     - role: ktz-htop
-  #     #- role: ironicbadger.figurine
-  #     - role: grog.package
-  #     - role: geerlingguy.docker
-  #     - role: ironicbadger.bash_aliases
-  #     - role: ktz-sanoid
-  #       tags: replication
-  #     - role: ironicbadger.docker_compose_generator
-  #       tags: compose
-  
-  # - hosts: rhauth
-  #   roles:
-  #     - role: ktz-rh-pinauth
+- hosts: earth
+  connection: local
+  vars_files:
+    - "vault/vault.yaml"
+    # - 'group_vars/earth.yaml'
+  roles:
+    - role: nix-symlink
+    - role: danielrolls.nix
+    - role: artis3n.tailscale
+    - role: geerlingguy.docker
+- hosts: bobby
+  connection: local
+  vars_files:
+    - "vault/vault.yaml"
+  roles:
+    - role: nix-symlink
+    - role: danielrolls.nix
+    - role: artis3n.tailscale
+    - role: geerlingguy.docker
+    - role: samba-client
+- hosts: proxy
+  connection: local
+  vars_files:
+    - "vault/vault.yaml"
+  roles:
+    - role: nix-symlink
+    - role: danielrolls.nix
+    - role: artis3n.tailscale
+    - role: geerlingguy.docker
