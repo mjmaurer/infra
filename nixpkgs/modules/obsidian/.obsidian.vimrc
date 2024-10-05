@@ -5,15 +5,19 @@ set clipboard=unnamed
 
 unmap <Space>
 
-" Search
+" Search Files
 exmap search obcommand switcher:open
 nmap <Space>o :search
 
-" Command
+" Search Headings
+exmap headings obcommand darlal-switcher-plus:switcher-plus:open-symbols-active
+nmap <Space>i :headings
+
+" Search Commands
 exmap command obcommand command-palette:open
 nmap <Space>p :command
 
-" Global Find
+" Global Text Search
 exmap gfind obcommand global-search:open
 nmap <Space>/ :gfind
 
