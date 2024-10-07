@@ -16,7 +16,7 @@
     "gcs" = "git commit -v --gpg-sign";
     "ga" = "git add --all";
     "gs" = "git status";
-    "rg" = "rg --hidden";
+    "rg" = "rg --hidden --glob=!.git/ -g '!{**/node_modules/**,venv/}'";
     "nix-shell" = "nix-shell --command 'zsh'";
     "ns" = "nix-shell";
     "la" = lib.mkDefault "ls -A --color";
