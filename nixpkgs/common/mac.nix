@@ -3,10 +3,10 @@
 {
   imports = [
     ./base.nix
-    ../../modules/aider/aider.nix
-    ../../modules/aerospace/aerospace.nix
-    ../../modules/tmux/tmux.nix
-    ../../modules/obsidian/obsidian.nix
+    ../modules/aider/aider.nix
+    ../modules/aerospace/aerospace.nix
+    ../modules/tmux/tmux.nix
+    ../modules/obsidian/obsidian.nix
   ];
 
   configuration = {
