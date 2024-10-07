@@ -39,22 +39,12 @@ let
   };
 in
 {
-  nixpkgs = {
-    config = {
-      allowUnfreePredicate = pkg:
-        builtins.elem (pkgs.lib.getName pkg) [
-          "duplicacy"
-        ];
-    };
-  };
-
   programs.home-manager.enable = true;
 
   home.username = "mjmaurer";
   home.stateVersion = "22.05";
 
   home.packages = with pkgs; [
-    duplicacy
     nil
     nixpkgs-fmt
     ripgrep
