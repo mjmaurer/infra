@@ -31,7 +31,7 @@ in
         Restart = "no";
         WorkingDirectory = config.home.homeDirectory;
         ExecStart = pkgs.writeShellScript "run-duplicacy" ''
-          #!/bin/bash
+          #!/bin/zsh
           ${pkgs.duplicacy}/bin/duplicacy ${backup}
         '';
         EnvironmentFile = conf;
@@ -48,7 +48,7 @@ in
       Install.WantedBy = [ "timers.target" ];
     };
 
-    programs.bash = {
+    modules.commonShell = {
       # Must call duplicacy-activate to start the timer (or reboot)
       shellAliases = {
         duplicacy-activate = "systemctl --user start duplicacy.timer";
