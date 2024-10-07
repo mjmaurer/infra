@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./common/linux.nix ];
+  imports = [ ../common/linux.nix ];
 
   programs.bash.sessionVariables = {
     MACHINE_NAME = "bobby";

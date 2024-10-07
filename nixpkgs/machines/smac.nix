@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./common/mac.nix ];
+  imports = [ ../common/mac.nix ];
 
   services.gpg-agent.enable = false;
 

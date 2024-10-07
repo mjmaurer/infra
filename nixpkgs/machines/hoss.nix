@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./common/wsl.nix ];
+  imports = [ ../common/wsl.nix ];
 
   programs.bash.sessionVariables = {
     MACHINE_NAME = "hoss";
