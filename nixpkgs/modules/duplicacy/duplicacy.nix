@@ -7,12 +7,6 @@ in
 {
   options.modules.duplicacy = {
     enable = lib.mkEnableOption "duplicacy";
-
-    vaultPath = lib.mkOption {
-      type = lib.types.str;
-      default = "Documents/obsidian/Personal";
-      description = "Path to the Obsidian vault.";
-    };
   };
 
   config = lib.mkIf cfg.enable {
