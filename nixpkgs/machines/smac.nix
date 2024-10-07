@@ -14,16 +14,8 @@
     pipx
   ];
 
-  programs.bash = {
-    sessionVariables = { MACHINE_NAME = "smac"; };
-    shellAliases = {
-      "la" = "ls -A -G";
-      "ls" = "ls -G";
-    };
-  };
-
-  programs.zsh = {
-    sessionVariables = { MACHINE_NAME = "smac"; };
+  modules.commonShell = {
+    machineName = "smac";
     shellAliases = {
       "la" = "ls -A -G";
       "ls" = "ls -G";

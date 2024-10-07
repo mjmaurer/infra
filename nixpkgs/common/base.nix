@@ -7,17 +7,22 @@
   # ];
 
   imports = [
+    ./common-shell.nix
+
     ../modules/zsh/zsh.nix
     ../modules/bash/bash.nix
     ../modules/duplicacy/duplicacy.nix
     ../modules/obsidian/obsidian.nix
     ../modules/tmux/tmux.nix
+    ../modules/aerospace/aerospace.nix
+    ../modules/aider/aider.nix
   ];
 
   modules = {
     zsh.enable = true;
     bash.enable = true;
     tmux.enable = true;
+    aider.enable = true;
   };
 
   programs.home-manager.enable = true;

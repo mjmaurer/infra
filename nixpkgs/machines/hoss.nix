@@ -3,8 +3,10 @@
 {
   imports = [ ../common/wsl.nix ];
 
-  programs.bash.sessionVariables = {
-    MACHINE_NAME = "hoss";
-    WIN_DOWNLOADS = "/mnt/c/Users/mjmau/Downloads/";
+  modules.commonShell = {
+    machineName = "hoss";
+    sessionVariables = {
+      WIN_DOWNLOADS = "/mnt/c/Users/mjmau/Downloads/";
+    };
   };
 }

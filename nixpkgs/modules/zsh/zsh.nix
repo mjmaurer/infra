@@ -2,7 +2,7 @@
 with lib;
 let
   cfg = config.modules.zsh;
-  commonShell = import ../../common/shell.nix { inherit lib; };
+  commonShell = config.modules.commonShell;
 in
 {
   options.modules.zsh = {
@@ -53,7 +53,7 @@ in
         autoload -U promptinit; promptinit
         prompt pure
       '';
-      initExtra = commonShell.rc + "\n" + (builtins.readFile ./.zshrc);
+      initExtra = commonShell.initExtra + "\n" + commonShell.rc + "\n" + (builtins.readFile ./.zshrc);
       profileExtra = builtins.readFile ./.zprofile;
       history = {
         size = 10000;

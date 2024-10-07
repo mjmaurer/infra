@@ -2,7 +2,7 @@
 with lib;
 let
   cfg = config.modules.bash;
-  commonShell = import ../../common/shell.nix { inherit lib; };
+  commonShell = config.modules.commonShell;
 in
 {
   options.modules.bash = {
@@ -21,7 +21,7 @@ in
           source ~/.bashrc
         '';
       };
-      initExtra = commonShell.rc + "\n" + (builtins.readFile ./.bashrc);
+      initExtra = commonShell.initExtra + "\n" + commonShell.rc + "\n" + (builtins.readFile ./.bashrc);
       profileExtra = builtins.readFile ./.profile;
     };
   };

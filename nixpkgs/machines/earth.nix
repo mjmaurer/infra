@@ -5,9 +5,7 @@
 
   modules = {
     duplicacy.enable = true;
+    commonShell.machineName = "earth";
   };
 
-  programs.bash.sessionVariables = {
-    MACHINE_NAME = "earth";
-  };
 }
