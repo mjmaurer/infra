@@ -1,4 +1,4 @@
-#!/bin/bash
+# Meant to be compatible with bash and zsh
 
 # ------------------------------ Local Settings ------------------------------ #
 if [ -n ~/.config/local_bash_env ]; then
@@ -15,6 +15,7 @@ vscode_tmux_nix() {
     DIR_PATH=$1
     SESSION_NAME=$(basename $DIR_PATH)
     WINDOW_NAME="vscode"
+    # TODO: Change to $SHELL after moving to nixos
     COMMAND="zsh -c 'if [ -f \"${DIR_PATH}/shell.nix\" ]; then nix-shell --command \"zsh\" \"${DIR_PATH}/shell.nix\"; else zsh; fi'"
 
     echo $SESSION_NAME
