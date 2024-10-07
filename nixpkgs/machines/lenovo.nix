@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 {
-  imports = [ ../common/common.nix ../common/common-linux.nix ];
+  imports = [ ./common/linux.nix ];
 
   home.username = pkgs.lib.mkForce "mmaurer7";
 

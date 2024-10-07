@@ -79,10 +79,10 @@ in
 
   home.file = {
     ".continue/config.json" = {
-      source = ../config/continuedev/config.json;
+      source = ../../config/continuedev/config.json;
     };
     ".continue/config.ts" = {
-      source = ../config/continuedev/config.ts;
+      source = ../../config/continuedev/config.ts;
     };
     ".config/nix/nix.conf" = {
       text = ''
@@ -146,8 +146,8 @@ in
         autoload -U promptinit; promptinit
         prompt pure
       '';
-      initExtra = (builtins.readFile ../config/shell/.sharedrc) + "\n" + (builtins.readFile ../config/shell/zsh/.zshrc);
-      profileExtra = builtins.readFile ../config/shell/zsh/.zprofile;
+      initExtra = (builtins.readFile ../../config/shell/.sharedrc) + "\n" + (builtins.readFile ../../config/shell/zsh/.zshrc);
+      profileExtra = builtins.readFile ../../config/shell/zsh/.zprofile;
       history = {
         size = 10000;
         # append = true;
@@ -198,13 +198,13 @@ in
           source ~/.bashrc
         '';
       };
-      initExtra = (builtins.readFile ../config/shell/.sharedrc) + "\n" + (builtins.readFile ../config/shell/bash/bashrc);
-      profileExtra = builtins.readFile ../config/shell/bash/profile;
+      initExtra = (builtins.readFile ../../config/shell/.sharedrc) + "\n" + (builtins.readFile ../../config/shell/bash/bashrc);
+      profileExtra = builtins.readFile ../../config/shell/bash/profile;
     };
     neovim = {
       enable = true;
       vimAlias = true;
-      extraConfig = builtins.readFile ../config/vim/config.vim;
+      extraConfig = builtins.readFile ../../config/vim/config.vim;
       plugins = with pkgs.vimPlugins; [ vim-polyglot ];
     };
     dircolors = {
