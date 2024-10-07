@@ -9,6 +9,7 @@
   imports = [
     ../modules/zsh/zsh.nix
     ../modules/bash/bash.nix
+    ../modules/duplicacy/duplicacy.nix
   ];
 
   modules = {

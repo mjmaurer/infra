@@ -1,7 +1,11 @@
 { pkgs, ... }:
 
 {
-  imports = [ ../common/linux.nix ../modules/duplicacy/duplicacy.nix ];
+  imports = [ ../common/linux.nix ];
+
+  modules = {
+    duplicacy.enable = true;
+  };
 
   programs.bash.sessionVariables = {
     MACHINE_NAME = "earth";
