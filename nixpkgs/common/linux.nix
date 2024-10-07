@@ -1,9 +1,6 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
-    ./base.nix
-    ../modules/tmux/tmux.nix
-  ];
+  imports = [ ./base.nix ];
   home.homeDirectory = "/home/${config.home.username}";
 }

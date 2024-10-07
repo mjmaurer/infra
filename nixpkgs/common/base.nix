@@ -10,11 +10,14 @@
     ../modules/zsh/zsh.nix
     ../modules/bash/bash.nix
     ../modules/duplicacy/duplicacy.nix
+    ../modules/obsidian/obsidian.nix
+    ../modules/tmux/tmux.nix
   ];
 
   modules = {
     zsh.enable = true;
     bash.enable = true;
+    tmux.enable = true;
   };
 
   programs.home-manager.enable = true;
