@@ -4,9 +4,7 @@
   imports = [ ./base.nix ];
 
   configuration = {
-    obsidian = {
-      enable = true;
-    };
+    obsidian.enable = true;
     aerospace.enable = true;
   };
 
