@@ -1,19 +1,6 @@
 set -o vi
 
-inwsl=$(test -f /proc/version && grep Microsoft /proc/version)
-
 export PATH="$HOME/.local/bin:$PATH"
-if [ -n "~/.config/local_bash_env" ]; then
-    # Make sure to use 'export' in the local_bash_env file
-    source ~/.config/local_bash_env
-fi
-
-if [ ! -z "$inwsl" ]; then
-    export DISPLAY=:0.0
-fi
-
-cpwin() { cp -r -- "$1" "$WIN_DOWNLOADS"; }
-cpfwin() { cp -r -- "${WIN_DOWNLOADS}${1}" "."; }
 
 # unbind alt keys
 bind -r '\ei'
@@ -31,10 +18,6 @@ fi
 PS1+="\[\e[1;36m\]\w\\$ \[\e[0m\]"
 export PS1
 
-# ----- bash functions ----- 
-dexec() {
-    docker exec -it "$1" /bin/bash
-}
 # -------------------------- 
 
 # If not running interactively, don't do anything

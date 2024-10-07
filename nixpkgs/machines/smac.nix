@@ -21,4 +21,12 @@
       "ls" = "ls -G";
     };
   };
+
+  programs.zsh = {
+    sessionVariables = { MACHINE_NAME = "smac"; };
+    shellAliases = {
+      "la" = "ls -A -G";
+      "ls" = "ls -G";
+    };
+  };
 }
