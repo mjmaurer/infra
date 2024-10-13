@@ -10,6 +10,13 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+
+    home.file = {
+      ".p10k.zsh" = {
+        source = ./p10k.zsh;
+      };
+    };
+
     programs.zsh = {
       enable = true;
       package = pkgs.zsh;
@@ -48,10 +55,10 @@ in
           echo "WARNING: nix-daemon.sh not found"
         fi
 
-        # Load Pure theme
-        fpath+=(${pkgs.pure-prompt}/share/zsh/site-functions)
-        autoload -U promptinit; promptinit
-        prompt pure
+        # Load theme
+        # fpath+=(${pkgs.zsh-powerlevel10k}/share/zsh/site-functions)
+        # autoload -U promptinit; promptinit
+        # prompt powerlevel10k
       '';
       initExtra = commonShell.initExtra + "\n" + commonShell.rc + "\n" + (builtins.readFile ./.zshrc);
       profileExtra = builtins.readFile ./.zprofile;
@@ -64,6 +71,16 @@ in
         path = "${config.xdg.dataHome}/zsh/history";
       };
       plugins = [
+        # {
+        #   name = "powerlevel10k-config";
+        #   src = ./p10k.zsh;
+        #   file = "p10k.zsh";
+        # }
+        {
+          name = "zsh-powerlevel10k";
+          src = "${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/";
+          file = "powerlevel10k.zsh-theme";
+        }
         # FZF-tab needs to come before autosuggestions / syntax highlighting
         {
           name = "fzf-tab";
