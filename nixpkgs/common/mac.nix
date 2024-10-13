@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   imports = [ ./base.nix ];
@@ -16,11 +16,38 @@
     };
 
     commonShell = {
-      sessionVariables = { MACHINE_NAME = "smac"; };
+      sessionVariables = { MACHINE_NAME = "smac"; TERM = "xterm-256color"; };
       shellAliases = {
         "la" = "ls -A -G";
         "ls" = "ls -G";
       };
     };
   };
+
+  home.activation.postSwitchAddApplications =
+    let
+      scriptName = "post-switch-add-applications.sh";
+      postSwitchAddScript = pkgs.writeShellScript scriptName ''
+        #!/usr/bin/env bash
+
+        # From https://github.com/NixOS/nix/issues/956#issuecomment-1367457122
+        # Install all nix top level graphical apps
+        if [[ -d ~/.nix-profile/Applications ]]; then
+        	(cd ~/.nix-profile/Applications;
+        	for f in *.app ; do
+        		mkdir -p ~/Applications/
+        		rm -f "$HOME/Applications/$f"
+        		# Mac aliases don’t work on symlinks
+        		f="$(readlink -f "$f")"
+        		# Use Mac aliases because Spotlight doesn’t like symlinks
+        		osascript -e "tell app \"Finder\" to make new alias file at POSIX file \"$HOME/Applications\" to POSIX file \"$f\""
+        	done
+        	)
+        fi
+      '';
+    in
+    # `run` is used to obey Nix dry run 
+    lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      run ${postSwitchAddScript} 
+    '';
 }

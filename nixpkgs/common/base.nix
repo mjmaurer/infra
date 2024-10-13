@@ -9,6 +9,7 @@
   imports = [
     ./common-shell.nix
 
+    ../modules/alacritty/alacritty.nix
     ../modules/continuedev/continuedev.nix
     ../modules/obsidian/obsidian.nix
     ../modules/zsh/zsh.nix
@@ -26,6 +27,7 @@
     tmux.enable = true;
     aider.enable = true;
     neovim.enable = true;
+    alacritty.enable = true;
     continuedev = {
       enable = true;
       justConfig = true;
@@ -33,6 +35,7 @@
   };
 
   programs.home-manager.enable = true;
+  fonts.fontconfig.enable = true;
 
   home =
     {
@@ -47,6 +50,9 @@
         };
       };
       packages = with pkgs; [
+        # Fonts
+        meslo-lgs-nf
+
         nil
         nixpkgs-fmt
         ripgrep
