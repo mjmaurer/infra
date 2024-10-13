@@ -22,7 +22,7 @@ in
     programs.tmux = {
       enable = true;
       shell = "${pkgs.zsh}/bin/zsh";
-      # terminal = "screen-256color";
+      terminal = "xterm-256color";
       historyLimit = 100000;
       plugins = with pkgs;
         [
