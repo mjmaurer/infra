@@ -1,0 +1,49 @@
+[shell]
+program = "zsh"
+
+[font]
+size = 14
+
+[font.normal]
+family = "MesloLGS NF"
+
+[window]
+opacity = 0.92
+# decorations = "none"
+option_as_alt = "Both"
+# decorations_theme_variant = "light"
+
+[scrolling]
+history = 15000
+
+# https://github.com/alacritty/alacritty-theme/blob/master/themes/ashes_light.toml
+[colors.primary]
+background = '#f3f4f5'
+foreground = '#565e65'
+
+[colors.cursor]
+text = '#f3f4f5'
+cursor = '#565e65'
+
+[colors.normal]
+black = '#1c2023'
+red = '#c7ae95'
+green = '#95c7ae'
+yellow = '#aec795'
+blue = '#ae95c7'
+magenta = '#c795ae'
+cyan = '#95aec7'
+white = '#c7ccd1'
+
+[colors.bright]
+black = '#747c84'
+red = '#c7ae95'
+green = '#95c7ae'
+yellow = '#aec795'
+blue = '#ae95c7'
+magenta = '#c795ae'
+cyan = '#95aec7'
+white = '#f3f4f5'
+
+# [keyboard]
+# bindings = [{ key = "A", mods = "Alt", chars = "\u001Ba" }]
