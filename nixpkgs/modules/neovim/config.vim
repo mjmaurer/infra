@@ -1,7 +1,8 @@
 " ------ style ----------"
-set t_Co=256
+" set t_Co=256
 syntax on
-set background=dark
+colorscheme seoul256-light
+set background=light
 "================Spaces and Tabs==========="
 set tabstop=4
 set softtabstop=4
