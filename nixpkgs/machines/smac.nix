@@ -7,13 +7,6 @@
 
   home.username = pkgs.lib.mkForce "mmaurer7";
 
-  # TODO remove this https://github.com/nix-community/home-manager/issues/3342
-  manual.manpages.enable = false;
-
-  home.packages = with pkgs; [
-    pipx
-  ];
-
   modules.commonShell = {
     machineName = "smac";
     shellAliases = {
