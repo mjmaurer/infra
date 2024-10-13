@@ -9,9 +9,8 @@
   imports = [
     ./common-shell.nix
 
-    ../config/continuedev/continuedev.nix
-    ../config/obsidian/obsidian.nix
-
+    ../modules/continuedev/continuedev.nix
+    ../modules/obsidian/obsidian.nix
     ../modules/zsh/zsh.nix
     ../modules/bash/bash.nix
     ../modules/duplicacy/duplicacy.nix
@@ -27,10 +26,10 @@
     tmux.enable = true;
     aider.enable = true;
     neovim.enable = true;
-  };
-
-  configuration = {
-    continuedev.enable = true;
+    continuedev = {
+      enable = true;
+      justConfig = true;
+    };
   };
 
   programs.home-manager.enable = true;
@@ -58,6 +57,7 @@
         nixfmt
         bat
         htop
+        jq
         devenv
         wget
         neofetch

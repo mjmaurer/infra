@@ -1,11 +1,17 @@
 { config, lib, pkgs, ... }:
 with lib;
 let
-  cfg = config.configuration.continuedev;
+  cfg = config.modules.continuedev;
 in
 {
-  options.configuration.continuedev = {
+  options.modules.continuedev = {
     enable = lib.mkEnableOption "continuedev";
+
+    justConfig = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "[NOOP currently] If true, only copy the config files without installing the package. For packages installed external to Nix.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
