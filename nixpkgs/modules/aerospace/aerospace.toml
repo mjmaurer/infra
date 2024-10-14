@@ -18,7 +18,7 @@ default-root-container-orientation = "vertical"
 
 on-focus-changed = [
     # 'exec-and-forget $HOME/.local/bin/tmux-match-focus-vscode.sh',
-    'mouse-move window-lazy-center',
+    'move-mouse window-lazy-center',
 ]
 
 [exec.env-vars]
