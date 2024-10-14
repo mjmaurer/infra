@@ -18,8 +18,8 @@
     commonShell = {
       sessionVariables = { MACHINE_NAME = "smac"; TERM = "xterm-256color"; };
       shellAliases = {
-        "la" = "ls -A -G";
-        "ls" = "ls -G";
+        "la" = "ls -A -G --color=auto";
+        "ls" = "ls -G --color=auto";
       };
     };
   };
@@ -35,8 +35,12 @@
         if [[ -d ~/.nix-profile/Applications ]]; then
         	(cd ~/.nix-profile/Applications;
         	for f in *.app ; do
+            f_without_extension="''${f%%.app}"
         		mkdir -p ~/Applications/
-        		rm -f "$HOME/Applications/$f"
+            echo "Adding $f to ~/Applications/"
+        		# Remove existing symlink if it exists
+        		rm -f "$HOME/Applications/$f_without_extension"
+            sleep 0.2
         		# Mac aliases don’t work on symlinks
         		f="$(readlink -f "$f")"
         		# Use Mac aliases because Spotlight doesn’t like symlinks

@@ -10,6 +10,7 @@ fi
 dexec() {
     docker exec -it "$1" /bin/bash
 }
+
 vscode_tmux_nix() {
     # Variables
     DIR_PATH=$1

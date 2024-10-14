@@ -37,24 +37,49 @@
     # prompt_char           # prompt symbol
   )
 
-  # Google alacritty themes to find these
-  normal_black='#1c2023'
-  normal_red='#c7ae95'
-  normal_green='#95c7ae'
-  normal_yellow='#aec795'
-  normal_blue='#ae95c7'
-  normal_magenta='#c795ae'
-  normal_cyan='#95aec7'
-  normal_white='#c7ccd1'
+  normal_black='0'
+  normal_red='1'
+  normal_green='2'
+  normal_yellow='3'
+  normal_blue='4'
+  normal_magenta='5'
+  normal_cyan='6'
+  normal_white='7'
 
-  bright_dark_grey='#747c84'
-  bright_red='#c7ae95'
-  bright_green='#95c7ae'
-  bright_yellow='#aec795'
-  bright_blue='#ae95c7'
-  bright_magenta='#c795ae'
-  bright_cyan='#95aec7'
-  bright_white='#f3f4f5'
+  bright_dark_grey='8'
+  bright_red='9'
+  bright_green='10'
+  bright_yellow='11'
+  bright_blue='12'
+  bright_magenta='13'
+  bright_cyan='14'
+  bright_white='15'
+
+  # Google alacritty themes to find these
+  # normal_black='#1c2023'
+  # normal_red='#c7ae95'
+  # normal_green='#95c7ae'
+  # normal_yellow='#aec795'
+  # normal_blue='#ae95c7'
+  # normal_magenta='#c795ae'
+  # normal_cyan='#95aec7'
+  # normal_white='#c7ccd1'
+
+  # bright_dark_grey='#747c84'
+  # bright_red='#c7ae95'
+  # bright_green='#95c7ae'
+  # bright_yellow='#aec795'
+  # bright_blue='#ae95c7'
+  # bright_magenta='#c795ae'
+  # bright_cyan='#95aec7'
+  # bright_white='#f3f4f5'
+
+  outer_fg=$normal_black
+  outer_bg=$bright_white
+  vcs_clean_bg=$bright_yellow
+  vcs_clean_fg=$normal_black
+  vcs_dirty_bg=$bright_red
+  vcs_dirty_fg=$normal_black
 
   # The list of segments shown on the right. Fill it with less important segments.
   # Right prompt on the last prompt line (where you are typing your commands) gets
@@ -203,8 +228,8 @@
 
   #################################[ os_icon: os identifier ]##################################
   # OS identifier color.
-  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=$normal_black
-  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=$normal_white
+  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=$outer_fg # $normal_black
+  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=$outer_bg # $normal_white
   # Custom icon.
   # typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='⭐'
 
@@ -372,10 +397,14 @@
 
   #####################################[ vcs: git status ]######################################
   # Version control background colors.
-  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=$normal_green
-  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=$normal_yellow
-  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=$normal_green
-  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=$normal_yellow
+  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=$vcs_clean_bg # $normal_green
+  typeset -g POWERLEVEL9K_VCS_CLEAN_FOREGROUND=$vcs_clean_fg
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=$vcs_dirty #$normal_yellow
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_FOREGROUND=$vcs_dirty_fg
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=$vcs_clean_bg # $normal_green
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND=$vcs_clean_fg
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=$vcs_dirty_bg # $normal_yellow
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_FOREGROUND=$vcs_dirty_fg # $normal_yellow
   typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=$bright_black
 
   # Branch icon. Set this parameter to '\UE0A0 ' for the popular Powerline branch icon.
@@ -912,8 +941,8 @@
 
   ###########[ timewarrior: timewarrior tracking status (https://timewarrior.net/) ]############
   # Timewarrior color.
-  typeset -g POWERLEVEL9K_TIMEWARRIOR_FOREGROUND=$bright_white
-  typeset -g POWERLEVEL9K_TIMEWARRIOR_BACKGROUND=$bright_black
+  typeset -g POWERLEVEL9K_TIMEWARRIOR_FOREGROUND=
+  typeset -g POWERLEVEL9K_TIMEWARRIOR_BACKGROUND=
 
   # If the tracked task is longer than 24 characters, truncate and append "…".
   # Tip: To always display tasks without truncation, delete the following parameter.
@@ -1759,8 +1788,8 @@
 
   ####################################[ time: current time ]####################################
   # Current time color.
-  typeset -g POWERLEVEL9K_TIME_FOREGROUND=$normal_black
-  typeset -g POWERLEVEL9K_TIME_BACKGROUND=$normal_white
+  typeset -g POWERLEVEL9K_TIME_FOREGROUND=$outer_fg
+  typeset -g POWERLEVEL9K_TIME_BACKGROUND=$outer_bg
 
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%I:%M:%S %p}'

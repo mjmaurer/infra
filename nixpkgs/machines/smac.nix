@@ -9,9 +9,5 @@
 
   modules.commonShell = {
     machineName = "smac";
-    shellAliases = {
-      "la" = "ls -A -G";
-      "ls" = "ls -G";
-    };
   };
 }

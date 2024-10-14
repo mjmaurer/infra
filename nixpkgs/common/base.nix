@@ -87,6 +87,7 @@
     dircolors = {
       enable = true;
       enableBashIntegration = true;
+      enableZshIntegration = true;
     };
     git = {
       enable = true;

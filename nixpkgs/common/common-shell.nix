@@ -68,8 +68,8 @@
         "rg" = "rg --hidden --glob=!.git/ -g '!{**/node_modules/**,venv/}'";
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
-        "la" = lib.mkDefault "ls -a";
-        "ls" = lib.mkDefault "ls";
+        "la" = lib.mkDefault "ls -a --color=auto";
+        "ls" = lib.mkDefault "ls --color=auto";
         "hmswitchnoload" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
         "dtail" = "docker logs -tf --tail='50'";
         "dstop" = "docker stop `docker ps -aq`";
