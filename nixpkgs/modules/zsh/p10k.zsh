@@ -80,6 +80,7 @@
 
   dir_bg=$bright_cyan
   dir_fg=$bright_white
+  dir_shortened_fg=255
 
   vcs_clean_bg=$bright_white
   vcs_clean_fg=$normal_black
@@ -88,9 +89,9 @@
 
   # All apply only under SSH for now
   host_bg=$normal_magenta
-  host_fg=$normal_black
+  host_fg=255
   host_priv_bg=$normal_red # privledged (sudo)
-  host_priv_fg=$normal_black
+  host_priv_fg=$bright_white
 
   # The list of segments shown on the right. Fill it with less important segments.
   # Right prompt on the last prompt line (where you are typing your commands) gets
@@ -277,7 +278,7 @@
   # Replace removed segment suffixes with this symbol.
   typeset -g POWERLEVEL9K_SHORTEN_DELIMITER=
   # Color of the shortened directory segments.
-  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=250
+  typeset -g POWERLEVEL9K_DIR_SHORTENED_FOREGROUND=$dir_shortened_fg #250
   # Color of the anchor directory segments. Anchor segments are never shortened. The first
   # segment is always an anchor.
   typeset -g POWERLEVEL9K_DIR_ANCHOR_FOREGROUND=255
