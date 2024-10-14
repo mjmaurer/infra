@@ -101,9 +101,9 @@ alt-semicolon = 'mode workspaces_extra'
 # Remember to add any new workspaces to window callbacks below
 s = ['workspace slack --auto-back-and-forth', 'mode main']
 o = ['workspace outlook --auto-back-and-forth', 'mode main']
-l = ['workspace spotify --auto-back-and-forth', 'mode main'] # 'listen'
+l = ['workspace spotify --auto-back-and-forth', 'mode main']  # 'listen'
 t = ['workspace terminal --auto-back-and-forth', 'mode main']
-f = ['workspace files --auto-back-and-forth', 'mode main'] # Excel, Word, PPT
+f = ['workspace files --auto-back-and-forth', 'mode main']    # Excel, Word, PPT
 
 enter = 'mode main'
 esc = 'mode main'
@@ -111,9 +111,12 @@ esc = 'mode main'
 [mode.layout.binding]
 # alt-shift-s = 'layout v_accordion'               # 'layout stacking' in i3
 # alt-shift-w = 'layout h_accordion'               # 'layout tabbed' in i3
-t = 'layout tiles accordion'
-w = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
-f = 'layout floating tiling'           # 'floating toggle' in i3
+
+t = ['layout tiles accordion', 'mode main']
+# 'layout toggle split' in i3
+w = ['layout tiles horizontal vertical', 'mode main']
+# 'floating toggle' in i3
+f = ['layout floating tiling', 'mode main']
 
 enter = 'mode main'
 esc = 'mode main'
