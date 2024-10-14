@@ -87,9 +87,9 @@
   vcs_dirty_fg=$normal_black
 
   # All apply only under SSH for now
-  host_bg=$normal_red
+  host_bg=$normal_magenta
   host_fg=$normal_black
-  host_priv_bg=$normal_magenta # privledged (sudo)
+  host_priv_bg=$normal_red # privledged (sudo)
   host_priv_fg=$normal_black
 
   # The list of segments shown on the right. Fill it with less important segments.
