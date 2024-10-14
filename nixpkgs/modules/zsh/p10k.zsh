@@ -76,7 +76,7 @@
 
   outer_fg=$normal_black
   outer_bg=$bright_white
-  vcs_clean_bg=$bright_yellow
+  vcs_clean_bg=$bright_white
   vcs_clean_fg=$normal_black
   vcs_dirty_bg=$bright_red
   vcs_dirty_fg=$normal_black

@@ -1,3 +1,7 @@
+# Alternative: https://www.reddit.com/r/vim/comments/60jl7h/zsh_vimode_no_delay_entering_normal_mode/
+KEYTIMEOUT=1 # 10ms
+bindkey -rM viins '^X'
+
 # ---------------------------------------------------------------------------- #
 #                                 Bind / Unbind                                #
 # ---------------------------------------------------------------------------- #
