@@ -74,12 +74,22 @@
   # bright_cyan='#95aec7'
   # bright_white='#f3f4f5'
 
-  outer_fg=$normal_black
   outer_bg=$bright_white
+  outer_fg=$normal_black
+
+  dir_bg=$bright_cyan
+  dir_fg=$bright_white
+
   vcs_clean_bg=$bright_white
   vcs_clean_fg=$normal_black
   vcs_dirty_bg=$bright_red
   vcs_dirty_fg=$normal_black
+
+  # All apply only under SSH for now
+  host_bg=$normal_red
+  host_fg=$normal_black
+  host_priv_bg=$normal_magenta # privledged (sudo)
+  host_priv_fg=$normal_black
 
   # The list of segments shown on the right. Fill it with less important segments.
   # Right prompt on the last prompt line (where you are typing your commands) gets
@@ -258,9 +268,9 @@
 
   ##################################[ dir: current directory ]##################################
   # Current directory background color.
-  typeset -g POWERLEVEL9K_DIR_BACKGROUND=$bright_cyan
+  typeset -g POWERLEVEL9K_DIR_BACKGROUND=$dir_bg # $bright_cyan
   # Default current directory foreground color.
-  typeset -g POWERLEVEL9K_DIR_FOREGROUND=$bright_white
+  typeset -g POWERLEVEL9K_DIR_FOREGROUND=$dir_fg # $bright_white
   # If directory is too long, shorten some of its segments to the shortest possible unique
   # prefix. The shortened directory can be tab-completed to the original.
   typeset -g POWERLEVEL9K_SHORTEN_STRATEGY=truncate_to_unique
@@ -1003,11 +1013,11 @@
 
   ##################################[ context: user@hostname ]##################################
   # Context color when running with privileges.
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=1
-  typeset -g POWERLEVEL9K_CONTEXT_ROOT_BACKGROUND=0
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_FOREGROUND=$host_priv_fg # 1
+  typeset -g POWERLEVEL9K_CONTEXT_ROOT_BACKGROUND=$host_priv_bg
   # Context color in SSH without privileges.
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=3
-  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_BACKGROUND=0
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_FOREGROUND=$host_fg # 3
+  typeset -g POWERLEVEL9K_CONTEXT_{REMOTE,REMOTE_SUDO}_BACKGROUND=$host_bg
   # Default context color (no privileges, no SSH).
   typeset -g POWERLEVEL9K_CONTEXT_FOREGROUND=3
   typeset -g POWERLEVEL9K_CONTEXT_BACKGROUND=0
