@@ -1,8 +1,14 @@
 " ------ style ----------"
 " set t_Co=256
 syntax on
-colorscheme seoul256-light
+if has('termguicolors')
+	set termguicolors
+endif
+" Causes issues with nix
+" let g:gruvbox_material_better_performance = 1 
+let g:gruvbox_material_background = 'hard'
 set background=light
+colorscheme gruvbox-material
 "================Spaces and Tabs==========="
 set tabstop=4
 set softtabstop=4

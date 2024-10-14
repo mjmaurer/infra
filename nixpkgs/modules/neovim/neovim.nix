@@ -12,7 +12,7 @@ in
       enable = true;
       vimAlias = true;
       extraConfig = builtins.readFile ./config.vim;
-      plugins = with pkgs.vimPlugins; [ vim-polyglot seoul256-vim ];
+      plugins = with pkgs.vimPlugins; [ vim-polyglot gruvbox-material ];
     };
   };
 }
