@@ -13,40 +13,43 @@ start-at-login = true
 accordion-padding = 0
 
 # I'm not sure why workspace 1 is accordion even though this is the default: 
-# default-root-container-layout = 'tiles'
+default-root-container-layout = 'accordion'
+default-root-container-orientation = "vertical"
+
+on-focus-changed = [
+    'exec-and-forget $HOME/.local/bin/tmux-match-focus-vscode.sh',
+    'mouse-move window-lazy-center'
+]
+
+[exec.env-vars]
+PATH = '/opt/homebrew/bin/:${HOME}/.nix-profile/bin:${PATH}'
+
+# ---------------------------------- NOTE ---------------------------------- 
+# Currently can't do composition without exec-and-forget which adds delay:
+# https://github.com/nikitabobko/AeroSpace/issues/278
 
 [mode.main.binding]
-alt-shift-enter = 'exec-and-forget open -n /System/Applications/Utilities/Terminal.app'
 
-alt-shift-h = 'focus left'
-alt-shift-j = 'focus down'
-alt-shift-k = 'focus up'
-alt-shift-l = 'focus right'
-
-
-# Consider using 'join-with' command as a 'split' replacement if you want to enable normalizations
-# alt-shift-w = 'join-with left'
-# alt-shift-t = 'join-with up'
-
-
+alt-shift-c = 'reload-config'
+alt-shift-q = 'flatten-workspace-tree'
 alt-shift-f = 'fullscreen'
 
-# alt-shift-s = 'layout v_accordion'               # 'layout stacking' in i3
-# alt-shift-w = 'layout h_accordion'               # 'layout tabbed' in i3
-alt-shift-t = 'layout tiles accordion'
-alt-shift-e = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
+alt-shift-h = 'focus left'
+alt-shift-j = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace down'
+alt-shift-k = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace up'
+alt-shift-l = 'focus right'
 
-# TODO Could make some apps (Finder) float by default maybe: https://nikitabobko.github.io/AeroSpace/guide#dialog-heuristics
+alt-t = ['workspace term --auto-back-and-forth']
+alt-e = 'workspace code --auto-back-and-forth'
+alt-w = 'workspace web --auto-back-and-forth'
+alt-g = 'workspace llm --auto-back-and-forth'
+alt-r = 'workspace notes --auto-back-and-forth'
 
-alt-shift-space = 'layout floating tiling' # 'floating toggle' in i3
-
-# Not supported, because this command is redundant in AeroSpace mental model.
-# See: https://nikitabobko.github.io/AeroSpace/guide#floating-windows
-#alt-shift-space = 'focus toggle_tiling_floating'
-
-# `focus parent`/`focus child` are not yet supported, and it's not clear whether they
-# should be supported at all https://github.com/nikitabobko/AeroSpace/issues/5
-# alt-shift-a = 'focus parent'
+alt-shift-t = 'move-node-to-workspace term'
+alt-shift-e = 'move-node-to-workspace code'
+alt-shift-w = 'move-node-to-workspace web'
+alt-shift-g = 'move-node-to-workspace llm'
+alt-shift-r = 'move-node-to-workspace notes'
 
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
@@ -70,12 +73,35 @@ alt-shift-8 = 'move-node-to-workspace 8'
 alt-shift-9 = 'move-node-to-workspace 9'
 alt-shift-0 = 'move-node-to-workspace 10'
 
-alt-shift-c = 'reload-config'
+# Consider using 'join-with' command as a 'split' replacement if you want to enable normalizations
+# alt-shift-w = 'join-with left'
+# alt-shift-t = 'join-with up'
 
-alt-shift-q = 'flatten-workspace-tree'
+# Not supported, because this command is redundant in AeroSpace mental model.
+# See: https://nikitabobko.github.io/AeroSpace/guide#floating-windows
+#alt-shift-space = 'focus toggle_tiling_floating'
 
-alt-shift-r = 'mode resize'
+# `focus parent`/`focus child` are not yet supported, and it's not clear whether they
+# should be supported at all https://github.com/nikitabobko/AeroSpace/issues/5
+# alt-shift-a = 'focus parent'
+
+
+# --------------------------------------------------------------------------
+#                                  Modes                                 
+# -------------------------------------------------------------------------- 
+
+alt-shift-semicolon = 'mode resize'
+alt-shift-period = 'mode layout'
 alt-shift-m = 'mode move'
+
+[mode.layout.binding]
+# alt-shift-s = 'layout v_accordion'               # 'layout stacking' in i3
+# alt-shift-w = 'layout h_accordion'               # 'layout tabbed' in i3
+t = 'layout tiles accordion'
+w = 'layout tiles horizontal vertical' # 'layout toggle split' in i3
+f = 'layout floating tiling'           # 'floating toggle' in i3
+enter = 'mode main'
+esc = 'mode main'
 
 [mode.resize.binding]
 h = 'resize width -50'
@@ -92,3 +118,64 @@ k = 'move up'
 l = 'move right'
 enter = 'mode main'
 esc = 'mode main'
+
+# --------------------------------------------------------------------------
+#                                  Callbacks                                 
+# -------------------------------------------------------------------------- 
+
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
+check-further-callbacks = false
+run = 'move-node-to-workspace notes'
+
+# list of popular application IDs: https://nikitabobko.github.io/AeroSpace/goodness#popular-apps-ids
+# You can use `aerospace list-apps` CLI command to get IDs of running applications
+# mdls -name kMDItemCFBundleIdentifier -r /Applications/App.app
+[[on-window-detected]]
+if.app-id = 'md.obsidian'
+check-further-callbacks = false
+run = 'move-node-to-workspace notes'
+
+[[on-window-detected]]
+if.app-id = 'org.alacritty'
+check-further-callbacks = false
+run = ['layout floating', 'move-node-to-workspace term']
+
+[[on-window-detected]]
+if.app-id = 'com.openai.chat'
+check-further-callbacks = false
+run = 'move-node-to-workspace llm'
+
+[[on-window-detected]]
+if.app-id = 'com.google.Chrome'
+check-further-callbacks = false
+run = 'move-node-to-workspace web'
+
+[[on-window-detected]]
+if.app-id = 'com.microsoft.VSCode'
+check-further-callbacks = false
+run = 'move-node-to-workspace code'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.finder'
+check-further-callbacks = false
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+check-further-callbacks = false
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
+check-further-callbacks = false
+run = ['layout floating']
+
+# [[on-window-detected]]
+# if.app-id = 'com.apple.systempreferences'
+# if.app-name-regex-substring = 'settings'
+# if.window-title-regex-substring = 'substring'
+# if.workspace = 'workspace-name'
+# if.during-aerospace-startup = true
+# check-further-callbacks = true
+# run = ['layout floating', 'move-node-to-workspace 1']

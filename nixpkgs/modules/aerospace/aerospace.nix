@@ -18,6 +18,10 @@ in
       ".config/aerospace/aerospace.toml" = {
         source = ./aerospace.toml;
       };
+      ".local/bin/tmux-match-focus-vscode.sh" = {
+        source = ./tmux-match-focus-vscode.sh;
+        executable = true;
+      };
     };
   };
 }
