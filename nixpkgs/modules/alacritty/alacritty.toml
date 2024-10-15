@@ -16,6 +16,9 @@ option_as_alt = "Both"
 [scrolling]
 history = 15000
 
+# ---------------------------------- NOTE ---------------------------------- 
+# Color should be kept in sync with VSCode theme
+
 # https://github.com/alacritty/alacritty-theme/blob/master/themes/ashes_light.toml
 # [colors.primary]
 # background = '#f3f4f5'
