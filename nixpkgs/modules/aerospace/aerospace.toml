@@ -27,6 +27,8 @@ PATH = '/opt/homebrew/bin/:${HOME}/.nix-profile/bin:${PATH}'
 # ---------------------------------- NOTE ---------------------------------- 
 # Currently can't do composition without exec-and-forget which adds delay:
 # https://github.com/nikitabobko/AeroSpace/issues/278
+# ---------------------------------- NOTE ---------------------------------- 
+# For what it's worth, the easiest way to test movement is to open terminal and run aerospace commands to move it around
 
 [mode.main.binding]
 
@@ -48,10 +50,36 @@ alt-r = 'workspace notes --auto-back-and-forth'
 alt-z = 'workspace zoom --auto-back-and-forth'
 
 # alt-shift-t = 'move-node-to-workspace terminal'
-alt-shift-e = 'move-node-to-workspace code'
-alt-shift-w = 'move-node-to-workspace web'
-alt-shift-g = 'move-node-to-workspace llm'
-alt-shift-r = 'move-node-to-workspace notes'
+alt-shift-e = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window code',
+    'layout tiling',
+    'join-with up',                                       # Another alternative is 'move right' which would limit the other code windows to 1/2 of the screen
+]
+alt-shift-w = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window web',
+    'layout tiling',
+    'join-with up',
+]
+alt-shift-g = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window llm',
+    'layout tiling',
+    'join-with up',
+]
+alt-shift-r = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window notes',
+    'layout tiling',
+    'join-with up',
+]
+alt-shift-z = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window zoom',
+    'layout tiling',
+    'join-with up',
+]
 
 alt-1 = 'workspace 1'
 alt-2 = 'workspace 2'
@@ -105,6 +133,12 @@ l = ['workspace spotify --auto-back-and-forth', 'mode main']  # 'listen'
 t = ['workspace terminal --auto-back-and-forth', 'mode main']
 f = ['workspace files --auto-back-and-forth', 'mode main']    # Excel, Word, PPT
 
+alt-shift-s = ['move-node-to-workspace slack', 'mode main']
+alt-shift-o = ['move-node-to-workspace outlook', 'mode main']
+alt-shift-l = ['move-node-to-workspace spotify', 'mode main']
+alt-shift-t = ['move-node-to-workspace terminal', 'mode main']
+alt-shift-f = ['move-node-to-workspace files', 'mode main']
+
 enter = 'mode main'
 esc = 'mode main'
 
@@ -115,8 +149,9 @@ esc = 'mode main'
 t = ['layout tiles accordion', 'mode main']
 # 'layout toggle split' in i3
 w = ['layout tiles horizontal vertical', 'mode main']
+f = "flatten-workspace-tree"
 # 'floating toggle' in i3
-f = ['layout floating tiling', 'mode main']
+c = ['layout floating tiling', 'mode main']
 
 enter = 'mode main'
 esc = 'mode main'
@@ -162,6 +197,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace notes'
 
 [[on-window-detected]]
+if.app-id = 'com.google.Chrome.app.fmpnliohjhemenmnlpbfagaolkdacoja'
+check-further-callbacks = false
+run = 'move-node-to-workspace llm'
+
+[[on-window-detected]]
 if.app-id = 'com.openai.chat'
 check-further-callbacks = false
 run = 'move-node-to-workspace llm'
@@ -198,6 +238,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace files'
 
 [[on-window-detected]]
+if.app-id = 'com.apple.Preview'
+check-further-callbacks = false
+run = 'move-node-to-workspace files'
+
+[[on-window-detected]]
 if.app-id = 'com.microsoft.Powerpoint'
 check-further-callbacks = false
 run = 'move-node-to-workspace files'
@@ -210,7 +255,12 @@ run = 'move-node-to-workspace files'
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
 check-further-callbacks = false
-run = 'layout floating'
+run = ['layout floating', 'move-node-to-workspace files']
+
+[[on-window-detected]]
+if.app-id = 'org.eyebeam.SelfControl'
+check-further-callbacks = false
+run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'com.apple.systempreferences'
