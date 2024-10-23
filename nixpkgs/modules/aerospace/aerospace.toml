@@ -222,6 +222,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace zoom'
 
 [[on-window-detected]]
+if.app-id = 'com.microsoft.teams2'
+check-further-callbacks = false
+run = 'move-node-to-workspace zoom'
+
+[[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
 check-further-callbacks = false
 run = 'move-node-to-workspace slack'
