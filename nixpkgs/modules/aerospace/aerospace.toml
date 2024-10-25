@@ -187,6 +187,13 @@ check-further-callbacks = false
 run = 'move-node-to-workspace code'
 
 [[on-window-detected]]
+# Cursor
+if.app-id = 'com.todesktop.230313mzl4w4u92'
+check-further-callbacks = false
+run = 'move-node-to-workspace code'
+
+
+[[on-window-detected]]
 if.app-id = 'com.google.Chrome'
 check-further-callbacks = false
 run = 'move-node-to-workspace web'
