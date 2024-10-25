@@ -11,7 +11,7 @@ if [[ -z "$DIFF" ]]; then
 fi
 
 # Create a prompt that describes what we want
-PROMPT="Generate a concise and descriptive git commit message based on these staged changes. Follow the conventional commits specification. Here are the changes:
+PROMPT="Generate a descriptive git commit message based on these staged changes. Follow the conventional commits specification. Here are the changes:
 
 $DIFF
 

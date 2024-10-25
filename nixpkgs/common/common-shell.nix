@@ -48,6 +48,11 @@
   };
 
   config = {
+    xdg.configFile = {
+      "local_bash_env.example" = {
+        source = ./local_bash_env.example;
+      };
+    };
     modules.commonShell = {
       sessionVariables = {
         EDITOR = "nvim";

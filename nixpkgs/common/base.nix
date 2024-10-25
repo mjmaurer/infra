@@ -19,6 +19,7 @@
     ../modules/aerospace/aerospace.nix
     ../modules/aider/aider.nix
     ../modules/neovim/neovim.nix
+    ../modules/aichat/aichat.nix
   ];
 
   modules = {
@@ -26,16 +27,24 @@
     bash.enable = true;
     tmux.enable = true;
     aider.enable = true;
+    aichat.enable = true;
     neovim.enable = true;
     alacritty.enable = true;
     continuedev = {
       enable = true;
       justConfig = true;
     };
+
+
   };
 
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
+
+  xdg = {
+    # Sets up XDG_DATA_HOME, XDG_CONFIG_HOME, XDG_CACHE_HOME, etc.
+    enable = true;
+  };
 
   home =
     {

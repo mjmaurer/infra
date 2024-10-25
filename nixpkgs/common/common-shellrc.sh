@@ -1,5 +1,9 @@
 # Meant to be compatible with bash and zsh
 
+# Load home manager session variables (XDG_CONFIG_HOME, etc.)
+# The unset is a hack to source the file multiple times as needed
+unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
 # ------------------------------ Local Settings ------------------------------ #
 if [ -n ~/.config/local_bash_env ]; then
     # Make sure to use 'export' in the local_bash_env file
