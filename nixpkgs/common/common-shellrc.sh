@@ -26,9 +26,16 @@ vscode_tmux_nix() {
     echo $SESSION_NAME
     # Check if the tmux session exists
     if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-        echo "exists"
-        tmux new-window -t $SESSION_NAME -n $WINDOW_NAME "$COMMAND"
+        echo "Session exists"
+        # Check if the window exists
+        if ! tmux list-windows -t $SESSION_NAME -F '#W' | grep -q "^${WINDOW_NAME}$"; then
+            echo "Creating new window: $WINDOW_NAME"
+            tmux new-window -t $SESSION_NAME -n $WINDOW_NAME "$COMMAND"
+        else
+            echo "Window $WINDOW_NAME already exists"
+        fi
     else
+        echo "Creating new session: $SESSION_NAME"
         tmux new-session -d -s $SESSION_NAME -n $WINDOW_NAME "$COMMAND"
     fi
     tmux attach-session -t $SESSION_NAME

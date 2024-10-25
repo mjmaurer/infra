@@ -35,6 +35,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
+        "a" = "aichat -e";
+        "ai" = "aichat";
         "gcai" = "git-commit-ai.sh";
       };
     };
