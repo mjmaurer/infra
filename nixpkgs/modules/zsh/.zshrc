@@ -33,7 +33,9 @@ bindkey -rM viins '^X'
 # "^[~" _bash_complete-word
 # Unbind all Alt key bindings
 # Alt keys
-bindkey -r '^[f' '^[a' '^[i' '^[m' '^[o' '^[,' '^[.' '^[^[' '^[/' '^[c'
+bindkey -r '^[f' '^[a' '^[i' '^[m' '^[o' '^[,' '^[.' '^[/' '^[c'
+# Needed for git-fzf
+bindkey -r '^g'
 # vi mode (needs to come before vi-mode plugin)
 bindkey -v
 
