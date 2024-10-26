@@ -1,7 +1,3 @@
-# Alternative: https://www.reddit.com/r/vim/comments/60jl7h/zsh_vimode_no_delay_entering_normal_mode/
-KEYTIMEOUT=1 # 10ms
-bindkey -rM viins '^X'
-
 # ---------------------------------------------------------------------------- #
 #                                 Bind / Unbind                                #
 # ---------------------------------------------------------------------------- #
@@ -33,10 +29,15 @@ bindkey -rM viins '^X'
 # "^[~" _bash_complete-word
 # Unbind all Alt key bindings
 # Alt keys
-bindkey -r '^[f' '^[a' '^[i' '^[m' '^[o' '^[,' '^[.' '^[/' '^[c'
+bindkey -r '^[f' '^[a' '^[i' '^[m' '^[o' '^[,' '^[.' '^[/' '^[c' '^[^['
 # Needed for git-fzf
 bindkey -r '^g'
+
 # vi mode (needs to come before vi-mode plugin)
+# Alternative: https://www.reddit.com/r/vim/comments/60jl7h/zsh_vimode_no_delay_entering_normal_mode/
+KEYTIMEOUT=1 # 10ms
+bindkey -rM viins '^X'
+# bindkey -rM viins '^['
 bindkey -v
 
 # ----------------------------------- Binds ---------------------------------- #
