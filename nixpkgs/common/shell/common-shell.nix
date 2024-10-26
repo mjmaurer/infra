@@ -10,7 +10,7 @@
     };
     # TODO: Probably don't need this and initExtra
     rc = lib.mkOption {
-      default = builtins.readFile ./all-shellrc.sh;
+      default = builtins.readFile ./common-shellrc.sh;
       type = lib.types.str;
       description = ''
         RC common to all shells. Should be compatible 
@@ -105,8 +105,8 @@
         "gac" = "gaf && gcai"; # gcai is defined in git-commit-ai.sh
         "gs" = "git status";
         "gsf" = "git status $(_fzf_git_files)";
-        # "rgi" = "rgi"; For visibility. Defined in all-shellrc.sh
-        # "rgf" = "rgf"; For visibility. Defined in all-shellrc.sh
+        # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
+        # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "la" = lib.mkDefault "ls -a --color=auto";
