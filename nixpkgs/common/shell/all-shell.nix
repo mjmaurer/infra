@@ -79,6 +79,7 @@
       initExtraFirst = ''
         # --------------------------------- FZF-Git --------------------------------
         source ${./fzf-git.sh}
+        source ${./fzf-docker.sh}
       '';
       sessionVariables = {
         EDITOR = "nvim";
