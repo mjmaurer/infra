@@ -32,6 +32,16 @@ export FZF_DEFAULT_OPTS="
   --bind='pgup:preview-half-page-up'
 "
 
+cpf() {
+  # Copies a file or directory given a name. Uses FZF to select the file or directory.
+  local path=$(fd --type f --strip-cwd-prefix . | fzf)
+  if [ -z "$path" ]; then
+    echo "No path selected"
+    return
+  fi
+  cp -r "$path" $1
+}
+
 mk() {
   # Creates a file or directory given a name. Uses FZF to select the parent directory.
   # It determines whether to create a file or directory based on whether the name ends with a slash.
