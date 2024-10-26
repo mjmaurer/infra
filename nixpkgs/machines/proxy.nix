@@ -10,7 +10,7 @@
     sessionVariables = {
       WIN_DOWNLOADS = "/mnt/c/Users/mjmau/Downloads/";
     };
-    initExtra = ''
+    initExtraFirst = ''
       whitelist_user () {
         env_var_name="VOUCH_WHITELIST"
         term="$1"

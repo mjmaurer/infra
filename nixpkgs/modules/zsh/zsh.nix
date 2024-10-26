@@ -60,7 +60,7 @@ in
         # autoload -U promptinit; promptinit
         # prompt powerlevel10k
       '';
-      initExtra = commonShell.initExtra + "\n" + commonShell.rc + "\n" + (builtins.readFile ./.zshrc);
+      initExtra = commonShell.assembleInitExtra ./.zshrc;
       profileExtra = builtins.readFile ./.zprofile;
       history = {
         size = 10000;
@@ -104,10 +104,22 @@ in
       oh-my-zsh = {
         enable = true;
         # Others: direnv
-        plugins = [ "vi-mode" "thefuck" "aws" "docker" "helm" "kubectl" "yarn" "poetry" "tailscale" "terraform" "tmux" ];
+        plugins = [ "vi-mode" "thefuck" "aws" "docker" "helm" "kubectl" "yarn" "poetry" "tailscale" "tmux" ];
         # theme = "robbyrussell";
         extraConfig = ''
+          # --------------------------------- FZF-Tab -------------------------------- 
+
+          # https://github.com/Aloxaf/fzf-tab?tab=readme-ov-file#usage
+          # FZF-Tab only affects ZSH completions
+
+          # Use tmux popup for fzf-tab
           zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+          # set list-colors to enable filename colorizing
+          zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
+          # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
+          zstyle ':completion:*' menu no
+          # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
+          zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
         '';
       };
     };

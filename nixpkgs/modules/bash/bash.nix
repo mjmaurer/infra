@@ -21,7 +21,7 @@ in
           source ~/.bashrc
         '';
       };
-      initExtra = commonShell.initExtra + "\n" + commonShell.rc + "\n" + (builtins.readFile ./.bashrc);
+      initExtra = commonShell.assembleInitExtra ./.bashrc;
       profileExtra = builtins.readFile ./.profile;
     };
   };
