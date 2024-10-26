@@ -73,6 +73,7 @@
         bat
         htop
         jq
+        fd
         devenv
         wget
         neofetch
