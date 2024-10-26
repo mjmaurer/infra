@@ -37,6 +37,7 @@ in
       };
       shellGlobalAliases = {
         G = "| grep";
+        GC = "| grep -C 3";
       };
 
       defaultKeymap = "viins";

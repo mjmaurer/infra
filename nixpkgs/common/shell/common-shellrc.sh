@@ -43,12 +43,12 @@ cpf() {
     echo "No parent directory selected"
     return
   fi
-  local path=$(fd --strip-cwd-prefix . | fzf --header 'Select file or dir to copy')
-  if [ -z "$path" ]; then
+  local to_copy=$(fd --strip-cwd-prefix . | fzf --header 'Select file or dir to copy')
+  if [ -z "$to_copy" ]; then
     echo "No file to copy selected"
     return
   fi
-  cp -r "$path" "$parent/$1"
+  cp -r "$to_copy" "$parent/$1"
 }
 
 mk() {
