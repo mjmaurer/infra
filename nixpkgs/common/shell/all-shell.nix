@@ -9,7 +9,7 @@
       readOnly = true;
     };
     rc = lib.mkOption {
-      default = builtins.readFile ./common-shellrc.sh;
+      default = builtins.readFile ./all-shellrc.sh;
       type = lib.types.str;
       description = ''
         RC common to all shells. Should be compatible 

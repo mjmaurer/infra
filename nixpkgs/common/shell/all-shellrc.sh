@@ -9,6 +9,12 @@ if [ -n ~/.config/local_bash_env ]; then
     # Make sure to use 'export' in the local_bash_env file
     source ~/.config/local_bash_env
 fi
+# ------------------------------------ FZF ----------------------------------- #
+
+export FZF_ALT_C_COMMAND="" # Disable
+export FZF_COMPLETION_TRIGGER=","
+
+
 
 # --------------------------------- functions -------------------------------- #
 dexec() {

@@ -7,7 +7,7 @@
   # ];
 
   imports = [
-    ./common-shell.nix
+    ./shell/all-shell.nix
 
     ../modules/alacritty/alacritty.nix
     ../modules/continuedev/continuedev.nix
