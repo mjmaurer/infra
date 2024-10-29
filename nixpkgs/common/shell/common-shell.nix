@@ -107,6 +107,7 @@
         "gsf" = "git status $(_fzf_git_files)";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
+        "s" = "rgt";
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "la" = lib.mkDefault "ls -a --color=auto";

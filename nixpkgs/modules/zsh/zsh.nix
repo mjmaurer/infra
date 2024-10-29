@@ -38,6 +38,22 @@ in
       shellGlobalAliases = {
         G = "| grep";
         GC = "| grep -C 3";
+
+        # Ripgrep file types
+        gPY = "--glob '**/*.py'";
+        gNOT_PY = "--glob '!**/*.py'";
+        gJS = "--glob '**/*.{js,ts,tsx,jsx}'";
+        gNOT_JS = "--glob '!**/*.{js,ts,tsx,jsx}'";
+        gCONF = "--glob '**/*.{json,yaml,yml,toml,xml,conf,ini,cfg}'";
+        gNOT_CONF = "--glob '!**/*.{json,yaml,yml,toml,xml,conf,ini,cfg}'";
+        gJAVA = "--glob '**/*.java'";
+        gNOT_JAVA = "--glob '!**/*.java'";
+        gJSON = "--glob '**/*.json'";
+        gCSV = "--glob '**/*.csv'";
+        gR = "--glob '**/*.R'";
+        gNOT_R = "--glob '!**/*.R'";
+        gNIX = "--glob '**/*.nix'";
+        gNOT_NIX = "--glob '!**/*.nix'";
       };
 
       defaultKeymap = "viins";

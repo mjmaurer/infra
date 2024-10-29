@@ -83,7 +83,7 @@ rgf() {
     # 1. Search for text in files using Ripgrep
     # 2. Interactively narrow down the list using fzf
     # 3. Open the file in Vim
-    rg --color=always --line-number --no-heading --smart-case "${*:-}" |
+    rg --color=always --line-number --no-heading --smart-case ${*:-} |
     fzf --ansi \
         --color "hl:-1:underline,hl+:-1:underline:reverse" \
         --delimiter : \
@@ -98,9 +98,13 @@ rgi() {
     # 1. Search for text in files using Ripgrep
     # 2. Interactively restart Ripgrep with reload action
     # 3. Open the file in Vim
-    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
-    INITIAL_QUERY="${*:-}"
-    fzf --ansi --disabled --query "$INITIAL_QUERY" \
+    SEARCH_QUERY="$1"
+    shift
+    # Quote remaining arguments and preserve them
+    EXTRA_ARGS=$(printf "%q " "$@")
+
+    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case ${EXTRA_ARGS}"
+    fzf --ansi --disabled --query "$SEARCH_QUERY" \
         --bind "start:reload:$RG_PREFIX {q}" \
         --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
         --delimiter : \
@@ -112,9 +116,11 @@ rgi() {
 rgt() {
     # Switch between Ripgrep mode and fzf filtering mode (CTRL-T)
     rm -f /tmp/rg-fzf-{r,f}
-    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
-    INITIAL_QUERY="${*:-}"
-    fzf --ansi --disabled --query "$INITIAL_QUERY" \
+    SEARCH_QUERY="$1"
+    shift
+    EXTRA_ARGS=$(printf "%q " "$@")
+    RG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case ${EXTRA_ARGS}"
+    fzf --ansi --disabled --query "$SEARCH_QUERY" \
         --bind "start:reload:$RG_PREFIX {q}" \
         --bind "change:reload:sleep 0.1; $RG_PREFIX {q} || true" \
         --bind 'ctrl-t:transform:[[ ! $FZF_PROMPT =~ ripgrep ]] &&
