@@ -92,15 +92,20 @@ rename() {
     return
   fi
 
-  local new_name
-  read -e -i "$(basename "$file")" -p "New name: " new_name
-  if [ -z "$new_name" ]; then
-    echo "No new name provided"
+  local new_name=$(basename "$file")
+  if [ -n "$ZSH_VERSION" ]; then
+    vared -p "New name: " new_name
+  else
+    read -p "New name: " -e -i "$new_name" new_name
+  fi
+
+  if [ -z "$new_name" ] || [ "$new_name" = "$(basename "$file")" ]; then
+    echo "No new name provided or name unchanged"
     return
   fi
 
-  mv "$file" "$new_name"
-  echo "Make sure to rename the file elsewhere! Consider using VSCode for this."
+  mv "$file" "$(dirname "$file")/$new_name"
+  echo "Done. Make sure to rename the file elsewhere! Consider using VSCode for this."
 }
 
 # These are needed because fzf uses them to generate completions (it can't use FZF_DEFAULT_COMMAND)
