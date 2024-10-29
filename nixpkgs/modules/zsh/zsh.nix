@@ -72,6 +72,9 @@ in
           echo "WARNING: nix-daemon.sh not found"
         fi
 
+        source ${./aichat.zsh}
+        bindkey '^G^G' _aichat_zsh
+
         # Load theme
         # fpath+=(${pkgs.zsh-powerlevel10k}/share/zsh/site-functions)
         # autoload -U promptinit; promptinit
