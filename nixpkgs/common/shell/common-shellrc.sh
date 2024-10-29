@@ -70,6 +70,39 @@ mk() {
   fi
 }
 
+mvf() {
+  local file=$(fd --strip-cwd-prefix . | fzf --header 'Select file or dir to move')
+  if [ -z "$file" ]; then
+    echo "No file or dir selected"
+    return
+  fi
+
+  local new_dir=$(fd --type d --strip-cwd-prefix . | fzf --header 'Select new parent directory')
+  if [ -z "$new_dir" ]; then
+    echo "No new parent directory selected"
+    return
+  fi
+  mv "$file" "$new_dir"
+}
+
+rename() {
+  local file=$(fd --strip-cwd-prefix . | fzf --header 'Select file or dir to rename')
+  if [ -z "$file" ]; then
+    echo "No file or dir selected"
+    return
+  fi
+
+  local new_name
+  read -e -i "$(basename "$file")" -p "New name: " new_name
+  if [ -z "$new_name" ]; then
+    echo "No new name provided"
+    return
+  fi
+
+  mv "$file" "$new_name"
+  echo "Make sure to rename the file elsewhere! Consider using VSCode for this."
+}
+
 # These are needed because fzf uses them to generate completions (it can't use FZF_DEFAULT_COMMAND)
 _fzf_compgen_dir() {
   fd --type d . "$1"
