@@ -94,9 +94,9 @@ rename() {
 
   local new_name=$(basename "$file")
   if [ -n "$ZSH_VERSION" ]; then
-    vared -p "New name: " new_name
+    vared -p "New name (sure you don't want to use IDE?): " new_name
   else
-    read -p "New name: " -e -i "$new_name" new_name
+    read -p "New name (sure you don't want to use IDE?): " -e -i "$new_name" new_name
   fi
 
   if [ -z "$new_name" ] || [ "$new_name" = "$(basename "$file")" ]; then
@@ -105,7 +105,6 @@ rename() {
   fi
 
   mv "$file" "$(dirname "$file")/$new_name"
-  echo "Done. Make sure to rename the file elsewhere! Consider using VSCode for this."
 }
 
 # These are needed because fzf uses them to generate completions (it can't use FZF_DEFAULT_COMMAND)
