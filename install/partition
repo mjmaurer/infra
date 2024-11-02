@@ -1,0 +1,67 @@
+#!/usr/bin/env bash
+# Usage: partition --device /dev/diskname --bios ([l]egacy|[u]efi)
+set -e
+
+while [[ "$#" -gt 0 ]]; do
+	case $1 in
+		-b|--bios) BIOS="$2"; shift ;;
+		-d|--device) DISK="$2"; shift ;;
+		*) echo "Unknown paramter passed: $1"; exit 1 ;;
+	esac
+	shift
+done
+
+case $BIOS in
+  	l|legacy) LEGACY=true ;;
+	u|uefi) LEGACY=false ;;
+  	*) echo "The bios flag must be one of [l]egacy or [u]efi"; exit 1 ;;
+esac
+
+echo "DEVICE = $DISK"
+echo "BIOS = $BIOS"
+
+if [ "$LEGACY" = true ]; then
+	parted $DISK -- mklabel msdos 
+	parted -s $DISK -- mkpart primary fat32 1MiB 512MiB
+else
+	parted $DISK -- mklabel gpt
+	parted -s $DISK -- mkpart ESP fat32 1MiB 512MiB
+	parted -s $DISK -- set 1 boot on
+fi
+parted -s $DISK -- mkpart primary 512MiB 100%
+
+export BOOT_PARTITION=$(lsblk $DISK -r -p -n --sort NAME | sed '2q;d' | awk '{print $1}')
+export ROOT_PARTITION=$(lsblk $DISK -r -p -n --sort NAME | sed '3q;d' | awk '{print $1}')
+export CRYPT_DEVICE="crypt-root"
+
+echo "FORMATTING..."
+echo "BOOT PARTITION = $BOOT_PARTITION"
+echo "ROOT PARTITION = $ROOT_PARTITION"
+echo "CRYPT PARTITION = /dev/mapper/$CRYPT_DEVICE"
+
+mkfs.vfat -F32 -n BOOT $BOOT_PARTITION
+
+cryptsetup --pbkdf argon2i -s 512 --use-random luksFormat $ROOT_PARTITION
+cryptsetup luksOpen $ROOT_PARTITION $CRYPT_DEVICE
+
+zpool create -o ashift=12 -O mountpoint=none -O normalization=formD -O compression=lz4 rpool /dev/mapper/$CRYPT_DEVICE
+zfs create -o mountpoint=legacy rpool/root
+zfs create -o mountpoint=legacy rpool/home
+zfs create -o mountpoint=legacy rpool/nix
+zfs create -o mountpoint=legacy rpool/var
+
+echo "MOUNTING..."
+
+mkdir -p /mnt
+mount -t zfs rpool/root /mnt
+mkdir /mnt/{boot,home,nix,var}
+mount -t zfs rpool/home /mnt/home
+mount -t zfs rpool/nix  /mnt/nix
+mount -t zfs rpool/var  /mnt/var
+
+mount $BOOT_PARTITION /mnt/boot
+
+echo "GENERATING..."
+
+git clone https://github.com/mjmaurer/infra /mnt/etc/nixos
+nixos-generate-config --show-hardware-config --root /mnt >> /mnt/etc/nixos/hardware-configuration.nix
