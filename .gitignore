@@ -7,6 +7,7 @@ vault.yaml
 *.log
 dev
 .aider*
+NOTES.md
 
 dev
 
