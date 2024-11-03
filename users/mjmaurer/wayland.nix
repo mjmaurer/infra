@@ -28,7 +28,7 @@ in
       };
       output = {
         "*" = {
-          bg = "${../../artwork/fractal.png} center";
+          bg = "${../../artwork/lakelucerne.jpeg} center";
         };
       };
       colors.focused = {
@@ -41,37 +41,37 @@ in
       window.border = 2;
       inherit modifier;
       keybindings = {
-        "${modifier}+d" = "exec rofi -show run | xargs swaymsg exec --";
-        "${modifier}+c" = "kill";
-        "${modifier}+Shift+r" = "reload";
-        "${modifier}+f" = "fullscreen";
-        "${modifier}+Return" = "exec alacritty";
-        "${modifier}+w" = "exec firefox";
-        "${modifier}+p" = "mode power";
-        "${modifier}+n" = "exec makoctl dismiss";
-        "${modifier}+Shift+n" = "exec makoctl dismiss -a";
+        # "${modifier}+d" = "exec rofi -show run | xargs swaymsg exec --";
+        # "${modifier}+c" = "kill";
+        # "${modifier}+Shift+r" = "reload";
+        # "${modifier}+f" = "fullscreen";
+        # "${modifier}+Return" = "exec alacritty";
+        # "${modifier}+w" = "exec firefox";
+        # "${modifier}+p" = "mode power";
+        # "${modifier}+n" = "exec makoctl dismiss";
+        # "${modifier}+Shift+n" = "exec makoctl dismiss -a";
 
-        "${modifier}+Ampersand" = "workspace number 1";
-        "${modifier}+BracketLeft" = "workspace number 2";
-        "${modifier}+BraceLeft" = "workspace number 3";
-        "${modifier}+BraceRight" = "workspace number 4";
-        "${modifier}+ParenLeft" = "workspace number 5";
-        "${modifier}+Equal" = "workspace number 6";
-        "${modifier}+Asterisk" = "workspace number 7";
-        "${modifier}+ParenRight" = "workspace number 8";
-        "${modifier}+Plus" = "workspace number 9";
+        # "${modifier}+Ampersand" = "workspace number 1";
+        # "${modifier}+BracketLeft" = "workspace number 2";
+        # "${modifier}+BraceLeft" = "workspace number 3";
+        # "${modifier}+BraceRight" = "workspace number 4";
+        # "${modifier}+ParenLeft" = "workspace number 5";
+        # "${modifier}+Equal" = "workspace number 6";
+        # "${modifier}+Asterisk" = "workspace number 7";
+        # "${modifier}+ParenRight" = "workspace number 8";
+        # "${modifier}+Plus" = "workspace number 9";
 
-        "${modifier}+Shift+Ampersand" = "move container to workspace number 1, workspace number 1";
-        "${modifier}+Shift+BracketLeft" = "move container to workspace number 2, workspace number 2";
-        "${modifier}+Shift+BraceLeft" = "move container to workspace number 3, workspace number 3";
-        "${modifier}+Shift+BraceRight" = "move container to workspace number 4, workspace number 4";
-        "${modifier}+Shift+ParenLeft" = "move container to workspace number 5, workspace number 5";
-        "${modifier}+Shift+Equal" = "move container to workspace number 6, workspace number 6";
-        "${modifier}+Shift+Asterisk" = "move container to workspace number 7, workspace number 7";
-        "${modifier}+Shift+ParenRight" = "move container to workspace number 8, workspace number 8";
-        "${modifier}+Shift+Plus" = "move container to workspace number 9, workspace number 9";
-        "${modifier}+Shift+s" = "move scratchpad";
-        "${modifier}+s" = "scratchpad show";
+        # "${modifier}+Shift+Ampersand" = "move container to workspace number 1, workspace number 1";
+        # "${modifier}+Shift+BracketLeft" = "move container to workspace number 2, workspace number 2";
+        # "${modifier}+Shift+BraceLeft" = "move container to workspace number 3, workspace number 3";
+        # "${modifier}+Shift+BraceRight" = "move container to workspace number 4, workspace number 4";
+        # "${modifier}+Shift+ParenLeft" = "move container to workspace number 5, workspace number 5";
+        # "${modifier}+Shift+Equal" = "move container to workspace number 6, workspace number 6";
+        # "${modifier}+Shift+Asterisk" = "move container to workspace number 7, workspace number 7";
+        # "${modifier}+Shift+ParenRight" = "move container to workspace number 8, workspace number 8";
+        # "${modifier}+Shift+Plus" = "move container to workspace number 9, workspace number 9";
+        # "${modifier}+Shift+s" = "move scratchpad";
+        # "${modifier}+s" = "scratchpad show";
       };
       workspaceAutoBackAndForth = true;
       modes = {
@@ -90,16 +90,13 @@ in
     };
   };
   home.packages = with pkgs; [
-    xwayland
-    swaylock-effects
-    wl-clipboard
-    rofi
-    waybar
-    signal-desktop
-    spotify
-    discord
-    libnotify
-    slurp
+    xwayland # X11 compatibility layer for Wayland
+    swaylock-effects # Screen locker for Sway with additional effects
+    wl-clipboard # Command-line clipboard utilities for Wayland
+    rofi # Application launcher and window switcher
+    waybar # Highly customizable Wayland bar
+    libnotify # Library for desktop notifications
+    slurp # Select a region in Wayland compositors
     grim # wayland screenshot application that works
     imv # wayland image viewer that works
     pdfpc # pdf presentation viewer run with -s -S
@@ -241,12 +238,17 @@ in
   services.swayidle = {
     enable = true;
     timeouts = [
+      # After 5 minutes of inactivity:
+      # Lock the screen with swaylock (force lock even if there are inhibitors)
       {
-        timeout = 300;
+        timeout = 300; # seconds
         command = "${pkgs.swaylock}/bin/swaylock -f";
       }
+      # After 10 minutes of inactivity:
+      # Turn off all displays using DPMS
+      # When activity is detected, turn displays back on
       {
-        timeout = 600;
+        timeout = 600; # seconds
         command = "${pkgs.sway}/bin/swaymsg 'output * dpms off'";
         resumeCommand = "${pkgs.sway}/bin/swaymsg 'output * dpms on'";
       }

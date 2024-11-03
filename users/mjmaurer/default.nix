@@ -1,5 +1,6 @@
 { nix-colors }: { pkgs, config, ... }:
-{ imports = [
+{
+  imports = [
     nix-colors.homeManagerModule
     ./programs.nix
     ./wayland.nix
