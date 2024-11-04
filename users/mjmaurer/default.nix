@@ -2,9 +2,10 @@
 {
   imports = [
     nix-colors.homeManagerModule
-    ./programs.nix
+    ./common/programs.nix
     ./wayland.nix
   ];
   colorScheme = nix-colors.colorSchemes.stella;
-  home.stateVersion = "23.11";
+
+  home.stateVersion = "24.05";
 }

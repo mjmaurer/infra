@@ -49,7 +49,6 @@
   home =
     {
       username = "mjmaurer";
-      stateVersion = "22.05";
       file = {
         ".config/nix/nix.conf" = {
           text = ''
@@ -71,8 +70,6 @@
         gdown
         nixfmt
         bat
-        htop
-        jq
         fd
         devenv
         wget
@@ -84,10 +81,23 @@
         gh
         p7zip
         thefuck
+        tldr
       ];
     };
 
   programs = {
+    htop.enable = true;
+    jq.enable = true;
+    # zathura.enable = true;
+    lsd = {
+      enable = true;
+      enableAliases = true;
+    };
+    direnv = {
+      enable = true;
+      enableZshIntegration = true;
+      nix-direnv.enable = true;
+    };
     fzf = {
       enable = true;
       enableBashIntegration = true;
@@ -119,6 +129,9 @@
         init.defaultBranch = "main";
         core.editor = "nvim";
         credential.helper = "store";
+        pull.rebase = "false";
+        alias.merge = "merge --no-edit"; # no editor popup on merge
+        push.autoSetupRemote = "true";
       };
     };
   };

@@ -6,7 +6,7 @@
     # Default to the nixos-unstable branch:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # Latest stable branch of nixpkgs, used for version rollback:
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     # You can also use a specific git commit hash to lock the version:
     # nixpkgs-fd40cef8d.url = "github:nixos/nixpkgs/fd40cef8d797670e203a27a91e4b8e6decf0b90c";
 
@@ -65,6 +65,7 @@
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
+              # Packages will be installed to /etc/profiles:
               home-manager.useUserPackages = true;
               home-manager.users.mjmaurer = import ./users/mjmaurer {
                 inherit nix-colors;
