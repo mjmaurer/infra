@@ -3,7 +3,7 @@
 {
   imports = [ ../common/linux.nix ];
 
-  home.username = pkgs.lib.mkForce "ubuntu";
+  home.username = "ubuntu";
   home.stateVersion = "22.05";
 
   modules.commonShell = {

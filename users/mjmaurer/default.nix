@@ -1,8 +1,8 @@
 { nix-colors }: { pkgs, config, ... }:
 {
   imports = [
+    ./common/nixos.nix
     nix-colors.homeManagerModule
-    ./common/programs.nix
     ./wayland.nix
   ];
   colorScheme = nix-colors.colorSchemes.stella;
