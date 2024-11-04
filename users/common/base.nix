@@ -34,8 +34,6 @@
       enable = true;
       justConfig = true;
     };
-
-
   };
 
   programs.home-manager.enable = true;
@@ -48,7 +46,8 @@
 
   home =
     {
-      username = "mjmaurer";
+      username = lib.mkDefault "mjmaurer";
+      homeDirectory = lib.mkDefault "/home/${config.home.username}";
       file = {
         ".config/nix/nix.conf" = {
           text = ''
