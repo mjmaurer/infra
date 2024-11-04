@@ -1,12 +1,10 @@
-# Nixpkgs / Home-Manager
+# Home Manager Configuration
 
-This largely assumes a single user, default `mjmaurer7`, per machine.
+This directory contains Home Manager configurations for managing user-specific packages and dotfiles.
 
-## Overview
+## Directory Structure
 
-- `machines` - Host-specific configuration
-- `common` - Provides common imports for a given host
-  - `base.nix` - Common for every host
-  - `{linux,mac,wsl}.nix` - Common for given OS
-  - `shell/` - Common shell configuration. Provided as a module that other modules can configure / import.
-- `modules` - Modules that can optionally be enabled for a given host. Some modules install the actual package, and others just provide configuration for software that is installed separate from Nix.
+- `users/`: Main entry point for Home Manager configuration on NixOS systems.
+- `machines/`: Entry point for Home Manager configuration on non-NixOS systems.
+- `modules/`: Shared modules for Home Manager configurations.
+- `common/`: Common configurations for all systems, shells, etc.
