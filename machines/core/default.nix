@@ -1,5 +1,7 @@
 { config, pkgs, lib, ... }:
 {
+  system.stateVersion = "24.05";
+
   imports = [
     ./hardware-configuration.nix
   ];
@@ -96,5 +98,4 @@
     timeZone = "America/New_York";
   };
 
-  system.stateVersion = "22.05";
 }

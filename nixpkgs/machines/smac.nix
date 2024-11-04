@@ -4,6 +4,8 @@
   imports = [ ../common/mac.nix ];
 
   home.username = pkgs.lib.mkForce "mmaurer7";
+  home.stateVersion = "22.05";
+
 
   services.ssh-agent.enable = false;
 

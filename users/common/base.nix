@@ -54,7 +54,6 @@
   home =
     {
       username = "mjmaurer";
-      stateVersion = "22.05";
       file = {
         ".config/nix/nix.conf" = {
           text = ''
@@ -86,8 +85,6 @@
         yt-dlp
         gdown
         bat
-        htop
-        jq
         fd
         tree
         devenv
@@ -98,6 +95,7 @@
         p7zip
         thefuck
         awscli2
+        tldr
       ];
     };
 
@@ -110,7 +108,13 @@
         [global]
         warn_timeout = "-1s"
       '';
-      nix-direnv.enable = true;
+    };
+    htop.enable = true;
+    jq.enable = true;
+    # zathura.enable = true;
+    lsd = {
+      enable = true;
+      enableAliases = true;
     };
     fzf = {
       enable = true;
