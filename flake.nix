@@ -43,6 +43,8 @@
       };
     in
     {
+      # TODO: expose homemanagermodules and nixosmodules in flake:
+      # https://discourse.nixos.org/t/nix-flake-wrapping-a-nix-module-using-home-manager/39162/4
       nixosConfigurations = {
         core = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
@@ -52,79 +54,34 @@
             # Base
             ./system
             # ./system/steam.nix
+            ./system/ssh.nix # For headless
 
             # Hardware
-            ./machines/neptune
+            ./machines/core
             nixpkgs.nixosModules.notDetected
 
             # Secrets
             sops-nix.nixosModules.sops
             ./sops
-
-            # Home Manager
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              # Packages will be installed to /etc/profiles:
-              home-manager.useUserPackages = true;
-              home-manager.users.mjmaurer = import ./users/mjmaurer {
-                inherit nix-colors;
-              };
-            }
           ];
         };
-        neptune = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
+      };
+      # Manage home configurations as a separate flake.
+      # This allows for (1) keeping NixOS / non-NixOS the same and
+      # (2) allowing for quicker home manager updates.
+      # Found this user with same motivation: https://discourse.nixos.org/t/linking-a-nixosconfiguration-to-a-given-homeconfiguration/19737
+      # Their implementation: https://github.com/diego-vicente/dotfiles/blob/6c47284868f9e99483da34257144bd03ae5edbbe/README.md
+      # Better implementation: https://github.com/Misterio77/nix-config/blob/main/flake.nix
+      # TODO Could in the future:
+      # - bring all home-manager/machines into this flake
+      # - setup common 'hostless' home-manager modules for each OS to avoid needing to create a machine-specific entry (would need a flake to be able to accept user / hostname inputs)
+      # - also add it as a nixos module for nixos machines (so the initial builds work fine). Unclear if this is well supported
+      homeConfigurations = {
+        "mjmaurer@core" = nixpkgs.lib.dvm.buildCustomHomeConfig {
           modules = [
-            # Base
-            ./system
-            ./system/steam.nix
-
-            # Hardware
-            ./machines/neptune
-            nixpkgs.nixosModules.notDetected
-
-            # Secrets
-            sops-nix.nixosModules.sops
-            ./sops
-
-            # Home Manager
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.mjmaurer = import ./users/mjmaurer {
-                inherit nix-colors;
-              };
-            }
+            ./home-manager/users/mjmaurer
           ];
         };
-        jupiter = nixpkgs.lib.nixosSystem {
-          system = "x86_64-linux";
-          modules = [
-            # Base
-            ./system
-            ./system/sway.nix
-
-            # Hardware
-            machines/jupiter
-
-            # Secrets
-            sops-nix.nixosModules.sops
-            ./sops
-
-            # Home Manager
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.mjmaurer = import ./users/mjmaurer {
-                inherit nix-colors;
-              };
-            }
-          ];
-        };
-
       };
     };
 }
