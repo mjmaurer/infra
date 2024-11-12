@@ -146,12 +146,16 @@ esc = 'mode main'
 # alt-shift-s = 'layout v_accordion'               # 'layout stacking' in i3
 # alt-shift-w = 'layout h_accordion'               # 'layout tabbed' in i3
 
-t = ['layout tiles accordion', 'mode main']
+t = ['layout tiles v_accordion', 'mode main']
 # 'layout toggle split' in i3
 w = ['layout tiles horizontal vertical', 'mode main']
 f = "flatten-workspace-tree"
 # 'floating toggle' in i3
 c = ['layout floating tiling', 'mode main']
+j = 'join-with down'
+k = 'join-with up'
+l = 'join-with right'
+h = 'join-with left'
 
 enter = 'mode main'
 esc = 'mode main'
