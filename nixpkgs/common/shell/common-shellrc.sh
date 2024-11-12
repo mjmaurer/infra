@@ -12,13 +12,21 @@ fi
 # ------------------------------------ FD ----------------------------------- #
 
 fd() {
-  command fd $FD_DEFAULT_OPTS "$@"
+  if [ -n "$ZSH_VERSION" ]; then
+    command fd ${=FD_DEFAULT_OPTS} "$@"
+  else
+    command fd ${FD_DEFAULT_OPTS} "$@"
+  fi
 }
 
 # ------------------------------------ RG ----------------------------------- #
 
 rg() {
-  command rg $RG_DEFAULT_OPTS "$@"
+  if [ -n "$ZSH_VERSION" ]; then
+    command rg ${=RG_DEFAULT_OPTS} "$@"
+  else
+    command rg ${RG_DEFAULT_OPTS} "$@"
+  fi
 }
 
 # ------------------------------------ FZF ----------------------------------- #
