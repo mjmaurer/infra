@@ -1,5 +1,12 @@
-TODO: remove smac stuff and maybe get rid of home.nix. not sure if we removed that if install would work though. Maybe get rename common.nix to home.nix
+# Nixpkgs / Home-Manager
 
-# See install.sh
+This largely assumes a single user, default `mjmaurer7`, per machine.
 
-# Inspiration: https://github.com/yrashk/nix-home
+## Overview
+
+- `machines` - Host-specific configuration
+- `common` - Provides common imports for a given host
+  - `base.nix` - Common for every host
+  - `{linux,mac,wsl}.nix` - Common for given OS
+  - `shell/` - Common shell configuration. Provided as a module that other modules can configure / import.
+- `modules` - Modules that can optionally be enabled for a given host. Some modules install the actual package, and others just provide configuration for software that is installed separate from Nix.
