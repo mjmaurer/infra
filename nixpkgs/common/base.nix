@@ -62,26 +62,33 @@
         # Fonts
         meslo-lgs-nf
 
+        # Nix
         nil
         nixpkgs-fmt
+        nix-prefetch-git
+        nix-search-cli
+        nixfmt
+        vulnix
+
+        # Git
+        git-lfs
+        gh
+
+        # Other
         ripgrep
         rclone
-        vulnix
         yt-dlp
         gdown
-        nixfmt
         bat
         htop
         jq
         fd
+        tree
         devenv
         wget
         neofetch
         unzip
         speedtest-cli
-        nix-prefetch-git
-        git-lfs
-        gh
         p7zip
         thefuck
       ];
