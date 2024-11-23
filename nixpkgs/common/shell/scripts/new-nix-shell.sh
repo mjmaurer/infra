@@ -28,14 +28,25 @@ fi
 
 # If no argument provided, show selection menu
 if [ -z "$1" ]; then
-    echo "Available templates:"
-    select template in "${templates[@]}"; do
-        if [ -n "$template.nix" ]; then
-            selected=$template.nix
-            break
+
+    echo "Select template by number:"
+    templates_array=($(basename -a "${templates[@]}"))
+    select template in "${templates_array[@]}"; do
+        if [ -n "$template" ]; then
+            selected="$TEMPLATE_DIR/$template.nix"
+            if [ -f "$selected" ]; then
+                break
+            else
+                selected="$TEMPLATE_DIR/$template"
+                if [ -f "$selected" ]; then
+                    break
+                fi
+            fi
         fi
         echo "Invalid selection"
     done
+    echo "Selected: $selected"
+
 else
     # Use provided argument
     selected="$TEMPLATE_DIR/$1.nix"
