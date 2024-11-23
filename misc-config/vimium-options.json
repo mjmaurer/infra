@@ -1,0 +1,65 @@
+{
+  "keyMappings": "# Insert your preferred key mappings here.\nmap <space>o Vomnibar.activateTabSelection\nmap <space>p Vomnibar.activate\nmap <space>P Vomnibar.activateInNewTab\nmap H previousTab\nmap L nextTab\nmap <space>j goBack\nmap <space>k goForward",
+  "newTabUrl": "google.com",
+  "grabBackFocus": true,
+  "searchEngines": "w: https://www.wikipedia.org/w/index.php?title=Special:Search&search=%s Wikipedia\nd: https://drive.google.com/drive/search?q=%s Drive\ndoc: https://docs.google.com/document/u/0/?q=%s Docs\ng: https://mail.google.com/mail/u/0/#search/%s Gmail\ns: https://open.spotify.com/search/results/%s Spotify\np: https://photos.google.com/search/%s Photos\ntix: https://www.songkick.com/search?utf8=%E2%9C%93&type=initial&query=%s SongKick\n\n# More examples.\n#\n# (Vimium supports search completion Wikipedia, as\n# above, and for these.)\n#\n# g: https://www.google.com/search?q=%s Google\n# l: https://www.google.com/search?q=%s&btnI I'm feeling lucky...\ny: https://www.youtube.com/results?search_query=%s Youtube\ngm: https://www.google.com/maps?q=%s Google maps\n# b: https://www.bing.com/search?q=%s Bing\n# d: https://duckduckgo.com/?q=%s DuckDuckGo\na: https://smile.amazon.com/s?k=asdf Amazon\n# qw: https://www.qwant.com/?q=%s Qwant",
+  "settingsVersion": "2.1.2",
+  "exclusionRules": [
+    {
+      "passKeys": "",
+      "pattern": "https?://remotedesktop.google.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://docs.google.com/document/d/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "about:blank*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://airtable.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://docs.google.com/*"
+    },
+    {
+      "passKeys": "xyz",
+      "pattern": "https?://localhost:8081/*"
+    },
+    {
+      "passKeys": "*",
+      "pattern": "https?://192.168.192.1:8080/*"
+    },
+    {
+      "passKeys": "xyzts",
+      "pattern": "https?://192.168.192.1:8080/*"
+    },
+    {
+      "passKeys": "xyzsc",
+      "pattern": "https?://192.168.86.25:8080/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://cloud.digitalocean.com/*"
+    },
+    {
+      "passKeys": "asdfghjklpwetyuo",
+      "pattern": "https?://localhost:5000/*"
+    },
+    {
+      "passKeys": "*",
+      "pattern": "https?://dotpiano.com/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://app.coderpad.io/*"
+    },
+    {
+      "passKeys": "",
+      "pattern": "https?://leetcode.com/*"
+    }
+  ]
+}
