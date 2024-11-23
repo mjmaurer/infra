@@ -20,6 +20,8 @@
       shellAliases = {
         "la" = "ls -A -G --color=auto";
         "ls" = "ls -G --color=auto";
+        "code" = "open -a 'Visual Studio Code'";
+        "cursor" = "open -a 'Cursor'";
       };
     };
   };
