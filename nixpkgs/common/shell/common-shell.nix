@@ -105,6 +105,7 @@
         "gac" = "gaf && gcai"; # gcai is defined in git-commit-ai.sh
         "gs" = "git status";
         "gsf" = "git status $(_fzf_git_files)";
+        "poe" = "poetry run poe";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "s" = "rgt";
