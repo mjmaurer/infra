@@ -1,4 +1,7 @@
-{ lib, config, ... }:
+{ pkgs, lib, config, ... }:
+let
+  inherit (config.home) packages;
+in
 {
   options.modules.commonShell = {
     machineName = lib.mkOption {
@@ -75,11 +78,19 @@
         source = ./local_bash_env.example;
       };
     };
+    xdg.dataFile = {
+      "nix-shell-templates/python.nix" = {
+        source = ../data/python.nix;
+      };
+    };
+    home.packages = [
+      (pkgs.writeScriptBin "new-nix-shell" (builtins.readFile ./scripts/new-nix-shell.sh))
+    ];
     modules.commonShell = {
       initExtraFirst = ''
         # --------------------------------- FZF-Git --------------------------------
-        source ${./fzf-git.sh}
-        source ${./fzf-docker.sh}
+        source ${./initExtra/fzf-git.sh}
+        source ${./initExtra/fzf-docker.sh}
       '';
       sessionVariables = {
         EDITOR = "nvim";
@@ -90,13 +101,13 @@
         PLEX_WEB_PORT = 32400;
         JELLYFIN_WEB_PORT = 8096;
         MACHINE_NAME = config.modules.commonShell.machineName;
-         # .git would otherwise be hidden
+        # .git would otherwise be hidden
         FD_DEFAULT_OPTS = "--hidden --follow --exclude .git";
         RG_DEFAULT_OPTS = "--color=always --smart-case --hidden --glob=!.git/";
       };
       shellAliases = {
         ".." = "cd ..";
-        "cat" = "bat";
+        "cat" = "bat --plain --color=always";
         "gc" = "git commit -v";
         "gcs" = "git commit -v --gpg-sign";
         "ga" = "git add $(_fzf_git_files)";
@@ -105,12 +116,15 @@
         "gac" = "gaf && gcai"; # gcai is defined in git-commit-ai.sh
         "gs" = "git status";
         "gsf" = "git status $(_fzf_git_files)";
+        "gle" = "git_local_exclude";
         "poe" = "poetry run poe";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "s" = "rgt";
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
+        "nns" = "new-nix-shell";
+        "nps" = "nix-search";
         "la" = lib.mkDefault "ls -a --color=auto";
         "ls" = lib.mkDefault "ls --color=auto";
         "hmswitchnoload" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
