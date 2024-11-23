@@ -112,8 +112,12 @@ mkf() {
     fi
   fi
   # Add trailing slash if no extension and doesn't already end in slash
-  if [[ "$name" != *"."* ]] && [[ "$name" != */ ]]; then
+  if [[ "$name" != *.* ]] && [[ "$name" != */ ]]; then
     name="${name}/"
+  fi
+  if [ -z "$name" ] || [ "$name" = "/" ]; then
+    echo "Name cannot be empty or a single slash"
+    return 1
   fi
   # Creates a file or directory given a name. Uses FZF to select the parent directory.
   # It determines whether to create a file or directory based on whether the name ends with a slash.
@@ -122,13 +126,13 @@ mkf() {
     echo "No directory selected"
     return
   fi
-  if [[ "$1" == */ ]]; then
-    mkdir -p "$dir/$1"
+  if [[ "$name" == */ ]]; then
+    mkdir -p "$dir/$name"
   else
-    touch "$dir/$1"
+    touch "$dir/$name"
     # Hacky way to detect if VSCode is running
     if [ -n "$VSCODE_GIT_ASKPASS_MAIN" ]; then
-      $VSCODE --goto "$dir/$1"
+      $VSCODE --goto "$dir/$name"
     fi
   fi
 }

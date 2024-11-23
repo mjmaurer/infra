@@ -79,8 +79,8 @@ in
       };
     };
     xdg.dataFile = {
-      "nix-shell-templates/python.nix" = {
-        source = ../data/python.nix;
+      "nix-shell-templates/" = {
+        source = ../data;
       };
     };
     home.packages = [
@@ -127,6 +127,11 @@ in
         "nps" = "nix-search";
         "la" = lib.mkDefault "ls -a --color=auto";
         "ls" = lib.mkDefault "ls --color=auto";
+        "py" = "python";
+        "pyvenv" = "python -m venv";
+        "pyva" = "source .venv/bin/activate";
+        "pyda" = "deactivate";
+        "pipr" = "pip install -r ";
         "hmswitchnoload" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
         "dtail" = "docker logs -tf --tail='50'";
         "dstop" = "docker stop `docker ps -aq`";

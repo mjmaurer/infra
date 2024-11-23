@@ -58,5 +58,6 @@ fi
 
 # Copy selected template to shell.nix
 cp "$selected" shell.nix
+chmod u+w shell.nix
 echo "Created shell.nix from template $(basename "$selected")"
 echo "You can exclude it from git locally with: gle (git_local_exclude)"
