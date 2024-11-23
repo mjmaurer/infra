@@ -7,7 +7,7 @@ in pkgs.mkShell {
     ];
     shellHook =
     ''
-        source ./git-init.sh;
+        # source ./git-init.sh;
         alias aplay="bash ~/infra/playbook.sh ";
         alias aencrypt="ansible-vault encrypt vault.yaml --output vault/vault.yaml";
         alias adecrypt="ansible-vault decrypt vault/vault.yaml --output vault.yaml";
