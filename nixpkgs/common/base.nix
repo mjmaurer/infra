@@ -77,6 +77,7 @@
         # Other
         ripgrep
         rclone
+        glow
         yt-dlp
         gdown
         bat
