@@ -9,5 +9,8 @@
 
   modules.commonShell = {
     machineName = "smac";
+    dirHashes = {
+      box = "$HOME/Library/CloudStorage/Box-Box/";
+    };
   };
 }

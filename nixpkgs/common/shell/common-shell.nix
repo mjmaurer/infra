@@ -19,6 +19,15 @@ in
         RC common to all shells. Should be compatible 
       '';
     };
+    dirHashes = lib.mkOption {
+      default = { };
+      type = lib.types.attrs;
+      example = { code = "$HOME/code"; };
+      description = ''
+        A set of directory hashes.
+        Only works for zsh right now.
+      '';
+    };
     sessionVariables = lib.mkOption {
       default = { };
       type = lib.types.attrs;

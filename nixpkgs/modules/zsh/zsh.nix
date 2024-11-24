@@ -27,6 +27,7 @@ in
       autosuggestion.enable = false;
       syntaxHighlighting.enable = true;
 
+      dirHashes = commonShell.dirHashes // { };
       sessionVariables = commonShell.sessionVariables // { };
       shellAliases = commonShell.shellAliases // {
         "hig" = "history 0 | grep";
@@ -57,11 +58,10 @@ in
       };
 
       defaultKeymap = "viins";
-      dirHashes = {
-        # cd ~code
-        # "code" = "$HOME/code";
-      };
       initExtraFirst = ''
+        # Show hidden files without needing to type .
+        setopt globdots
+
         VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
         VI_MODE_SET_CURSOR=true
         ZSH_AUTOSUGGEST_STRATEGY=(history)
