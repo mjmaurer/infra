@@ -1,4 +1,6 @@
 " https://meleu.dev/notes/obcommand-list/
+" Alt-Cmd-i
+" Type `:obcommand`
 
 " Yank to system clipboard
 set clipboard=unnamed
@@ -25,14 +27,20 @@ nmap <Space>/ :gfind<CR>
 exmap daily obcommand daily-notes 
 nmap <Space>d :daily<CR>
 
+" Go to next heading 
+exmap nextHeading obcommand obsidian-editor-shortcuts:goToNextHeading
+nmap J :nextHeading<CR>
+exmap prevHeading obcommand obsidian-editor-shortcuts:goToPrevHeading
+nmap K :prevHeading<CR>
+
 " Go back and forward 
 exmap back obcommand app:go-back
-nmap H :back<CR>
+nmap <Space>j :back<CR>
 exmap forward obcommand app:go-forward
-nmap L :forward<CR>
+nmap <Space>k :forward<CR>
 
 " Tab navigation
 exmap tabnext obcommand workspace:next-tab
-nmap J :tabnext<CR>
+nmap H :tabnext<CR>
 exmap tabprev obcommand workspace:previous-tab
-nmap K :tabprev<CR>
+nmap L :tabprev<CR>

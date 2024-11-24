@@ -28,5 +28,9 @@ in
         source = ./.obsidian.vimrc;
       };
     };
+
+    modules.commonShell.dirHashes = {
+      obs = "$HOME/${cfg.vaultPath}";
+    };
   };
 }
