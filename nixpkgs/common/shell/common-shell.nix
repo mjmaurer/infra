@@ -88,7 +88,7 @@ in
       };
     };
     xdg.dataFile = {
-      "nix-shell-templates/" = {
+      "nix-templates/" = {
         source = ../data;
       };
     };
@@ -133,6 +133,7 @@ in
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "nns" = "new-nix-shell";
+        "nnf" = "new-nix-flake";
         "nps" = "nix-search";
         "la" = lib.mkDefault "ls -a --color=auto";
         "ls" = lib.mkDefault "ls --color=auto";

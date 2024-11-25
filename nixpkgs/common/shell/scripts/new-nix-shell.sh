@@ -11,7 +11,7 @@ if [ -f "shell.nix" ]; then
     fi
 fi
 
-TEMPLATE_DIR="${XDG_DATA_HOME}/nix-shell-templates"
+TEMPLATE_DIR="${XDG_DATA_HOME}/nix-templates"
 
 # Check if template directory exists
 if [ ! -d "$TEMPLATE_DIR" ]; then
