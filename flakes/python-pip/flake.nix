@@ -16,7 +16,7 @@
           };
           python = python-flake.packages.${system}.lang;
           readme = ''
-            ${python-flake.readme}
+            ${toString python-flake.readme}
 
             Activate / Deactivate:
             ```zsh
