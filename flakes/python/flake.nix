@@ -25,12 +25,10 @@
           python
           python312Packages.debugpy
           (writeShellScriptBin "bugpyw" ''
-            local cmd=$(escape_args "$@")
-            exec debugpy --listen 5678 --wait-for-client "$cmd"
+            exec python -Xfrozen_modules=off debugpy --listen 5678 --wait-for-client "$@"
           '')
           (writeShellScriptBin "bugpy" ''
-            local cmd=$(escape_args "$@")
-            exec debugpy --listen 5678 "$cmd"
+            exec python -Xfrozen_modules=off debugpy --listen 5678 "$@"
           '')
         ];
       }
