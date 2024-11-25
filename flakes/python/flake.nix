@@ -22,9 +22,11 @@
       {
         packages.lang = python;
         packages.default = with pkgs; [
-          (python.withPackages (python-pkgs: [
-            python-pkgs.debugpy
-          ]))
+          python
+          python312Packages.debugpy
+          # (python.withPackages (python-pkgs: [
+          #   python-pkgs.debugpy
+          # ]))
           (writeShellScriptBin "bugpyw" ''
             exec python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client "$@"
           '')
