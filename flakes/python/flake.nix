@@ -13,7 +13,7 @@
           python = pkgs.python312;
         in
         {
-          packages.python = python;
+          packages.lang = python;
           packages.default = with pkgs; [
             python
             python312Packages.pip

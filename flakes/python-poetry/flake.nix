@@ -14,15 +14,14 @@
           pkgs = import nixpkgs {
             inherit system;
           };
-          python = python-flake.packages.${system}.python;
+          python = python-flake.packages.${system}.lang;
         in
         with pkgs;
         {
-          devShells.default = mkShell {
-            buildInputs = with pkgs; python-flake.packages.${system}.default ++ [
-              (poetry.override { python3 = python; })
-            ];
-          };
+          packages.lang = python;
+          packages.default = with pkgs; python-flake.packages.${system}.default ++ [
+            (poetry.override { python3 = python; })
+          ];
         }
       );
 }

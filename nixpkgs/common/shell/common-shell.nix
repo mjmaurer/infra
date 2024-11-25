@@ -94,6 +94,7 @@ in
     };
     home.packages = [
       (pkgs.writeScriptBin "new-nix-shell" (builtins.readFile ./scripts/new-nix-shell.sh))
+      (pkgs.writeScriptBin "new-nix-flake" (builtins.readFile ./scripts/new-nix-flake.sh))
     ];
     modules.commonShell = {
       initExtraFirst = ''
@@ -132,6 +133,7 @@ in
         "s" = "rgt";
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
+        "nd" = "nix develop --command 'zsh'";
         "nns" = "new-nix-shell";
         "nnf" = "new-nix-flake";
         "nps" = "nix-search";
