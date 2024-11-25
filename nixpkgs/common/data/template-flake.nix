@@ -14,13 +14,21 @@
           pkgs = import nixpkgs {
             inherit system;
           };
+          info = pkgs.writeText "info" ''
+            # Commands
+
+            ${base-flake.info.commands}
+          '';
         in
         with pkgs;
         {
           devShells.default = mkShell {
-            buildInputs = with pkgs; base-flake.packages.default ++ [
+            buildInputs = with pkgs; base-flake.packages.${system}.default ++ [
             ];
           };
+          shellHook = ''
+            glow ${info}
+          '';
         }
       );
 }

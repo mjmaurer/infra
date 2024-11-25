@@ -17,6 +17,21 @@
           python = python-flake.packages.${system}.lang;
           commands = pkgs.writeText "commands" ''
             ${python-flake.info.commands}
+
+            Activate / Deactivate:
+            ```zsh
+            pyva / pyda
+            ```
+    
+            Create a new virtual environment:
+            ```zsh
+            python -m venv .venv
+            ```
+    
+            Install requirements:
+            ```zsh
+            pip install -r requirements.txt
+            ```
           '';
         in
         with pkgs;
@@ -24,7 +39,14 @@
           info.commands = commands;
           packages.lang = python;
           packages.default = with pkgs; python-flake.packages.${system}.default ++ [
-            (poetry.override { python3 = python; })
+            python312Packages.pip
+
+            (writeShellScriptBin "pyva" ''
+              source .venv/bin/activate
+            '')
+            (writeShellScriptBin "pyda" ''
+              exec deactivate
+            '')
           ];
         }
       );

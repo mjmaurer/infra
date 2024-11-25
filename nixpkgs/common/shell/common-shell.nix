@@ -141,8 +141,6 @@ in
         "ls" = lib.mkDefault "ls --color=auto";
         "py" = "python";
         "pyvenv" = "python -m venv";
-        "pyva" = "source .venv/bin/activate";
-        "pyda" = "deactivate";
         "pipr" = "pip install -r ";
         "hmswitchnoload" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
         "dtail" = "docker logs -tf --tail='50'";

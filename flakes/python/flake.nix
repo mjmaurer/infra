@@ -11,12 +11,19 @@
             inherit system;
           };
           python = pkgs.python312;
+
+          commands = pkgs.writeText "commands" ''
+            Debugging:
+            ```zsh
+            bugpyw / bugpy
+            ```
+          '';
         in
         {
+          info.commands = commands;
           packages.lang = python;
           packages.default = with pkgs; [
             python
-            python312Packages.pip
             python312Packages.debugpy
             (writeShellScriptBin "bugpyw" ''
               local cmd=$(escape_args "$@")
