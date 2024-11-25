@@ -14,10 +14,10 @@
           pkgs = import nixpkgs {
             inherit system;
           };
-          info = pkgs.writeText "info" ''
+          readme = pkgs.writeText "readme" ''
             # Commands
 
-            ${base-flake.info.commands}
+            ${base-flake.readme}
           '';
         in
         with pkgs;
@@ -27,7 +27,7 @@
             ];
           };
           shellHook = ''
-            glow ${info}
+            glow ${readme}
           '';
         }
       );

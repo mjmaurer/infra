@@ -15,8 +15,8 @@
             inherit system;
           };
           python = python-flake.packages.${system}.lang;
-          commands = ''
-            ${python-flake.info.commands}
+          readme = ''
+            ${python-flake.readme}
 
             Activate / Deactivate:
             ```zsh
@@ -36,7 +36,7 @@
         in
         with pkgs;
         {
-          info.commands = commands;
+          readme = readme;
           packages.lang = python;
           packages.default = with pkgs; python-flake.packages.${system}.default ++ [
             python312Packages.pip

@@ -12,7 +12,7 @@
           };
           python = pkgs.python312;
 
-          commands = ''
+          readme = ''
             Debugging:
             ```zsh
             bugpyw / bugpy
@@ -20,7 +20,7 @@
           '';
         in
         {
-          info.commands = commands;
+          readme = readme;
           packages.lang = python;
           packages.default = with pkgs; [
             python
