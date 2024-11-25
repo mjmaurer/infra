@@ -23,12 +23,12 @@
         packages.lang = python;
         packages.default = with pkgs; [
           python
-          python312Packages.debugpy
+          # python312Packages.debugpy
           (writeShellScriptBin "bugpyw" ''
-            exec python -Xfrozen_modules=off debugpy --listen 5678 --wait-for-client "$@"
+            exec python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client "$@"
           '')
           (writeShellScriptBin "bugpy" ''
-            exec python -Xfrozen_modules=off debugpy --listen 5678 "$@"
+            exec python -Xfrozen_modules=off -m debugpy --listen 5678 "$@"
           '')
         ];
       }
