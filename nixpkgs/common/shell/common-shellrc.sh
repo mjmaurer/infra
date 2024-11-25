@@ -263,7 +263,7 @@ vscode_tmux_nix() {
     SESSION_NAME=$(basename $DIR_PATH)
     WINDOW_NAME="vscode"
     # TODO: Change to $SHELL after moving to nixos
-    COMMAND="zsh -c 'if [ -f \"${DIR_PATH}/flake.nix\" ]; then nix develop --command \"zsh\" \"${DIR_PATH}/shell.nix\"; elif [ -f \"${DIR_PATH}/shell.nix\" ]; then nix-shell --command \"zsh\" \"${DIR_PATH}/shell.nix\"; else zsh; fi'"
+    COMMAND="zsh -c 'if [ -f \"./flake.nix\" ]; then nix develop --command \"zsh\"; elif [ -f \"./shell.nix\" ]; then nix-shell --command \"zsh\"; else zsh; fi'"
 
     echo $SESSION_NAME
     # Check if the tmux session exists
