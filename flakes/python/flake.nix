@@ -12,7 +12,7 @@
           };
           python = pkgs.python312;
 
-          commands = pkgs.writeText "commands" ''
+          commands = ''
             Debugging:
             ```zsh
             bugpyw / bugpy

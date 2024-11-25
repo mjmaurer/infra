@@ -15,7 +15,7 @@
             inherit system;
           };
           python = python-flake.packages.${system}.lang;
-          commands = pkgs.writeText "commands" ''
+          commands = ''
             ${python-flake.info.commands}
 
             Activate / Deactivate:

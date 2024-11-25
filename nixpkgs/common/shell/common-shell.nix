@@ -134,6 +134,7 @@ in
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
+        "ndu" = "nix flake update";
         "nns" = "new-nix-shell";
         "nnf" = "new-nix-flake";
         "nps" = "nix-search";
