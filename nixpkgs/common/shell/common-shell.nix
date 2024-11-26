@@ -118,6 +118,7 @@ in
       shellAliases = {
         ".." = "cd ..";
         "cat" = "bat --plain --color=always";
+        "gp" = "git push";
         "gc" = "git commit -v";
         "gsh" = "_fzf_git_show";
         "gd" = "_fzf_git_diff";

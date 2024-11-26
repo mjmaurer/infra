@@ -132,6 +132,7 @@
         # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";
         diff.tool = "vscode";
         difftool.vscode.cmd = "$VSCODE --wait --diff $LOCAL $REMOTE";
+        push.autoSetupRemote = true;
       };
     };
   };
