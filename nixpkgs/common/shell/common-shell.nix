@@ -119,6 +119,9 @@ in
         ".." = "cd ..";
         "cat" = "bat --plain --color=always";
         "gc" = "git commit -v";
+        "gsh" = "_fzf_git_show";
+        "gd" = "_fzf_git_diff";
+        "gad" = "_fzf_git_all_diffs";
         "gcs" = "git commit -v --gpg-sign";
         "ga" = "git add $(_fzf_git_files)";
         "gaf" = "git add $(_fzf_git_files)";

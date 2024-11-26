@@ -118,6 +118,7 @@
         gcs = "commit -v --gpg-sign";
         ga = "add --all";
         s = "status";
+        dt = "difftool -y";
       };
       signing = {
         key = "DA7297EEEF7B429CE7B4A11EE5DDBB38668F1E46";
@@ -127,6 +128,10 @@
         init.defaultBranch = "main";
         core.editor = "nvim";
         credential.helper = "store";
+        # merge.tool = "vscode";
+        # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";
+        diff.tool = "vscode";
+        difftool.vscode.cmd = "$VSCODE --wait --diff $LOCAL $REMOTE";
       };
     };
   };

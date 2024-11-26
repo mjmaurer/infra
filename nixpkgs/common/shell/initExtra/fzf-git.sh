@@ -66,6 +66,9 @@ if [[ $# -eq 1 ]]; then
   hashes() {
     git log --date=short --format="%C(green)%C(bold)%cd %C(auto)%h%d %s (%an)" --graph --color=$(__fzf_git_color) "$@"
   }
+  all-diffs() {
+    git log --color=always --date=short --pretty=format:'START %cd %h%d %s' -p -U0 | awk 'BEGIN{RS="START "}/./{gsub(/\n/," "); print}'
+  }
   case "$1" in
     branches)
       echo $'CTRL-O (open in browser) ╱ ALT-A (show all branches)\n'
@@ -74,6 +77,10 @@ if [[ $# -eq 1 ]]; then
     all-branches)
       echo $'CTRL-O (open in browser)\n'
       branches -a
+      ;;
+    all-diffs)
+      echo $'Enter (fzf show) ╱ CTRL-S (toggle sort)\n'
+      all-diffs
       ;;
     hashes)
       echo $'CTRL-O (open in browser) ╱ CTRL-D (diff)\nCTRL-S (toggle sort) ╱ ALT-A (show all hashes)\n'
@@ -102,11 +109,22 @@ elif [[ $# -gt 1 ]]; then
     branch=$(git describe --exact-match --tags 2> /dev/null || git rev-parse --short HEAD)
   fi
 
+  diff() {
+    # git show --pretty=format:"" -U0 HEAD~4 | awk 'BEGIN{RS="diff --git"; FS="\n"} {gsub(/\n/, " "); for (i = 1; i <= NF; i++) if ($i ~ /^--- a\// || $i ~ /^\+\+\+ b\//) print $1, $i; else if ($i ~ /^diff --git/) print $1; }'
+    git diff --pretty=format:"" --name-only "$1" "$2"
+  }
+
+  skip_remote=false
   # Only supports GitHub for now
   case "$1" in
     commit)
       hash=$(grep -o "[a-f0-9]\{7,\}" <<< "$2")
       path=/commit/$hash
+      ;;
+    diff)
+      echo $'Enter (open file in difftool) ╱ CTRL-S (toggle sort) ╱\nCTRL-A (show all diffs)\n'
+      diff $2 $3
+      skip_remote=true
       ;;
     branch|remote-branch)
       branch=$(sed 's/^[* ]*//' <<< "$2" | cut -d' ' -f1)
@@ -134,11 +152,13 @@ elif [[ $# -gt 1 ]]; then
     url=${remote_url%.git}
   fi
 
-  case "$(uname -s)" in
-    Darwin) open "$url$path"     ;;
-    *)      xdg-open "$url$path" ;;
-  esac
-  exit 0
+  if [[ $skip_remote = false ]]; then
+    case "$(uname -s)" in
+      Darwin) open "$url$path"     ;;
+      *)      xdg-open "$url$path" ;;
+    esac
+    exit 0
+  fi
 fi
 
 if [[ $- =~ i ]]; then
@@ -207,6 +227,41 @@ _fzf_git_tags() {
     --header $'CTRL-O (open in browser)\n\n' \
     --bind "ctrl-o:execute-silent:bash $__fzf_git tag {}" \
     --preview "git show --color=$(__fzf_git_color .) {} | $(__fzf_git_pager)" "$@"
+}
+
+
+_fzf_git_diff() {
+  # File-by-file diff between two specific commits. 
+  _fzf_git_check || return
+  local commit2=${2:-HEAD}  # Default second argument to HEAD if not provided
+  bash "$__fzf_git" diff "$1" "$commit2" |
+  _fzf_git_fzf --ansi --no-sort --bind 'ctrl-s:toggle-sort' \
+    --border-label 'Show Commit' \
+    --header-lines 3 \
+    --bind "enter:execute-silent:git difftool --no-prompt $1 $commit2 -- {}" \
+    --bind "ctrl-a:become(bash -ic '_fzf_git_all_diffs')" \
+    --color hl:underline,hl+:underline \
+    --preview "git diff $1 $commit2 --color=$(__fzf_git_color .) -- {} | $(__fzf_git_pager)"
+}
+
+_fzf_git_show() {
+  _fzf_git_diff "$1^" "$1"
+}
+
+_fzf_git_all_diffs() {
+    # --bind "enter:become(grep -o '[a-f0-9]\{7,\}' <<< {} | head -n 1 | xargs bash $__fzf_git show)" \
+    # --bind "enter:become(grep -m 1 -o '[a-f0-9]\{7,\}' <<< {} | xargs bash -ic '_fzf_git_show $(cat)')" \
+  _fzf_git_check || return
+  bash "$__fzf_git" all-diffs |
+  _fzf_git_fzf --ansi --no-sort --bind 'ctrl-s:toggle-sort' \
+    --border-label 'All Diffs' \
+    --header-lines 3 \
+    --bind "ctrl-o:execute-silent:bash $__fzf_git commit {}" \
+    --bind "enter:become(export hash=\$(grep -m 1 -o '[a-f0-9]\{7,\}' <<< {} | head -n 1) && bash -ic '_fzf_git_show \"\$hash\"')" \
+    --bind "ctrl-a:change-border-label(🍇 All hashes)+reload:bash \"$__fzf_git\" all-hashes" \
+    --color hl:underline,hl+:underline \
+    --preview "grep -m 1 -o '[a-f0-9]\{7,\}' <<< {} | head -n 1 | xargs git show --color=$(__fzf_git_color .) | $(__fzf_git_pager)" "$@" |
+  awk 'match($0, /[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]*/) { print substr($0, RSTART, RLENGTH) }'
 }
 
 _fzf_git_hashes() {
