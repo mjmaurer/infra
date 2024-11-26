@@ -37,6 +37,9 @@ in
         '';
       };
       shellGlobalAliases = {
+        hp = "HEAD~1";
+        hpp = "HEAD~2";
+        hppp = "HEAD~3";
         G = "| grep";
         GC = "| grep -C 3";
 

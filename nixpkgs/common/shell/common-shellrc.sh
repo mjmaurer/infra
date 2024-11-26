@@ -240,18 +240,6 @@ rgt() {
         --bind "enter:become($VSCODE --goto '{1}:{2}')"
 }
 
-_fzf_git_fzf() {
-    # git-fzf default fzf options
-    # You can see the original in fzf-git.sh
-    fzf --height=50% --tmux 90%,90% \
-    --layout=reverse --multi --min-height=20 --border \
-    --border-label-pos=2 \
-    --color='header:italic:underline,label:blue' \
-    --preview-window='right,50%,border-left' \
-    --bind='ctrl-/:change-preview-window(down,50%,border-top|hidden|)' \
-    "$@"
-}
-
 # --------------------------------- functions -------------------------------- #
 dexec() {
     docker exec -it "$1" /bin/bash
