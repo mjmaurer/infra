@@ -32,94 +32,94 @@ PATH = '/opt/homebrew/bin/:${HOME}/.nix-profile/bin:${PATH}'
 
 [mode.main.binding]
 
-alt-cmd-ctrl-shift-c = 'reload-config'
-alt-cmd-ctrl-shift-f = 'flatten-workspace-tree'
-alt-cmd-ctrl-y = 'layout h_tiles v_accordion'
-# alt-cmd-ctrl-shift-f = 'fullscreen'
-alt-cmd-ctrl-x = 'close'
+cmd-ctrl-shift-c = 'reload-config'
+cmd-ctrl-shift-f = 'flatten-workspace-tree'
+cmd-ctrl-y = 'layout h_tiles v_accordion'
+# cmd-ctrl-shift-f = 'fullscreen'
+cmd-ctrl-x = 'close'
 
-alt-cmd-ctrl-h = 'focus left'
-alt-cmd-ctrl-j = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace down'
-alt-cmd-ctrl-k = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace up'
-alt-cmd-ctrl-l = 'focus right'
+cmd-ctrl-h = 'focus left'
+cmd-ctrl-j = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace down'
+cmd-ctrl-k = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace up'
+cmd-ctrl-l = 'focus right'
 
-alt-cmd-ctrl-shift-h = 'move left'
-alt-cmd-ctrl-shift-j = 'move down'
-alt-cmd-ctrl-shift-k = 'move up'
-alt-cmd-ctrl-shift-l = 'move right'
+cmd-ctrl-shift-h = 'move left'
+cmd-ctrl-shift-j = 'move down'
+cmd-ctrl-shift-k = 'move up'
+cmd-ctrl-shift-l = 'move right'
 
-alt-cmd-ctrl-comma = 'resize width -50'
-alt-cmd-ctrl-period = 'resize width +50'
-# alt-cmd-ctrl-shift-comma = 'resize height +50'
-# alt-cmd-ctrl-shift-period = 'resize height -50'
+cmd-ctrl-comma = 'resize width -50'
+cmd-ctrl-period = 'resize width +50'
+# cmd-ctrl-shift-comma = 'resize height +50'
+# cmd-ctrl-shift-period = 'resize height -50'
 
 # See workspaces_extra mode for additional workspace switching bindings
 # alt-t = ['workspace terminal --auto-back-and-forth']
-alt-cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
-alt-cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
-alt-cmd-ctrl-m = 'workspace spotify --auto-back-and-forth'
-# alt-cmd-ctrl-f = 'workspace files --auto-back-and-forth'
-alt-cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
-alt-cmd-ctrl-e = 'workspace code --auto-back-and-forth'
-alt-cmd-ctrl-w = 'workspace web --auto-back-and-forth'
-alt-cmd-ctrl-g = 'workspace files --auto-back-and-forth'
-alt-cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
-alt-cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
-alt-cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
+cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
+cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
+cmd-ctrl-m = 'workspace spotify --auto-back-and-forth'
+# cmd-ctrl-f = 'workspace files --auto-back-and-forth'
+cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
+cmd-ctrl-e = 'workspace code --auto-back-and-forth'
+cmd-ctrl-w = 'workspace web --auto-back-and-forth'
+cmd-ctrl-g = 'workspace files --auto-back-and-forth'
+cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
+cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
+cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
 
 # alt-shift-t = 'move-node-to-workspace terminal'
-alt-cmd-ctrl-shift-e = [
+cmd-ctrl-shift-e = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window code',
     'layout tiling',
     'join-with up',                                       # Another alternative is 'move right' which would limit the other code windows to 1/2 of the screen
 ]
-alt-cmd-ctrl-shift-w = [
+cmd-ctrl-shift-w = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window web',
     'layout tiling',
     'join-with up',
 ]
-alt-cmd-ctrl-shift-a = [
+cmd-ctrl-shift-a = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window llm',
     'layout tiling',
     'join-with up',
 ]
-alt-cmd-ctrl-shift-r = [
+cmd-ctrl-shift-r = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window notes',
     'layout tiling',
     'join-with up',
 ]
-alt-cmd-ctrl-shift-z = [
+cmd-ctrl-shift-z = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window zoom',
     'layout tiling',
     'join-with up',
 ]
 
-alt-cmd-ctrl-1 = 'workspace 1'
-alt-cmd-ctrl-2 = 'workspace 2'
-alt-cmd-ctrl-3 = 'workspace 3'
-alt-cmd-ctrl-4 = 'workspace 4'
-alt-cmd-ctrl-5 = 'workspace 5'
-alt-cmd-ctrl-6 = 'workspace 6'
-alt-cmd-ctrl-7 = 'workspace 7'
-alt-cmd-ctrl-8 = 'workspace 8'
-alt-cmd-ctrl-9 = 'workspace 9'
-alt-cmd-ctrl-0 = 'workspace 10'
+cmd-ctrl-1 = 'workspace 1'
+cmd-ctrl-2 = 'workspace 2'
+cmd-ctrl-3 = 'workspace 3'
+cmd-ctrl-4 = 'workspace 4'
+cmd-ctrl-5 = 'workspace 5'
+cmd-ctrl-6 = 'workspace 6'
+cmd-ctrl-7 = 'workspace 7'
+cmd-ctrl-8 = 'workspace 8'
+cmd-ctrl-9 = 'workspace 9'
+cmd-ctrl-0 = 'workspace 10'
 
-alt-cmd-ctrl-shift-1 = 'move-node-to-workspace 1'
-alt-cmd-ctrl-shift-2 = 'move-node-to-workspace 2'
-alt-cmd-ctrl-shift-3 = 'move-node-to-workspace 3'
-alt-cmd-ctrl-shift-4 = 'move-node-to-workspace 4'
-alt-cmd-ctrl-shift-5 = 'move-node-to-workspace 5'
-alt-cmd-ctrl-shift-6 = 'move-node-to-workspace 6'
-alt-cmd-ctrl-shift-7 = 'move-node-to-workspace 7'
-alt-cmd-ctrl-shift-8 = 'move-node-to-workspace 8'
-alt-cmd-ctrl-shift-9 = 'move-node-to-workspace 9'
-alt-cmd-ctrl-shift-0 = 'move-node-to-workspace 10'
+cmd-ctrl-shift-1 = 'move-node-to-workspace 1'
+cmd-ctrl-shift-2 = 'move-node-to-workspace 2'
+cmd-ctrl-shift-3 = 'move-node-to-workspace 3'
+cmd-ctrl-shift-4 = 'move-node-to-workspace 4'
+cmd-ctrl-shift-5 = 'move-node-to-workspace 5'
+cmd-ctrl-shift-6 = 'move-node-to-workspace 6'
+cmd-ctrl-shift-7 = 'move-node-to-workspace 7'
+cmd-ctrl-shift-8 = 'move-node-to-workspace 8'
+cmd-ctrl-shift-9 = 'move-node-to-workspace 9'
+cmd-ctrl-shift-0 = 'move-node-to-workspace 10'
 
 # Consider using 'join-with' command as a 'split' replacement if you want to enable normalizations
 # alt-shift-w = 'join-with left'
@@ -138,8 +138,8 @@ alt-cmd-ctrl-shift-0 = 'move-node-to-workspace 10'
 #                                  Modes                                 
 # -------------------------------------------------------------------------- 
 
-alt-cmd-ctrl-shift-comma = 'mode resize'
-alt-cmd-ctrl-semicolon = 'mode layout'
+cmd-ctrl-shift-comma = 'mode resize'
+cmd-ctrl-semicolon = 'mode layout'
 
 [mode.workspaces_extra.binding]
 # Remember to add any new workspaces to window callbacks below
