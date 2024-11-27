@@ -9,8 +9,9 @@
           ${python-flake.lib.readme}
         '';
 
+        mkPoetry = pkgs: pkgs.poetry.override { python3 = python-flake.lib.mkPython pkgs; };
         mkPackages = pkgs: (python-flake.lib.mkPackages pkgs) ++ [
-          (pkgs.poetry.override { python3 = python-flake.lib.mkPython pkgs; })
+          (self.lib.mkPoetry pkgs)
         ];
       };
     };
