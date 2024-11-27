@@ -23,7 +23,7 @@
         with pkgs;
         {
           devShells.default = mkShell {
-            buildInputs = with pkgs; base-flake.packages.${system}.default ++ [
+            buildInputs = with pkgs; (base-flake.lib.mkPackages pkgs) ++ [
             ];
             shellHook = ''
               glow ${readme}
