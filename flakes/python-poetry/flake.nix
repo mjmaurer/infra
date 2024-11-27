@@ -7,25 +7,16 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
-  outputs = { self, nixpkgs, flake-utils, python-flake }: {
-    readme = ''
-      ${python-flake.readme}
-    '';
-  } //
-  flake-utils.lib.eachDefaultSystem
-    (system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-        };
-        python = python-flake.packages.${system}.lang;
-      in
-      with pkgs;
-      {
-        packages.lang = python;
-        packages.default = with pkgs; python-flake.packages.${system}.default ++ [
-          (poetry.override { python3 = python; })
+  outputs = { self, nixpkgs, flake-utils, python-flake }:
+    {
+      lib = python-flake.lib // {
+        readme = ''
+          ${python-flake.readme}
+        '';
+
+        mkPackages = pkgs: (python-flake.lib.mkPackages pkgs) ++ [
+          (pkgs.poetry.override { python3 = python-flake.lib.mkPython pkgs; })
         ];
-      }
-    );
+      };
+    };
 }
