@@ -58,11 +58,12 @@ alt-cmd-ctrl-period = 'resize width +50'
 alt-cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
 alt-cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
 alt-cmd-ctrl-m = 'workspace spotify --auto-back-and-forth'
-alt-cmd-ctrl-f = 'workspace files --auto-back-and-forth'
+# alt-cmd-ctrl-f = 'workspace files --auto-back-and-forth'
 alt-cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
 alt-cmd-ctrl-e = 'workspace code --auto-back-and-forth'
 alt-cmd-ctrl-w = 'workspace web --auto-back-and-forth'
-alt-cmd-ctrl-g = 'workspace llm --auto-back-and-forth'
+alt-cmd-ctrl-g = 'workspace files --auto-back-and-forth'
+alt-cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 alt-cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 alt-cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
 
@@ -79,7 +80,7 @@ alt-cmd-ctrl-shift-w = [
     'layout tiling',
     'join-with up',
 ]
-alt-cmd-ctrl-shift-g = [
+alt-cmd-ctrl-shift-a = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window llm',
     'layout tiling',

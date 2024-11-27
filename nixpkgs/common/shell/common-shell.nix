@@ -118,6 +118,8 @@ in
       shellAliases = {
         ".." = "cd ..";
         "cat" = "bat --plain --color=always";
+        "t" = "tree --gitignore";
+        "ta" = "tree --gitignore -a";
         "gp" = "git push";
         "gc" = "git commit -v";
         "gsh" = "_fzf_git_show";

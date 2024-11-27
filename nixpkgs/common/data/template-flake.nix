@@ -2,10 +2,7 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    base-flake = {
-      url = "github:mjmaurer/infra?dir=flakes/<BASE_FLAKE>";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    base-flake.url = "github:mjmaurer/infra?dir=flakes/<BASE_FLAKE>";
   };
   outputs = { self, nixpkgs, flake-utils, base-flake }:
     flake-utils.lib.eachDefaultSystem
