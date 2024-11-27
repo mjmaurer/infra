@@ -11,7 +11,7 @@
     {
       lib = python-flake.lib // {
         readme = ''
-          ${python-flake.readme}
+          ${python-flake.lib.readme}
         '';
 
         mkPackages = pkgs: (python-flake.lib.mkPackages pkgs) ++ [

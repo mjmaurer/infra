@@ -17,7 +17,7 @@
           readme = pkgs.writeText "readme" ''
             # Commands
 
-            ${base-flake.readme}
+            ${base-flake.lib.readme}
           '';
         in
         with pkgs;
