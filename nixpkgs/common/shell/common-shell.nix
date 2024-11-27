@@ -142,6 +142,8 @@ in
         "nns" = "new-nix-shell";
         "nnf" = "new-nix-flake";
         "nps" = "nix-search";
+        "nss" = "ls -1 /nix/store | grep";
+        "nsd" = "nix-store --delete";
         "la" = lib.mkDefault "ls -a --color=auto";
         "ls" = lib.mkDefault "ls --color=auto";
         "py" = "python";

@@ -1,13 +1,8 @@
 {
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
-    python-flake = {
-      url = "path:../python";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
+    python-flake.url = "path:../python";
   };
-  outputs = { self, nixpkgs, flake-utils, python-flake }:
+  outputs = { self, python-flake }:
     {
       lib = python-flake.lib // {
         readme = ''
