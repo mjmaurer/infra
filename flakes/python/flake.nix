@@ -13,11 +13,11 @@
           ```
         '';
 
-        lang = pkgs: pkgs.python312;
-        python = self.lang;
-        packages = pkgs: with pkgs; [
-          (self.python pkgs)
-          (self.python pkgs).pkgs.debugpy
+        mkPython = pkgs: pkgs.python312;
+        mkLang = self.lib.mkPython;
+        mkPackages = pkgs: with pkgs; [
+          (self.lib.mkPython pkgs)
+          (self.lib.mkPython pkgs).pkgs.debugpy
 
           (writeShellScriptBin "bugpyw" ''
             echo "python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client $@"
