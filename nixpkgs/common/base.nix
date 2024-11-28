@@ -13,6 +13,9 @@
     ../modules/continuedev/continuedev.nix
     ../modules/obsidian/obsidian.nix
     ../modules/zsh/zsh.nix
+    ../modules/ssh/ssh.nix
+    ../modules/git/git.nix
+    ../modules/gpg/gpg.nix
     ../modules/bash/bash.nix
     ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
@@ -23,6 +26,7 @@
   ];
 
   modules = {
+    gpg.enable = true;
     zsh.enable = true;
     bash.enable = true;
     tmux.enable = true;
@@ -30,12 +34,12 @@
     aichat.enable = true;
     neovim.enable = true;
     alacritty.enable = true;
+    git.enable = true;
+    ssh.enable = true;
     continuedev = {
       enable = true;
       justConfig = true;
     };
-
-
   };
 
   programs.home-manager.enable = true;
@@ -107,38 +111,5 @@
       enableBashIntegration = true;
       enableZshIntegration = true;
     };
-    git = {
-      enable = true;
-      userName = "Michael Maurer";
-      package = pkgs.gitFull;
-      userEmail = "mjmaurer777@gmail.com";
-      aliases = {
-        pr = "pull --rebase";
-        gc = "commit -v";
-        gcs = "commit -v --gpg-sign";
-        ga = "add --all";
-        s = "status";
-        dt = "difftool -y";
-      };
-      signing = {
-        key = "DA7297EEEF7B429CE7B4A11EE5DDBB38668F1E46";
-        signByDefault = false;
-      };
-      extraConfig = {
-        init.defaultBranch = "main";
-        core.editor = "nvim";
-        credential.helper = "store";
-        # merge.tool = "vscode";
-        # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";
-        diff.tool = "vscode";
-        difftool.vscode.cmd = "$VSCODE --wait --diff $LOCAL $REMOTE";
-        push.autoSetupRemote = true;
-      };
-    };
-  };
-
-  services.gpg-agent = {
-    enable = lib.mkDefault true;
-    defaultCacheTtl = 1800;
   };
 }
