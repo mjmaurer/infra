@@ -46,8 +46,10 @@ in
         core.editor = "nvim";
         credential = {
           helper = "manager";
-          credentialStore = cfg.credentialStore;
           "https://github.com".username = "mjmaurer";
+        } // lib.optionalAttrs (cfg.credentialStore != "") {
+          # Only set credentialStore if it's actually set
+          credentialStore = cfg.credentialStore;
         };
         # merge.tool = "vscode";
         # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";
