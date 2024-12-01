@@ -33,7 +33,7 @@ PATH = '/opt/homebrew/bin/:${HOME}/.nix-profile/bin:${PATH}'
 [mode.main.binding]
 
 cmd-ctrl-shift-c = 'reload-config'
-cmd-ctrl-shift-f = 'flatten-workspace-tree'
+cmd-ctrl-shift-f = ['flatten-workspace-tree', 'layout v_accordion']
 cmd-ctrl-y = 'layout h_tiles v_accordion'
 # cmd-ctrl-shift-f = 'fullscreen'
 cmd-ctrl-x = 'close'
@@ -50,8 +50,8 @@ cmd-ctrl-shift-l = 'move right'
 
 cmd-ctrl-comma = 'resize width -50'
 cmd-ctrl-period = 'resize width +50'
-# cmd-ctrl-shift-comma = 'resize height +50'
-# cmd-ctrl-shift-period = 'resize height -50'
+cmd-ctrl-shift-comma = 'resize width -150'
+cmd-ctrl-shift-period = 'resize width +150'
 
 # See workspaces_extra mode for additional workspace switching bindings
 # alt-t = ['workspace terminal --auto-back-and-forth']
@@ -138,7 +138,7 @@ cmd-ctrl-shift-0 = 'move-node-to-workspace 10'
 #                                  Modes                                 
 # -------------------------------------------------------------------------- 
 
-cmd-ctrl-shift-comma = 'mode resize'
+# cmd-ctrl-shift-comma = 'mode resize'
 cmd-ctrl-semicolon = 'mode layout'
 
 [mode.workspaces_extra.binding]
