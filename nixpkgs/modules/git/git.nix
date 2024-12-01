@@ -66,6 +66,7 @@ in
           identityFile = "~/.ssh/id_ed25519_gitauth";
           # Might just need this on mac:
           extraOptions = {
+            "IgnoreUnknown" = "AddKeysToAgent,UseKeychain";
             "AddKeysToAgent" = "yes";
             "UseKeychain" = "yes";
           };
@@ -105,6 +106,10 @@ in
 
         echo "Enter the ID following 'sec ed25519/' into git.signingKey"
         echo "You can find this with 'gpg --list-secret-keys --keyid-format=long'"
+
+        echo "For github, add the gpg public key to https://github.com/settings/keys"
+        echo "You can get this with 'gpg --armor --export <key-id>'"
+
         
         # Set correct permissions
         chmod 600 "$SSH_KEY"
