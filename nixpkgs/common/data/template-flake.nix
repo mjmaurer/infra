@@ -10,6 +10,7 @@
         let
           pkgs = import nixpkgs {
             inherit system;
+            overlays = base-flake.lib.overlays;
           };
           readme = pkgs.writeText "readme" ''
             # Commands

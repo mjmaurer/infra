@@ -9,6 +9,8 @@
           ```
         '';
 
+        overlays = [ ];
+
         mkPython = pkgs: pkgs.python312;
         mkLang = self.lib.mkPython;
         mkPackages = pkgs: with pkgs; [

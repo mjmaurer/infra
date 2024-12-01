@@ -5,6 +5,9 @@
   outputs = { self, python-flake }:
     {
       lib = python-flake.lib // {
+
+        overlays = [ ];
+
         readme = ''
           ${python-flake.readme}}
 
