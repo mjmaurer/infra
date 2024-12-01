@@ -112,7 +112,11 @@ elif [[ $# -gt 1 ]]; then
 
   diff() {
     # git show --pretty=format:"" -U0 HEAD~4 | awk 'BEGIN{RS="diff --git"; FS="\n"} {gsub(/\n/, " "); for (i = 1; i <= NF; i++) if ($i ~ /^--- a\// || $i ~ /^\+\+\+ b\//) print $1, $i; else if ($i ~ /^diff --git/) print $1; }'
-    git diff --pretty=format:"" --name-only "$1" "$2"
+    if [[ -z "$1" && -z "$2" ]]; then
+      git diff --pretty=format:"" --name-only
+    else
+      git diff --pretty=format:"" --name-only "$1" "$2"
+    fi
   }
 
   skip_remote=false
@@ -237,15 +241,21 @@ _fzf_git_tags() {
 _fzf_git_diff() {
   # File-by-file diff between two specific commits. 
   _fzf_git_check || return
-  local commit2=${2:-HEAD}  # Default second argument to HEAD if not provided
-  bash "$__fzf_git" diff "$1" "$commit2" |
+  local commit1=${1:-}
+  # Set to HEAD by default if commit1 is not empty:
+  local commit2=${2:-${commit1:+HEAD}}
+  local message="Working Diff"
+  if [[ -n "$commit1" && -n "$commit2" ]]; then
+    message="Diff from ${commit1:0:6} to ${commit2:0:6}"
+  fi
+  bash "$__fzf_git" diff "$commit1" "$commit2" |
   _fzf_git_fzf --ansi --no-sort --bind 'ctrl-s:toggle-sort' \
-    --border-label 'Show Commit' \
+    --border-label "$message" \
     --header-lines 3 \
-    --bind "enter:execute-silent:git difftool --no-prompt $1 $commit2 -- {}" \
+    --bind "enter:execute-silent:git difftool --no-prompt $commit1 $commit2 -- {}" \
     --bind "ctrl-a:become(bash -ic '_fzf_git_all_diffs')" \
     --color hl:underline,hl+:underline \
-    --preview "git diff $1 $commit2 --color=$(__fzf_git_color .) -- {} | $(__fzf_git_pager)"
+    --preview "git diff $commit1 $commit2 --color=$(__fzf_git_color .) -- {} | $(__fzf_git_pager)"
 }
 
 _fzf_git_show() {
