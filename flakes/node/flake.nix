@@ -13,7 +13,7 @@
           })
         ];
 
-        mkNode = pkgs: pkgs.nodejs_23;
+        mkNode = pkgs: pkgs.nodejs_22;
         mkLang = self.lib.mkNode;
         mkPackages = pkgs: with pkgs; [
           (self.lib.mkNode pkgs)

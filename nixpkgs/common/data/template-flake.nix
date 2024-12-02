@@ -16,6 +16,11 @@
             # Commands
 
             ${base-flake.lib.readme}
+
+            Some command description:
+            ```zsh
+            command
+            ```
           '';
         in
         with pkgs;
