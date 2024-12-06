@@ -27,6 +27,9 @@
         {
           devShells.default = mkShell {
             buildInputs = with pkgs; (base-flake.lib.mkPackages pkgs) ++ [
+              (pkgs.writeShellScriptBin "my_script" ''
+                echo "Hello, world!"
+              '')
             ];
             shellHook = ''
               glow ${readme}
