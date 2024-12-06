@@ -23,5 +23,11 @@ in
         executable = true;
       };
     };
+
+    modules.commonShell = {
+      shellAliases = {
+        "al" = "aerospace list-apps";
+      };
+    };
   };
 }
