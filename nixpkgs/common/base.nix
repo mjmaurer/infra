@@ -96,10 +96,21 @@
         speedtest-cli
         p7zip
         thefuck
+        awscli2
       ];
     };
 
   programs = {
+    direnv = {
+      enable = true;
+      enableBashIntegration = true;
+      enableZshIntegration = true;
+      config = builtins.fromTOML ''
+        [global]
+        warn_timeout = "-1s"
+      '';
+      nix-direnv.enable = true;
+    };
     fzf = {
       enable = true;
       enableBashIntegration = true;
