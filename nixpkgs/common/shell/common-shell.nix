@@ -95,12 +95,26 @@ in
     home.packages = [
       (pkgs.writeScriptBin "new-nix-shell" (builtins.readFile ./scripts/new-nix-shell.sh))
       (pkgs.writeScriptBin "new-nix-flake" (builtins.readFile ./scripts/new-nix-flake.sh))
+      (pkgs.writeShellScriptBin "pydbw" ''
+        echo "python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client $@"
+        echo "Use 'pydb -m' for modules"
+        echo "May need to activate venv\n"
+        echo "Waiting for debugger to attach..."
+        exec python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client "$@"
+      '')
+      (pkgs.writeShellScriptBin "pydb" ''
+        echo "python -Xfrozen_modules=off -m debugpy --listen 5678 $@"
+        echo "Use 'pydb -m' for modules"
+        echo "May need to activate venv"
+        exec python -Xfrozen_modules=off -m debugpy --listen 5678 "$@"
+      '')
     ];
     modules.commonShell = {
       initExtraFirst = ''
         # --------------------------------- FZF-Git --------------------------------
         source ${./initExtra/fzf-git.sh}
         source ${./initExtra/fzf-docker.sh}
+        source ${./initExtra/fzf-search-alias.sh}
       '';
       sessionVariables = {
         EDITOR = "nvim";
@@ -120,6 +134,12 @@ in
         "cat" = "bat --plain --color=always";
         "t" = "tree --gitignore";
         "ta" = "tree --gitignore -a";
+        "rn" = "npm run";
+        "rnx" = "npx";
+        "ry" = "yarn";
+        "rp" = "poetry run";
+        "dr" = "direnv reload";
+        "da" = "direnv allow";
         "gp" = "git push";
         "gc" = "git commit -v";
         "gsh" = "_fzf_git_show";
@@ -137,6 +157,7 @@ in
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "s" = "rgt";
+        "as" = "print -z $(_fzf_search_alias)";
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
@@ -150,6 +171,8 @@ in
         "ls" = lib.mkDefault "ls --color=auto";
         "py" = "python";
         "pyvenv" = "python -m venv";
+        "pyva" = "source .venv/bin/activate";
+        "pyda" = "deactivate";
         "pipr" = "pip install -r ";
         "hmswitchnoload" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
         "dtail" = "docker logs -tf --tail='50'";
