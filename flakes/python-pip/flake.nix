@@ -9,12 +9,7 @@
         overlays = [ ];
 
         readme = ''
-          ${python-flake.readme}}
-
-          Activate / Deactivate:
-          ```zsh
-          pyva / pyda
-          ```
+          ${python-flake.lib.readme}}
 
           Create a new virtual environment:
           ```zsh
@@ -29,13 +24,6 @@
 
         mkPackages = pkgs: (python-flake.lib.mkPackages pkgs) ++ [
           (python-flake.lib.mkPython pkgs).pkgs.pip
-
-          (pkgs.writeShellScriptBin "pyva" ''
-            source .venv/bin/activate
-          '')
-          (pkgs.writeShellScriptBin "pyda" ''
-            exec deactivate
-          '')
         ];
       };
     };
