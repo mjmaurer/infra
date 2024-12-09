@@ -9,6 +9,13 @@
 
         readme = ''
           ${python-flake.lib.readme}
+
+          Add the following to `poetry.toml`:
+          ```toml
+          [virtualenvs]
+          in-project = true
+          prefer-active-python = true
+          ```
         '';
 
         mkPoetry = pkgs: pkgs.poetry.override { python3 = python-flake.lib.mkPython pkgs; };
