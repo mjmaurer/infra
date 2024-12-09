@@ -9,8 +9,7 @@
           ${python-flake.lib.readme}
         '';
 
-
-        mkInit = pkgs: with pkgs; ''
+        mkInitReadme = pkgs: with pkgs; ''
           Add the following to `poetry.toml`:
           ```toml
           [virtualenvs]

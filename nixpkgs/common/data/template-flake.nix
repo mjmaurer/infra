@@ -21,6 +21,10 @@
             ```zsh
             command
             ```
+
+            # Initialization (Can delete this after)
+
+            ${base-flake.lib.mkInitReadme pkgs}
           '';
         in
         with pkgs;
