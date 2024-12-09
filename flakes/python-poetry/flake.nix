@@ -5,11 +5,12 @@
   outputs = { self, python-flake }:
     {
       lib = python-flake.lib // {
-        overlays = [ ];
-
         readme = ''
           ${python-flake.lib.readme}
+        '';
 
+
+        mkInit = pkgs: with pkgs; ''
           Add the following to `poetry.toml`:
           ```toml
           [virtualenvs]

@@ -33,6 +33,8 @@
             ];
             shellHook = ''
               glow ${readme}
+
+              ${base-flake.lib.mkInit pkgs}
             '';
           };
         }

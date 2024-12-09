@@ -1,7 +1,10 @@
 {
-  outputs = { self }:
+  inputs = {
+    base-flake.url = "path:../base";
+  };
+  outputs = { self, base-flake }:
     {
-      lib = {
+      lib = base-flake.lib // {
         readme = ''
           Debugging:
           ```zsh
@@ -9,10 +12,9 @@
           ```
         '';
 
-        overlays = [ ];
-
         mkPython = pkgs: pkgs.python312;
         mkLang = self.lib.mkPython;
+
         mkPackages = pkgs: with pkgs; [
           (self.lib.mkPython pkgs)
           (self.lib.mkPython pkgs).pkgs.debugpy
