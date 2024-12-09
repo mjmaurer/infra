@@ -57,7 +57,7 @@ cmd-ctrl-shift-period = 'resize width +150'
 # alt-t = ['workspace terminal --auto-back-and-forth']
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
 cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
-cmd-ctrl-m = 'workspace spotify --auto-back-and-forth'
+cmd-ctrl-m = 'workspace music --auto-back-and-forth'
 # cmd-ctrl-f = 'workspace files --auto-back-and-forth'
 cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
 cmd-ctrl-e = 'workspace code --auto-back-and-forth'
@@ -235,7 +235,12 @@ run = 'move-node-to-workspace outlook'
 [[on-window-detected]]
 if.app-id = 'com.spotify.client'
 check-further-callbacks = false
-run = 'move-node-to-workspace spotify'
+run = 'move-node-to-workspace music'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.podcasts'
+check-further-callbacks = false
+run = 'move-node-to-workspace music'
 
 [[on-window-detected]]
 if.app-id = 'us.zoom.xos'
