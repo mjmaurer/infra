@@ -129,6 +129,7 @@ in
         FD_DEFAULT_OPTS = "--hidden --follow --exclude .git";
         RG_DEFAULT_OPTS = "--color=always --smart-case --hidden --glob=!.git/";
       };
+      dirHashes = { };
       shellAliases = {
         ".." = "cd ..";
         "cat" = "bat --plain --color=always";
