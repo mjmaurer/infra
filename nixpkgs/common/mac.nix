@@ -14,6 +14,10 @@
       enable = true;
       justConfig = true;
     };
+    karabiner = {
+      enable = true;
+      justConfig = true;
+    };
 
     commonShell = {
       sessionVariables = { MACHINE_NAME = "smac"; TERM = "xterm-256color"; };

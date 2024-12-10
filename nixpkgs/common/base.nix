@@ -11,6 +11,7 @@
 
     ../modules/alacritty/alacritty.nix
     ../modules/continuedev/continuedev.nix
+    ../modules/karabiner/karabiner.nix
     ../modules/obsidian/obsidian.nix
     ../modules/zsh/zsh.nix
     ../modules/ssh/ssh.nix
