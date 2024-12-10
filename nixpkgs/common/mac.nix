@@ -20,7 +20,7 @@
     };
 
     commonShell = {
-      sessionVariables = { MACHINE_NAME = "smac"; TERM = "xterm-256color"; };
+      sessionVariables = { TERM = "xterm-256color"; };
       shellAliases = {
         "la" = "ls -A -G --color=auto";
         "ls" = "ls -G --color=auto";
