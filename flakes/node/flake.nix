@@ -1,7 +1,10 @@
 {
-  outputs = { self }:
+  inputs = {
+    base-flake.url = "github:mjmaurer/infra?dir=flakes/base";
+  };
+  outputs = { self, base-flake }:
     {
-      lib = {
+      lib = base-flake.lib // {
         readme = ''
         '';
 

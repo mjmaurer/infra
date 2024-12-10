@@ -1,6 +1,6 @@
 {
   inputs = {
-    python-flake.url = "path:../python";
+    python-flake.url = "github:mjmaurer/infra?dir=flakes/python";
   };
   outputs = { self, python-flake }:
     {

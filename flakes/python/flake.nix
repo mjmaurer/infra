@@ -1,6 +1,6 @@
 {
   inputs = {
-    base-flake.url = "path:../base";
+    base-flake.url = "github:mjmaurer/infra?dir=flakes/base";
   };
   outputs = { self, base-flake }:
     {
