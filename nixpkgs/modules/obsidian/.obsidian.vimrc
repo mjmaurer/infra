@@ -41,6 +41,6 @@ nmap <Space>k :forward<CR>
 
 " Tab navigation
 exmap tabnext obcommand workspace:next-tab
-nmap H :tabnext<CR>
+nmap H :tabprev<CR>
 exmap tabprev obcommand workspace:previous-tab
-nmap L :tabprev<CR>
+nmap L :tabnext<CR>
