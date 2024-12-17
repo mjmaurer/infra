@@ -8,6 +8,8 @@ vault.yaml
 dev
 .aider*
 
+dev
+
 # Created by https://www.gitignore.io/api/macos,linux,vagrant,windows,visualstudiocode
 
 ### Linux ###
