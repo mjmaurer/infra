@@ -20,11 +20,11 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        aid = "aider --4";
-        aider = "aider --4";
-        aids = "aider --sonnet";
-        aidf = "aider --4";
-        aidfo = "aider --4o";
+        aid = "mkdir -p .aider && aider --4";
+        aider = "mkdir -p .aider && aider --4";
+        aids = "mkdir -p .aider && aider --sonnet";
+        aidf = "mkdir -p .aider && aider --4";
+        aidfo = "mkdir -p .aider && aider --4o";
       };
     };
   };

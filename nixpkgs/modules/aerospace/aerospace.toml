@@ -258,6 +258,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace slack'
 
 [[on-window-detected]]
+if.app-id = 'com.hnc.Discord'
+check-further-callbacks = false
+run = 'move-node-to-workspace slack'
+
+[[on-window-detected]]
 if.app-id = 'org.alacritty'
 check-further-callbacks = false
 run = 'move-node-to-workspace terminal'
