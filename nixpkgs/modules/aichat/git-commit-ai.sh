@@ -12,7 +12,7 @@ if [[ -z "$DIFF" ]]; then
     exit 1
 fi
 
-PROMPT="Generate a descriptive but concise git commit message based on these staged changes. It should briefly explain the changes. Follow the conventional commits specification. Here are the changes:
+PROMPT="Generate a descriptive but concise git commit message based on these staged git changes. It should briefly explain the changes. Follow the conventional commits specification. Only output the message, and do not include the changes in the message. Here are the changes:
 
 $DIFF
 
