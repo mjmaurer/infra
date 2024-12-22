@@ -21,7 +21,7 @@ fi
 
 
 # Copy selected template to shell.nix
-cp "$TEMPLATE_DIR/template-flake.nix" flake.nix
+cp "$TEMPLATE_DIR/flake-template.nix" flake.nix
 chmod u+w flake.nix
 echo "Created flake.nix"
 echo "You can exclude it from git locally with: gle (git_local_exclude)"

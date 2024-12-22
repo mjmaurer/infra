@@ -88,13 +88,13 @@ in
       };
     };
     xdg.dataFile = {
-      "nix-templates/" = {
-        source = ../data;
+      "nix-templates/flake-template.nix" = {
+        source = ./nix/flake-template.nix;
       };
     };
     home.packages = [
-      (pkgs.writeScriptBin "new-nix-shell" (builtins.readFile ./scripts/new-nix-shell.sh))
-      (pkgs.writeScriptBin "new-nix-flake" (builtins.readFile ./scripts/new-nix-flake.sh))
+      (pkgs.writeScriptBin "new-nix-shell" (builtins.readFile ./nix/new-nix-shell.sh))
+      (pkgs.writeScriptBin "new-nix-flake" (builtins.readFile ./nix/new-nix-flake.sh))
       (pkgs.writeShellScriptBin "pydbw" ''
         echo "python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client $@"
         echo "Use 'pydb -m' for modules"
@@ -112,9 +112,9 @@ in
     modules.commonShell = {
       initExtraFirst = ''
         # --------------------------------- FZF-Git --------------------------------
-        source ${./initExtra/fzf-git.sh}
-        source ${./initExtra/fzf-docker.sh}
-        source ${./initExtra/fzf-search-alias.sh}
+        source ${./fzf/fzf-git.sh}
+        source ${./fzf/fzf-docker.sh}
+        source ${./fzf/fzf-search-alias.sh}
       '';
       sessionVariables = {
         EDITOR = "nvim";
