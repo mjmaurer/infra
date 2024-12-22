@@ -55,6 +55,7 @@ cmd-ctrl-shift-period = 'resize width +150'
 
 # See workspaces_extra mode for additional workspace switching bindings
 # alt-t = ['workspace terminal --auto-back-and-forth']
+cmd-ctrl-v = 'workspace games --auto-back-and-forth'
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
 cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
 cmd-ctrl-m = 'workspace music --auto-back-and-forth'
@@ -261,6 +262,16 @@ run = 'move-node-to-workspace slack'
 if.app-id = 'com.hnc.Discord'
 check-further-callbacks = false
 run = 'move-node-to-workspace slack'
+
+[[on-window-detected]]
+if.app-id = 'com.mojang.minecraftlauncher'
+check-further-callbacks = false
+run = 'move-node-to-workspace games'
+
+[[on-window-detected]]
+if.app-id = 'NULL-APP-BUNDLE-ID'
+check-further-callbacks = false
+run = 'move-node-to-workspace games'
 
 [[on-window-detected]]
 if.app-id = 'org.alacritty'
