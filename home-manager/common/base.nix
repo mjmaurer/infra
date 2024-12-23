@@ -1,10 +1,12 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, username, ... }:
 {
   # imports = lib.pipe ../modules [
   #   builtins.readDir
   #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
   #   (lib.mapAttrsToList (name: _: ./services + "/${name}"))
   # ];
+
+  home.stateVersion = lib.mkDefault "24.05";
 
   imports = [
     ./shell/common-shell.nix
@@ -56,7 +58,7 @@
 
   home =
     {
-      username = lib.mkDefault "mjmaurer";
+      username = lib.mkDefault username;
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
       file = {
         ".config/nix/nix.conf" = {
@@ -118,7 +120,7 @@
     # zathura.enable = true;
     lsd = {
       enable = true;
-      enableAliases = true;
+      enableAliases = false;
     };
     fzf = {
       enable = true;

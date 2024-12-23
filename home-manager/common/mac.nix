@@ -5,6 +5,8 @@
 
   home.homeDirectory = "/Users/${config.home.username}";
 
+  services.ssh-agent.enable = false;
+
   modules = {
     obsidian = {
       enable = true;
@@ -49,7 +51,7 @@
         		# Mac aliases don’t work on symlinks
         		f="$(readlink -f "$f")"
         		# Use Mac aliases because Spotlight doesn’t like symlinks
-        		osascript -e "tell app \"Finder\" to make new alias file at POSIX file \"$HOME/Applications\" to POSIX file \"$f\""
+        		/usr/bin/osascript -e "tell app \"Finder\" to make new alias file at POSIX file \"$HOME/Applications\" to POSIX file \"$f\""
         	done
         	)
         fi
