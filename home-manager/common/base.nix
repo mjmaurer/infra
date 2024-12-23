@@ -6,7 +6,16 @@
   #   (lib.mapAttrsToList (name: _: ./services + "/${name}"))
   # ];
 
-  home.stateVersion = lib.mkDefault "24.05";
+  # Never change this.
+  # If you need a newer version, you have to supply it to new users somehow. 
+  # The easiest option is to register a mkDefaultHomeConfig (with stateVersion) in flake.nix
+  # for each new user. 
+  # Another option is to start creating
+  # a home-manager flake (via `nix run home-manager/master -- init`)
+  # and then manage the stateVersion separately for each user that requires a newer version.
+  # You could use `--recreate-lock-file or --update-input` to automatically
+  # update the the central flake on every switch.
+  home.stateVersion = lib.mkDefault "22.05";
 
   imports = [
     ./shell/common-shell.nix

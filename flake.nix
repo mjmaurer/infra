@@ -33,13 +33,44 @@
     , ...
     } @ inputs:
     let
-      mkSpecialArgs = system: {
+      mkSystemSpecialArgs = system: {
         # The `specialArgs` parameter passes the
-        # non-default nixpkgs instances to other nix modules
+        # non-default arguments to nix modules.
+        # Default arguments are things like `pkgs`, `lib`, etc.
+
+        # Inherit all inputs from the flake.
+        inherit inputs;
+
+        # `pkgs` is provided by nixosSystem. It could be overridden here if needed.
+
+        # Make `pkgs-stable` and `username` top-level arguments.
         pkgs-stable = import nixpkgs-stable {
           inherit system;
           # config.allowUnfree = true;
         };
+      };
+      mkHomeSpecialArgs = name: system: username: {
+        inherit inputs;
+
+        # `pkgs` is provided by home-manager
+        # (see `home-manager.inputs.nixpkgs.follows` above).
+
+        pkgs-stable = import nixpkgs-stable {
+          inherit system;
+          config.allowUnfree = true;
+        };
+        username = username;
+        derivationName = name;
+      };
+      mkDefaultHomeConfig = name: system: username: commonModule: home-manager.lib.homeManagerConfiguration {
+        extraSpecialArgs = mkHomeSpecialArgs name system username;
+        pkgs = import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
+        modules = [
+          commonModule
+        ];
       };
     in
     {
@@ -48,7 +79,7 @@
       nixosConfigurations = {
         core = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
-          specialArgs = mkSpecialArgs system;
+          specialArgs = mkSystemSpecialArgs system;
 
           modules = [
             # Base
@@ -64,6 +95,10 @@
             sops-nix.nixosModules.sops
             ./sops
           ];
+
+          # We'd use the following if we wanted to use home-manager as a nixos module,
+          # as opposed to managing home-manager configurations as a separate flake.
+          # home-manager.nixosModules.home-manager = {}
         };
       };
       # Manage home configurations as a separate flake.
@@ -74,14 +109,19 @@
       # Better implementation: https://github.com/Misterio77/nix-config/blob/main/flake.nix
       # TODO Could in the future:
       # - bring all home-manager/machines into this flake
-      # - setup common 'hostless' home-manager modules for each OS to avoid needing to create a machine-specific entry (would need a flake to be able to accept user / hostname inputs)
+      # - setup common 'hostless' home-manager modules for each OS to avoid needing to create a machine-specific entry
+      #   (would need a flake to be able to accept user / hostname inputs)
+      #   (is hostname actually needed for non-nixos machines?)
       # - also add it as a nixos module for nixos machines (so the initial builds work fine). Unclear if this is well supported
       homeConfigurations = {
         "mjmaurer@core" = nixpkgs.lib.dvm.buildCustomHomeConfig {
+          specialArgs = mkHomeSpecialArgs "x86_64-linux" "mjmaurer";
           modules = [
             ./home-manager/users/mjmaurer
           ];
         };
+        "mac" = mkDefaultHomeConfig "mac" "aarch64-darwin" "mjmaurer" ./home-manager/common/mac.nix;
+        "linux" = mkDefaultHomeConfig "linux" "x86_64-linux" "mjmaurer" ./home-manager/common/linux.nix;
       };
     };
 }

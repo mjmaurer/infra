@@ -1,70 +1,56 @@
-# Personal Infrastructure
-
-## Overview
-
-- Nix Package Manager / Home-Manager does most of the heavy lifting for user configuration (see [nixpkgs/README.md](nixpkgs/README.md))
-- Ansible is used to install software on remote hosts, but I'm actively moving to NixOS (see `nixos` branch)
-
-## Adding new host / user:
-
-- Clone this repo into your user's home directory
-- Add PW to `.vault-password`
-- [Install Ansible](https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu)
-- `sudo apt upgrade ansible `
-- `ansible-galaxy install -r requirements.yaml`
-- Create <machine_name> section in:
-  - run.yaml
-  - hosts.ini
-  - roles/
-  - host_vars/ (make sure to add correct username if not mjmaurer7)
-- `bash playbook.sh <machine_name>`
-
-## Switch to new Home Manager generation:
-
-- `hmswitch`
-
-## Encrypting / Descrypting Ansible Vault:
-
-- `nix-shell`
-- `adecrypt`
-- `aencrypt`
-# NixOS Configuration Files
+# Personal Nix Infrastructure
 
 Everything in this repo is fully declarative. You should be able to go from zero to OS in 15 minutes.
 
-# Install
+Home Manager is managed separately from NixOS, so NixOS machines should follow both the [NixOS](#nixos) and [Home Manager](#home-manager) sections below.
 
-_WARNING_ The following steps create an entire operating system.
-This goes without saying but backup your data on the device you choose.
+## Pre-Install
+
+- Clone this repo to `~/infra`
+
+## NixOS:
+
+## Home Manager
+
+### Install / Switch
+
+First, [install Nix](https://nixos.org/download).
+
+Then, run Home Manager. On non-NixOS systems, you need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 
 ```sh
-cd install
-nix-build iso.nix
-sudo dd if=result/<iso> of=/dev/<usb>
-# Boot into nixos iso image on /dev/<usb>
-# Configure networking
-partition --device /dev/<harddrive> --bios ([l]egacy|[u]efi)
-# Make personal changes to /mnt/etc/nixos
-echo "<hostname>" >> /mnt/etc/nixos/hostname # Must match the name of the file in /machines
-nixos-install
+nix run home-manager/master -- switch --flake ~/infra#{mac,linux,nixos}
 ```
 
-Adding new host:
+After this, you can use `hmswitch`.
 
-Clone into host home dir (https://github.com/mjmaurer/infra.git)
-Add PW to .vault-password
-Install Ansible: https://docs.ansible.com/ansible/latest/installation_guide/installation_distros.html#installing-ansible-on-ubuntu
-sudo apt upgrade ansible
-copy .vault-password
-ansible-galaxy install -r requirements.yaml
-Create <machine_name> section in:
-run.yaml
-hosts.ini
-roles/
-host_vars/ (make sure to add correct username if not mjmaurer7)
-bash playbook.sh <machine_name>
-Vault:
+#### Optional: Non-Default User
 
-nix-shell
-adecrypt
-aencrypt
+If you want to use a non-default user (`mjmaurer`), you should add it to `flake.nix` under `homeConfigurations`.
+
+#### Optional: Manage as Standalone Flake
+
+There's probably not much use to this, because you'd still have to update based
+on the central flake.
+
+```sh
+nix run home-manager/master -- init
+```
+
+After, you would need to setup the central flake as an input to the standalone flake,
+and use the appropriate homeConfiguration derivation. Then run:
+
+```sh
+nix run home-manager/master -- init --switch
+```
+
+You'd need to run `nix flake update` to update the standalone flake.
+
+## NixOS / Home Manager
+
+### Update Flake
+
+Go to this repo and run `nix flake update`.
+
+This will update the flake inputs (e.g. nixpkgs, home-manager, etc).
+

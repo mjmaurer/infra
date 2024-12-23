@@ -1,14 +1,16 @@
-{ pkgs, lib, config, ... }:
+{ pkgs, lib, config, derivationName, ... }:
 let
   inherit (config.home) packages;
 in
 {
   options.modules.commonShell = {
+    # TODO: remove
     machineName = lib.mkOption {
       type = lib.types.str;
       description = ''
         RC common to all shells. Should be compatible 
       '';
+      default = "unset";
       readOnly = true;
     };
     # TODO: Probably don't need this and initExtra
@@ -124,7 +126,7 @@ in
         RVC_PORT = 7865;
         PLEX_WEB_PORT = 32400;
         JELLYFIN_WEB_PORT = 8096;
-        MACHINE_NAME = config.modules.commonShell.machineName;
+        DERIVATION_NAME = derivationName;
         # .git would otherwise be hidden
         FD_DEFAULT_OPTS = "--hidden --follow --exclude .git";
         RG_DEFAULT_OPTS = "--color=always --smart-case --hidden --glob=!.git/";
@@ -175,7 +177,10 @@ in
         "pyva" = "source .venv/bin/activate";
         "pyda" = "deactivate";
         "pipr" = "pip install -r ";
-        "hmswitchnoload" = "home-manager -f ~/.config/nixpkgs/machines/$MACHINE_NAME.nix switch -b backup";
+        # 'noload' because you need to source the shell afterwards (which `hmswitch` does)
+        "hmswitchnoload" = "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
+        # `hmswitch` is defined per-shell
+        "hms" = "hmswitch"; 
         "dtail" = "docker logs -tf --tail='50'";
         "dstop" = "docker stop `docker ps -aq`";
         "dlog" = "docker logs ";
