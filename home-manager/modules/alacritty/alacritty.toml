@@ -16,64 +16,8 @@ option_as_alt = "Both"
 [scrolling]
 history = 15000
 
-# ---------------------------------- NOTE ---------------------------------- 
-# Color should be kept in sync with VSCode theme
-
 # https://github.com/alacritty/alacritty-theme/blob/master/themes/ashes_light.toml
-# [colors.primary]
-# background = '#f3f4f5'
-# foreground = '#565e65'
-
-# [colors.cursor]
-# text = '#f3f4f5'
-# cursor = '#565e65'
-
-# [colors.normal]
-# black = '#1c2023'
-# red = '#c7ae95'
-# green = '#95c7ae'
-# yellow = '#aec795'
-# blue = '#ae95c7'
-# magenta = '#c795ae'
-# cyan = '#95aec7'
-# white = '#c7ccd1'
-
-# [colors.bright]
-# black = '#747c84'
-# red = '#c7ae95'
-# green = '#95c7ae'
-# yellow = '#aec795'
-# blue = '#ae95c7'
-# magenta = '#c795ae'
-# cyan = '#95aec7'
-# white = '#f3f4f5'
-
-# https://github.com/alacritty/alacritty-theme/blob/master/themes/gruvbox_material_hard_light.toml
-[colors.primary]
-background = '#f9f5d7'
-foreground = '#654735'
-
-# Normal colors
-[colors.normal]
-black   = '#654735'
-red     = '#c14a4a'
-green   = '#6c782e'
-yellow  = '#b47109'
-blue    = '#45707a'
-magenta = '#945e80'
-cyan    = '#4c7a5d'
-white   = '#f2e5bc'
-
-# Bright colors (same as normal colors)
-[colors.bright]
-black   = '#654735'
-red     = '#c14a4a'
-green   = '#6c782e'
-yellow  = '#b47109'
-blue    = '#45707a'
-magenta = '#945e80'
-cyan    = '#4c7a5d'
-white   = '#f2e5bc'
+# # https://github.com/alacritty/alacritty-theme/blob/master/themes/gruvbox_material_hard_light.toml
 
 # [keyboard]
 # bindings = [{ key = "A", mods = "Alt", chars = "\u001Ba" }]

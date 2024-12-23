@@ -1,4 +1,4 @@
-{ config, pkgs, lib, username, ... }:
+{ inputs, config, pkgs, lib, username, ... }:
 {
   # imports = lib.pipe ../modules [
   #   builtins.readDir
@@ -18,6 +18,8 @@
   home.stateVersion = lib.mkDefault "22.05";
 
   imports = [
+    inputs.nix-colors.homeManagerModule
+
     ./shell/common-shell.nix
 
     ../modules/alacritty/alacritty.nix
@@ -36,6 +38,10 @@
     ../modules/neovim/neovim.nix
     ../modules/aichat/aichat.nix
   ];
+
+  # This exposes `config.colorScheme.palette.*` based on the color scheme.
+  # You could define a custom scheme, or even defined based on a wallpaper pic.
+  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-material-light-hard;
 
   # Reload system units when changing configs
   systemd.user.startServices = "sd-switch";
