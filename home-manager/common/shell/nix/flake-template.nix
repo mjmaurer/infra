@@ -22,7 +22,7 @@
             command
             ```
 
-            # Initialization (Can delete this after)
+            # Initialization (can delete if not needed)
 
             ${base-flake.lib.mkInitReadme pkgs}
           '';
@@ -38,7 +38,8 @@
             shellHook = ''
               glow ${readme}
 
-              ${base-flake.lib.mkInit pkgs}
+              # Hooks (can delete if not needed)
+              ${base-flake.lib.mkInitHook pkgs}
             '';
           };
         }
