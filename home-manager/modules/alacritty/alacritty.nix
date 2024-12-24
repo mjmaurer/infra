@@ -27,46 +27,60 @@ in
       "alacritty/alacritty.toml" = {
         text =
           let
-            extraConfig = std.serde.toTOML cfg.settings;
+            # ---------------------------------- NOTE ---------------------------------- 
+            # Color should be kept in sync with VSCode theme
+            colorScheme = {
+              black = config.colorScheme.palette.base05;
+              red = config.colorScheme.palette.base08;
+              green = config.colorScheme.palette.base0B;
+              yellow = config.colorScheme.palette.base0A;
+              blue = config.colorScheme.palette.base0D;
+              magenta = config.colorScheme.palette.base0E;
+              cyan = config.colorScheme.palette.base0C;
+              # Note, for gruvbox, whtie was originally f2e5bc (darker)
+              white = config.colorScheme.palette.base00;
+            };
           in
           ''
             # Base config
-            ${builtins.readFile ./alacritty.toml}
+            ${std.serde.toTOML {
+              env.TERM = "alacritty";
+              terminal.shell.program = "zsh";
+              scrolling.history = 15000;
+              window = {
+                option_as_alt = "Both";
+                opacity = 0.8;
+              };
+              font = {
+                size = 18;
+                normal.family = "MesloLGS NF";
+                bold.family = "MesloLGS NF";
+                italic.family = "MesloLGS NF";
+                offset = {
+                    x = 0;
+                    y = 0;
+                };
+                glyph_offset = {
+                  x = 0;
+                  y = 0;
+                };
+              };
+            }}
 
             # Colors 
-            # ---------------------------------- NOTE ---------------------------------- 
-            # Color should be kept in sync with VSCode theme
-
-
-            [colors.primary]
-            background = '#${config.colorScheme.palette.base00}'
-            foreground = '#${config.colorScheme.palette.base05}'
-
-            # Normal colors
-            [colors.normal]
-            black   = '#${config.colorScheme.palette.base05}'
-            red     = '#${config.colorScheme.palette.base08}'
-            green   = '#${config.colorScheme.palette.base0B}'
-            yellow  = '#${config.colorScheme.palette.base0A}'
-            blue    = '#${config.colorScheme.palette.base0D}'
-            magenta = '#${config.colorScheme.palette.base0E}'
-            cyan    = '#${config.colorScheme.palette.base0C}'
-            white   = '#${config.colorScheme.palette.base00}'
-            # Note, for gruvbox, whtie was originally f2e5bc (darker)
-
-            # Bright colors (same as normal colors)
-            [colors.bright]
-            black   = '#${config.colorScheme.palette.base05}'
-            red     = '#${config.colorScheme.palette.base08}'
-            green   = '#${config.colorScheme.palette.base0B}'
-            yellow  = '#${config.colorScheme.palette.base0A}'
-            blue    = '#${config.colorScheme.palette.base0D}'
-            magenta = '#${config.colorScheme.palette.base0E}'
-            cyan    = '#${config.colorScheme.palette.base0C}'
-            white   = '#${config.colorScheme.palette.base00}'
+            ${std.serde.toTOML {
+              colors = {
+                primary = {
+                  background = colorScheme.white;
+                  foreground = colorScheme.black;
+                };
+                normal = colorScheme;
+                bright = colorScheme;
+              };
+            }}
 
             # Additional configuration from other modules
-            ${extraConfig}
+            ${std.serde.toTOML cfg.settings}
           '';
       };
     };

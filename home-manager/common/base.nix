@@ -37,6 +37,8 @@
     ../modules/aider/aider.nix
     ../modules/neovim/neovim.nix
     ../modules/aichat/aichat.nix
+    ../modules/wayland/wayland.nix
+    ../modules/firefox/firefox.nix
   ];
 
   # This exposes `config.colorScheme.palette.*` based on the color scheme.
