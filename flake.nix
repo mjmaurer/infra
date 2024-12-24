@@ -39,31 +39,29 @@
         # The `specialArgs` parameter passes the
         # non-default arguments to nix modules.
         # Default arguments are things like `pkgs`, `lib`, etc.
+        # `pkgs` is provided by nixosSystem. It could be overridden here if needed.
 
         # Inherit all inputs from the flake.
         inherit inputs;
 
-        # `pkgs` is provided by nixosSystem. It could be overridden here if needed.
-
         # Make `pkgs-stable` and `username` top-level arguments.
-        pkgs-stable = import nixpkgs-stable {
-          inherit system;
-          # config.allowUnfree = true;
-        };
-      };
-      mkHomeSpecialArgs = name: system: username: {
-        inherit inputs;
-
-        # `pkgs` is provided by home-manager
-        # (see `home-manager.inputs.nixpkgs.follows` above).
-
         pkgs-stable = import nixpkgs-stable {
           inherit system;
           config.allowUnfree = true;
         };
-        username = username;
-        derivationName = name;
+
+        colors = import ./lib/colors.nix {
+          lib = nixpkgs.lib;
+        };
       };
+      mkHomeSpecialArgs = name: system: username:
+        (mkSystemSpecialArgs system) // {
+          # `pkgs` is provided by home-manager
+          # (see `home-manager.inputs.nixpkgs.follows` above).
+
+          username = username;
+          derivationName = name;
+        };
       mkDefaultHomeConfig = name: system: username: commonModule: home-manager.lib.homeManagerConfiguration {
         extraSpecialArgs = mkHomeSpecialArgs name system username;
         pkgs = import nixpkgs {
