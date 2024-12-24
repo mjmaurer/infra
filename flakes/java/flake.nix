@@ -8,10 +8,14 @@
         readme = ''
         '';
 
+        mkInitHook = pkgs: with pkgs; ''
+          export DISPLAY=$(netstat -rn | grep default | grep -v utun | head -n1 | awk '{print $2}'):0
+        '';
+
         mkInitReadme = pkgs: with pkgs; ''
-          Add the following to your shell if you need to run java applications:
+          ## mkInitHook
           ```bash
-          export DISPLAY=$(ip route list default | awk '{print $3}'):0
+          export DISPLAY=$(netstat -rn | grep default | grep -v utun | head -n1 | awk '{print $2}'):0
           ```
         '';
 
