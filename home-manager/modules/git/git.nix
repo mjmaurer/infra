@@ -44,6 +44,7 @@ in
       extraConfig = {
         init.defaultBranch = "main";
         core.editor = "nvim";
+        core.excludesfile = "~/.config/git/ignore";
         credential = {
           helper = "manager";
           "https://github.com".username = "mjmaurer";
@@ -72,6 +73,16 @@ in
           };
         };
       };
+    };
+
+    home.file.".config/git/ignore" = {
+      text = ''
+        .DS_Store
+        .direnv/
+        .aider*
+        .aider.conf.yml
+        .aiderignore
+      '';
     };
 
     # Just demonstrating how to create 
