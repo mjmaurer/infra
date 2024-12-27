@@ -9,6 +9,7 @@
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     # You can also use a specific git commit hash to lock the version:
     # nixpkgs-fd40cef8d.url = "github:nixos/nixpkgs/fd40cef8d797670e203a27a91e4b8e6decf0b90c";
+    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
@@ -32,6 +33,7 @@
     , sops-nix
     , nix-colors
     , nix-std
+    , flake-utils
     , ...
     } @ inputs:
     let
@@ -72,8 +74,29 @@
           commonModule
         ];
       };
+      # For devshells (local development) on infra
+      localSystemShell = flake-utils.lib.eachDefaultSystem (system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
+        {
+          devShells.default = pkgs.mkShell {
+            buildInputs = with pkgs; [
+            ];
+            shellHook = ''
+              alias aplay="bash ~/infra/playbook.sh ";
+              alias aencrypt="ansible-vault encrypt vault.yaml --output vault/vault.yaml";
+              alias adecrypt="ansible-vault decrypt vault/vault.yaml --output vault.yaml";
+            '';
+          };
+        });
     in
     {
+      # Equivalent to `devShells = localSystemOutputs.devShells`
+      inherit (localSystemShell) devShells;
       # TODO: expose homemanagermodules and nixosmodules in flake:
       # https://discourse.nixos.org/t/nix-flake-wrapping-a-nix-module-using-home-manager/39162/4
       nixosConfigurations = {

@@ -14,7 +14,7 @@ Home Manager is managed separately from NixOS, so NixOS machines should follow b
 
 ### Install / Switch
 
-First, [install Nix](https://nixos.org/download).
+First, [install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
 
 Then, run Home Manager. On non-NixOS systems, you need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 

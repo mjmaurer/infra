@@ -244,6 +244,7 @@ dexec() {
     docker exec -it "$1" /bin/bash
 }
 
+# When the direnv extension starts working, we can probably deprecate this
 vscode_tmux_nix() {
     # Variables
     DIR_PATH=$1

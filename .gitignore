@@ -8,6 +8,7 @@ vault.yaml
 dev
 .aider*
 NOTES.md
+.direnv
 
 dev
 

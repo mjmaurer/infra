@@ -14,6 +14,8 @@
 
         mkInitReadme = pkgs: with pkgs; ''
           ## mkInitHook
+
+          This is for WSL display server.
           ```bash
           export DISPLAY=$(netstat -rn | grep default | grep -v utun | head -n1 | awk '{print $2}'):0
           ```
