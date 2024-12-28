@@ -8,7 +8,23 @@ Home Manager is managed separately from NixOS, so NixOS machines should follow b
 
 - Clone this repo to `~/infra`
 
-## NixOS:
+## Darwin:
+
+### Homebrew Updates
+
+```sh
+brew update
+darwin-rebuild switch
+```
+
+### Unicode Hex Input
+
+This is necessary for the `alt` key to work in the terminal.
+
+```
+Keyboard -> Text Input -> Edit -> click +
+Select "Unicode Hex Input" and hit "Add"
+```
 
 ## Home Manager
 
@@ -53,4 +69,3 @@ You'd need to run `nix flake update` to update the standalone flake.
 Go to this repo and run `nix flake update`.
 
 This will update the flake inputs (e.g. nixpkgs, home-manager, etc).
-
