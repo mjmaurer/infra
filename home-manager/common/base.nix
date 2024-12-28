@@ -78,12 +78,25 @@
       username = lib.mkDefault username;
       homeDirectory = lib.mkDefault "/home/${config.home.username}";
       file = {
-        ".config/nix/nix.conf" = {
-          text = ''
-            # Enable flakes
-            experimental-features = nix-command flakes
-          '';
-        };
+        # TODO: Move to flake.nix
+        ".config/nix/nix.conf".text = ''
+          # Enable flakes
+          experimental-features = nix-command flakes
+        '';
+        # Used for various REPLs (python, psql, etc.)
+        ".inputrc".text = ''
+          # Show completion options immediately without requiring a second tab
+          set show-all-if-ambiguous on
+          set completion-ignore-case on
+          # Add trailing slash to completed [symlinked] directory names
+          set mark-directories on
+          set mark-symlinked-directories on
+          set match-hidden-files on
+          # Show file type indicators (*/=>@|) for completions
+          set visible-stats on
+          set keymap vi
+          set editing-mode vi-insert
+        '';
       };
       packages = with pkgs; [
         # Fonts
