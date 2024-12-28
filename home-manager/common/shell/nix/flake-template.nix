@@ -36,7 +36,9 @@
               '')
             ];
             shellHook = ''
-              glow ${readme}
+              if [ -t 0 ]; then
+                ${pkgs.glow}/bin/glow ${readme}
+              fi
 
               # Hooks (can delete if not needed)
               ${base-flake.lib.mkInitHook pkgs}
