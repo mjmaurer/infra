@@ -131,10 +131,9 @@
       darwinConfigurations = {
         aspen = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
-          specialArgs = mkSystemSpecialArgs self.system;
+          specialArgs = mkSystemSpecialArgs self.system // { homebrewUser = "mjmaurer"; };
           modules = [
-            ./system/perOS/base.nix
-            ./system/perOS/darwin.nix
+            ./system/per-os/darwin.nix
           ];
         };
       };

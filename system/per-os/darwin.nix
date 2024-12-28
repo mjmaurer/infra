@@ -1,9 +1,13 @@
-{ config, pkgs, lib, ... }:
+{ config, homebrewUser, pkgs, lib, ... }:
 {
   # Never change this here.
   home.stateVersion = lib.mkDefault 5;
 
-  imports = [ ./_base.nix ];
+  imports = [
+    ./_base.nix
+    ./system/modules/homebrew/homebrew.nix
+    { inherit homebrewUser; }
+  ];
 
   environment = {
     systemPath = [
@@ -29,6 +33,7 @@
     };
     dock = {
       autohide = true;
+      show-recents = false;
     };
     NSGlobalDomain = {
       AppleShowAllExtensions = true;
