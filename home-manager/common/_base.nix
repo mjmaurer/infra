@@ -39,6 +39,7 @@
     ../modules/aichat/aichat.nix
     ../modules/wayland/wayland.nix
     ../modules/firefox/firefox.nix
+    ../modules/ente-auth/ente-auth.nix
   ];
 
   # This exposes `config.colorScheme.palette.*` based on the color scheme.
@@ -63,6 +64,7 @@
       enable = true;
       justConfig = true;
     };
+    ente-auth.enable = true;
   };
 
   programs.home-manager.enable = true;
