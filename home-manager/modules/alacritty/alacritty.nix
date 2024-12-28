@@ -50,6 +50,10 @@ in
               window = {
                 option_as_alt = "Both";
                 opacity = 0.9;
+                padding = {
+                  x = 10;
+                  y = 10;
+                };
               };
               font = {
                 size = 18;
