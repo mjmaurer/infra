@@ -177,6 +177,8 @@ in
         "pyva" = "source .venv/bin/activate";
         "pyda" = "deactivate";
         "pipr" = "pip install -r ";
+        # TODO: We could instead specify each hostname in the flake.nix
+        # It will use that for switch when no derivation is specified
         # 'noload' because you need to source the shell afterwards (which `hmswitch` does)
         "hmswitchnoload" = "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
         # `hmswitch` is defined per-shell
