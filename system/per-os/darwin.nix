@@ -3,6 +3,8 @@
   # Never change this here.
   home.stateVersion = lib.mkDefault 5;
 
+  imports = [ ./_base.nix ];
+
   environment = {
     systemPath = [
       "/opt/homebrew/bin"

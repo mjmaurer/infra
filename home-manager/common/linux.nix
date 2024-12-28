@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 
 {
-  imports = [ ./base.nix ];
+  imports = [ ./_base.nix ];
 
   home.packages = with pkgs; [
     google-chrome

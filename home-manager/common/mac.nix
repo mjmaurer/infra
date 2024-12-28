@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./base.nix ];
+  imports = [ ./_base.nix ];
 
   home.homeDirectory = "/Users/${config.home.username}";
 

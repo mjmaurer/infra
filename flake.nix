@@ -11,6 +11,9 @@
     # nixpkgs-fd40cef8d.url = "github:nixos/nixpkgs/fd40cef8d797670e203a27a91e4b8e6decf0b90c";
     flake-utils.url = "github:numtide/flake-utils";
 
+    darwin.url = "github:lnl7/nix-darwin";
+    darwin.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager = {
       url = "github:nix-community/home-manager/master";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -34,6 +37,7 @@
     , nix-colors
     , nix-std
     , flake-utils
+    , darwin
     , ...
     } @ inputs:
     let
@@ -97,8 +101,6 @@
     {
       # Equivalent to `devShells = localSystemOutputs.devShells`
       inherit (localSystemShell) devShells;
-      # TODO: expose homemanagermodules and nixosmodules in flake:
-      # https://discourse.nixos.org/t/nix-flake-wrapping-a-nix-module-using-home-manager/39162/4
       nixosConfigurations = {
         core = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
@@ -122,6 +124,18 @@
           # We'd use the following if we wanted to use home-manager as a nixos module,
           # as opposed to managing home-manager configurations as a separate flake.
           # home-manager.nixosModules.home-manager = {}
+        };
+      };
+      # This video addresses a lot of Darwin-related issues:
+      # https://www.youtube.com/watch?v=LE5JR4JcvMg
+      darwinConfigurations = {
+        aspen = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = mkSystemSpecialArgs self.system;
+          modules = [
+            ./system/perOS/base.nix
+            ./system/perOS/darwin.nix
+          ];
         };
       };
       # Manage home configurations as a separate flake.
