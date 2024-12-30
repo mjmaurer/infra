@@ -1,0 +1,17 @@
+{
+    "AnalyticsEnabled": false,
+    "AutoStart": false,
+    "Cpus": 4,
+    "DiskSizeMiB": 131072,
+    "DisplayedOnboarding": true,
+    "DockerAppLaunchPath": "/Applications/Docker.app",
+    "LastContainerdSnapshotterEnable": 1734740951,
+    "LicenseTermsVersion": 2,
+    "MemoryMiB": 3072,
+    "SettingsVersion": 40,
+    "ShowAnnouncementNotifications": false,
+    "ShowInstallScreen": false,
+    "ShowSurveyNotifications": false,
+    "UpdateInstallTime": 0,
+    "UseContainerdSnapshotter": true
+}

@@ -1,12 +1,11 @@
-{ config, homebrewUser, pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 {
   # Never change this here.
-  home.stateVersion = lib.mkDefault 5;
+  system.stateVersion = lib.mkDefault 5;
 
   imports = [
     ./_base.nix
-    ./system/modules/homebrew/homebrew.nix
-    { inherit homebrewUser; }
+    ../modules/homebrew/homebrew.nix
   ];
 
   environment = {
@@ -15,7 +14,7 @@
     ];
     # To make this consistent with nixos
     # Symlinks to `/run/current-system/sw`
-    pathsToLink = "/Applications";
+    pathsToLink = [ "/Applications" ];
 
     # Is this necessary?
     # systemPackages = [

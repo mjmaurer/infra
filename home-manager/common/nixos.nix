@@ -14,6 +14,8 @@
   modules = {
     wayland.enable = true;
     firefox.enable = true;
+    # Not built for darwin, so installed via homebrew:
+    ente-auth.enable = true;
   };
 
 

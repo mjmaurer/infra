@@ -2,13 +2,35 @@
 
 Everything in this repo is fully declarative. You should be able to go from zero to OS in 15 minutes.
 
-Home Manager is managed separately from NixOS, so NixOS machines should follow both the [NixOS](#nixos) and [Home Manager](#home-manager) sections below.
+This supports NixOS, Darwin, and Home Manager as separate flakes.
+
+Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin machines should follow Home Manager's instructions in addition to their own.
 
 ## Pre-Install
 
 - Clone this repo to `~/infra`
+- For Home Manager / Darwin:
+  - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
+  - You need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 
 ## Darwin:
+
+This is just a summary of the [Darwin README](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#step-1-creating-flakenix).
+
+Darwin flakes don't manage the hostname or system users.
+You should add an appropriate darwin configuration to the flake.nix file under your Mac's hostname, which can be set with:
+
+```
+scutil --set HostName <hostname>
+```
+
+Then, to install run:
+
+```
+nix run nix-darwin -- switch --flake ~/infra
+```
+
+After this you can use `nrb` (nix-rebuild) to update the system.
 
 ### Homebrew Updates
 
@@ -29,10 +51,6 @@ Select "Unicode Hex Input" and hit "Add"
 ## Home Manager
 
 ### Install / Switch
-
-First, [install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
-
-Then, run Home Manager. On non-NixOS systems, you need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 
 ```sh
 nix run home-manager/master -- switch --flake ~/infra#{mac,linux,nixos}
@@ -62,9 +80,7 @@ nix run home-manager/master -- init --switch
 
 You'd need to run `nix flake update` to update the standalone flake.
 
-## NixOS / Home Manager
-
-### Update Flake
+## Updating 
 
 Go to this repo and run `nix flake update`.
 

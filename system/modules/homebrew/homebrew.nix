@@ -1,7 +1,10 @@
 # This module is used to install Homebrew on Darwin.
 # It unfortunately depends on a user, but also is a system module.
 
-{ inputs, homebrewUser, ... }:
+{ inputs, pkgs, username, ... }:
+let
+  dockerSettingsTemplate = pkgs.copyPathToStore ./docker-settings.json;
+in
 {
   imports = [
     inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -15,11 +18,30 @@
     enableRosetta = true;
 
     # User owning the Homebrew prefix
-    user = homebrewUser;
+    user = username;
 
     # Automatically migrate existing Homebrew installations
     autoMigrate = true;
   };
+
+  system.activationScripts.postUserActivation.text = ''
+    #!${pkgs.zsh}/bin/zsh
+    DOCKER_CONFIG="$HOME/Library/Group Containers/group.com.docker/settings-store.json"
+    DOCKER_SETTINGS_TEMPLATE="${dockerSettingsTemplate}"
+
+    if [ ! -f "$DOCKER_CONFIG" ]; then
+      mkdir -p "$(dirname "$DOCKER_CONFIG")"
+      cp "$DOCKER_SETTINGS_TEMPLATE" "$DOCKER_CONFIG"
+      echo "Created initial Docker settings at $DOCKER_CONFIG"
+    else
+      if ! diff -w "$DOCKER_CONFIG" "$DOCKER_SETTINGS_TEMPLATE"; then
+        echo "Warning: Docker settings.json differs from Nix template"
+        echo "Template location: $DOCKER_SETTINGS_TEMPLATE"
+        echo "Current config: $DOCKER_CONFIG"
+      fi
+    fi
+
+  '';
 
   # Docs: https://daiderd.com/nix-darwin/manual/index.html#opt-homebrew.enable
   homebrew = {
@@ -44,11 +66,8 @@
         # Could be issues? https://github.com/LnL7/nix-darwin/issues/1212
         # restart_service = true;
       }
-      {
-        # Might need separate plugins (docker-compose, docker-buildx, etc.)
-        name = "docker";
-        # restart_service = true;
-      }
+      "docker"
+      "ente-auth"
       # Remove after ente supports auto-lock
       "quitter"
       # "spotify"
@@ -56,8 +75,6 @@
       # "zoom"
     ];
     taps = [
-      "homebrew/core"
-      "homebrew/cask"
       # "homebrew/cask-fonts"
       # "xorpse/formulae"
       # "cmacrae/formulae"

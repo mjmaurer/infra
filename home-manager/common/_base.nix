@@ -64,7 +64,6 @@
       enable = true;
       justConfig = true;
     };
-    ente-auth.enable = true;
   };
 
   programs.home-manager.enable = true;
