@@ -67,6 +67,7 @@ cmd-ctrl-g = 'workspace files --auto-back-and-forth'
 cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
+cmd-ctrl-semicolon = 'workspace other --auto-back-and-forth'
 
 # alt-shift-t = 'move-node-to-workspace terminal'
 cmd-ctrl-shift-e = [
@@ -96,6 +97,12 @@ cmd-ctrl-shift-r = [
 cmd-ctrl-shift-z = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window zoom',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-semicolon = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window other',
     'layout tiling',
     'join-with up',
 ]
@@ -140,7 +147,7 @@ cmd-ctrl-shift-2 = 'move-node-to-workspace 2'
 # -------------------------------------------------------------------------- 
 
 # cmd-ctrl-shift-comma = 'mode resize'
-cmd-ctrl-semicolon = 'mode layout'
+cmd-ctrl-slash = 'mode layout'
 
 [mode.workspaces_extra.binding]
 # Remember to add any new workspaces to window callbacks below
@@ -269,7 +276,7 @@ check-further-callbacks = false
 run = 'move-node-to-workspace games'
 
 [[on-window-detected]]
-if.app-id = 'NULL-APP-BUNDLE-ID'
+if.app-name-regex-substring = 'java'
 check-further-callbacks = false
 run = 'move-node-to-workspace games'
 
@@ -280,9 +287,19 @@ run = 'move-node-to-workspace terminal'
 # run = ['layout floating']
 
 [[on-window-detected]]
-if.app-id = 'com.microsoft.Excel'
+if.app-id = 'io.ente.auth.mac'
 check-further-callbacks = false
-run = 'move-node-to-workspace files'
+run = 'move-node-to-workspace other'
+
+[[on-window-detected]]
+if.app-id = 'com.electron.dockerdesktop'
+check-further-callbacks = false
+run = 'move-node-to-workspace other'
+
+[[on-window-detected]]
+if.app-id = 'com.runningwithcrayons.Alfred-Preferences'
+check-further-callbacks = false
+run = 'move-node-to-workspace other'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.Preview'
