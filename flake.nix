@@ -10,6 +10,11 @@
     # Latest stable branch of nixpkgs, used for version rollback:
     nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
 
+    flake-utils.url = "github:numtide/flake-utils";
+    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
+    nix-colors.url = "github:misterio77/nix-colors";
+    nix-std.url = "github:chessai/nix-std";
+
     darwin = {
       url = "github:lnl7/nix-darwin";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -29,10 +34,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    flake-utils.url = "github:numtide/flake-utils";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
-    nix-colors.url = "github:misterio77/nix-colors";
-    nix-std.url = "github:chessai/nix-std";
   };
   outputs =
     { self
@@ -64,6 +65,7 @@
         colors = import ./lib/colors.nix {
           lib = nixpkgs.lib;
         };
+        isDarwin = system == "aarch64-darwin";
       };
       mkHomeSpecialArgs = name: system: username:
         (mkSystemSpecialArgs system username) // {
@@ -84,25 +86,24 @@
         ];
       };
       # For devshells (local development) on infra
-      localSystemShell = flake-utils.lib.eachDefaultSystem (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
-          devShells.default = pkgs.mkShell {
-            buildInputs = with pkgs; [
-            ];
-            shellHook = ''
-              alias aplay="bash ~/infra/playbook.sh ";
-              alias aencrypt="ansible-vault encrypt vault.yaml --output vault/vault.yaml";
-              alias adecrypt="ansible-vault decrypt vault/vault.yaml --output vault.yaml";
-            '';
-          };
-        });
     in
     {
-      # Equivalent to `devShells = localSystemOutputs.devShells`
-      inherit (localSystemShell) devShells;
+      inherit (flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = nixpkgs.legacyPackages.${system};
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          buildInputs = with pkgs; [
+            # nix home-manager git
+            # sops ssh-to-age gnupg age
+          ];
+          shellHook = ''
+            export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations";
+          '';
+        };
+      })) devShells;
+
       nixosConfigurations = {
         core = nixpkgs.lib.nixosSystem rec {
           system = "x86_64-linux";
@@ -128,36 +129,36 @@
           # home-manager.nixosModules.home-manager = {}
         };
       };
-      # This video addresses a lot of Darwin-related issues:
-      # https://www.youtube.com/watch?v=LE5JR4JcvMg
       darwinConfigurations = {
         aspen = darwin.lib.darwinSystem {
           system = "aarch64-darwin";
           specialArgs = mkSystemSpecialArgs "aarch64-darwin" "mjmaurer";
           modules = [
             ./system/common/darwin.nix
+            {
+              system.stateVersion = 5;
+            }
+            home-manager.darwinModules.home-manager
+            {
+              # Keep these false so home-manager and nixos derivations don't diverge.
+              # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
+              # To instead use the global (system-level) pkgs, set to true.
+              home-manager.useGlobalPkgs = false;
+              # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
+              home-manager.useUserPackages = false;
+              home-manager.extraSpecialArgs = mkHomeSpecialArgs "mac" "aarch64-darwin" "mjmaurer";
+              home-manager.users.mjmaurer = import ./home-manager/common/mac.nix;
+              home-manager.sharedModules = [
+                {
+                  home.stateVersion = "25.05";
+                }
+              ];
+            }
           ];
         };
       };
-      # Manage home configurations as a separate flake.
-      # This allows for (1) keeping NixOS / non-NixOS the same and
-      # (2) allowing for quicker home manager updates.
-      # Found this user with same motivation: https://discourse.nixos.org/t/linking-a-nixosconfiguration-to-a-given-homeconfiguration/19737
-      # Their implementation: https://github.com/diego-vicente/dotfiles/blob/6c47284868f9e99483da34257144bd03ae5edbbe/README.md
-      # Better implementation: https://github.com/Misterio77/nix-config/blob/main/flake.nix
-      # TODO Could in the future:
-      # - bring all home-manager/machines into this flake
-      # - setup common 'hostless' home-manager modules for each OS to avoid needing to create a machine-specific entry
-      #   (would need a flake to be able to accept user / hostname inputs)
-      #   (is hostname actually needed for non-nixos machines?)
-      # - also add it as a nixos module for nixos machines (so the initial builds work fine). Unclear if this is well supported
+      # For non-Nix machines: Manage home configurations as a separate flake.
       homeConfigurations = {
-        "mjmaurer@core" = nixpkgs.lib.dvm.buildCustomHomeConfig {
-          specialArgs = mkHomeSpecialArgs "x86_64-linux" "mjmaurer";
-          modules = [
-            ./home-manager/users/mjmaurer
-          ];
-        };
         "mac" = mkDefaultHomeConfig "mac" "aarch64-darwin" "mjmaurer" ./home-manager/common/mac.nix;
         "linux" = mkDefaultHomeConfig "linux" "x86_64-linux" "mjmaurer" ./home-manager/common/linux.nix;
       };
