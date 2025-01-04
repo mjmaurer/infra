@@ -100,6 +100,12 @@ cmd-ctrl-shift-z = [
     'layout tiling',
     'join-with up',
 ]
+cmd-ctrl-shift-v = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window games',
+    'layout tiling',
+    'join-with up',
+]
 cmd-ctrl-shift-semicolon = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window other',
