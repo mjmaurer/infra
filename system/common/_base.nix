@@ -1,5 +1,10 @@
 { config, pkgs, lib, ... }:
 {
+
+  imports = [
+    ../modules/nix.nix
+  ];
+
   time.timeZone = "America/New_York";
 
   environment = {

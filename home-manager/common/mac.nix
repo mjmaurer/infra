@@ -3,7 +3,9 @@
 {
   imports = [ ./_base.nix ];
 
-  home.homeDirectory = "/Users/${config.home.username}";
+  # This might be set by the home-manager module for Darwin
+  # This is kept for HM-only systems
+  home.homeDirectory = lib.mkDefault "/Users/${config.home.username}";
 
   services.ssh-agent.enable = false;
 

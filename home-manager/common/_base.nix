@@ -22,6 +22,8 @@
 
     ./shell/common-shell.nix
 
+    ../modules/nix.nix
+
     ../modules/alacritty/alacritty.nix
     ../modules/continuedev/continuedev.nix
     ../modules/karabiner/karabiner.nix
@@ -76,8 +78,8 @@
 
   home =
     {
+      # This might be set by the home-manager module for Darwin / NixOS
       username = lib.mkDefault username;
-      homeDirectory = lib.mkDefault "/home/${config.home.username}";
       file = {
         # TODO: Move to flake.nix
         ".config/nix/nix.conf".text = ''
