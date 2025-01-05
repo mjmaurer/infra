@@ -10,6 +10,7 @@
   environment = {
     # Permissible shells
     shells = [ pkgs.zsh pkgs.bash ];
+    variables.EDITOR = "nvim";
   };
 
   # fonts.fontDir.enable = true; # DANGER

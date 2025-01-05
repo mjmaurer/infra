@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }:
+{ config, pkgs, derivationName, lib, ... }:
 {
   # Never change this here.
   system.stateVersion = lib.mkDefault 5;
@@ -28,6 +28,14 @@
     # ];
   };
 
+  networking = {
+    # In all systems, the flake depends on hostname already being set.
+    # However, we still set it here to be explicit.
+    hostName = derivationName;
+    computerName = derivationName;
+  };
+  system.defaults.smb.NetBIOSName = derivationName;
+
   services.nix-daemon.enable = true;
 
   # Add ability to used TouchID for sudo authentication
@@ -37,6 +45,10 @@
     finder = {
       AppleShowAllExtensions = true;
       AppleShowAllFiles = true;
+      QuitMenuItem = true; # Enable quit in Finder app menu bar
+      ShowPathbar = true;
+      ShowStatusBar = true;
+
       _FXShowPosixPathInTitle = true;
       # When performing a search, search the current folder by default
       FXDefaultSearchScope = "SCcf";
@@ -69,9 +81,21 @@
       NSAutomaticQuoteSubstitutionEnabled = false;
       NSAutomaticSpellingCorrectionEnabled = false;
     };
-    # networking = {
-    #   hostName = "aspen";
-    #   localHostName = "aspen";
-    # };
+    CustomUserPreferences = {
+      NSGlobalDomain = {
+        # Add a context menu item for showing the Web Inspector in web views
+        WebKitDeveloperExtras = true;
+      };
+      "com.apple.desktopservices" = {
+        # Avoid creating .DS_Store files on network or USB volumes
+        DSDontWriteNetworkStores = true;
+        DSDontWriteUSBStores = true;
+      };
+      "com.apple.AdLib" = {
+        allowApplePersonalizedAdvertising = false;
+      };
+      # Prevent Photos from opening automatically when plugging in certain removable media
+      "com.apple.ImageCapture".disableHotPlug = true;
+    };
   };
 }

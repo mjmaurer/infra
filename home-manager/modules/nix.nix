@@ -10,4 +10,8 @@
       options = lib.mkDefault "--delete-older-than 90d";
     };
   };
+  programs.nix-index = {
+    enable = true;
+    enableZshIntegration = true;
+  };
 }
