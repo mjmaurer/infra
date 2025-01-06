@@ -139,7 +139,9 @@
       #     # home-manager.nixosModules.home-manager = {}
       #   };
       # };
+
       darwinConfigurations = {
+
         smac = (withConfig {
           system = "aarch64-darwin";
           derivationName = "smac";
@@ -160,6 +162,7 @@
             };
           };
         };
+
         aspen = (withConfig {
           system = "aarch64-darwin";
           derivationName = "aspen";
