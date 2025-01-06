@@ -22,6 +22,7 @@ You should add an appropriate darwin configuration to the flake.nix file under y
 
 ```
 scutil --set HostName <hostname>
+scutil --set LocalHostName <hostname>
 ```
 
 Then, to install run:
@@ -110,3 +111,7 @@ Even though `/root` is currently persisted, we should prepare for impermanence. 
 See `tailscale.nix` for an example of how to use these.
 
 See [this GH issue](https://github.com/mjmaurer/infra/issues/11) for future work / more details.
+
+## Upgrade Notes
+
+- Sequoia (15.0.0): Need to follow this to fix eDSRecordNotFound error: https://determinate.systems/posts/nix-support-for-macos-sequoia/

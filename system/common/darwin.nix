@@ -1,4 +1,4 @@
-{ config, pkgs, derivationName, lib, ... }:
+{ config, pkgs, derivationName, username, lib, ... }:
 {
   # Never change this here.
   system.stateVersion = lib.mkDefault 5;
@@ -10,8 +10,8 @@
 
   # Even though Darwin doesn't manage users, we still need to register
   # the already-created user for the home-manager module to work.
-  users.users.mjmaurer = {
-    home = "/Users/mjmaurer";
+  users.users.${username} = {
+    home = "/Users/${username}";
   };
 
   environment = {
