@@ -141,6 +141,7 @@ in
         "rnx" = "npx";
         "ry" = "yarn";
         "rp" = "poetry run";
+        "ndr" = "nix-direnv-reload";
         "dr" = "direnv reload";
         "da" = "direnv allow";
         "gp" = "git push";
