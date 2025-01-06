@@ -34,7 +34,8 @@
     hostName = derivationName;
     computerName = derivationName;
   };
-  system.defaults.smb.NetBIOSName = derivationName;
+  # Don't think we need this. It was requiring sudo access every switch.
+  # system.defaults.smb.NetBIOSName = derivationName;
 
   services.nix-daemon.enable = true;
 

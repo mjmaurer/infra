@@ -80,8 +80,33 @@ nix run home-manager/master -- init --switch
 
 You'd need to run `nix flake update` to update the standalone flake.
 
-## Updating 
+## Updating
 
 Go to this repo and run `nix flake update`.
 
 This will update the flake inputs (e.g. nixpkgs, home-manager, etc).
+
+# Implementation Notes
+
+## NixOS vs Darwin
+
+There are enough mutually exclusive features between NixOS and Darwin that it's not practical to share many modules.
+
+- Most of Darwin's config is stuck in `system/common/darwin.nix`
+- Most of `system/modules` is NixOS-specific. See `system/common/_base.nix` for shared modules.
+
+## Impermanence
+
+Motivation: https://grahamc.com/blog/erase-your-darlings/
+Implementation: https://github.com/nix-community/impermanence / https://nixos.wiki/wiki/Impermanence
+
+Nix only needs to persist `/boot` and `/nix`. However in `install/partition`, we still partition `/home` and `/root` on disk.
+
+Even though `/root` is currently persisted, we should prepare for impermanence. To do so, use `environment.persistence` to designate directories to be persisted (such as certain `/var/*` paths):
+
+- Use `/persist-nobackup` (specialVar `persistNoBackup`) for directories that should not be backed up.
+- Use `/persist-backup` (specialVar `persistBackup`) for directories that should be backed up.
+
+See `tailscale.nix` for an example of how to use these.
+
+See [this GH issue](https://github.com/mjmaurer/infra/issues/11) for future work / more details.

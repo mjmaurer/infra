@@ -14,6 +14,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nix-colors.url = "github:misterio77/nix-colors";
     nix-std.url = "github:chessai/nix-std";
+    impermanence.url = "github:nix-community/impermanence";
 
     darwin = {
       url = "github:lnl7/nix-darwin";
@@ -45,123 +46,105 @@
     , nix-colors
     , nix-std
     , nix-homebrew
+    , impermanence
     , flake-utils
     , darwin
     , ...
     } @ inputs:
     let
       defaultUsername = "mjmaurer";
-      mkSpecialArgs = { derivationName, system, username }: {
-        # The `specialArgs` parameter passes the
-        # non-default arguments to nix modules.
-        # Default arguments are things like `pkgs`, `lib`, etc.
-        # `pkgs` is provided by nixosSystem. It could be overridden here if needed.
-
-        # Inherit all inputs from the flake.
-        inherit inputs;
-
-        # Other top-level arguments:
-        pkgs-stable = nixpkgs-stable.legacyPackages.${system};
-        username = username;
-        colors = import ./lib/colors.nix {
-          lib = nixpkgs.lib;
-        };
-        isDarwin = system == "aarch64-darwin";
-        derivationName = derivationName;
-      };
-      mkHomeManagerStandalone =
-        { derivationName
-        , system
-        , username ? defaultUsername
-        , modules ? [ ]
-        }: home-manager.lib.homeManagerConfiguration {
-
-          extraSpecialArgs = mkSpecialArgs {
-            derivationName = derivationName;
-            system = system;
-            username = username;
-          };
-          # See here on legacyPackages vs import: 
-          # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
-          pkgs = nixpkgs.legacyPackages.${system};
-          modules = modules;
-        };
-      mkDarwinSystem =
-        { systemStateVersion
-        , homeStateVersion
+      withConfig =
+        { system
         , derivationName
         , username ? defaultUsername
-        , systemModules ? [ ]
-        , homeModule ? import ./home-manager/common/mac.nix
-        }: darwin.lib.darwinSystem {
+        }: rec {
+          mkSpecialArgs = {
+            # The `specialArgs` parameter passes the
+            # non-default arguments to nix modules.
+            # Default arguments are things like `pkgs`, `lib`, etc.
 
-          system = "aarch64-darwin";
-          specialArgs = mkSpecialArgs {
-            derivationName = derivationName;
-            system = "aarch64-darwin";
-            username = username;
+            inherit inputs username derivationName;
+            pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+            colors = import ./lib/colors.nix {
+              lib = nixpkgs.lib;
+            };
+            isDarwin = system == "aarch64-darwin";
           };
-          modules = [
-            ./system/common/darwin.nix
-            {
-              system.stateVersion = systemStateVersion;
-            }
-            home-manager.darwinModules.home-manager
-            {
-              # Keep these false so home-manager and nixos derivations don't diverge.
-              # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
-              # To instead use the global (system-level) pkgs, set to true.
-              home-manager.useGlobalPkgs = false;
-              # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
-              home-manager.useUserPackages = false;
-              home-manager.extraSpecialArgs = mkSpecialArgs {
-                derivationName = derivationName;
-                system = "aarch64-darwin";
-                username = username;
-              };
-              home-manager.users.${username} = homeModule;
-              home-manager.sharedModules = [
+          mkHomeManagerStandalone =
+            { modules ? [ ] }: home-manager.lib.homeManagerConfiguration {
+              extraSpecialArgs = mkSpecialArgs;
+              # See here on legacyPackages vs import: 
+              # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
+              pkgs = nixpkgs.legacyPackages.${system};
+              modules = modules;
+            };
+          mkDarwinSystem =
+            { systemStateVersion
+            , homeStateVersion
+            , systemModules ? [ ]
+            , homeModule ? import ./home-manager/common/mac.nix
+            }: darwin.lib.darwinSystem {
+
+              system = "aarch64-darwin";
+              specialArgs = mkSpecialArgs;
+              modules = [
+                ./system/common/darwin.nix
+                home-manager.darwinModules.home-manager
                 {
-                  home.stateVersion = homeStateVersion;
+                  # Keep these false so home-manager and nixos derivations don't diverge.
+                  # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
+                  # To instead use the global (system-level) pkgs, set to true.
+                  home-manager.useGlobalPkgs = false;
+                  # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
+                  home-manager.useUserPackages = false;
+                  home-manager.extraSpecialArgs = mkSpecialArgs;
+                  home-manager.users.${username} = homeModule;
+                  home-manager.sharedModules = [
+                    {
+                      home.stateVersion = homeStateVersion;
+                    }
+                  ];
                 }
-              ];
-            }
-          ] ++ systemModules;
+                {
+                  system.stateVersion = systemStateVersion;
+                }
+                # impermanence.nixosModules.impermanence
+              ] ++ systemModules;
+            };
         };
     in
     {
-      nixosConfigurations = {
-        core = nixpkgs.lib.nixosSystem rec {
-          system = "x86_64-linux";
-          specialArgs = mkSpecialArgs {
-            system = "x86_64-linux";
-            username = "mjmaurer";
-          };
+      # nixosConfigurations = {
+      #   core = nixpkgs.lib.nixosSystem {
+      #     system = "x86_64-linux";
+      #     specialArgs = mkSpecialArgs;
 
-          modules = [
-            # Base
-            ./system
-            # ./system/steam.nix
-            ./system/ssh.nix # For headless
+      #     modules = [
+      #       # Base
+      #       ./system
+      #       # ./system/steam.nix
+      #       ./system/ssh.nix # For headless
 
-            # Hardware
-            ./machines/core
-            nixpkgs.nixosModules.notDetected
+      #       # Hardware
+      #       ./machines/core
+      #       nixpkgs.nixosModules.notDetected
 
-            # Secrets
-            sops-nix.nixosModules.sops
-            ./sops
-          ];
+      #       # Secrets
+      #       sops-nix.nixosModules.sops
+      #       ./sops
+      #     ];
 
-          # We'd use the following if we wanted to use home-manager as a nixos module,
-          # as opposed to managing home-manager configurations as a separate flake.
-          # home-manager.nixosModules.home-manager = {}
-        };
-      };
+      #     # We'd use the following if we wanted to use home-manager as a nixos module,
+      #     # as opposed to managing home-manager configurations as a separate flake.
+      #     # home-manager.nixosModules.home-manager = {}
+      #   };
+      # };
       darwinConfigurations = {
-        smac = mkDarwinSystem {
+        smac = (withConfig {
+          system = "aarch64-darwin";
           derivationName = "smac";
           username = "mmaurer7";
+        }).mkDarwinSystem {
           systemStateVersion = 5;
           homeStateVersion = "22.05";
           homeModule = {
@@ -177,24 +160,29 @@
             };
           };
         };
-        aspen = mkDarwinSystem {
+        aspen = (withConfig {
+          system = "aarch64-darwin";
           derivationName = "aspen";
+        }).mkDarwinSystem {
           systemStateVersion = 5;
           homeStateVersion = "25.05";
         };
       };
+
       # For non-Nix machines: Manage home configurations as a separate flake.
       homeConfigurations = {
-        "mac" = mkHomeManagerStandalone {
-          derivationName = "mac";
+        "mac" = (withConfig {
           system = "aarch64-darwin";
+          derivationName = "mac";
           username = "mjmaurer";
+        }).mkHomeManagerStandalone {
           modules = [ ./home-manager/common/mac.nix ];
         };
-        "linux" = mkHomeManagerStandalone {
-          derivationName = "linux";
+        "linux" = (withConfig {
           system = "x86_64-linux";
+          derivationName = "linux";
           username = "mjmaurer";
+        }).mkHomeManagerStandalone {
           modules = [ ./home-manager/common/linux.nix ];
         };
       };

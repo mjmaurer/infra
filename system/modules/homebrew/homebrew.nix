@@ -43,6 +43,8 @@ in
 
   '';
 
+  # NOTE: I had to run `brew cleanup` to fix a symlink issue with completions for some reason.
+
   # Docs: https://daiderd.com/nix-darwin/manual/index.html#opt-homebrew.enable
   homebrew = {
     brewPrefix = "/opt/homebrew/bin";
