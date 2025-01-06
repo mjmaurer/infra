@@ -2,9 +2,6 @@
 # It unfortunately depends on a user, but also is a system module.
 
 { inputs, pkgs, username, ... }:
-let
-  dockerSettingsTemplate = pkgs.copyPathToStore ./docker-settings.json;
-in
 {
   imports = [
     inputs.nix-homebrew.darwinModules.nix-homebrew
@@ -27,7 +24,7 @@ in
   system.activationScripts.postUserActivation.text = ''
     #!${pkgs.zsh}/bin/zsh
     DOCKER_CONFIG="$HOME/Library/Group Containers/group.com.docker/settings-store.json"
-    DOCKER_SETTINGS_TEMPLATE="${dockerSettingsTemplate}"
+    DOCKER_SETTINGS_TEMPLATE="${pkgs.copyPathToStore ./docker-settings.json}"
 
     if [ ! -f "$DOCKER_CONFIG" ]; then
       mkdir -p "$(dirname "$DOCKER_CONFIG")"
@@ -41,7 +38,20 @@ in
       fi
     fi
 
+    initialPlists=${pkgs.copyPathToStore ./initial-plists}
+    for plist in "$initialPlists"/*.xml; do
+      echo "Importing plist $plist"
+      defaults import "$(basename "$plist" .xml)" "$plist"
+    done
   '';
+
+
+  # Could use something like this to set custom shortcuts
+  # system.defaults = {
+  #   CustomUserPreferences = {
+  #     "com.lwouis.alt-tab-macos".holdShortcut = "\\U2318";
+  #   };
+  # };
 
   # NOTE: I had to run `brew cleanup` to fix a symlink issue with completions for some reason.
 
@@ -72,6 +82,8 @@ in
       "ente-auth"
       # Remove after ente supports auto-lock
       "quitter"
+      "homerow"
+      "alt-tab"
       # "spotify"
       # "slack"
       # "zoom"

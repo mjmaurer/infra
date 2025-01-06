@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+	<dict>
+		<key>auto-switch-input-source-id</key>
+		<string>com.apple.keylayout.US</string>
+		<key>launch-at-login</key>
+		<true/>
+		<key>map-arrow-keys-to-scroll</key>
+		<true/>
+		<key>non-search-shortcut</key>
+		<string>⌃⌘F</string>
+		<key>scroll-shortcut</key>
+		<string>⌃⌥⌘S</string>
+	</dict>
+</plist>
