@@ -166,6 +166,11 @@ in
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
         "ndu" = "nix flake update";
+        "nrbnoreload" = lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
+        "nrb" = ''
+          nrbnoreload;
+          source ~/.zshrc
+        '';
         "nns" = "new-nix-shell";
         "nnf" = "new-nix-flake";
         "nps" = "nix-search";
