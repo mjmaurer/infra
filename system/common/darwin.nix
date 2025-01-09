@@ -8,12 +8,6 @@
     ../modules/homebrew/homebrew.nix
   ];
 
-  # Even though Darwin doesn't manage users, we still need to register
-  # the already-created user for the home-manager module to work.
-  users.users.${username} = {
-    home = "/Users/${username}";
-  };
-
   environment = {
     systemPath = [
       "/opt/homebrew/bin"
@@ -27,15 +21,6 @@
     #   pkgs.coreutils
     # ];
   };
-
-  networking = {
-    # In all systems, the flake depends on hostname already being set.
-    # However, we still set it here to be explicit.
-    hostName = derivationName;
-    computerName = derivationName;
-  };
-  # Don't think we need this. It was requiring sudo access every switch.
-  # system.defaults.smb.NetBIOSName = derivationName;
 
   services.nix-daemon.enable = true;
 

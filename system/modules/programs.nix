@@ -1,12 +1,16 @@
+# Programs I need to survive (and also partition)
 { pkgs, ... }:
 {
   programs = {
     zsh = {
       enable = true;
     };
+    git = {
+      enable = true;
+      lfs.enable = true;
+    };
   };
   environment.systemPackages = with pkgs; [
-    # Basic Command line interfaces
     which
     wget
     tmux

@@ -3,6 +3,8 @@
 
   imports = [
     ../modules/nix.nix
+    ../modules/users.nix
+    ../modules/networking.nix
   ];
 
   time.timeZone = "America/New_York";
