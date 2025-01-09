@@ -10,7 +10,7 @@ in
     vaultPath = lib.mkOption {
       type = lib.types.str;
       default = "Documents/obsidian/Personal";
-      description = "Path to the Obsidian vault.";
+      description = "Path to the Obsidian vault (relative to home).";
     };
 
     justConfig = lib.mkOption {

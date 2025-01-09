@@ -33,6 +33,8 @@ nix run nix-darwin -- switch --flake ~/infra
 
 After this you can use `nrb` (nix-rebuild) to update the system.
 
+You should likely [update Homebrew](#homebrew-updates) next.
+
 ### Homebrew Updates
 
 ```sh
