@@ -1,0 +1,91 @@
+name: "build isos"
+
+on:
+  workflow_dispatch:
+#   schedule:
+    # every Tuesday at 9:30am
+    # - cron: "30 9 * * 2"
+
+jobs:
+  build-live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "provision home-mananger for iso"
+        uses: ./.github/actions/runner
+        id: runner
+
+      - name: "build iso"
+        run: |
+          nix run ".#live-iso"
+        #   dots-help | sed -n 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g;/# default iso/,$p' > README.txt
+        shell: zsh {0}
+
+      - name: "store iso"
+        uses: actions/upload-artifact@v3
+        with:
+          name: live-iso
+          path: |
+            result/iso/*.iso
+            # README.txt
+
+#   build-docker:
+#     runs-on: ubuntu-latest
+#     permissions:
+#       contents: read
+#       packages: write
+
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: "provision home-mananger for docker"
+#         uses: ./.github/actions/runner
+#         id: runner
+#         with:
+#           nix-features: "nixos-test benchmark big-parallel kvm"
+
+#       - name: "build docker runner"
+#         run: |
+#           + docker
+#           dots-docker
+#           docker tag dots-docker ghcr.io/${{ github.actor }}/dots
+#         shell: fish {0}
+
+#       - name: "Log in to the Container registry"
+#         uses: docker/login-action@v2
+#         with:
+#           registry: ghcr.io
+#           username: ${{ github.actor }}
+#           password: ${{ secrets.GHCR_TOKEN }}
+
+#       - name: "Tag Docker meta"
+#         id: docker-meta
+#         uses: docker/metadata-action@v4
+#         with:
+#           images: ghcr.io/${{ github.actor }}/dots
+#           tags: latest
+
+#       - name: "Push Docker image"
+#         run: docker push ${{ steps.docker-meta.outputs.tags }}
+
+#   build-wsl:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - name: "provision home-mananger for wsl"
+#         uses: ./.github/actions/runner
+#         id: runner
+
+#       - name: "build public wsl tar"
+#         run: |
+#           wsl
+#           dots-help | sed -n 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g;/# default iso/,$p' > README.txt
+#         shell: fish {0}
+
+#       - name: "provide default wsl tar"
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: wsl
+#           path: |
+#             result/tarball/*.tar.gz
+#             README.txt

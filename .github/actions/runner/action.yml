@@ -1,0 +1,79 @@
+name: "runner"
+description: "Set up home"
+author: "dmadisetti"
+outputs:
+  shell:
+    description: "Shell"
+    value: "${{ steps.shell.outputs.shell }}"
+inputs:
+  user:
+    description: "The user config to use (defaults to stub)"
+    required: false
+    default: "user"
+  nix-features:
+    description: "Features to pass to nix provisioning"
+    required: false
+    default: "nixos-test benchmark big-parallel"
+  cachix-endpoint: # id of input
+    description: "Name of cachix endpoint"
+    required: true
+    default: ${{ github.repository_owner }}
+  cachix-token:
+    description: "Cachix secret token"
+    required: false
+branding:
+  color: "blue"
+  icon: "sun"
+runs:
+  using: "composite"
+  steps:
+    - uses: cachix/install-nix-action@v26
+      with:
+        install_url: https://releases.nixos.org/nix/nix-2.11.1/install
+        nix_path: nixpkgs=channel:nixos-unstable
+        extra_nix_config: |
+          experimental-features = nix-command flakes
+          system-features = ${{inputs.nix-features}}
+    - uses: DeterminateSystems/magic-nix-cache-action@v3
+    - uses: cachix/cachix-action@v14
+      # if cache isn't configured continue
+      continue-on-error: true
+      with:
+        name: ${{ inputs.cachix-endpoint }}
+        authToken: ${{ inputs.cachix-token }}
+        extraPullNames: "nix-community"
+
+    - run: |
+        # unlock sensitive
+        echo -en "$(jq -r 'del(.nodes.root.inputs.sensitive) | del(.nodes.sensitive)' flake.lock)" > flake.lock
+        echo -en "$(jq -r 'del(.nodes.root.inputs."dots-manager") | del(.nodes."dots-manager")' flake.lock)" > flake.lock
+        # If user is not explicitly set, then fill in with stub.
+        if [ "${{ inputs.user }}" == "user" ]; then
+          if [ ! -f "nix/home/users/user.nix" ]; then
+            ln -sf ../../spoof/user.nix nix/home/users/
+          fi
+        else
+          ln -sf "${{ inputs.user }}.nix" nix/home/users/user.nix
+        fi
+        git add nix/home/users/user.nix;
+        # set dots to checkout dir
+        export DOTFILES="$(pwd)"
+        # remove nix config temporarily for home manager
+        export NIX_CONFIG="$(cat ~/.config/nix/nix.conf)"
+        rm ~/.config/nix/nix.conf
+        # set up home manager
+        nix run --no-write-lock-file --show-trace ".#home"
+        # Set nix.config again
+        rm ~/.config/nix/nix.conf
+        echo -en "$NIX_CONFIG" > ~/.config/nix/nix.conf
+        # Finish fish setup
+        ./setup.sh
+      shell: bash
+
+    - id: shell
+      run: |
+        echo "RUNNER=$(which fish)" >> $GITHUB_ENV
+        echo "::set-output name=shell::$(which fish)"
+        echo "DOTFILES=$(pwd)" >> $GITHUB_ENV
+        echo "::set-output name=dotfiles::$(pwd)"
+      shell: bash
