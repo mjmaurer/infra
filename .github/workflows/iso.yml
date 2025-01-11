@@ -3,8 +3,8 @@ name: "build isos"
 on:
   workflow_dispatch:
 #   schedule:
-    # every Tuesday at 9:30am
-    # - cron: "30 9 * * 2"
+# every Tuesday at 9:30am
+# - cron: "30 9 * * 2"
 
 jobs:
   build-live:
@@ -12,15 +12,15 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: "provision home-mananger for iso"
+      - name: "Provision Nix"
         uses: ./.github/actions/runner
         id: runner
 
       - name: "build iso"
         run: |
-          nix run ".#live-iso"
+          nix run ".#build-live-iso"
         #   dots-help | sed -n 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g;/# default iso/,$p' > README.txt
-        shell: zsh {0}
+        # shell: zsh {0}
 
       - name: "store iso"
         uses: actions/upload-artifact@v3
@@ -28,7 +28,7 @@ jobs:
           name: live-iso
           path: |
             result/iso/*.iso
-            # README.txt
+        # README.txt
 
 #   build-docker:
 #     runs-on: ubuntu-latest
