@@ -7,8 +7,8 @@
   runtimeInputs = [ openssh ];
   text = ''
     out="$(pwd)/result"
-    mkdir -p "$out"
 
+    # This creates a symlink to the iso as the `result` directory
     nix build --out-link "$out" \
       --extra-experimental-features nix-command \
       --extra-experimental-features flakes \
