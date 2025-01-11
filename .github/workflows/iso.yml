@@ -1,4 +1,4 @@
-name: "build isos"
+name: "Build ISOs"
 
 on:
   workflow_dispatch:
@@ -16,18 +16,18 @@ jobs:
         uses: ./.github/actions/runner
         id: runner
 
-      - name: "build iso"
+      - name: "Build ISO"
         run: |
           nix run ".#build-live-iso"
         #   dots-help | sed -n 's/\x1B\[[0-9;]\{1,\}[A-Za-z]//g;/# default iso/,$p' > README.txt
         # shell: zsh {0}
 
-      - name: "store iso"
+      - name: "Store ISO"
         uses: actions/upload-artifact@v3
         with:
           name: live-iso
           path: |
-            result/iso/*.iso
+            result/live.iso
         # README.txt
 
 #   build-docker:
