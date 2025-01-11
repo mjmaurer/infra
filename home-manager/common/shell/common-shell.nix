@@ -113,6 +113,12 @@ in
     ];
     modules.commonShell = {
       initExtraFirst = ''
+        # --------------------------------- Secrets --------------------------------
+        # TODO: should make config optional for standalone home-manager,
+        # or move sops to home-manager module
+        ${lib.optionalString (config?sops && config.sops.secrets?shellDotEnv) ''
+          source ${config.sops.secrets.shellDotEnv.path}
+        ''}
         # --------------------------------- FZF-Git --------------------------------
         source ${./fzf/fzf-git.sh}
         source ${./fzf/fzf-docker.sh}
@@ -188,7 +194,7 @@ in
         # 'noload' because you need to source the shell afterwards (which `hmswitch` does)
         "hmswitchnoload" = "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
         # `hmswitch` is defined per-shell
-        "hms" = "hmswitch"; 
+        "hms" = "hmswitch";
         "dtail" = "docker logs -tf --tail='50'";
         "dstop" = "docker stop `docker ps -aq`";
         "dlog" = "docker logs ";

@@ -4,6 +4,7 @@ let
   hostname = derivationName;
   isNixOS = !isDarwin;
 in
+# TODO: https://github.com/dmadisetti/.dots/blob/template/nix/common/harden.nix
 lib.mkMerge [
   {
     # In all systems, the flake depends on hostname already being set.
