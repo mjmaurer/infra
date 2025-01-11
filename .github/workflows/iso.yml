@@ -28,7 +28,7 @@ jobs:
         with:
           name: live-iso
           path: |
-            result/live.iso
+            live.iso
         # README.txt
 
 #   build-docker:

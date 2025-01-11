@@ -14,11 +14,10 @@
       --extra-experimental-features flakes \
       --no-write-lock-file -j auto ".#nixosConfigurations.live-iso.config.system.build.isoImage" || exit 1
 
-    iso_out="$(dirname "$out")/live.iso"
-    cp "$out"/iso/*.iso "$iso_out" || { echo "Error: ISO file not found"; exit 1; }
+    cp "$out"/iso/*.iso "./live.iso" || { echo "Error: ISO file not found"; exit 1; }
 
-    echo "Congrats 🎉! Flash $iso_out to your device of choice."
-    echo "Flash command: 'dd if=$iso_out of=/dev/<usb> bs=4M status=progress'"
+    echo "Congrats 🎉! Flash ./live.iso to your device of choice."
+    echo "Flash command: 'dd if=./live.iso of=/dev/<usb> bs=4M status=progress'"
   '';
 })
   // {
