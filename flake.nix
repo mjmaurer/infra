@@ -35,6 +35,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    # Build our own wsl
+    # https://github.com/dmadisetti/.dots/blob/template/flake.nix
+    # nixos-wsl.url = github:nix-community/NixOS-WSL;
+    # nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
+    # nixos-wsl.inputs.flake-utils.follows = "flake-utils";
   };
   outputs =
     { self
@@ -53,6 +58,12 @@
     } @ inputs:
     let
       defaultUsername = "mjmaurer";
+      forEachSystem = f: flake-utils.lib.eachDefaultSystem (system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          sops-nix-pkgs = sops-nix.packages.${system};
+        in
+        f { inherit system pkgs sops-nix-pkgs; });
       withConfig =
         { system
         , derivationName
@@ -78,67 +89,100 @@
               pkgs = nixpkgs.legacyPackages.${system};
               modules = modules;
             };
+          mkHomeManagerModuleConfig = { homeModule, homeStateVersion }: {
+            # Keep these false so home-manager and nixos derivations don't diverge.
+            # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
+            # To instead use the global (system-level) pkgs, set to true.
+            home-manager.useGlobalPkgs = false;
+            # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
+            home-manager.useUserPackages = false;
+            home-manager.extraSpecialArgs = mkSpecialArgs;
+            home-manager.users.${username} = homeModule;
+            home-manager.sharedModules = [
+              {
+                home.stateVersion = homeStateVersion;
+              }
+              sops-nix.homeManagerModules.sops
+            ];
+          };
           mkDarwinSystem =
             { systemStateVersion
             , homeStateVersion
-            , systemModules ? [ ]
+            , systemModules ? [ ./system/common/darwin.nix ]
             , homeModule ? import ./home-manager/common/mac.nix
             }: darwin.lib.darwinSystem {
-
-              system = "aarch64-darwin";
+              system = if system == "aarch64-darwin" then system else throw "System must be aarch64-darwin";
               specialArgs = mkSpecialArgs;
               modules = [
-                ./system/common/darwin.nix
+                sops-nix.darwinModules.sops
                 home-manager.darwinModules.home-manager
-                {
-                  # Keep these false so home-manager and nixos derivations don't diverge.
-                  # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
-                  # To instead use the global (system-level) pkgs, set to true.
-                  home-manager.useGlobalPkgs = false;
-                  # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
-                  home-manager.useUserPackages = false;
-                  home-manager.extraSpecialArgs = mkSpecialArgs;
-                  home-manager.users.${username} = homeModule;
-                  home-manager.sharedModules = [
-                    {
-                      home.stateVersion = homeStateVersion;
-                    }
-                  ];
-                }
+                (mkHomeManagerModuleConfig {
+                  inherit homeModule homeStateVersion;
+                })
                 {
                   system.stateVersion = systemStateVersion;
                 }
                 # impermanence.nixosModules.impermanence
               ] ++ systemModules;
             };
+          mkNixosSystem =
+            { systemStateVersion
+            , homeStateVersion ? null
+            , systemModules ? [ ./system/common/nixos.nix ]
+            , homeModule ? import ./home-manager/common/nixos.nix
+            }: nixpkgs.lib.nixosSystem {
+              system = system;
+              specialArgs = mkSpecialArgs;
+              modules = [
+                sops-nix.nixosModules.sops
+                (nixpkgs.lib.optionalAttrs (homeStateVersion != null) (home-manager.nixosModules.home-manager
+                  (mkHomeManagerModuleConfig {
+                    inherit homeModule homeStateVersion;
+                  })))
+                {
+                  system.stateVersion = systemStateVersion;
+                }
+                impermanence.nixosModules.impermanence
+              ] ++ systemModules;
+            };
         };
     in
     {
-      # nixosConfigurations = {
-      #   core = nixpkgs.lib.nixosSystem {
-      #     system = "x86_64-linux";
-      #     specialArgs = mkSpecialArgs;
+      nixosConfigurations = {
 
-      #     modules = [
-      #       # Base
-      #       ./system
-      #       # ./system/steam.nix
-      #       ./system/ssh.nix # For headless
+        live-iso = (withConfig {
+          system = "x86_64-linux";
+          derivationName = "live-iso";
+        }).mkNixosSystem {
+          systemStateVersion = "24.05";
+          systemModules = [
+            ./system/machines/live-iso/live-iso.nix
+          ];
+        };
+        #   core = nixpkgs.lib.nixosSystem {
+        #     system = "x86_64-linux";
+        #     specialArgs = mkSpecialArgs;
 
-      #       # Hardware
-      #       ./machines/core
-      #       nixpkgs.nixosModules.notDetected
+        #     modules = [
+        #       # Base
+        #       ./system
+        #       # ./system/steam.nix
+        #       ./system/ssh.nix # For headless
 
-      #       # Secrets
-      #       sops-nix.nixosModules.sops
-      #       ./sops
-      #     ];
+        #       # Hardware
+        #       ./machines/core
+        #       nixpkgs.nixosModules.notDetected
 
-      #     # We'd use the following if we wanted to use home-manager as a nixos module,
-      #     # as opposed to managing home-manager configurations as a separate flake.
-      #     # home-manager.nixosModules.home-manager = {}
-      #   };
-      # };
+        #       # Secrets
+        #       sops-nix.nixosModules.sops
+        #       ./sops
+        #     ];
+
+        #     # We'd use the following if we wanted to use home-manager as a nixos module,
+        #     # as opposed to managing home-manager configurations as a separate flake.
+        #     # home-manager.nixosModules.home-manager = {}
+        #   };
+      };
 
       darwinConfigurations = {
 
@@ -190,21 +234,11 @@
         };
       };
 
-
-      inherit (flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
+    } // forEachSystem (
+      { system, pkgs, sops-nix-pkgs }:
       {
-        devShells.default = pkgs.mkShell {
-          buildInputs = with pkgs; [
-            # nix home-manager git
-            # sops ssh-to-age gnupg age
-          ];
-          shellHook = ''
-            export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations";
-          '';
-        };
-      })) devShells;
-    };
+        packages = import ./pkgs/pkgs.nix { inherit self pkgs; };
+        devShells = import ./shell.nix { inherit pkgs sops-nix-pkgs; };
+      }
+    );
 }
