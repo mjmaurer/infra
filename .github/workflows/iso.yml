@@ -9,6 +9,7 @@ on:
 jobs:
   build-live:
     runs-on: ubuntu-latest
+    name: "Build Live ISO"
     steps:
       - uses: actions/checkout@v3
 
