@@ -3,22 +3,39 @@
 let
   cfg = config.modules.crypt;
   isNixOS = !isDarwin;
-  gpg-agent-conf = pkgs.writeText "gpg-agent.conf" ''
-    pinentry-program ${pkgs.pinentry-curses}/bin/pinentry-curses
-  '';
 in
 {
   options.modules.crypt = { };
 
   config = lib.mkMerge [
     {
+      home.packages = [
+        pkgs.yubikey-personalization
+        pkgs.yubikey-manager
+        (pkgs.writeScriptBin "yubi-conf" (builtins.readFile ./scripts/yubikey-configure.sh))
+        (pkgs.writeScriptBin "yubi-switch" (builtins.readFile ./scripts/yubikey-switch.sh))
+        (pkgs.writeScriptBin "yubi-addgpg" (builtins.readFile ./scripts/yubikey-addgpg.sh))
+      ];
 
-      home.packages = [ pkgs.yubikey-personalization pkgs.yubikey-manager ];
+      modules.commonShell.shellAliases = {
+        "ybs" = "yubi-switch";
+        "gpgr" = "gpg-connect-agent reloadagent /bye";
+      };
 
       programs = {
         gpg = {
           enable = true;
-          enableSSHSupport = true;
+          homedir = "${config.xdg.dataHome}/gnupg";
+          # publicKeys = [ { source = ./pubkeys.txt; } ];
+          # TODO: consider mutableKeys = false;
+          settings = import ./gpg.conf.nix;
+          scdaemonSettings = {
+            # Avoids the problem where GnuPG will repeatedly prompt
+            # for the insertion of an already-inserted YubiKey
+            # "disable-ccid" = true;
+            # reader-port = "Yubico Yubikey";
+            log-file = "/tmp/gpg-scdaemon.log";
+          };
         };
         ssh = {
           enable = true;
@@ -26,6 +43,7 @@ in
             # For manual/local configurations
             "~/.ssh/config.local"
           ];
+          # Needed for mac?
           # addKeysToAgent = "yes";
         };
       };
@@ -47,20 +65,11 @@ in
             # Prefer gpg-agent over ssh-agent
             enableSshSupport = true;
             # Smartcard support. This talks to pcscd:
-            enableScDaemon = false;
-            extraConfig = builtins.readFile ./gpg.conf;
+            enableScDaemon = true;
+            # GPG keys (by keygrip ID) to expose via SSH
+            sshKeys = [ ];
           };
       };
-
-      # Set up the shell for making keys.
-      # interactiveShellInit = ''
-      #   unset HISTFILE
-      #   export GNUPGHOME=/run/user/$(id -u)/gnupg
-      #   [ -d $GNUPGHOME ] || install -m 0700 -d $GNUPGHOME
-      #   cp ${pkgs.drduh-gpg-conf}/gpg.conf $GNUPGHOME/gpg.conf
-      #   cp ${gpg-agent-conf}  $GNUPGHOME/gpg-agent.conf
-      #   echo "\$GNUPGHOME is $GNUPGHOME"
-      # '';
     }
   ];
 }
