@@ -7,8 +7,6 @@
   # This is kept for HM-only systems
   home.homeDirectory = lib.mkDefault "/Users/${config.home.username}";
 
-  services.ssh-agent.enable = false;
-
   modules = {
     obsidian = {
       enable = true;

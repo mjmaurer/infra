@@ -25,6 +25,7 @@ echo "\n\n"
 
 echo "Make sure the secret key is removed from disk:"
 echo "gpg --delete-secret-keys $KEY_ID"
+echo "yubi-switch"
 echo "\n\n"
 
 # Could run adduid for more identities

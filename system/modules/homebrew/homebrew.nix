@@ -84,6 +84,7 @@
       "quitter"
       "homerow"
       "alt-tab"
+      "bitwarden"
       # "spotify"
       # "slack"
       # "zoom"

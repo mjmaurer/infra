@@ -1,4 +1,4 @@
-{ pkgs, lib, config, derivationName, ... }:
+{ osConfig ? null, pkgs, lib, config, derivationName, ... }:
 let
   inherit (config.home) packages;
 in
@@ -113,11 +113,9 @@ in
     ];
     modules.commonShell = {
       initExtraFirst = ''
-        # --------------------------------- Secrets --------------------------------
-        # TODO: should make config optional for standalone home-manager,
-        # or move sops to home-manager module
-        ${lib.optionalString (config?sops && config.sops.secrets?shellDotEnv) ''
-          source ${config.sops.secrets.shellDotEnv.path}
+        ${lib.optionalString (osConfig?sops) ''
+          # --------------------------------- SOPS Secrets --------------------------------
+          source ${osConfig.sops.templates."shell.env".path}
         ''}
         # --------------------------------- FZF-Git --------------------------------
         source ${./fzf/fzf-git.sh}
@@ -141,6 +139,7 @@ in
       shellAliases = {
         ".." = "cd ..";
         "cat" = "bat --plain --color=always";
+        "batl" = "bat --plain --color=always --style numbers";
         "t" = "tree --gitignore";
         "ta" = "tree --gitignore -a";
         "rn" = "npm run";

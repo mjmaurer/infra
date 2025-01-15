@@ -29,9 +29,8 @@
     ../modules/karabiner/karabiner.nix
     ../modules/obsidian/obsidian.nix
     ../modules/zsh/zsh.nix
-    ../modules/ssh/ssh.nix
+    ../modules/crypt/crypt.nix
     ../modules/git/git.nix
-    ../modules/gpg/gpg.nix
     ../modules/bash/bash.nix
     ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
@@ -52,7 +51,6 @@
   systemd.user.startServices = "sd-switch";
 
   modules = {
-    gpg.enable = true;
     zsh.enable = true;
     bash.enable = true;
     tmux.enable = true;
@@ -61,7 +59,6 @@
     neovim.enable = true;
     alacritty.enable = true;
     git.enable = true;
-    ssh.enable = true;
     continuedev = {
       enable = true;
       justConfig = true;

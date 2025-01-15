@@ -5,6 +5,7 @@
     ../modules/nix.nix
     ../modules/users.nix
     ../modules/networking.nix
+    ../modules/sops
   ];
 
   time.timeZone = "America/New_York";

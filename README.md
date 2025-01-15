@@ -13,6 +13,20 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 
+## NixOS
+
+```
+cd install
+nix-build iso.nix
+sudo dd if=result/<iso> of=/dev/<usb>
+# Boot into nixos iso image on /dev/<usb>
+# Configure networking
+partition --device /dev/<harddrive> --bios ([l]egacy|[u]efi)
+# Make personal changes to /mnt/etc/nixos
+echo "<hostname>" >> /mnt/etc/nixos/hostname # Must match the name of the file in /machines
+nixos-install --flake /mnt/infra
+```
+
 ## Darwin:
 
 This is just a summary of the [Darwin README](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#step-1-creating-flakenix).
@@ -117,3 +131,12 @@ See [this GH issue](https://github.com/mjmaurer/infra/issues/11) for future work
 ## Upgrade Notes
 
 - Sequoia (15.0.0): Need to follow this to fix eDSRecordNotFound error: https://determinate.systems/posts/nix-support-for-macos-sequoia/
+
+# Installation Notes
+
+## Yubikey
+
+```
+# Set retries to 5 before wipe
+ykman openpgp access set-retries 5 5 5 -f -a $ADMIN_PIN
+```
