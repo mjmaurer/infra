@@ -4,11 +4,6 @@
 # The unset is a hack to source the file multiple times as needed
 unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 
-# ------------------------------ Local Settings ------------------------------ #
-if [ -n ~/.config/local_bash_env ]; then
-    # Make sure to use 'export' in the local_bash_env file
-    source ~/.config/local_bash_env
-fi
 # ------------------------------------ FD ----------------------------------- #
 
 fd() {

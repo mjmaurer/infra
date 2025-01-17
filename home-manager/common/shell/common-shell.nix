@@ -84,11 +84,6 @@ in
   };
 
   config = {
-    xdg.configFile = {
-      "local_bash_env.example" = {
-        source = ./local_bash_env.example;
-      };
-    };
     xdg.dataFile = {
       "nix-templates/flake-template.nix" = {
         source = ./nix/flake-template.nix;
@@ -174,7 +169,7 @@ in
         "nrbnoreload" = lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
         "nrb" = ''
           nrbnoreload;
-          source ~/.zshrc
+          source ~/.zshrc;
         '';
         "nns" = "new-nix-shell";
         "nnf" = "new-nix-flake";
