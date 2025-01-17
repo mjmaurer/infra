@@ -7,7 +7,7 @@
     age.generateKey = true;
 
     # Not using host GPG keys, so unset default
-    gnupg.sshKeyPaths = [];
+    gnupg.sshKeyPaths = [ ];
 
     defaultSopsFile = ./secrets/common.yaml;
     secrets = {
@@ -23,6 +23,7 @@
       apiKeyCodestral = { };
       apiKeyVoyage = { };
       apiKeyOpenai = { };
+      gpgAuthKeygrip = { };
     };
     templates = {
       "shell.env" = {
@@ -34,6 +35,12 @@
           CODESTRAL_API_KEY=${config.sops.placeholder.apiKeyCodestral}
           VOYAGE_API_KEY=${config.sops.placeholder.apiKeyVoyage}
           OPENAI_API_KEY=${config.sops.placeholder.apiKeyOpenai}
+        '';
+      };
+      "gpg_sshcontrol" = {
+        owner = config.users.users.${username}.name;
+        content = ''
+          ${config.sops.placeholder.gpgAuthKeygrip}
         '';
       };
     };

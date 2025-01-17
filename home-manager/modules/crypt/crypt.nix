@@ -1,8 +1,9 @@
 # Includes SSH, GPG, and Yubikey
-{ lib, config, isDarwin, pkgs, ... }:
+{ osConfig ? null, lib, config, isDarwin, pkgs, ... }:
 let
   cfg = config.modules.crypt;
   isNixOS = !isDarwin;
+  gnupgDir = "${config.xdg.dataHome}/gnupg";
 in
 {
   options.modules.crypt = { };
@@ -15,7 +16,10 @@ in
         (pkgs.writeScriptBin "yubi-conf" (builtins.readFile ./scripts/yubikey-configure.sh))
         (pkgs.writeScriptBin "yubi-switch" (builtins.readFile ./scripts/yubikey-switch.sh))
         (pkgs.writeScriptBin "yubi-addgpg" (builtins.readFile ./scripts/yubikey-addgpg.sh))
+        (pkgs.writeScriptBin "ssh-host-bootstrap" (builtins.readFile ./scripts/ssh-host-bootstrap.sh))
       ];
+
+      # TODO: https://developer.okta.com/blog/2021/07/07/developers-guide-to-gpg#use-your-gpg-key-on-multiple-computers
 
       modules.commonShell.shellAliases = {
         "ybs" = "yubi-switch";
@@ -25,7 +29,7 @@ in
       programs = {
         gpg = {
           enable = true;
-          homedir = "${config.xdg.dataHome}/gnupg";
+          homedir = gnupgDir;
           # publicKeys = [ { source = ./pubkeys.txt; } ];
           # TODO: consider mutableKeys = false;
           settings = import ./gpg.conf.nix;
@@ -34,7 +38,7 @@ in
             # for the insertion of an already-inserted YubiKey
             # "disable-ccid" = true;
             # reader-port = "Yubico Yubikey";
-            log-file = "/tmp/gpg-scdaemon.log";
+            # log-file = "/tmp/gpg-scdaemon.log";
           };
         };
         ssh = {
@@ -66,10 +70,17 @@ in
             enableSshSupport = true;
             # Smartcard support. This talks to pcscd:
             enableScDaemon = true;
-            # GPG keys (by keygrip ID) to expose via SSH
-            sshKeys = [ ];
           };
       };
+      # GPG keys (by keygrip ID) to expose via SSH
+      # Replaces gpg-agent's `sshKeys` option
+      home.file."${gnupgDir}/sshcontrol" = lib.mkIf (osConfig?sops) {
+        source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
+      };
+      home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+        # This might break if the comment changes to something.
+        run ${pkgs.openssh}/bin/ssh-add -L | grep "none" > ~/.ssh/id_rsa_yubikey.pub
+      '';
     }
   ];
 }
