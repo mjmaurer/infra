@@ -9,8 +9,8 @@ in
 
     signingKey = lib.mkOption {
       type = lib.types.str;
-      default = "";
-      description = "The gpg signing key to use.";
+      default = "FBEB175D449FFC2B";
+      description = "The ID of the gpg signing key to use.";
     };
 
     credentialStore = lib.mkOption {
@@ -48,9 +48,7 @@ in
         credential = {
           helper = "manager";
           "https://github.com".username = "mjmaurer";
-        } // lib.optionalAttrs (cfg.credentialStore != "") {
-          # Only set credentialStore if it's actually set
-          credentialStore = cfg.credentialStore;
+          credentialStore = lib.mkIf (cfg.credentialStore != "") cfg.credentialStore;
         };
         # merge.tool = "vscode";
         # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";
@@ -61,16 +59,19 @@ in
     };
 
     programs.ssh = {
+      # Prefer explicit identity definitions and IdentitiesOnly to avoid fingerprinting:
+      # https://github.com/drduh/YubiKey-Guide?tab=readme-ov-file#copy-public-key
       matchBlocks = {
         "git-auth" = {
           host = "github.com";
-          identityFile = "~/.ssh/id_ed25519_gitauth";
+          identitiesOnly = true;
+          identityFile = "~/.ssh/id_rsa_yubikey.pub";
           # Might just need this on mac:
-          extraOptions = {
-            "IgnoreUnknown" = "AddKeysToAgent,UseKeychain";
-            "AddKeysToAgent" = "yes";
-            "UseKeychain" = "yes";
-          };
+          # extraOptions = {
+          #   "IgnoreUnknown" = "AddKeysToAgent,UseKeychain";
+          #   "AddKeysToAgent" = "yes";
+          #   "UseKeychain" = "yes";
+          # };
         };
       };
     };
@@ -84,53 +85,5 @@ in
         .aiderignore
       '';
     };
-
-    # Just demonstrating how to create 
-    home.file.".local/bin/setup-git-ssh-keys" = {
-      executable = true;
-      text = ''
-        #!/usr/bin/env bash
-        set -euo pipefail
-        
-        SSH_KEY="$HOME/.ssh/id_ed25519_gitauth"
-        
-        # Check if keys already exist
-        if [[ -f "$SSH_KEY" ]]; then
-          echo "SSH key already exists at $SSH_KEY"
-          exit 1
-        fi
-        
-        # Create .ssh directory if it doesn't exist
-        mkdir -p "$HOME/.ssh"
-        
-        # Generate SSH key for auth
-        ssh-keygen -t ed25519 -f "$SSH_KEY" -C "${email}"
-        echo "Additional config needed on Mac:"
-        echo "https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent#adding-your-ssh-key-to-the-ssh-agent"
-        echo "Might just need this on mac as per above:"
-        echo 'eval "$(ssh-agent -s)"'
-        echo "ssh-add --apple-use-keychain ~/.ssh/id_ed25519_gitauth"
-        echo "And then add key to github: https://github.com/settings/keys"
-        
-        # Generate gpg key for signing (interactive)
-        gpg --full-generate-key
-
-        echo "Enter the ID following 'sec ed25519/' into git.signingKey"
-        echo "You can find this with 'gpg --list-secret-keys --keyid-format=long'"
-
-        echo "For github, add the gpg public key to https://github.com/settings/keys"
-        echo "You can get this with 'gpg --armor --export <key-id>'"
-
-        
-        # Set correct permissions
-        chmod 600 "$SSH_KEY"
-        chmod 644 "$SSH_KEY.pub"
-        
-        echo "SSH keys generated successfully!"
-        echo "Authentication public key:"
-        cat "$SSH_KEY.pub"
-      '';
-    };
-
   };
 }

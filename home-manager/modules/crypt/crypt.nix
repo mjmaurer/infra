@@ -78,8 +78,15 @@ in
         source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
       };
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-        # This might break if the comment changes to something.
-        run ${pkgs.openssh}/bin/ssh-add -L | grep "none" > ~/.ssh/id_rsa_yubikey.pub
+        run mkdir -p "$HOME/.ssh"
+        # This might break if the comment changes.
+        run export _YBPK="$(${pkgs.openssh}/bin/ssh-add -L | grep "cardno")"
+        if [ -n "$_YBPK" ]; then
+          run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
+          run chmod 600 ~/.ssh/id_rsa_yubikey.pub
+        else
+          run echo "No GPG SSH key with 'none' comment found. Is your Yubikey inserted?"
+        fi
       '';
     }
   ];
