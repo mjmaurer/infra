@@ -169,7 +169,7 @@ in
         "nrbnoreload" = lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
         "nrb" = ''
           nrbnoreload;
-          source ~/.zshrc;
+          exec zsh;
         '';
         "nns" = "new-nix-shell";
         "nnf" = "new-nix-flake";
