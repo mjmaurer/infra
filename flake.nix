@@ -97,6 +97,7 @@
             # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
             home-manager.useUserPackages = false;
             home-manager.extraSpecialArgs = mkSpecialArgs;
+            # home-manager.verbose = true;
             home-manager.users.${username} = homeModule;
             home-manager.sharedModules = [
               {
