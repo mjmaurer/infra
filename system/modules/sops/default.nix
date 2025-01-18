@@ -19,7 +19,6 @@
       #   group = config.users.groups.${username}.name;
       # };
       apiKeyAnthropic = { };
-      apiKeyClaude = { };
       apiKeyCodestral = { };
       apiKeyVoyage = { };
       apiKeyOpenai = { };
@@ -30,18 +29,20 @@
         #   mode = "0400";
         owner = config.users.users.${username}.name;
         content = ''
-          ANTHROPIC_API_KEY=${config.sops.placeholder.apiKeyAnthropic}
-          CLAUDE_API_KEY=${config.sops.placeholder.apiKeyClaude}
-          CODESTRAL_API_KEY=${config.sops.placeholder.apiKeyCodestral}
-          VOYAGE_API_KEY=${config.sops.placeholder.apiKeyVoyage}
-          OPENAI_API_KEY=${config.sops.placeholder.apiKeyOpenai}
+          export ANTHROPIC_API_KEY=${config.sops.placeholder.apiKeyAnthropic}
+          export CLAUDE_API_KEY=${config.sops.placeholder.apiKeyAnthropic}
+          export CODESTRAL_API_KEY=${config.sops.placeholder.apiKeyCodestral}
+          export VOYAGE_API_KEY=${config.sops.placeholder.apiKeyVoyage}
+          export OPENAI_API_KEY=${config.sops.placeholder.apiKeyOpenai}
         '';
       };
       "gpg_sshcontrol" = {
         owner = config.users.users.${username}.name;
         content = ''
           ${config.sops.placeholder.gpgAuthKeygrip}
+
         '';
+        # Newlines are needed!
       };
     };
   };
