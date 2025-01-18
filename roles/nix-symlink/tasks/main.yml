@@ -1,7 +1,0 @@
----
-
-- name: Create nix-home symlink
-  ansible.builtin.file:
-    src: "/home/{{ main_user }}/infra/nixpkgs"
-    dest: "/home/{{ main_user }}/.config/nixpkgs"
-    state: link

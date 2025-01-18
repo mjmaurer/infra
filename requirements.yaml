@@ -1,4 +1,0 @@
-roles:
-- src: geerlingguy.docker
-- src: artis3n.tailscale
-- src: danielrolls.nix
