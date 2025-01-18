@@ -144,6 +144,7 @@
       config = builtins.fromTOML ''
         [global]
         warn_timeout = "-1s"
+        hide_env_diff = true
       '';
     };
     htop.enable = true;
