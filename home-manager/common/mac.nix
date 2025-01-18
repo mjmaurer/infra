@@ -28,6 +28,8 @@
         "ls" = "ls -G --color=auto";
         "code" = "open -a 'Visual Studio Code'";
         "nrbnoreload" = "darwin-rebuild switch --show-trace --flake ~/infra";
+        # cd to top Finder window
+        "cdf" = "cd \"$(osascript -e 'tell app \"Finder\" to POSIX path of (insertion location as alias)')\"";
       };
     };
   };
