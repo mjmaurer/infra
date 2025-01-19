@@ -77,6 +77,11 @@ in
       home.file."${gnupgDir}/sshcontrol" = lib.mkIf (osConfig?sops) {
         source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
       };
+      home.sessionVariablesExtra = lib.mkIf config.services.gpg-agent.enableSshSupport ''
+        if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners''$' ]]; then
+          export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
+        fi
+      '';
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run mkdir -p "$HOME/.ssh"
         # This might break if the comment changes.
@@ -85,7 +90,19 @@ in
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
           run chmod 600 ~/.ssh/id_rsa_yubikey.pub
         else
-          run echo "No GPG SSH key with 'none' comment found. Is your Yubikey inserted?"
+          run echo "No GPG SSH key with 'cardno' comment found."
+          run echo "It's possible that ssh-agent is interfering with gpg-agent. See `home-manager/.../crypt.nix`"
+
+          # Mac runs ssh-agent natively, which sets SSH_AUTH_SOCK.
+          # We attempt to stop it via variable above.
+          # Otherwise, we need to stop it, and re-start gpg-agent.
+
+          # mdfind ssh-agent|grep plist
+          # launchctl unload -w /System/Library/LaunchAgents/com.openssh.ssh-agent.plist
+          # sudo launchctl disable system/com.openssh.ssh-agent
+
+          # exec zsh (or set SSH_AUTH_SOCK manually)
+          # gpgr
         fi
       '';
     }
