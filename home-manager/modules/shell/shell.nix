@@ -76,14 +76,18 @@ in
   };
 
   imports = [
-    (lib.mkIf cfg.enableBash ./bash/bash.nix)
-    (lib.mkIf cfg.enableZsh ./zsh/zsh.nix)
+    # (lib.mkIf cfg.enableBash ./bash/bash.nix)
+    # (lib.mkIf cfg.enableZsh ./zsh/zsh.nix)
+    ./bash/bash.nix
+    ./zsh/zsh.nix
   ];
 
   config = {
-    home.packages = [
-      (pkgs.writeScriptBin "new-nix-flake" (builtins.readFile ./nix/new-nix-flake.sh))
-    ];
+    modules.bash.enable = cfg.enableBash;
+    modules.zsh.enable = cfg.enableZsh;
+    home.file."${templateFile}" = {
+      source = ./nix/flake-template.nix;
+    };
     modules.commonShell = {
       initExtraFirst = ''
         # Load home manager session variables (XDG_CONFIG_HOME, etc.)
@@ -117,9 +121,6 @@ in
           source $file
         done
       '';
-      home.file."${templateFile}" = {
-        source = ./nix/flake-template.nix;
-      };
       sessionVariables = {
         NIX_TEMPLATE_FILE = templateFile;
         EDITOR = "nvim";
@@ -174,8 +175,7 @@ in
           nrbnoreload;
           exec zsh;
         '';
-        "nns" = "new-nix-shell";
-        "nnf" = "new-nix-flake";
+        "nnf" = "new_nix_flake";
         "nps" = "nix-search";
         "nss" = "ls -1 /nix/store | grep";
         "nsd" = "nix-store --delete";
