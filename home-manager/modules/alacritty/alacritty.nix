@@ -71,8 +71,8 @@ in {
 
           [keyboard]
           bindings = [
-            { key = "PageUp", mods = "~Alt", action = "ScrollHalfPageUp" },
-            { key = "PageDown", mods = "~Alt", action = "ScrollHalfPageDown" },
+            { key = "PageUp", action = "ScrollHalfPageUp" },
+            { key = "PageDown", action = "ScrollHalfPageDown" },
           ]
 
           # Colors 
