@@ -69,19 +69,13 @@ in
                   y = 0;
                 };
               };
-              bindings = [
-                {
-                  key = "PageUp";
-                  mode = "~Alt";
-                  action = "ScrollHalfPageUp";
-                }
-                {
-                  key = "PageDown";
-                  mode = "~Alt";
-                  action = "ScrollHalfPageDown";
-                }
-              ];
             }}
+
+            [keyboard]
+            bindings = [
+              { key = "PageUp", mods = "~Alt", action = "ScrollHalfPageUp" },
+              { key = "PageDown", mods = "~Alt", action = "ScrollHalfPageDown" },
+            ]
 
             # Colors 
             ${std.serde.toTOML {
