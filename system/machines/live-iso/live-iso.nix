@@ -1,5 +1,4 @@
-{ inputs, pkgs, ... }:
-{
+{ inputs, pkgs, ... }: {
   imports = [
     "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     # Provide an initial copy of the NixOS channel so that the user
@@ -7,13 +6,11 @@
     "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
   ];
 
-  environment.systemPackages = with pkgs; [
-    (writeScriptBin "partition" (builtins.readFile ./partition))
-  ];
+  environment.systemPackages = with pkgs;
+    [ (writeScriptBin "partition" (builtins.readFile ./partition)) ];
 
   # Enable SSH in the boot process.
-  systemd.services.sshd.wantedBy =
-    pkgs.lib.mkForce [ "multi-user.target" ];
+  systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
   users.users.root.openssh.authorizedKeys.keys = [
     "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"

@@ -1,5 +1,4 @@
-{ lib, username, isDarwin, ... }:
-{
+{ lib, username, isDarwin, ... }: {
   nixpkgs.config = {
     allowUnfree = true;
     allowBroken = false;
@@ -25,7 +24,7 @@
       interval = lib.mkIf isDarwin {
         Weekday = 5;
         Hour = 19;
-        Minute = 00;
+        Minute = 0;
       };
     };
 
@@ -36,7 +35,7 @@
       interval = lib.mkIf isDarwin {
         Weekday = 6;
         Hour = 19;
-        Minute = 00;
+        Minute = 0;
       };
     };
 

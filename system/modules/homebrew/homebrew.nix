@@ -1,11 +1,8 @@
 # This module is used to install Homebrew on Darwin.
 # It unfortunately depends on a user, but also is a system module.
 
-{ inputs, pkgs, username, ... }:
-{
-  imports = [
-    inputs.nix-homebrew.darwinModules.nix-homebrew
-  ];
+{ inputs, pkgs, username, ... }: {
+  imports = [ inputs.nix-homebrew.darwinModules.nix-homebrew ];
 
   nix-homebrew = {
     # Install Homebrew under the default prefix
@@ -44,7 +41,6 @@
       defaults import "$(basename "$plist" .xml)" "$plist"
     done
   '';
-
 
   # Could use something like this to set custom shortcuts
   # system.defaults = {
@@ -97,7 +93,6 @@
     ];
     brews = [ ]; # e.g. "trippy"
 
-    extraConfig = ''
-    '';
+    extraConfig = "";
   };
 }

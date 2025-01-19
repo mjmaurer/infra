@@ -1,9 +1,7 @@
 # Programs I need to survive (and also partition)
 { lib, isDarwin, pkgs, ... }:
-let
-  isNixOS = !isDarwin;
-in
-lib.mkMerge [
+let isNixOS = !isDarwin;
+in lib.mkMerge [
   {
     environment.systemPackages = with pkgs; [
       which
@@ -24,13 +22,9 @@ lib.mkMerge [
     ];
   }
   (lib.optionalAttrs isNixOS {
-    environment.systemPackages = with pkgs; [
-      parted
-    ];
+    environment.systemPackages = with pkgs; [ parted ];
     programs = {
-      zsh = {
-        enable = true;
-      };
+      zsh = { enable = true; };
       git = {
         enable = true;
         lfs.enable = true;

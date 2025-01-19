@@ -1,5 +1,4 @@
-{ config, username, ... }:
-{
+{ config, username, ... }: {
   sops = {
     # Generate age key based on SSH key to this path
     age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];

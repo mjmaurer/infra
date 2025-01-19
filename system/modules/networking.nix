@@ -3,9 +3,8 @@ let
   # The hostname is the name of the derivation in flake.nix
   hostname = derivationName;
   isNixOS = !isDarwin;
-in
-# TODO: https://github.com/dmadisetti/.dots/blob/template/nix/common/harden.nix
-lib.mkMerge [
+  # TODO: https://github.com/dmadisetti/.dots/blob/template/nix/common/harden.nix
+in lib.mkMerge [
   {
     # In all systems, the flake depends on hostname already being set.
     # However, we still set it here to be explicit.
@@ -18,9 +17,7 @@ lib.mkMerge [
     };
   })
   (lib.optionalAttrs isDarwin {
-    networking = {
-      computerName = derivationName;
-    };
+    networking = { computerName = derivationName; };
     # Don't think we need this. It was requiring sudo access every switch.
     # system.defaults.smb.NetBIOSName = derivationName;
   })

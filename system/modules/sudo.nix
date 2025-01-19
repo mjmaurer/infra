@@ -1,5 +1,4 @@
-{ pkgs, config, ... }:
-{
+{ pkgs, config, ... }: {
   security.sudo = {
     enable = true;
     extraRules = [{

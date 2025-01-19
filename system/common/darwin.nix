@@ -1,17 +1,11 @@
-{ config, pkgs, derivationName, username, lib, ... }:
-{
+{ config, pkgs, derivationName, username, lib, ... }: {
   # Never change this here.
   system.stateVersion = lib.mkDefault 5;
 
-  imports = [
-    ./_base.nix
-    ../modules/homebrew/homebrew.nix
-  ];
+  imports = [ ./_base.nix ../modules/homebrew/homebrew.nix ];
 
   environment = {
-    systemPath = [
-      "/opt/homebrew/bin"
-    ];
+    systemPath = [ "/opt/homebrew/bin" ];
     # To make this consistent with nixos
     # Symlinks to `/run/current-system/sw`
     pathsToLink = [ "/Applications" ];
@@ -61,7 +55,8 @@
       KeyRepeat = 3;
 
       # "com.apple.swipescrolldirection" = false; # enable natural scrolling(default to true)
-      "com.apple.sound.beep.feedback" = 0; # disable beep sound when pressing volume up/down key
+      "com.apple.sound.beep.feedback" =
+        0; # disable beep sound when pressing volume up/down key
 
       NSAutomaticCapitalizationEnabled = false;
       NSAutomaticDashSubstitutionEnabled = false;
@@ -79,9 +74,7 @@
         DSDontWriteNetworkStores = true;
         DSDontWriteUSBStores = true;
       };
-      "com.apple.AdLib" = {
-        allowApplePersonalizedAdvertising = false;
-      };
+      "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
       # Prevent Photos from opening automatically when plugging in certain removable media
       "com.apple.ImageCapture".disableHotPlug = true;
     };

@@ -1,5 +1,4 @@
-{ config, pkgs, lib, ... }:
-{
+{ config, pkgs, lib, ... }: {
 
   imports = [
     ../modules/nix.nix
@@ -16,9 +15,7 @@
   environment = {
     # Permissible shells
     shells = [ pkgs.zsh pkgs.bash ];
-    variables = {
-      EDITOR = "nvim";
-    };
+    variables = { EDITOR = "nvim"; };
   };
 
   # fonts.fontDir.enable = true; # DANGER
