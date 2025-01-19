@@ -41,114 +41,91 @@
     # nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     # nixos-wsl.inputs.flake-utils.follows = "flake-utils";
   };
-  outputs =
-    { self
-    , nixpkgs
-    , nixpkgs-stable
-    , home-manager
-    , nixos-hardware
-    , sops-nix
-    , nix-colors
-    , nix-std
-    , nix-homebrew
-    , impermanence
-    , flake-utils
-    , darwin
-    , ...
-    } @ inputs:
+  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nixos-hardware
+    , sops-nix, nix-colors, nix-std, nix-homebrew, impermanence, flake-utils
+    , darwin, ... }@inputs:
     let
       defaultUsername = "mjmaurer";
-      forEachSystem = f: flake-utils.lib.eachDefaultSystem (system:
-        let
-          pkgs = nixpkgs.legacyPackages.${system};
-          sops-nix-pkgs = sops-nix.packages.${system};
-        in
-        f { inherit system pkgs sops-nix-pkgs; });
-      withConfig =
-        { system
-        , derivationName
-        , username ? defaultUsername
-        }: rec {
-          mkSpecialArgs = {
-            # The `specialArgs` parameter passes the
-            # non-default arguments to nix modules.
-            # Default arguments are things like `pkgs`, `lib`, etc.
+      forEachSystem = f:
+        flake-utils.lib.eachDefaultSystem (system:
+          let
+            pkgs = nixpkgs.legacyPackages.${system};
+            sops-nix-pkgs = sops-nix.packages.${system};
+          in f { inherit system pkgs sops-nix-pkgs; });
+      withConfig = { system, derivationName, username ? defaultUsername }: rec {
+        mkSpecialArgs = {
+          # The `specialArgs` parameter passes the
+          # non-default arguments to nix modules.
+          # Default arguments are things like `pkgs`, `lib`, etc.
 
-            inherit inputs username derivationName;
-            pkgs-stable = nixpkgs-stable.legacyPackages.${system};
-            colors = import ./lib/colors.nix {
-              lib = nixpkgs.lib;
-            };
-            isDarwin = system == "aarch64-darwin";
+          inherit inputs username derivationName;
+          pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+          colors = import ./lib/colors.nix { lib = nixpkgs.lib; };
+          isDarwin = system == "aarch64-darwin";
+        };
+        mkHomeManagerStandalone = { modules ? [ ] }:
+          home-manager.lib.homeManagerConfiguration {
+            extraSpecialArgs = mkSpecialArgs;
+            # See here on legacyPackages vs import: 
+            # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
+            pkgs = nixpkgs.legacyPackages.${system};
+            modules = modules;
           };
-          mkHomeManagerStandalone =
-            { modules ? [ ] }: home-manager.lib.homeManagerConfiguration {
-              extraSpecialArgs = mkSpecialArgs;
-              # See here on legacyPackages vs import: 
-              # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
-              pkgs = nixpkgs.legacyPackages.${system};
-              modules = modules;
-            };
-          mkHomeManagerModuleConfig = { homeModule, homeStateVersion }: {
-            # Keep these false so home-manager and nixos derivations don't diverge.
-            # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
-            # To instead use the global (system-level) pkgs, set to true.
-            home-manager.useGlobalPkgs = false;
-            # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
-            home-manager.useUserPackages = false;
-            home-manager.extraSpecialArgs = mkSpecialArgs;
-            # home-manager.verbose = true;
-            home-manager.users.${username} = homeModule;
-            home-manager.sharedModules = [
+        mkHomeManagerModuleConfig = { homeModule, homeStateVersion }: {
+          # Keep these false so home-manager and nixos derivations don't diverge.
+          # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
+          # To instead use the global (system-level) pkgs, set to true.
+          home-manager.useGlobalPkgs = false;
+          # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
+          home-manager.useUserPackages = false;
+          home-manager.extraSpecialArgs = mkSpecialArgs;
+          # home-manager.verbose = true;
+          home-manager.users.${username} = homeModule;
+          home-manager.sharedModules = [
+            { home.stateVersion = homeStateVersion; }
+            sops-nix.homeManagerModules.sops
+          ];
+        };
+        mkDarwinSystem = { systemStateVersion, homeStateVersion
+          , systemModules ? [ ./system/common/darwin.nix ]
+          , homeModule ? import ./home-manager/common/mac.nix }:
+          darwin.lib.darwinSystem {
+            system = if system == "aarch64-darwin" then
+              system
+            else
+              throw "System must be aarch64-darwin";
+            specialArgs = mkSpecialArgs;
+            modules = [
+              sops-nix.darwinModules.sops
+              home-manager.darwinModules.home-manager
+              (mkHomeManagerModuleConfig {
+                inherit homeModule homeStateVersion;
+              })
               {
-                home.stateVersion = homeStateVersion;
+                system.stateVersion = systemStateVersion;
               }
-              sops-nix.homeManagerModules.sops
-            ];
+              # impermanence.nixosModules.impermanence
+            ] ++ systemModules;
           };
-          mkDarwinSystem =
-            { systemStateVersion
-            , homeStateVersion
-            , systemModules ? [ ./system/common/darwin.nix ]
-            , homeModule ? import ./home-manager/common/mac.nix
-            }: darwin.lib.darwinSystem {
-              system = if system == "aarch64-darwin" then system else throw "System must be aarch64-darwin";
-              specialArgs = mkSpecialArgs;
-              modules = [
-                sops-nix.darwinModules.sops
-                home-manager.darwinModules.home-manager
-                (mkHomeManagerModuleConfig {
-                  inherit homeModule homeStateVersion;
-                })
-                {
-                  system.stateVersion = systemStateVersion;
-                }
-                # impermanence.nixosModules.impermanence
-              ] ++ systemModules;
-            };
-          mkNixosSystem =
-            { systemStateVersion
-            , homeStateVersion ? null
-            , systemModules ? [ ./system/common/nixos.nix ]
-            , homeModule ? import ./home-manager/common/nixos.nix
-            }: nixpkgs.lib.nixosSystem {
-              system = system;
-              specialArgs = mkSpecialArgs;
-              modules = [
-                sops-nix.nixosModules.sops
-                (nixpkgs.lib.optionalAttrs (homeStateVersion != null) (home-manager.nixosModules.home-manager
+        mkNixosSystem = { systemStateVersion, homeStateVersion ? null
+          , systemModules ? [ ./system/common/nixos.nix ]
+          , homeModule ? import ./home-manager/common/nixos.nix }:
+          nixpkgs.lib.nixosSystem {
+            system = system;
+            specialArgs = mkSpecialArgs;
+            modules = [
+              sops-nix.nixosModules.sops
+              (nixpkgs.lib.optionalAttrs (homeStateVersion != null)
+                (home-manager.nixosModules.home-manager
                   (mkHomeManagerModuleConfig {
                     inherit homeModule homeStateVersion;
                   })))
-                {
-                  system.stateVersion = systemStateVersion;
-                }
-                impermanence.nixosModules.impermanence
-              ] ++ systemModules;
-            };
-        };
-    in
-    {
+              { system.stateVersion = systemStateVersion; }
+              impermanence.nixosModules.impermanence
+            ] ++ systemModules;
+          };
+      };
+    in {
       nixosConfigurations = {
 
         live-iso = (withConfig {
@@ -156,9 +133,7 @@
           derivationName = "live-iso";
         }).mkNixosSystem {
           systemStateVersion = "24.05";
-          systemModules = [
-            ./system/machines/live-iso/live-iso.nix
-          ];
+          systemModules = [ ./system/machines/live-iso/live-iso.nix ];
         };
         #   core = nixpkgs.lib.nixosSystem {
         #     system = "x86_64-linux";
@@ -199,9 +174,7 @@
             modules = {
               git.signingKey = "33EBB38F3D20DBB8";
               commonShell = {
-                dirHashes = {
-                  box = "$HOME/Library/CloudStorage/Box-Box/";
-                };
+                dirHashes = { box = "$HOME/Library/CloudStorage/Box-Box/"; };
               };
             };
           };
@@ -234,11 +207,8 @@
         };
       };
 
-    } // forEachSystem (
-      { system, pkgs, sops-nix-pkgs }:
-      {
-        packages = import ./pkgs/pkgs.nix { inherit self pkgs; };
-        devShells = import ./shell.nix { inherit pkgs sops-nix-pkgs; };
-      }
-    );
+    } // forEachSystem ({ system, pkgs, sops-nix-pkgs }: {
+      packages = import ./pkgs/pkgs.nix { inherit self pkgs; };
+      devShells = import ./shell.nix { inherit pkgs sops-nix-pkgs; };
+    });
 }
