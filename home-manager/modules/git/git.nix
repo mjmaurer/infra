@@ -2,8 +2,7 @@
 let
   cfg = config.modules.git;
   email = "mjmaurer777@gmail.com";
-in
-{
+in {
   options.modules.git = {
     enable = lib.mkEnableOption "git";
 
@@ -16,7 +15,8 @@ in
     credentialStore = lib.mkOption {
       type = lib.types.str;
       default = "";
-      description = "The gcm credential store to use. Leaving unset automatically uses OS-appropriate store (but doesn't support linux).";
+      description =
+        "The gcm credential store to use. Leaving unset automatically uses OS-appropriate store (but doesn't support linux).";
     };
   };
 
@@ -48,7 +48,8 @@ in
         credential = {
           helper = "manager";
           "https://github.com".username = "mjmaurer";
-          credentialStore = lib.mkIf (cfg.credentialStore != "") cfg.credentialStore;
+          credentialStore =
+            lib.mkIf (cfg.credentialStore != "") cfg.credentialStore;
         };
         # merge.tool = "vscode";
         # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";

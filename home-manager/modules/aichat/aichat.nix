@@ -1,11 +1,7 @@
 { lib, config, pkgs, ... }:
-let
-  cfg = config.modules.aichat;
-in
-{
-  options.modules.aichat = {
-    enable = lib.mkEnableOption "aichat";
-  };
+let cfg = config.modules.aichat;
+in {
+  options.modules.aichat = { enable = lib.mkEnableOption "aichat"; };
 
   config = lib.mkIf cfg.enable {
     home.packages = [ pkgs.aichat ];
@@ -25,12 +21,8 @@ in
     };
 
     xdg.configFile = {
-      "aichat/config.yaml" = {
-        source = ./config.yaml;
-      };
-      "aichat/light.tmTheme" = {
-        source = ./light.tmTheme;
-      };
+      "aichat/config.yaml" = { source = ./config.yaml; };
+      "aichat/light.tmTheme" = { source = ./light.tmTheme; };
     };
 
     modules.commonShell = {

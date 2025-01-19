@@ -2,24 +2,18 @@
 let
   cfg = config.modules.duplicacy;
   conf = "/etc/duplicacy/duplicacy.conf";
-  backup = "backup -limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
-in
-{
-  options.modules.duplicacy = {
-    enable = lib.mkEnableOption "duplicacy";
-  };
+  backup =
+    "backup -limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
+in {
+  options.modules.duplicacy = { enable = lib.mkEnableOption "duplicacy"; };
 
   config = lib.mkIf cfg.enable {
-    home.packages = with pkgs; [
-      duplicacy
-    ];
+    home.packages = with pkgs; [ duplicacy ];
 
     nixpkgs = {
       config = {
         allowUnfreePredicate = pkg:
-          builtins.elem (pkgs.lib.getName pkg) [
-            "duplicacy"
-          ];
+          builtins.elem (pkgs.lib.getName pkg) [ "duplicacy" ];
       };
     };
 

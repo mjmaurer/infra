@@ -3,9 +3,7 @@
 {
   imports = [ ./linux.nix ];
 
-  modules.commonShell = {
-    machineName = config.networking.hostName;
-  };
+  modules.commonShell = { machineName = config.networking.hostName; };
 
   modules = {
     wayland.enable = true;
@@ -13,7 +11,6 @@
     # Not built for darwin, so installed via homebrew:
     ente-auth.enable = true;
   };
-
 
   # services = {
   #   gpg-agent = {

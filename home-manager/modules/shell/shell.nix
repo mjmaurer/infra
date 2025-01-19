@@ -3,8 +3,7 @@ let
   inherit (config.home) packages;
   templateFile = "${config.xdg.dataHome}/nix-templates/flake-template.nix";
   cfg = config.modules.commonShell;
-in
-{
+in {
   options.modules.commonShell = {
     enableBash = lib.mkOption {
       type = lib.types.bool;
@@ -85,16 +84,14 @@ in
   config = {
     modules.bash.enable = cfg.enableBash;
     modules.zsh.enable = cfg.enableZsh;
-    home.file."${templateFile}" = {
-      source = ./nix/flake-template.nix;
-    };
+    home.file."${templateFile}" = { source = ./nix/flake-template.nix; };
     modules.commonShell = {
       initExtraFirst = ''
         # Load home manager session variables (XDG_CONFIG_HOME, etc.)
         # The unset is a hack to source the file multiple times as needed
         unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 
-        ${lib.optionalString (osConfig?sops) ''
+        ${lib.optionalString (osConfig ? sops) ''
           # --------------------------------- SOPS Secrets --------------------------------
           source ${osConfig.sops.templates."shell.env".path}
         ''}
@@ -170,7 +167,8 @@ in
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
         "ndu" = "nix flake update";
-        "nrbnoreload" = lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
+        "nrbnoreload" =
+          lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
         "nrb" = ''
           nrbnoreload;
           exec zsh;
@@ -189,13 +187,15 @@ in
         # TODO: We could instead specify each hostname in the flake.nix
         # It will use that for switch when no derivation is specified
         # 'noload' because you need to source the shell afterwards (which `hmswitch` does)
-        "hmswitchnoload" = "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
+        "hmswitchnoload" =
+          "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
         # `hmswitch` is defined per-shell
         "hms" = "hmswitch";
         "dtail" = "docker logs -tf --tail='50'";
         "dstop" = "docker stop `docker ps -aq`";
         "dlog" = "docker logs ";
-        "dtop" = "docker run --name ctop  -it --rm -v /var/run/docker.sock:/var/run/docker.sock quay.io/vektorlab/ctop";
+        "dtop" =
+          "docker run --name ctop  -it --rm -v /var/run/docker.sock:/var/run/docker.sock quay.io/vektorlab/ctop";
         "dps" = "docker ps ";
         "dcrneup" = "docker compose up -f ~/docker-compose.yml -d ";
         "dcup" = "docker compose up -d ";

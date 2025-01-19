@@ -3,19 +3,12 @@ with lib;
 let
   cfg = config.modules.zsh;
   commonShell = config.modules.commonShell;
-in
-{
-  options.modules.zsh = {
-    enable = lib.mkEnableOption "zsh";
-  };
+in {
+  options.modules.zsh = { enable = lib.mkEnableOption "zsh"; };
 
   config = lib.mkIf cfg.enable {
 
-    home.file = {
-      ".p10k.zsh" = {
-        source = ./p10k.zsh;
-      };
-    };
+    home.file = { ".p10k.zsh" = { source = ./p10k.zsh; }; };
 
     programs.zsh = {
       enable = true;
@@ -127,7 +120,18 @@ in
       oh-my-zsh = {
         enable = true;
         # Others: direnv
-        plugins = [ "vi-mode" "thefuck" "aws" "docker" "helm" "kubectl" "yarn" "poetry" "tailscale" "tmux" ];
+        plugins = [
+          "vi-mode"
+          "thefuck"
+          "aws"
+          "docker"
+          "helm"
+          "kubectl"
+          "yarn"
+          "poetry"
+          "tailscale"
+          "tmux"
+        ];
         # theme = "robbyrussell";
         extraConfig = ''
           # --------------------------------- FZF-Tab -------------------------------- 

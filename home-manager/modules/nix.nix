@@ -1,5 +1,4 @@
-{ lib, ... }:
-{
+{ lib, ... }: {
   nix = {
     # This is also set for system in system/modules/nix.nix
     # We should probably move to top-level config

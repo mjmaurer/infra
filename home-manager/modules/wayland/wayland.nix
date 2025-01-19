@@ -3,11 +3,8 @@ let
   cfg = config.modules.wayland;
   swayfont = "MesloLGS NF 14";
   modifier = "Mod1";
-in
-{
-  options.modules.wayland = {
-    enable = lib.mkEnableOption "wayland";
-  };
+in {
+  options.modules.wayland = { enable = lib.mkEnableOption "wayland"; };
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [
@@ -44,9 +41,7 @@ in
             format = "{}";
             max-length = 50;
           };
-          "sway/mode" = {
-            format = "{}";
-          };
+          "sway/mode" = { format = "{}"; };
           clock = {
             format = "{:%H:%M}";
             tooltip-format = "{:%Y-%m-%d | %H:%M}";
@@ -169,9 +164,7 @@ in
           };
         };
         output = {
-          "*" = {
-            bg = "${../../artwork/lakelucerne.jpeg} center";
-          };
+          "*" = { bg = "${../../artwork/lakelucerne.jpeg} center"; };
         };
         colors.focused = {
           background = colors.hex colors.dark;
@@ -227,8 +220,7 @@ in
           };
         };
         bars = [ ];
-        startup = [
-        ];
+        startup = [ ];
       };
     };
   };

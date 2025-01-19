@@ -12,11 +12,8 @@ let
   #         sha256 = "sha256-cPZCV8xk9QpU49/7H8iGhQYK6JwWjviL29eWabuqruc=";
   #       };
   #     };
-in
-{
-  options.modules.tmux = {
-    enable = lib.mkEnableOption "tmux";
-  };
+in {
+  options.modules.tmux = { enable = lib.mkEnableOption "tmux"; };
 
   config = lib.mkIf cfg.enable {
     programs.tmux = {
