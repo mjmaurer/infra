@@ -108,7 +108,7 @@ in
           source ${osConfig.sops.templates."shell.env".path}
         ''}
 
-        source ${./common-shellrc.sh}
+        source ${./defaults.sh}
 
         # --------------------------------- FZF --------------------------------
         for file in ${./fzf}/*.sh; do
