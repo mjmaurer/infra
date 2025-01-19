@@ -1,6 +1,7 @@
 { osConfig ? null, pkgs, lib, config, derivationName, ... }:
 let
   inherit (config.home) packages;
+  templateFile = "${config.xdg.dataHome}/nix-templates/flake-template.nix";
 in
 {
   options.modules.commonShell = {
@@ -75,27 +76,8 @@ in
   };
 
   config = {
-    xdg.dataFile = {
-      "nix-templates/flake-template.nix" = {
-        source = ./nix/flake-template.nix;
-      };
-    };
     home.packages = [
-      (pkgs.writeScriptBin "new-nix-shell" (builtins.readFile ./nix/new-nix-shell.sh))
       (pkgs.writeScriptBin "new-nix-flake" (builtins.readFile ./nix/new-nix-flake.sh))
-      (pkgs.writeShellScriptBin "pydbw" ''
-        echo "python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client $@"
-        echo "Use 'pydb -m' for modules"
-        echo "May need to activate venv\n"
-        echo "Waiting for debugger to attach..."
-        exec python -Xfrozen_modules=off -m debugpy --listen 5678 --wait-for-client "$@"
-      '')
-      (pkgs.writeShellScriptBin "pydb" ''
-        echo "python -Xfrozen_modules=off -m debugpy --listen 5678 $@"
-        echo "Use 'pydb -m' for modules"
-        echo "May need to activate venv"
-        exec python -Xfrozen_modules=off -m debugpy --listen 5678 "$@"
-      '')
     ];
     modules.commonShell = {
       initExtraFirst = ''
@@ -119,8 +101,22 @@ in
         for file in ${./misc}/*.sh; do
           source $file
         done
+
+        # --------------------------------- Language-Specific --------------------------------
+        for file in ${./langs}/*.sh; do
+          source $file
+        done
+
+        # --------------------------------- Nix --------------------------------
+        for file in ${./nix}/*.sh; do
+          source $file
+        done
       '';
+      home.file."${templateFile}" = {
+        source = ./nix/flake-template.nix;
+      };
       sessionVariables = {
+        NIX_TEMPLATE_FILE = templateFile;
         EDITOR = "nvim";
         VISUAL = "nvim";
         BOBBY_PORT = 7850;

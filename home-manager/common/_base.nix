@@ -20,7 +20,7 @@
   imports = [
     inputs.nix-colors.homeManagerModule
 
-    ./shell/common-shell.nix
+    ./shell/shell.nix
 
     ../modules/nix.nix
 
