@@ -22,7 +22,7 @@ in
         '';
       };
       initExtra = commonShell.assembleInitExtra ./.bashrc;
-      profileExtra = builtins.readFile ./.profile;
+      # profileExtra = builtins.readFile ./.profile;
     };
   };
 }

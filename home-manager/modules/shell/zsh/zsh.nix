@@ -84,7 +84,7 @@ in
         # prompt powerlevel10k
       '';
       initExtra = commonShell.assembleInitExtra ./.zshrc;
-      profileExtra = builtins.readFile ./.zprofile;
+      # profileExtra = builtins.readFile ./.zprofile;
       history = {
         size = 10000;
         # append = true;

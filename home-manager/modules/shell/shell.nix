@@ -2,9 +2,18 @@
 let
   inherit (config.home) packages;
   templateFile = "${config.xdg.dataHome}/nix-templates/flake-template.nix";
+  cfg = config.modules.commonShell;
 in
 {
   options.modules.commonShell = {
+    enableBash = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+    };
+    enableZsh = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+    };
     dirHashes = lib.mkOption {
       default = { };
       type = lib.types.attrs;
@@ -55,9 +64,9 @@ in
     assembleInitExtra = lib.mkOption {
       type = lib.types.functionTo lib.types.str;
       default = shellSpecificFile: ''
-        ${config.modules.commonShell.initExtraFirst}
+        ${cfg.initExtraFirst}
         ${builtins.readFile shellSpecificFile}
-        ${config.modules.commonShell.initExtraLast}
+        ${cfg.initExtraLast}
       '';
       description = ''
         A function that assembles the initExtra string.
@@ -65,6 +74,11 @@ in
       '';
     };
   };
+
+  imports = [
+    (lib.mkIf cfg.enableBash ./bash/bash.nix)
+    (lib.mkIf cfg.enableZsh ./zsh/zsh.nix)
+  ];
 
   config = {
     home.packages = [

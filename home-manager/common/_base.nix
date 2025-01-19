@@ -20,7 +20,7 @@
   imports = [
     inputs.nix-colors.homeManagerModule
 
-    ./shell/shell.nix
+    ../modules/shell/shell.nix
 
     ../modules/nix.nix
 
@@ -28,10 +28,8 @@
     ../modules/continuedev/continuedev.nix
     ../modules/karabiner/karabiner.nix
     ../modules/obsidian/obsidian.nix
-    ../modules/zsh/zsh.nix
     ../modules/crypt/crypt.nix
     ../modules/git/git.nix
-    ../modules/bash/bash.nix
     ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
     ../modules/aerospace/aerospace.nix
