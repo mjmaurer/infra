@@ -22,6 +22,8 @@
     # ];
   };
 
+  modules.smbClient.enable = true;
+
   services.nix-daemon.enable = true;
 
   # Add ability to used TouchID for sudo authentication

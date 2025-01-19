@@ -6,6 +6,8 @@
     ../modules/users.nix
     ../modules/networking.nix
     ../modules/programs.nix
+    ../modules/smb-client.nix
+
     ../modules/sops
   ];
 

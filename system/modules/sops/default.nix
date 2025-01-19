@@ -18,11 +18,15 @@
       #   owner = config.users.users.${username}.name;
       #   group = config.users.groups.${username}.name;
       # };
+      gpgAuthKeygrip = { };
+
+      smbHost = { };
+      smbUrl = { };
+
       apiKeyAnthropic = { };
       apiKeyCodestral = { };
       apiKeyVoyage = { };
       apiKeyOpenai = { };
-      gpgAuthKeygrip = { };
     };
     templates = {
       "shell.env" = {
