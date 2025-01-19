@@ -5,15 +5,6 @@ let
 in
 {
   options.modules.commonShell = {
-    # TODO: remove
-    machineName = lib.mkOption {
-      type = lib.types.str;
-      description = ''
-        RC common to all shells. Should be compatible 
-      '';
-      default = "unset";
-      readOnly = true;
-    };
     dirHashes = lib.mkOption {
       default = { };
       type = lib.types.attrs;
