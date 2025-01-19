@@ -85,6 +85,7 @@
       "homerow"
       "alt-tab"
       "bitwarden"
+      "superwhisper"
       # "spotify"
       # "slack"
       # "zoom"

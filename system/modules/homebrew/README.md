@@ -8,7 +8,8 @@ See README.md for updating homebrew packages.
 Run the following to export plists to the infra.
 
 ```
-_DOMAIN=com.lwouis.alt-tab-macos
+_APP_PATH=/Applications/superwhisper.app
+_DOMAIN=$(mdls -name kMDItemCFBundleIdentifier $_APP_PATH | awk -F'"' '{print $2}')
 defaults export $_DOMAIN - >> ~/infra/system/modules/homebrew/initial-plists/$_DOMAIN.xml
 # NOTE: Clean XML before committing
 ```

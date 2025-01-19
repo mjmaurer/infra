@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>KeyboardShortcuts_actionSubmit</key>
+	<string>{"carbonKeyCode":36,"carbonModifiers":0}</string>
+	<key>KeyboardShortcuts_cancelRecording</key>
+	<string>{"carbonModifiers":0,"carbonKeyCode":53}</string>
+	<key>KeyboardShortcuts_changeMode</key>
+	<string>{"carbonKeyCode":9,"carbonModifiers":6912}</string>
+	<key>KeyboardShortcuts_eighthMode</key>
+	<string>{"carbonKeyCode":28,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_fifthMode</key>
+	<string>{"carbonKeyCode":23,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_firstMode</key>
+	<string>{"carbonKeyCode":18,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_fourthMode</key>
+	<string>{"carbonKeyCode":21,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_navigateDown</key>
+	<string>{"carbonKeyCode":125,"carbonModifiers":0}</string>
+	<key>KeyboardShortcuts_navigateUp</key>
+	<string>{"carbonKeyCode":126,"carbonModifiers":0}</string>
+	<key>KeyboardShortcuts_ninthMode</key>
+	<string>{"carbonKeyCode":25,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_pushToTalk</key>
+	<string>{"carbonKeyCode":49,"carbonModifiers":2048}</string>
+	<key>KeyboardShortcuts_secondMode</key>
+	<string>{"carbonKeyCode":19,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_seventhMode</key>
+	<string>{"carbonKeyCode":26,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_sixthMode</key>
+	<string>{"carbonKeyCode":22,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_thirdMode</key>
+	<string>{"carbonKeyCode":20,"carbonModifiers":256}</string>
+	<key>KeyboardShortcuts_toggleRecording</key>
+	<string>{"carbonKeyCode":9,"carbonModifiers":6400}</string>
+	<key>activeModeKey</key>
+	<string>default</string>
+	<key>closeRecordingViewEnabled</key>
+	<true/>
+	<key>enableSilenceRemoval</key>
+	<true/>
+	<key>hasLaunchedBefore</key>
+	<true/>
+	<key>launchOnLogin</key>
+	<true/>
+	<key>licenseValid</key>
+	<false/>
+	<key>pushToTalkEnabled</key>
+	<true/>
+	<key>recordingViewCoordinateX</key>
+	<integer>660</integer>
+	<key>recordingViewCoordinateY</key>
+	<integer>660</integer>
+	<key>recordingViewIsMinimized</key>
+	<false/>
+	<key>selectedDeviceID</key>
+	<string>BuiltInMicrophoneDevice</string>
+	<key>showAdvancedFeatures</key>
+	<true/>
+	<key>usedFreeSeconds</key>
+	<integer>5</integer>
+	<key>voiceModelActiveDelay</key>
+	<real>600</real>
+</dict>
+</plist>
