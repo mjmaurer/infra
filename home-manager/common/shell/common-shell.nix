@@ -137,6 +137,7 @@ in
         "batl" = "bat --plain --color=always --style numbers";
         "t" = "tree --gitignore";
         "ta" = "tree --gitignore -a";
+        "twd" = "tmux_pwd";
         "rn" = "npm run";
         "rnx" = "npx";
         "ry" = "yarn";

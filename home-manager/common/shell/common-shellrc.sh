@@ -240,13 +240,13 @@ dexec() {
 }
 
 # When the direnv extension starts working, we can probably deprecate this
-vscode_tmux_nix() {
+tmux_pwd() {
     # Variables
-    DIR_PATH=$1
+    DIR_PATH=${1:-$(pwd)}
     SESSION_NAME=$(basename $DIR_PATH)
-    WINDOW_NAME="vscode"
+    WINDOW_NAME="base"
     # TODO: Change to $SHELL after moving to nixos
-    COMMAND="zsh -c 'if [ -f \"./flake.nix\" ]; then nix develop --command \"zsh\"; elif [ -f \"./shell.nix\" ]; then nix-shell --command \"zsh\"; else zsh; fi'"
+    # COMMAND="zsh -c 'if [ -f \"./flake.nix\" ]; then nix develop --command \"zsh\"; elif [ -f \"./shell.nix\" ]; then nix-shell --command \"zsh\"; else zsh; fi'"
 
     echo $SESSION_NAME
     # Check if the tmux session exists
@@ -255,13 +255,13 @@ vscode_tmux_nix() {
         # Check if the window exists
         if ! tmux list-windows -t $SESSION_NAME -F '#W' | grep -q "^${WINDOW_NAME}$"; then
             echo "Creating new window: $WINDOW_NAME"
-            tmux new-window -t $SESSION_NAME -n $WINDOW_NAME "$COMMAND"
+            tmux new-window -t $SESSION_NAME -n $WINDOW_NAME $SHELL
         else
             echo "Window $WINDOW_NAME already exists"
         fi
     else
         echo "Creating new session: $SESSION_NAME"
-        tmux new-session -d -s $SESSION_NAME -n $WINDOW_NAME "$COMMAND"
+        tmux new-session -d -s $SESSION_NAME -n $WINDOW_NAME $SHELL
     fi
     tmux attach-session -t $SESSION_NAME
 }
