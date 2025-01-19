@@ -1,7 +1,7 @@
 keys:
   # Admins
   - &admins
-    - &mjmaurer 12FCCDCC759F2395C495D154702DC991871434E7
+    - &mjmaurer B3BA2EB7DD7FD95682FB2123470DDCD84F727EEE
   # Machines
   - &machines
     - &aspen age17pf8qd9zefu470e8q2sa23w4ws8k7wgth5rdc2ejsn3462ae9fusuul83c

@@ -8,7 +8,7 @@ in {
 
     signingKey = lib.mkOption {
       type = lib.types.str;
-      default = "FBEB175D449FFC2B";
+      default = "791D2FBA6E8C2722";
       description = "The ID of the gpg signing key to use.";
     };
 

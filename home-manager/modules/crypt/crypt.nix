@@ -19,6 +19,8 @@ in {
         (builtins.readFile ./scripts/yubikey-addgpg.sh))
       (pkgs.writeScriptBin "ssh-host-bootstrap"
         (builtins.readFile ./scripts/ssh-host-bootstrap.sh))
+      (pkgs.writeScriptBin "gpg-new-key"
+        (builtins.readFile ./scripts/gpg-new-key.sh))
     ];
 
     # TODO: https://developer.okta.com/blog/2021/07/07/developers-guide-to-gpg#use-your-gpg-key-on-multiple-computers
@@ -88,6 +90,7 @@ in {
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run mkdir -p "$HOME/.ssh"
         # This might break if the comment changes.
+        # This might be better: gpg --export-ssh-key mjmaurer777@gmail.com
         run export _YBPK="$(${pkgs.openssh}/bin/ssh-add -L | grep "cardno")"
         if [ -n "$_YBPK" ]; then
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
@@ -95,6 +98,7 @@ in {
         else
           run echo "No GPG SSH key with 'cardno' comment found."
           run echo "It's possible that ssh-agent is interfering with gpg-agent. See `home-manager/.../crypt.nix`"
+          run echo "You also might need to nix-rebuild with your Yubikey inserted."
 
           # Mac runs ssh-agent natively, which sets SSH_AUTH_SOCK.
           # We attempt to stop it via variable above.

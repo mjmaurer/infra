@@ -2,6 +2,8 @@
 # ------------------------------------ Defaults ----------------------------------- #
 # Sourced first 
 
+# https://askubuntu.com/questions/441744/pressing-enter-produces-m-instead-of-a-newline
+stty sane
 
 # ------------------------------------ FD ----------------------------------- #
 
