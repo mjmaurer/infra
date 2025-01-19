@@ -1,5 +1,4 @@
-{ inputs, config, pkgs, lib, username, ... }:
-{
+{ inputs, config, pkgs, lib, username, ... }: {
   # imports = lib.pipe ../modules [
   #   builtins.readDir
   #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
@@ -19,7 +18,6 @@
 
   imports = [
     inputs.nix-colors.homeManagerModule
-
 
     ../modules/nix.nix
 
@@ -69,67 +67,66 @@
     enable = true;
   };
 
-  home =
-    {
-      # This might be set by the home-manager module for Darwin / NixOS
-      username = lib.mkDefault username;
-      file = {
-        # TODO: Move to flake.nix
-        ".config/nix/nix.conf".text = ''
-          # Enable flakes
-          experimental-features = nix-command flakes
-        '';
-        # Used for various REPLs (python, psql, etc.)
-        ".inputrc".text = ''
-          # Show completion options immediately without requiring a second tab
-          set show-all-if-ambiguous on
-          set completion-ignore-case on
-          # Add trailing slash to completed [symlinked] directory names
-          set mark-directories on
-          set mark-symlinked-directories on
-          set match-hidden-files on
-          # Show file type indicators (*/=>@|) for completions
-          set visible-stats on
-          set keymap vi
-          set editing-mode vi-insert
-        '';
-      };
-      packages = with pkgs; [
-        # Fonts
-        meslo-lgs-nf
-
-        # Nix
-        nil
-        nixpkgs-fmt
-        nix-prefetch-git
-        nix-search-cli
-        nixfmt
-        vulnix
-
-        # Git
-        git-lfs
-        gh
-
-        # Other
-        ripgrep
-        rclone
-        glow
-        yt-dlp
-        gdown
-        bat
-        fd
-        tree
-        devenv
-        wget
-        neofetch
-        unzip
-        speedtest-cli
-        p7zip
-        thefuck
-        awscli2
-        tldr
-      ];
+  home = {
+    # This might be set by the home-manager module for Darwin / NixOS
+    username = lib.mkDefault username;
+    file = {
+      # TODO: Move to flake.nix
+      ".config/nix/nix.conf".text = ''
+        # Enable flakes
+        experimental-features = nix-command flakes
+      '';
+      # Used for various REPLs (python, psql, etc.)
+      ".inputrc".text = ''
+        # Show completion options immediately without requiring a second tab
+        set show-all-if-ambiguous on
+        set completion-ignore-case on
+        # Add trailing slash to completed [symlinked] directory names
+        set mark-directories on
+        set mark-symlinked-directories on
+        set match-hidden-files on
+        # Show file type indicators (*/=>@|) for completions
+        set visible-stats on
+        set keymap vi
+        set editing-mode vi-insert
+      '';
     };
+    packages = with pkgs; [
+      # Fonts
+      meslo-lgs-nf
+
+      # Nix
+      nil
+      nix-prefetch-git
+      nix-search-cli
+      nixfmt-classic
+      # nixpkgs-fmt
+      vulnix
+
+      # Git
+      git-lfs
+      gh
+
+      # Other
+      ripgrep
+      rclone
+      glow
+      yt-dlp
+      gdown
+      bat
+      fd
+      tree
+      devenv
+      wget
+      neofetch
+      unzip
+      speedtest-cli
+      p7zip
+      thefuck
+      awscli2
+      tldr
+    ];
+  };
 
   programs = {
     direnv = {
