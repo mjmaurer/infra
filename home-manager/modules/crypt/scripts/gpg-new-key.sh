@@ -2,6 +2,8 @@
 #                                    Create                                    #
 # ---------------------------------------------------------------------------- #
 
+killall gpg-agent
+
 EXISTING_GPGHOME=$GNUPGHOME
 # Create a temporary directory for GPG operations
 export GNUPGHOME=$(mktemp -d -t gnupg-$(date +%Y-%m-%d)-XXXXXXX)
@@ -10,6 +12,7 @@ echo "Running in $GNUPGHOME"
 
 cd $GNUPGHOME
 cp $EXISTING_GPGHOME/gpg.conf .
+cp $EXISTING_GPGHOME/gpg-agent.conf .
 # gpgr
 
 
