@@ -69,6 +69,18 @@ in
                   y = 0;
                 };
               };
+              bindings = [
+                {
+                  key = "PageUp";
+                  mode = "~Alt";
+                  action = "ScrollHalfPageUp";
+                }
+                {
+                  key = "PageDown";
+                  mode = "~Alt";
+                  action = "ScrollHalfPageDown";
+                }
+              ];
             }}
 
             # Colors 
