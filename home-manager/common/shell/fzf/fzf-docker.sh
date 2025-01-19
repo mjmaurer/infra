@@ -1,4 +1,5 @@
-#!/bin/bash
+# ------------------------------------ FZF: Docker ------------------------------------ #
+
 # From https://github.com/MartinRamm/fzf-docker/blob/master/docker-fzf
 
 # $1 (Optionally) - if present (value doesn't matter), this test checks if any containers exist. Else, if active (running) containers exis

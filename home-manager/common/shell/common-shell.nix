@@ -13,14 +13,6 @@ in
       default = "unset";
       readOnly = true;
     };
-    # TODO: Probably don't need this and initExtra
-    rc = lib.mkOption {
-      default = builtins.readFile ./common-shellrc.sh;
-      type = lib.types.str;
-      description = ''
-        RC common to all shells. Should be compatible 
-      '';
-    };
     dirHashes = lib.mkOption {
       default = { };
       type = lib.types.attrs;
@@ -72,7 +64,6 @@ in
       type = lib.types.functionTo lib.types.str;
       default = shellSpecificFile: ''
         ${config.modules.commonShell.initExtraFirst}
-        ${config.modules.commonShell.rc}
         ${builtins.readFile shellSpecificFile}
         ${config.modules.commonShell.initExtraLast}
       '';
@@ -108,14 +99,26 @@ in
     ];
     modules.commonShell = {
       initExtraFirst = ''
+        # Load home manager session variables (XDG_CONFIG_HOME, etc.)
+        # The unset is a hack to source the file multiple times as needed
+        unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
         ${lib.optionalString (osConfig?sops) ''
           # --------------------------------- SOPS Secrets --------------------------------
           source ${osConfig.sops.templates."shell.env".path}
         ''}
-        # --------------------------------- FZF-Git --------------------------------
-        source ${./fzf/fzf-git.sh}
-        source ${./fzf/fzf-docker.sh}
-        source ${./fzf/fzf-search-alias.sh}
+
+        source ${./common-shellrc.sh}
+
+        # --------------------------------- FZF --------------------------------
+        for file in ${./fzf}/*.sh; do
+          source $file
+        done
+
+        # --------------------------------- Misc --------------------------------
+        for file in ${./misc}/*.sh; do
+          source $file
+        done
       '';
       sessionVariables = {
         EDITOR = "nvim";
@@ -127,8 +130,6 @@ in
         JELLYFIN_WEB_PORT = 8096;
         DERIVATION_NAME = derivationName;
         # .git would otherwise be hidden
-        FD_DEFAULT_OPTS = "--hidden --follow --exclude .git";
-        RG_DEFAULT_OPTS = "--color=always --smart-case --hidden --glob=!.git/";
       };
       dirHashes = { };
       shellAliases = {
