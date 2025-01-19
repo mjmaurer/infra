@@ -20,10 +20,10 @@
   imports = [
     inputs.nix-colors.homeManagerModule
 
-    ../modules/shell/shell.nix
 
     ../modules/nix.nix
 
+    ../modules/shell/shell.nix
     ../modules/alacritty/alacritty.nix
     ../modules/continuedev/continuedev.nix
     ../modules/karabiner/karabiner.nix
@@ -49,8 +49,6 @@
   systemd.user.startServices = "sd-switch";
 
   modules = {
-    zsh.enable = true;
-    bash.enable = true;
     tmux.enable = true;
     aider.enable = true;
     aichat.enable = true;
