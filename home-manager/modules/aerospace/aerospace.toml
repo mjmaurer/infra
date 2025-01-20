@@ -68,6 +68,7 @@ cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
 cmd-ctrl-semicolon = 'workspace other --auto-back-and-forth'
+cmd-ctrl-quote = 'workspace creds --auto-back-and-forth'
 
 # alt-shift-t = 'move-node-to-workspace terminal'
 cmd-ctrl-shift-e = [
@@ -295,17 +296,12 @@ run = 'move-node-to-workspace terminal'
 [[on-window-detected]]
 if.app-id = 'io.ente.auth.mac'
 check-further-callbacks = false
-run = 'move-node-to-workspace other'
+run = 'move-node-to-workspace creds'
 
 [[on-window-detected]]
-if.app-id = 'com.electron.dockerdesktop'
+if.app-id = 'com.bitwarden.desktop'
 check-further-callbacks = false
-run = 'move-node-to-workspace other'
-
-[[on-window-detected]]
-if.app-id = 'com.runningwithcrayons.Alfred-Preferences'
-check-further-callbacks = false
-run = 'move-node-to-workspace other'
+run = 'move-node-to-workspace creds'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.Preview'
@@ -339,6 +335,18 @@ run = ['layout floating']
 
 [[on-window-detected]]
 if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
+check-further-callbacks = false
+run = ['layout floating']
+
+[[on-window-detected]]
+if.app-id = 'com.apple.SystemProfiler'
+check-further-callbacks = false
+run = ['layout floating']
+
+# Catch-all for 'other'
+[[on-window-detected]]
+# if.app-name-regex-substring = '^(?!.*system).*$'
+if.app-name-regex-substring = ''
 check-further-callbacks = false
 run = ['layout floating']
 

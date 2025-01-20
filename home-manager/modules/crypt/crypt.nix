@@ -40,6 +40,7 @@ in {
         scdaemonSettings = {
           # Avoids the problem where GnuPG will repeatedly prompt
           # for the insertion of an already-inserted YubiKey
+          # like: "gpg: OpenPGP card not available: Operation not supported by device"
           # "disable-ccid" = true;
           # reader-port = "Yubico Yubikey";
           # log-file = "/tmp/gpg-scdaemon.log";

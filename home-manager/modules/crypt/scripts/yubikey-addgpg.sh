@@ -13,6 +13,15 @@ read -s CERTIFY_PASS
 read -s ADMIN_PIN
 read KEYID
 
+echo "admin"
+echo "login"
+echo "mjmaurer777@gmail.com"
+echo "save"
+
+echo "trust"
+echo "5"
+echo "save"
+
 echo "Then for each subkey run:"
 echo "key X (where X is 1,2, or 3)"
 echo "keytocard"

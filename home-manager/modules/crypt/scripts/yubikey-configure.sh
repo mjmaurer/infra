@@ -11,7 +11,7 @@ if ! ykman info >/dev/null 2>&1; then
     exit 1
 fi
 
-
+# FIDO U2F, FIDO2
 echo "First, let's change the admin FIDO PIN"
 echo "Choose a secure alphanumeric PIN of 8 or more characters"
 ykman fido access change-pin
