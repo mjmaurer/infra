@@ -54,12 +54,10 @@ cmd-ctrl-shift-comma = 'resize width -150'
 cmd-ctrl-shift-period = 'resize width +150'
 
 # See workspaces_extra mode for additional workspace switching bindings
-# alt-t = ['workspace terminal --auto-back-and-forth']
 cmd-ctrl-v = 'workspace games --auto-back-and-forth'
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
 cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
 cmd-ctrl-m = 'workspace music --auto-back-and-forth'
-# cmd-ctrl-f = 'workspace files --auto-back-and-forth'
 cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
 cmd-ctrl-e = 'workspace code --auto-back-and-forth'
 cmd-ctrl-w = 'workspace web --auto-back-and-forth'
@@ -319,9 +317,14 @@ check-further-callbacks = false
 run = 'move-node-to-workspace files'
 
 [[on-window-detected]]
+if.app-id = 'com.microsoft.Excel'
+check-further-callbacks = false
+run = 'move-node-to-workspace files'
+
+[[on-window-detected]]
 if.app-id = 'com.apple.finder'
 check-further-callbacks = false
-run = ['layout floating', 'move-node-to-workspace files']
+run = 'move-node-to-workspace files'
 
 [[on-window-detected]]
 if.app-id = 'org.eyebeam.SelfControl'
