@@ -6,7 +6,7 @@ in {
   # home.file = {
   #   ".config/aerospace/aerospace.toml" = { source = ./aerospace.toml; };
   #   ".local/bin/tmux-match-focus-vscode.sh" = {
-  #     source = ./tmux-match-focus-vscode.sh;
+  #     source = ./match-focus.sh;
   #     executable = true;
   #   };
   # };
