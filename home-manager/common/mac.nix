@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./_base.nix ];
+  imports = [ ./_base.nix ../modules/karabiner/karabiner.nix ];
 
   # This might be set by the home-manager module for Darwin
   # This is kept for HM-only systems
@@ -9,10 +9,6 @@
 
   modules = {
     obsidian = {
-      enable = true;
-      justConfig = true;
-    };
-    karabiner = {
       enable = true;
       justConfig = true;
     };

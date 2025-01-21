@@ -82,6 +82,7 @@
       "alt-tab"
       "bitwarden"
       "superwhisper"
+      "karabiner-elements"
       # "spotify"
       # "slack"
       # "zoom"

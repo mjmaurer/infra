@@ -24,7 +24,6 @@
     ../modules/shell/shell.nix
     ../modules/alacritty/alacritty.nix
     ../modules/continuedev/continuedev.nix
-    ../modules/karabiner/karabiner.nix
     ../modules/obsidian/obsidian.nix
     ../modules/crypt/crypt.nix
     ../modules/git/git.nix
