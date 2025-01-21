@@ -1,0 +1,24 @@
+{ lib, config, pkgs, ... }:
+let aerospace = pkgs.aerospace;
+in {
+  environment.systemPackages = [ aerospace ];
+
+  # home.file = {
+  #   ".config/aerospace/aerospace.toml" = { source = ./aerospace.toml; };
+  #   ".local/bin/tmux-match-focus-vscode.sh" = {
+  #     source = ./tmux-match-focus-vscode.sh;
+  #     executable = true;
+  #   };
+  # };
+
+  launchd.user.agents.aerospace = {
+    command =
+      "${aerospace}/Applications/AeroSpace.app/Contents/MacOS/AeroSpace --config-path ${
+        ./aerospace.toml
+      }";
+    serviceConfig = {
+      KeepAlive = true;
+      RunAtLoad = true;
+    };
+  };
+}

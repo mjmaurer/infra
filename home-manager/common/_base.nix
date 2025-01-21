@@ -30,7 +30,6 @@
     ../modules/git/git.nix
     ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
-    ../modules/aerospace/aerospace.nix
     ../modules/aider/aider.nix
     ../modules/neovim/neovim.nix
     ../modules/aichat/aichat.nix

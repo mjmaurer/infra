@@ -2,7 +2,11 @@
   # Never change this here.
   system.stateVersion = lib.mkDefault 5;
 
-  imports = [ ./_base.nix ../modules/homebrew/homebrew.nix ];
+  imports = [
+    ./_base.nix
+    ../modules/homebrew/homebrew.nix
+    ../modules/aerospace/aerospace.nix
+  ];
 
   environment = {
     systemPath = [ "/opt/homebrew/bin" ];

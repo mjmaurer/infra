@@ -12,10 +12,6 @@
       enable = true;
       justConfig = true;
     };
-    aerospace = {
-      enable = true;
-      justConfig = true;
-    };
     karabiner = {
       enable = true;
       justConfig = true;
@@ -31,6 +27,7 @@
         # cd to top Finder window
         "cdf" = ''
           cd "$(osascript -e 'tell app "Finder" to POSIX path of (insertion location as alias)')"'';
+        "al" = "aerospace list-apps";
       };
     };
   };
