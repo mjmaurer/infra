@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>NSNavLastRootDirectory</key>
+	<string>/Applications</string>
+	<key>SUEnableAutomaticChecks</key>
+	<false/>
+	<key>SUHasLaunchedBefore</key>
+	<true/>
+	<key>SUSendProfileInfo</key>
+	<false/>
+	<key>rules</key>
+	<array>
+		<dict>
+			<key>bundleIdentifier</key>
+			<string>com.hnc.Discord</string>
+			<key>bundlePath</key>
+			<string>/Applications/Discord.app</string>
+			<key>inactiveHideInterval</key>
+			<real>0.0</real>
+			<key>inactiveQuitInterval</key>
+			<real>600</real>
+			<key>quitIfHiddenInterval</key>
+			<real>0.0</real>
+		</dict>
+		<dict>
+			<key>bundleIdentifier</key>
+			<string>io.ente.auth.mac</string>
+			<key>bundlePath</key>
+			<string>/Applications/Ente Auth.app</string>
+			<key>inactiveHideInterval</key>
+			<real>0.0</real>
+			<key>inactiveQuitInterval</key>
+			<real>600</real>
+			<key>quitIfHiddenInterval</key>
+			<real>0.0</real>
+		</dict>
+	</array>
+</dict>
+</plist>
