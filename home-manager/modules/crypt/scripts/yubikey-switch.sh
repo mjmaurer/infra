@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+echo "run 'gpg --import gpg.pub' to import the public key"
 gpg-connect-agent "scd serialno" "learn --force" /bye 
+
 
 # Alternative:
 
@@ -12,4 +14,4 @@ gpg-connect-agent "scd serialno" "learn --force" /bye
 # done
 
 # # gpgconf --kill gpg-agent
-gpg --card-status
+# gpg --card-status

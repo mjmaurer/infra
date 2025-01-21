@@ -11,15 +11,17 @@ echo "Converting SSH host public key to age format."
 echo "Add this to `.sops.yaml` for the new host:"
 sudo cat /etc/ssh/ssh_host_ed25519_key.pub | ssh-to-age
 
+sops updatekeys 
+
 # TODO: use this instead to avoid temp file:
-read -s SSH_TO_AGE_PASSPHRASE; export SSH_TO_AGE_PASSPHRASE
+# read -s SSH_TO_AGE_PASSPHRASE; export SSH_TO_AGE_PASSPHRASE
 # Need to unencrypt the key to convert it to age 
-cp ./id_ed25519 /tmp/id_ed25519
-ssh-keygen -p -N "" -f /tmp/id_ed25519
-mkdir -p ~/.config/sops/age
-echo "Converting SSH key to age key store at: ~/.config/sops/age/keys.txt"
-ssh-to-age -private-key -i /tmp/id_ed25519 > ~/.config/sops/age/keys.txt
-rm /tmp/id_ed25519
+# cp ./id_ed25519 /tmp/id_ed25519
+# ssh-keygen -p -N "" -f /tmp/id_ed25519
+# mkdir -p ~/.config/sops/age
+# echo "Converting SSH key to age key store at: ~/.config/sops/age/keys.txt"
+# ssh-to-age -private-key -i /tmp/id_ed25519 > ~/.config/sops/age/keys.txt
+# rm /tmp/id_ed25519
 
 echo "Where would you like to backup the SSH key pair?"
 read -r backup_location
