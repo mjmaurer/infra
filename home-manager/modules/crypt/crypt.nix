@@ -98,7 +98,7 @@ in {
           run chmod 600 ~/.ssh/id_rsa_yubikey.pub
         else
           run echo "No GPG SSH key with 'cardno' comment found."
-          run echo "It's possible that ssh-agent is interfering with gpg-agent. See `home-manager/.../crypt.nix`"
+          run echo "It's possible that ssh-agent is interfering with gpg-agent. See 'home-manager/.../crypt.nix'"
           run echo "You also might need to nix-rebuild with your Yubikey inserted."
 
           # Mac runs ssh-agent natively, which sets SSH_AUTH_SOCK.
