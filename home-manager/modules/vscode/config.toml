@@ -1,6 +1,4 @@
+# See ./README.md
 vscode_version = "1.96.0"
 
-extensions = [
-    "github.copilot-chat",
-    "github.vscode-pull-request-github"
-]
+extensions = ["github.copilot-chat", "github.vscode-pull-request-github"]
