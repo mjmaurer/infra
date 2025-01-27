@@ -21,6 +21,13 @@ let
       before = [ "<leader>" "e" "n" ];
       commands = [ "editor.action.rename" ];
     }
+    # Prefix-------------------------- Git Leader --------------------------
+    {
+      # git blame diff head (diff blame commit against head for file)
+      # See what has changed since the commit
+      before = [ "<leader>" "g" "c" ];
+      commands = [ "gitlens.copyRemoteFileUrlToClipboard" ];
+    }
   ];
 in {
   "[R]" = { "editor.wordWrap" = "on"; };
