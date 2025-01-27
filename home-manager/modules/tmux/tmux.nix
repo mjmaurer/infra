@@ -16,8 +16,16 @@ in {
   options.modules.tmux = { enable = lib.mkEnableOption "tmux"; };
 
   config = lib.mkIf cfg.enable {
+    xdg.configFile = {
+      # AI? what is tmuxp?
+      "tmuxp" = {
+        source = ./tmuxp;
+        recursive = true;
+      };
+    };
     programs.tmux = {
       enable = true;
+      tmuxp.enable = true;
       shell = "${pkgs.zsh}/bin/zsh";
       terminal = "xterm-256color";
       historyLimit = 100000;

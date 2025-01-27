@@ -1,0 +1,15 @@
+#! /usr/bin/env zsh
+
+_cur_name=$1
+_new_name=$2
+
+_clients=$(tmux list-clients | grep "$_cur_name")
+if [ -z "$_clients" ]; then
+    echo "Error: No tmux clients found matching '$_cur_name'"
+    return 1
+fi
+
+echo "$_clients" | awk -F: '{print $1, $2}' | while read device_name full_name; do
+    echo "Switching $full_name to $_new_name"
+    tmux switch-client -c "$device_name" -t "$_new_name"
+done

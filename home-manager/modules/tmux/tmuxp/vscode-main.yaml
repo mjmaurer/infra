@@ -1,0 +1,12 @@
+# https://tmuxp.git-pull.com/configuration/examples.html#bootstrap-project-before-launch
+# before_script: "${MY_ENV_VAR}/test3.sh"
+session_name: ${WORKSPACE}
+windows:
+  - window_name: base
+    options:
+      automatic-rename: false
+    panes:
+      # an empty string will be treated as a carriage return (think direnv is causing issues)
+      - shell_command:
+          - cmd: ""
+        focus: true

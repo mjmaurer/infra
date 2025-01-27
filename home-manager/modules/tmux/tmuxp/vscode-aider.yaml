@@ -1,0 +1,14 @@
+shell_command_before: "mkdir -p .devdata/.aider"
+session_name: ${WORKSPACE}-aider
+windows:
+  - window_name: aider
+    options:
+      automatic-rename: false
+    panes:
+      - shell_command:
+          - aider --sonnet --watch-files --vim --chat-mode ask
+        focus: true
+  # - window_name: aider-watch
+  #   panes:
+  #     - shell_command:
+  #         - aider --sonnet --watch-files 

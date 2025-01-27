@@ -37,6 +37,7 @@
   "debug.javascript.autoAttachFilter" = "disabled";
   "diffEditor.codeLens" = true;
   "diffEditor.useInlineViewWhenSpaceIsLimited" = false;
+  "direnv.restart.automatic" = true;
   "editor.accessibilitySupport" = "off";
   "editor.cursorStyle" = "line";
   "editor.inlineSuggest.enabled" = true;
@@ -104,6 +105,19 @@
   "java.project.importOnFirstTimeStartup" = "automatic";
   "java.refactor.renameFromFileExplorer" = "autoApply";
   "javascript.updateImportsOnFileMove.enabled" = "always";
+  # "jest.enable": false,
+  # "jest.debugMode": true,
+  # "jest.runMode": "on-demand",
+  # "jest.outputConfig": "terminal-based",
+  # "jest.jestCommandLine": "npm test",
+  # "jest.shell": {
+  #     "path": "nix",
+  #     "args": [
+  #         "develop",
+  #         "--command",
+  #         "zsh"
+  #     ]
+  # }
   "keyboard.dispatch" = "keyCode";
   launch = {
     compounds = [ ];
@@ -117,6 +131,7 @@
         trace = true;
         type = "node";
       }
+      # Options: https://github.com/microsoft/vscode-js-debug/blob/main/OPTIONS.md
       {
         name = "Browser: Chrome";
         request = "launch";
@@ -125,16 +140,27 @@
         smartStep = true;
         type = "chrome";
         url = "http://localhost:3000";
+        # This will have to be setup after first use
         userDataDir = "\${userHome}/.vscode/chrome";
         webRoot = "\${workspaceRoot}/src";
       }
       {
+        # Works for tests / files.
+        # Tests might need pytest enabled
+
+        # Right now, refresh is broken for integrated terminal.
+        # It still works for console, but let's wait
+        # https://github.com/microsoft/vscode-python-debugger/issues/338
         console = "integratedTerminal";
         justMyCode = true;
         name = "Python: Debug Current File";
         program = "\${file}";
+
+        # This works for non-test files too for
+        # some reason.
         purpose = [ "debug-test" ];
         request = "launch";
+        # type "python" is deprecated but means the same
         type = "debugpy";
       }
       {
@@ -157,6 +183,21 @@
         request = "launch";
         type = "debugpy";
       }
+
+      # {
+      #     "name": "Python: Poetry",
+      #     "type": "debugpy",
+      #     "request": "launch",
+      #     "module": "poetry",
+      #     "args": [
+      #         "${input:command}"
+      #     ],
+      #     "purpose": [
+      #         "debug-test"
+      #     ],
+      #     "console": "integratedTerminal",
+      #  justMyCode = true
+      # }
       {
         args = "\${input:args}";
         console = "integratedTerminal";
@@ -314,6 +355,12 @@
       path = "zsh";
     };
   };
+  # "terminal.integrated.automationProfile.osx": {
+  #     "path": "zsh",
+  #     "args": [
+  #         "-l",
+  #     ]
+  # },
   "terminal.integrated.scrollback" = 10000;
   "terminal.integrated.showExitAlert" = true;
   "terminal.integrated.tabs.enabled" = false;
@@ -321,7 +368,10 @@
   "typescript.updateImportsOnFileMove.enabled" = "always";
   "vim.insertModeKeyBindings" = [ ];
   "vim.leader" = "<space>";
+  "vim.statusBarColorControl" = false;
+  "vim.useSystemClipboard" = true;
   "vim.normalModeKeyBindingsNonRecursive" = [
+    # Prefix---------------------------- Editor Raw ---------------------------
     {
       before = [ "<leader>" "d" ];
       commands = [ "editor.action.showDefinitionPreviewHover" ];
@@ -358,6 +408,7 @@
       before = [ "<leader>" "r" ];
       commands = [ "editor.action.rename" ];
     }
+    # Prefix-------------------------- Editor Leader --------------------------
     {
       before = [ "<leader>" "e" "r" ];
       commands = [ "editor.action.startFindReplaceAction" ];
@@ -366,6 +417,7 @@
       before = [ "<leader>" "e" "n" ];
       commands = [ "editor.action.rename" ];
     }
+    # Prefix------------------------- LLM / AI / Cursor -------------------------
     {
       before = [ "<leader>" "A" ];
       commands = [ "composer.createNew" ];
@@ -374,30 +426,38 @@
       before = [ "<leader>" "a" ];
       commands = [ "aipopup.action.modal.generate" ];
     }
+    # Prefix---------------------------- Git -----------------------------
     {
       before = [ "<leader>" "g" "s" ];
       commands = [ "gitlens.copyShaToClipboard" ];
     }
     {
+      # git blame diff head (diff blame commit against head for file)
+      # See what has changed since the commit
       before = [ "<leader>" "g" "b" "h" ];
       commands = [ "gitlens.diffLineWithWorking" ];
     }
     {
+      # git show blame commit
       before = [ "<leader>" "g" "b" "b" ];
       commands = [ "gitlens.diffLineWithPrevious" ];
     }
     {
+      # Duplicated in case I forget
       before = [ "<leader>" "g" "g" ];
       commands = [ "gitlens.diffLineWithPrevious" ];
     }
     {
+      # Diff current file with most recent previous version of it
       before = [ "<leader>" "g" "h" ];
       commands = [ "gitlens.diffWithPreviousInDiffRight" ];
     }
     {
+      # Diff current file with most recent previous version of it
       before = [ "<leader>" "g" "l" ];
       commands = [ "gitlens.diffWithNextInDiffRight" ];
     }
+    # Prefix-------------------------- Debugging --------------------------
     {
       before = [ "<leader>" "b" "r" ];
       commands = [ "workbench.action.debug.restart" ];
@@ -438,6 +498,7 @@
       before = [ "<leader>" "b" "j" ];
       commands = [ "debug.jumpToCursor" ];
     }
+    # Prefix--------------------- Movement: Left / Right -----------------------
     {
       before = [ "H" ];
       commands = [ "workbench.action.previousEditor" ];
@@ -454,6 +515,7 @@
       before = [ "<leader>" "l" "l" ];
       commands = [ "workbench.action.openNextRecentlyUsedEditorInGroup" ];
     }
+    # Prefix--------------------- Movement: Up / Down ------------------------
     {
       before = [ "J" ];
       commands = [ "editor.gotoNextFold" ];
@@ -463,6 +525,8 @@
       commands = [ "editor.gotoPreviousFold" ];
     }
     {
+      # Jumplist prev
+      # "<C-o>"
       before = [ "<leader>" "j" "j" ];
       commands = [ "workbench.action.navigateBack" ];
     }
@@ -495,8 +559,6 @@
       commands = [ "workbench.action.editor.previousChange" ];
     }
   ];
-  "vim.statusBarColorControl" = false;
-  "vim.useSystemClipboard" = true;
   "vim.visualModeKeyBindingsNonRecursive" = [
     {
       before = [ "<leader>" "p" ];
