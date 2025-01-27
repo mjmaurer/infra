@@ -84,6 +84,7 @@ in {
         .aider*
         .aider.conf.yml
         .aiderignore
+        .devdata/
       '';
     };
   };
