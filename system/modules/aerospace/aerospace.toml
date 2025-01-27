@@ -347,11 +347,11 @@ check-further-callbacks = false
 run = ['layout floating']
 
 # Catch-all for 'other'
-[[on-window-detected]]
+# [[on-window-detected]]
 # if.app-name-regex-substring = '^(?!.*system).*$'
-if.app-name-regex-substring = ''
-check-further-callbacks = false
-run = ['layout floating']
+# if.app-name-regex-substring = ''
+# check-further-callbacks = false
+# run = ['layout floating']
 
 
 # [[on-window-detected]]
