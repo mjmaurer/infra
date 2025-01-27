@@ -1,4 +1,28 @@
-{
+let
+  vimNormalAndVisual = [
+    {
+      before = [ "<leader>" "p" ];
+      commands = [ "workbench.action.showCommands" ];
+    }
+    {
+      before = [ "<leader>" "a" "a" ];
+      commands = [ "inlineChat.start" ];
+    }
+    # Prefix-------------------------- Editor Leader --------------------------
+    {
+      before = [ "<leader>" "e" "e" ];
+      commands = [ "editor.action.addCommentLine" ];
+    }
+    {
+      before = [ "<leader>" "e" "r" ];
+      commands = [ "editor.action.startFindReplaceAction" ];
+    }
+    {
+      before = [ "<leader>" "e" "n" ];
+      commands = [ "editor.action.rename" ];
+    }
+  ];
+in {
   "[R]" = { "editor.wordWrap" = "on"; };
   "[css]" = {
     "editor.defaultFormatter" = "stylelint.vscode-stylelint";
@@ -40,7 +64,9 @@
   "direnv.restart.automatic" = true;
   "editor.accessibilitySupport" = "off";
   "editor.cursorStyle" = "line";
+  # copilot suggest
   "editor.inlineSuggest.enabled" = true;
+  "editor.inlineSuggest.showToolbar" = true;
   "editor.lineNumbers" = "on";
   "editor.minimap.enabled" = false;
   "editor.multiCursorModifier" = "ctrlCmd";
@@ -376,7 +402,7 @@
   "vim.leader" = "<space>";
   "vim.statusBarColorControl" = false;
   "vim.useSystemClipboard" = true;
-  "vim.normalModeKeyBindingsNonRecursive" = [
+  "vim.normalModeKeyBindingsNonRecursive" = vimNormalAndVisual ++ [
     # Prefix---------------------------- Editor Raw ---------------------------
     {
       before = [ "<leader>" "d" ];
@@ -385,10 +411,6 @@
     {
       before = [ "<leader>" ";" ];
       commands = [ "workbench.action.quickSwitchWindow" ];
-    }
-    {
-      before = [ "<leader>" "p" ];
-      commands = [ "workbench.action.showCommands" ];
     }
     {
       before = [ "<leader>" "i" ];
@@ -414,23 +436,10 @@
       before = [ "<leader>" "r" ];
       commands = [ "editor.action.rename" ];
     }
-    # Prefix-------------------------- Editor Leader --------------------------
-    {
-      before = [ "<leader>" "e" "r" ];
-      commands = [ "editor.action.startFindReplaceAction" ];
-    }
-    {
-      before = [ "<leader>" "e" "n" ];
-      commands = [ "editor.action.rename" ];
-    }
     # Prefix------------------------- LLM / AI / Cursor -------------------------
     {
       before = [ "<leader>" "a" "f" ];
       commands = [ "github.copilot.edits.attachFile" ]; # "composer.createNew"
-    }
-    {
-      before = [ "<leader>" "a" "a" ];
-      commands = [ "inlineChat.start" ];
     }
     # Prefix---------------------------- Git -----------------------------
     {
@@ -565,15 +574,7 @@
       commands = [ "workbench.action.editor.previousChange" ];
     }
   ];
-  "vim.visualModeKeyBindingsNonRecursive" = [
-    {
-      before = [ "<leader>" "p" ];
-      commands = [ "workbench.action.showCommands" ];
-    }
-    {
-      before = [ "<leader>" "a" "a" ];
-      commands = [ "inlineChat.start" ];
-    }
+  "vim.visualModeKeyBindingsNonRecursive" = vimNormalAndVisual ++ [
     {
       before = [ "<leader>" "s" ];
       commands = [ "editor.action.triggerSuggest" ];
