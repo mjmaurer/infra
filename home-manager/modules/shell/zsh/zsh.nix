@@ -33,6 +33,8 @@ in {
         hp = "HEAD~1";
         hpp = "HEAD~2";
         hppp = "HEAD~3";
+        # Ripgrep context / copy mode
+        rgC = "--no-line-number -A 10 -B 10";
         G = "| grep";
         GC = "| grep -C 3";
 

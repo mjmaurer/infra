@@ -15,6 +15,13 @@
       yubikey-personalization
       # yubikey-touch-detector
 
+      fixjson
+
+
+      (pkgs.writeShellScriptBin "json-to-nix" ''
+        nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile \"$1\")"
+      '')
+
       (pkgs.writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
 
