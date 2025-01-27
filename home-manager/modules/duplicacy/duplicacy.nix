@@ -10,12 +10,7 @@ in {
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [ duplicacy ];
 
-    nixpkgs = {
-      config = {
-        allowUnfreePredicate = pkg:
-          builtins.elem (pkgs.lib.getName pkg) [ "duplicacy" ];
-      };
-    };
+    modules.nix = { unfreePackages = [ "duplicacy" ]; };
 
     # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
     # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
