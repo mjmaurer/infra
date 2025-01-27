@@ -41,16 +41,16 @@ verify-ssl: true
 # History Files:
 
 ## Specify the chat input history file (default: .aider.input.history)
-input-history-file: .aider/.aider.input.history
+input-history-file: .devdata/.aider/.aider.input.history
 
 ## Specify the chat history file (default: .aider.chat.history.md)
-chat-history-file: .aider/.aider.chat.history.md
+chat-history-file: .devdata/.aider/.aider.chat.history.md
 
 ## Restore the previous chat history messages (default: False)
 #restore-chat-history: false
 
 ## Log the conversation with the LLM to this file (for example, .aider.llm.history)
-llm-history-file: .aider/.aider.llm.history
+llm-history-file: .devdata/.aider/.aider.llm.history
 
 ##################
 # Output Settings:

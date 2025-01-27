@@ -84,7 +84,19 @@ in {
   config = {
     modules.bash.enable = cfg.enableBash;
     modules.zsh.enable = cfg.enableZsh;
-    home.file."${templateFile}" = { source = ./nix/flake-template.nix; };
+    home.file = {
+      "${templateFile}" = { source = ./nix/flake-template.nix; };
+      # Scripts without '.sh' don't contain functions
+      # and so are added to .local/bin (and thus the PATH so other programs can find them)
+      ".local/bin/tmux_switch_by_name" = {
+        source = ./tmux/tmux-switch-by-name;
+        executable = true;
+      };
+      ".local/bin/tmux_pwd" = {
+        source = ./tmux/tmux-pwd;
+        executable = true;
+      };
+    };
     modules.commonShell = {
       initExtraFirst = ''
         # Load home manager session variables (XDG_CONFIG_HOME, etc.)
@@ -137,7 +149,8 @@ in {
         "batl" = "bat --plain --color=always --style numbers";
         "t" = "tree --gitignore";
         "ta" = "tree --gitignore -a";
-        "twd" = "tmux_pwd";
+        "tmd" = "tmux_pwd";
+        "tms" = "tmux_switch_by_name";
         "rn" = "npm run";
         "rnx" = "npx";
         "ry" = "yarn";
