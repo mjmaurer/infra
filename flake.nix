@@ -33,6 +33,12 @@
       inputs.nix-darwin.follows = "darwin";
       inputs.flake-utils.follows = "flake-utils";
     };
+    nix-vscode-extensions = {
+      url = "github:nix-community/nix-vscode-extensions";
+      # Don't follow nixpkgs so we can update the extensions more frequently.
+      # inputs.nixpkgs.follows = "nixpkgs";
+      # inputs.flake-utils.follows = "flake-utils";
+    };
 
     # Build our own wsl
     # https://github.com/dmadisetti/.dots/blob/template/flake.nix
@@ -42,7 +48,7 @@
   };
   outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nixos-hardware
     , sops-nix, nix-colors, nix-std, nix-homebrew, impermanence, flake-utils
-    , darwin, ... }@inputs:
+    , darwin, nix-vscode-extensions, ... }@inputs:
     let
       defaultUsername = "mjmaurer";
       forEachSystem = f:
@@ -57,7 +63,7 @@
           # non-default arguments to nix modules.
           # Default arguments are things like `pkgs`, `lib`, etc.
 
-          inherit inputs username derivationName;
+          inherit inputs username derivationName system;
           pkgs-stable = nixpkgs-stable.legacyPackages.${system};
           colors = import ./lib/colors.nix { lib = nixpkgs.lib; };
           isDarwin = system == "aarch64-darwin";
@@ -78,6 +84,7 @@
           # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
           home-manager.useUserPackages = false;
           home-manager.extraSpecialArgs = mkSpecialArgs;
+          home-manager.backupFileExtension = "home-manager-existing-backup";
           # home-manager.verbose = true;
           home-manager.users.${username} = homeModule;
           home-manager.sharedModules = [

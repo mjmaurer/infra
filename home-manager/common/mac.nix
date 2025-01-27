@@ -1,7 +1,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./_base.nix ../modules/karabiner/karabiner.nix ];
+  imports = [ ./_base.nix ./headed.nix ../modules/karabiner/karabiner.nix ];
 
   # This might be set by the home-manager module for Darwin
   # This is kept for HM-only systems
@@ -53,8 +53,22 @@
       # 	)
       # fi
     '';
+    postSwitchAddScriptRsync = pkgs.writeShellScript scriptName ''
+    '';
     # `run` is used to obey Nix dry run 
   in lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-    run ${postSwitchAddScript} 
+    # run ${postSwitchAddScriptRsync} 
+    #!/usr/bin/env bash
+    # From https://github.com/LnL7/nix-darwin/issues/214
+
+    # apps_source="$HOME/Applications/Home Manager Apps"
+    apps_source="$genProfilePath/home-path/Applications"
+    # Darwin: apps_source="{config.system.build.applications}/Applications"
+    moniker="Nix Trampolines"
+    app_target_base="$HOME/Applications"
+    app_target="$app_target_base/$moniker"
+    mkdir -p "$app_target"
+    echo "Copying apps from $apps_source to $app_target"
+    ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --copy-unsafe-links --delete "$apps_source/" "$app_target"
   '';
 }

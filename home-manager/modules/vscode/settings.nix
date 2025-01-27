@@ -62,6 +62,11 @@
   "git.autorefresh" = false;
   "git.openRepositoryInParentFolders" = "always";
   "github.copilot.editor.enableAutoCompletions" = true;
+  "github.copilot.chat.scopeSelection" = true;
+  "github.copilot.chat.followUps" = "firstOnly";
+  "github.copilot.chat.startDebugging.enabled" = true;
+  "github.copilot.chat.terminalChatLocation" = "quickChat";
+  "github.copilot.editor.enableCodeActions" = true;
   "github.copilot.enable" = {
     css = true;
     dockerfile = true;
@@ -291,12 +296,12 @@
   "leetcode.workspaceFolder" = "/Users/mmaurer7/code/problems/problems";
   "mypy.enabled" = false;
   "nix.enableLanguageServer" = true;
-  "nix.formatterPath" = "nixpkgs-fmt";
+  "nix.formatterPath" = "nixfmt";
   "nix.serverPath" = "nil";
   "nix.serverSettings" = {
     nil = {
       diagnostics = { ignored = [ "unused_binding" "unused_with" ]; };
-      formatting = { command = [ "nixpkgs-fmt" ]; };
+      formatting = { command = [ "nixfmt" ]; };
     };
   };
   "nixEnvSelector.args" = "--command 'zsh'";
@@ -335,16 +340,16 @@
   "terminal.integrated.allowChords" = false;
   "terminal.integrated.altClickMovesCursor" = false;
   "terminal.integrated.defaultLocation" = "view";
-  "terminal.integrated.defaultProfile.osx" = "tmux-pwd";
   "terminal.integrated.fontFamily" = "'MesloLGS NF'";
   "terminal.integrated.macOptionIsMeta" = true;
-  "terminal.integrated.minimumContrastRatio" = 4;
+  "terminal.integrated.minimumContrastRatio" = 2;
   "terminal.integrated.profiles.linux" = {
     tmux-pwd = {
       args = [ "-l" "-i" "-c" "tmux_pwd \${workspaceFolder}" ];
       path = "zsh";
     };
   };
+  "terminal.integrated.defaultProfile.osx" = "tmux-pwd";
   "terminal.integrated.profiles.osx" = {
     tmux-pwd = {
       args = [ "-l" "-i" "-c" "tmux_pwd \${workspaceFolder}" ];
@@ -365,6 +370,7 @@
   "terminal.integrated.showExitAlert" = true;
   "terminal.integrated.tabs.enabled" = false;
   "testing.openTesting" = "neverOpen";
+  "testing.automaticallyOpenTestResults" = "neverOpen";
   "typescript.updateImportsOnFileMove.enabled" = "always";
   "vim.insertModeKeyBindings" = [ ];
   "vim.leader" = "<space>";
@@ -419,12 +425,12 @@
     }
     # Prefix------------------------- LLM / AI / Cursor -------------------------
     {
-      before = [ "<leader>" "A" ];
-      commands = [ "composer.createNew" ];
+      before = [ "<leader>" "a" "f" ];
+      commands = [ "github.copilot.edits.attachFile" ]; # "composer.createNew"
     }
     {
-      before = [ "<leader>" "a" ];
-      commands = [ "aipopup.action.modal.generate" ];
+      before = [ "<leader>" "a" "a" ];
+      commands = [ "inlineChat.start" ];
     }
     # Prefix---------------------------- Git -----------------------------
     {
@@ -565,8 +571,8 @@
       commands = [ "workbench.action.showCommands" ];
     }
     {
-      before = [ "<leader>" "a" ];
-      commands = [ "aipopup.action.modal.generate" ];
+      before = [ "<leader>" "a" "a" ];
+      commands = [ "inlineChat.start" ];
     }
     {
       before = [ "<leader>" "s" ];
@@ -586,7 +592,7 @@
   "window.customMenuBarAltFocus" = false;
   "window.menuBarVisibility" = "hidden";
   "window.zoomLevel" = 1;
-  "workbench.activityBar.location" = "hidden";
+  "workbench.activityBar.location" = "top";
   "workbench.colorTheme" = "Gruvbox Material Light";
   "workbench.editor.autoLockGroups" = {
     default = false;

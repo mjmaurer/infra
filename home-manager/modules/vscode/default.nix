@@ -1,25 +1,42 @@
 # Includes SSH, GPG, and Yubikey
-{ osConfig ? null, lib, config, isDarwin, pkgs, ... }:
+{ osConfig ? null, lib, config, isDarwin, pkgs, inputs, system, ... }:
 let
   cfg = config.modules.vscode;
   isNixOS = !isDarwin;
+  package = if isNixOS then pkgs.vscode.fhs else pkgs.vscode;
+  vsxmkt = inputs.nix-vscode-extensions.extensions.${system};
+  nix4vscode = (import ./extensions.nix) { inherit pkgs lib; };
+  vscode-marketplace =
+    (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;
 in {
   options.modules.vscode = { };
 
   config = lib.mkMerge [{
+    modules.nix = { unfreePackages = [ "vscode" ]; };
+
     # NOTE: Home-manager vscode doesn't support FHS launch environment.
     # Might be useful if extensions depend on some system libraries.
+
     programs.vscode = {
       enable = true;
+      # Darwin doesn't support FHS launch environment
+      package = package;
       enableUpdateCheck = false;
       enableExtensionUpdateCheck = false;
       # Might cause problems:
       mutableExtensionsDir = true;
       userSettings = import ./settings.nix;
-      keybindings = import ./keybindings.nix;
-      extensions = with pkgs.vscode-extensions; with pkgs.vscode-utils; [
+      userTasks = import ./tasks.nix;
+      keybindings = import ./keybindings.nix { editor = "vscode"; };
+      extensions = (with vscode-marketplace; [
+        # Extensions kept up to date via:
+        # https://github.com/nix-community/nix-vscode-extensions
+        # Get list of extensions: https://github.com/nix-community/nix-vscode-extensions?tab=readme-ov-file#get-extensions-with-flakes
+
+        nix4vscode.github.vscode-pull-request-github
+        nix4vscode.github.copilot-chat
+
         vscodevim.vim
-        github.copilot-chat
         github.copilot
         visualstudioexptteam.intellicode-api-usage-examples
         visualstudioexptteam.vscodeintellicode
@@ -42,7 +59,6 @@ in {
         hashicorp.terraform
         eamodio.gitlens
         github.vscode-github-actions
-        github.vscode-pull-request-github
         ms-azuretools.vscode-docker
         # arrterian.nix-env-selector
 
@@ -50,13 +66,14 @@ in {
         dotjoshjohnson.xml
         grapecity.gc-excelviewer
         jock.svg
-        42crunch.vscode-openapi
+        # "42crunch".vscode-openapi
         tamasfe.even-better-toml
         redhat.vscode-yaml
-        tyriar.luna-paint
+        # tyriar.luna-paint Issue with SHA mismatch
         mrorz.language-gettext
 
-        anysphere.pyright # cursor
+        # TODO anysphere.pyright # cursor
+
         ms-python.black-formatter
         ms-python.debugpy
         ms-python.isort
@@ -107,17 +124,21 @@ in {
         vscjava.vscode-maven
         sohibe.java-generate-setters-getters
 
-      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      ]) ++ (pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+        # Manually added extensions
+
         # {
         #   name = "";
         #   publisher = "";
         #   version = "0.3.1";
         #   sha256 = "sha256-";
         # }
-      ];
-      userTasks = {};
-      languageSnippets = [];
-      globalSnippets = [];
+      ]) ++ (with pkgs.vscode-extensions;
+        [
+          # Extensions from nixpkgs (tend to be outdated)
+        ]);
+      languageSnippets = { };
+      globalSnippets = { };
     };
   }];
 }

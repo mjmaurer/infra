@@ -1,4 +1,20 @@
-[
+{ editor }:
+let
+  editorConf = {
+    cursor = {
+      closeChat = [ "aichat.close-sidebar" ];
+      openWithSelection =
+        [ "aichat.newchataction" "aichat.insertselectionintochat" ];
+      openExisting = [ "aichat.newfollowupaction" ];
+    };
+    vscode = {
+      closeChat = [ "workbench.action.closeAuxiliaryBar" ];
+      openWithSelection = [ "workbench.action.chat.newChat" ];
+      openExisting = [ "workbench.panel.chat.view.copilot.focus" ];
+    };
+  };
+  cfg = editorConf.${editor};
+in [
   {
     command = "workbench.action.compareEditor.nextChange";
     key = "down";
@@ -24,14 +40,15 @@
     key = "alt+e";
     when = "resourceFilename =~ /.*test\\.(js|jsx|ts|tsx)$/";
   }
-  {
-    command = "workbench.action.debug.start";
-    key = "alt+s";
-  }
-  {
-    command = "editor.debug.action.selectionToWatch";
-    key = "alt+shift+s";
-  }
+  # Now used for tmux:
+  # {
+  #   command = "workbench.action.debug.start";
+  #   key = "alt+s";
+  # }
+  # {
+  #   command = "editor.debug.action.selectionToWatch";
+  #   key = "alt+shift+s";
+  # }
   {
     command = "workbench.action.debug.stepOver";
     key = "down";
@@ -89,51 +106,103 @@
     command = "workbench.action.decreaseViewSize";
     key = "alt+,";
   }
+  # Hide / Maximize
   {
     args = {
-      commands = [
-        "workbench.action.closeSidebar"
-        "workbench.action.closePanel"
-        "aichat.close-sidebar"
-      ];
+      commands =
+        [ "workbench.action.closeSidebar" "workbench.action.closePanel" ]
+        ++ cfg.closeChat;
     };
     command = "runCommands";
     key = "alt+escape";
   }
   {
-    command = "workbench.action.toggleMaximizeEditorGroup";
-    key = "alt+shift+o";
+    command = "workbench.action.toggleMaximizedPanel";
+    key = "alt+shift+t";
+  }
+  # Chat / AI Misc
+  {
+    command = "inlineChat.acceptChanges";
+    key = "alt+enter";
+    when = "inlineChatFocused";
   }
   {
+    command = "chatEditor.action.accept";
+    key = "alt+enter";
+    when = "chat.hasEditorModifications && editorFocus";
+  }
+  {
+    command = "chatEditing.acceptAllFiles";
+    key = "alt+enter";
+    when =
+      "hasUndecidedChatEditingResource && inChatInput && !chatSessionRequestInProgress && chatLocation == 'editing-session'";
+  }
+  # Chat open
+  {
     args = {
-      commands = [
-        "workbench.action.closeSidebar"
-        "workbench.action.closePanel"
-        "aichat.newchataction"
-        "aichat.insertselectionintochat"
-      ];
+      commands = [ "workbench.action.closePanel" ] ++ cfg.openWithSelection;
     };
     command = "runCommands";
-    key = "alt+o";
+    key = "alt+a";
     when = "editorFocus && editorHasSelection";
   }
   {
     args = {
-      commands = [
-        "workbench.action.closeSidebar"
-        "workbench.action.closePanel"
-        "aichat.newfollowupaction"
-      ];
+      commands = [ "workbench.action.closePanel" ] ++ cfg.openExisting;
     };
     command = "runCommands";
-    key = "alt+o";
+    key = "alt+a";
     when = "editorFocus && !editorHasSelection";
   }
   {
     command = "workbench.action.focusFirstEditorGroup";
-    key = "alt+o";
+    key = "alt+a";
     when = "!editorFocus";
   }
+  {
+    command = "workbench.panel.chatEditing";
+    key = "alt+shift+a";
+  }
+  # Terminal (Main) focus
+  {
+    args = {
+      commands = cfg.closeChat ++ [ "workbench.action.terminal.focusAtIndex2" ];
+    };
+    command = "runCommands";
+    key = "alt+t";
+    when = "!terminalFocus";
+  }
+  {
+    command = "workbench.action.terminal.focusAtIndex2";
+    key = "alt+t";
+    when = "!terminalFocus && view.terminal.visible";
+  }
+  {
+    command = "workbench.action.focusActiveEditorGroup";
+    key = "alt+t";
+    when = "terminalFocus";
+  }
+  # Terminal (Aider) focus
+  {
+    args = {
+      commands = [ "editor.action.clipboardCopyAction" ] ++ cfg.closeChat
+        ++ [ "workbench.action.terminal.focusAtIndex1" ];
+    };
+    command = "runCommands";
+    key = "alt+o";
+    when = "!terminalFocus";
+  }
+  {
+    command = "workbench.action.terminal.focusAtIndex1";
+    key = "alt+o";
+    when = "!terminalFocus && view.terminal.visible";
+  }
+  {
+    command = "workbench.action.focusActiveEditorGroup";
+    key = "alt+o";
+    when = "terminalFocus";
+  }
+  # Primary sidebar focus
   {
     command = "workbench.files.action.collapseExplorerFolders";
     key = "alt+shift+i";
@@ -147,32 +216,6 @@
     command = "workbench.action.focusSideBar";
     key = "alt+i";
     when = "!sideBarVisible";
-  }
-  {
-    command = "workbench.action.toggleMaximizedPanel";
-    key = "alt+shift+t";
-  }
-  {
-    args = {
-      commands = [
-        "aichat.close-sidebar"
-        "workbench.action.closeSidebar"
-        "terminal.focus"
-      ];
-    };
-    command = "runCommands";
-    key = "alt+t";
-    when = "!terminalFocus";
-  }
-  {
-    command = "workbench.action.focusActiveEditorGroup";
-    key = "alt+t";
-    when = "terminalFocus";
-  }
-  {
-    command = "terminal.focus";
-    key = "alt+t";
-    when = "!terminalFocus && view.terminal.visible";
   }
   {
     command = "-editor.action.inlineEdits.showNext";

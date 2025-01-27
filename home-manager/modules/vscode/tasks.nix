@@ -27,14 +27,14 @@ in {
   version = "2.0.0";
   tasks = [
     (defaultTerminalTaskConfig // {
-      label = "Main";
-      command = "tmuxp";
-      args = [ "load" "vscode-main" ];
-    })
-    (defaultTerminalTaskConfig // {
       label = "Aider";
       command = "tmuxp";
       args = [ "load" "vscode-aider" ];
+    })
+    (defaultTerminalTaskConfig // {
+      label = "Main";
+      command = "tmuxp";
+      args = [ "load" "vscode-main" ];
     })
     # {
     #     "label": "Aider",
