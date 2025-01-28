@@ -9,14 +9,9 @@ echo "Edit the key:"
 echo "gpg --expert --edit-key mjmaurer777@gmail.com"
 echo "\n\n"
 
-read -s CERTIFY_PASS
-read -s ADMIN_PIN
-read KEYID
-
-echo "admin"
-echo "login"
-echo "mjmaurer777@gmail.com"
-echo "save"
+# read -s CERTIFY_PASS
+# read -s ADMIN_PIN
+# read KEYID
 
 echo "trust"
 echo "5"

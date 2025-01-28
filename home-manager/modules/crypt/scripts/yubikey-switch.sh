@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-echo "run 'gpg --import gpg.pub' to import the public key"
+echo "\nIf ERR: run 'gpg --import gpg.pub' to import the public key\n"
 gpg-connect-agent "scd serialno" "learn --force" /bye 
 
 

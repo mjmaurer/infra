@@ -40,6 +40,12 @@ ykman openpgp keys set-touch sig off
 ykman openpgp keys set-touch aut on
 ykman openpgp keys set-touch enc on
 
+gpg --card-edit
+# echo "admin"
+# echo "login"
+# echo "mjmaurer777@gmail.com"
+# echo "save"
+
 # echo "Reducing the chance of accidental OTP output"
 # ykman otp settings 1 --touch long
 
