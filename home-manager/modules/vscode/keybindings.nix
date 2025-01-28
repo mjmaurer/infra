@@ -28,6 +28,12 @@ in [
       "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
+    command = "git.revertSelectedRanges";
+    key = "right";
+    when =
+      "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+  }
+  {
     command = "testing.debugAtCursor";
     key = "alt+e";
   }

@@ -28,6 +28,10 @@ let
       before = [ "<leader>" "g" "c" ];
       commands = [ "gitlens.copyRemoteFileUrlToClipboard" ];
     }
+    {
+      before = [ "<leader>" "g" "r" ];
+      commands = [ "git.revertSelectedRanges" ];
+    }
   ];
 in {
   "[R]" = { "editor.wordWrap" = "on"; };
@@ -460,22 +464,27 @@ in {
       commands = [ "gitlens.diffLineWithWorking" ];
     }
     {
+      # Duplicated in case I forget
+      before = [ "<leader>" "g" "g" ];
+      commands = [ "gitlens.diffLineWithWorking" ];
+    }
+    {
       # git show blame commit
       before = [ "<leader>" "g" "b" "b" ];
       commands = [ "gitlens.diffLineWithPrevious" ];
     }
     {
       # Duplicated in case I forget
-      before = [ "<leader>" "g" "g" ];
+      before = [ "<leader>" "g" "d" ];
       commands = [ "gitlens.diffLineWithPrevious" ];
     }
     {
-      # Diff current file with most recent previous version of it
+      # Prev: Diff current file with most recent previous version of it
       before = [ "<leader>" "g" "h" ];
       commands = [ "gitlens.diffWithPreviousInDiffRight" ];
     }
     {
-      # Diff current file with most recent previous version of it
+      # Next: Diff current file with most recent version after it
       before = [ "<leader>" "g" "l" ];
       commands = [ "gitlens.diffWithNextInDiffRight" ];
     }
