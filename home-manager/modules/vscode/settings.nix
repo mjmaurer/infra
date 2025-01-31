@@ -72,6 +72,7 @@ in {
   "debug.javascript.autoAttachFilter" = "disabled";
   "diffEditor.codeLens" = true;
   "diffEditor.useInlineViewWhenSpaceIsLimited" = false;
+  "diffEditor.ignoreTrimWhitespace" = false;
   "direnv.restart.automatic" = true;
   "editor.accessibilitySupport" = "off";
   "editor.cursorStyle" = "line";

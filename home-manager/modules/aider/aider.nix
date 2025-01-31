@@ -12,11 +12,8 @@ in {
 
     modules.commonShell = {
       shellAliases = {
-        aid = "mkdir -p .aider && aider --4";
-        aider = "mkdir -p .aider && aider --4";
-        aids = "mkdir -p .aider && aider --sonnet";
-        aidf = "mkdir -p .aider && aider --4";
-        aidfo = "mkdir -p .aider && aider --4o";
+        aid = "aider";
+        aidw = "aider --watch-files";
       };
     };
   };

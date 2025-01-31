@@ -3,12 +3,10 @@
 # This file lists *all* the valid configuration entries.
 # Place in your home dir, or at the root of your git repo.
 ##########################################################
-model: "gpt-4"
-## Use claude-3-5-sonnet-20240620 model for the main chat
-#sonnet: false
+model: "sonnet"
 
-## Use gpt-4-0613 model for the main chat
-# "4": true
+alias:
+  - "o1:o1-preview"
 
 ## Specify a file with aider model settings for unknown models
 #model-settings-file: .aider.model.settings.yml
@@ -85,6 +83,16 @@ llm-history-file: .devdata/.aider/.aider.llm.history
 ## Show diffs when committing changes (default: False)
 #show-diffs: false
 
+#################
+# Cache settings:
+
+## Enable caching of prompts (default: False)
+cache-prompts: true
+
+## Number of times to ping at 5min intervals to keep prompt cache warm (default: 0)
+#cache-keepalive-pings: false
+
+
 ###############
 # Git Settings:
 
@@ -92,7 +100,7 @@ llm-history-file: .devdata/.aider/.aider.llm.history
 git: true
 
 ## Enable/disable adding .aider* to .gitignore (default: True)
-gitignore: true
+gitignore: false # Done via global gitignore
 
 ## Specify the aider ignore file (default: .aiderignore in git root)
 aiderignore: .gitignore 
@@ -128,7 +136,7 @@ attribute-committer: false
 #lint-cmd:
 
 ## Enable/disable automatic linting after changes (default: True)
-#auto-lint: true
+auto-lint: false
 
 ## Specify command to run tests
 #test-cmd:
