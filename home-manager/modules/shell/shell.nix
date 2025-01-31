@@ -79,6 +79,7 @@ in {
     # (lib.mkIf cfg.enableZsh ./zsh/zsh.nix)
     ./bash/bash.nix
     ./zsh/zsh.nix
+    ./tmux/tmux-file-pick-aid.nix
   ];
 
   config = {
