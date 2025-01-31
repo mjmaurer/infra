@@ -6,8 +6,8 @@
 
     # Default to the nixos-unstable branch:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # Latest stable branch of nixpkgs, used for version rollback:
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    # Latest nixpkgs, to get latest versions of some packages 
+    # nixpkgs-latest.url = "github:nixos/nixpkgs/master";
 
     flake-utils.url = "github:numtide/flake-utils";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -46,7 +46,7 @@
     # nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     # nixos-wsl.inputs.flake-utils.follows = "flake-utils";
   };
-  outputs = { self, nixpkgs, nixpkgs-stable, home-manager, nixos-hardware
+  outputs = { self, nixpkgs, home-manager, nixos-hardware
     , sops-nix, nix-colors, nix-std, nix-homebrew, impermanence, flake-utils
     , darwin, nix-vscode-extensions, ... }@inputs:
     let
@@ -63,8 +63,9 @@
           # non-default arguments to nix modules.
           # Default arguments are things like `pkgs`, `lib`, etc.
 
-          inherit inputs username derivationName system;
-          pkgs-stable = nixpkgs-stable.legacyPackages.${system};
+          inherit (inputs) nix-std nix-colors nix-vscode-extensions nix-homebrew;
+          inherit username derivationName system;
+          # pkgs-latest = nixpkgs-latest.legacyPackages.${system};
           colors = import ./lib/colors.nix { lib = nixpkgs.lib; };
           isDarwin = system == "aarch64-darwin";
         };
@@ -80,7 +81,7 @@
           # Keep these false so home-manager and nixos derivations don't diverge.
           # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
           # To instead use the global (system-level) pkgs, set to true.
-          home-manager.useGlobalPkgs = false;
+          home-manager.useGlobalPkgs = true;
           # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
           home-manager.useUserPackages = false;
           home-manager.extraSpecialArgs = mkSpecialArgs;
