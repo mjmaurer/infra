@@ -1,4 +1,4 @@
-{ inputs, username, lib, config, pkgs, ... }:
+{ username, lib, config, pkgs, ... }:
 let
   cfg = config.modules.smbClient;
   userHomeCfg = config.users.users.${username};

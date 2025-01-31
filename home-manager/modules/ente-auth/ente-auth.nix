@@ -1,4 +1,4 @@
-{ inputs, lib, config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 let cfg = config.modules.ente-auth;
 in {
   options.modules.ente-auth = { enable = lib.mkEnableOption "ente-auth"; };

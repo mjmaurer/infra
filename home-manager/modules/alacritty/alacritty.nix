@@ -1,7 +1,7 @@
-{ inputs, lib, config, pkgs, ... }:
+{ nix-std, lib, config, pkgs, ... }:
 let
   cfg = config.modules.alacritty;
-  std = inputs.nix-std.lib;
+  std = nix-std.lib;
 in {
   options.modules.alacritty = {
     enable = lib.mkEnableOption "alacritty";

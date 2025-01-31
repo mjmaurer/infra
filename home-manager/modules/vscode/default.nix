@@ -1,10 +1,10 @@
 # Includes SSH, GPG, and Yubikey
-{ osConfig ? null, lib, config, isDarwin, pkgs, inputs, system, ... }:
+{ osConfig ? null, lib, config, isDarwin, pkgs, nix-vscode-extensions, system, ... }:
 let
   cfg = config.modules.vscode;
   isNixOS = !isDarwin;
   package = if isNixOS then pkgs.vscode.fhs else pkgs.vscode;
-  vsxmkt = inputs.nix-vscode-extensions.extensions.${system};
+  vsxmkt = nix-vscode-extensions.extensions.${system};
   nix4vscode = (import ./extensions.nix) { inherit pkgs lib; };
   vscode-marketplace =
     (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;

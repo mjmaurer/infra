@@ -1,4 +1,4 @@
-{ inputs, config, pkgs, lib, username, ... }: {
+{ nix-colors, config, pkgs, lib, username, ... }: {
   # imports = lib.pipe ../modules [
   #   builtins.readDir
   #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
@@ -17,7 +17,7 @@
   home.stateVersion = lib.mkDefault "22.05";
 
   imports = [
-    inputs.nix-colors.homeManagerModule
+    nix-colors.homeManagerModule
 
     ../modules/nix.nix
 
@@ -39,7 +39,7 @@
 
   # This exposes `config.colorScheme.palette.*` based on the color scheme.
   # You could define a custom scheme, or even defined based on a wallpaper pic.
-  colorScheme = inputs.nix-colors.colorSchemes.gruvbox-material-light-hard;
+  colorScheme = nix-colors.colorSchemes.gruvbox-material-light-hard;
 
   # Reload system units when changing configs
   systemd.user.startServices = "sd-switch";
