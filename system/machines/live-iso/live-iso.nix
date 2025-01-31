@@ -1,9 +1,9 @@
-{ inputs, pkgs, ... }: {
+{ nixpkgs, pkgs, ... }: {
   imports = [
-    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
+    "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     # Provide an initial copy of the NixOS channel so that the user
     # doesn't need to run "nix-channel --update" first.
-    "${inputs.nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
+    "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
   ];
 
   environment.systemPackages = with pkgs;
