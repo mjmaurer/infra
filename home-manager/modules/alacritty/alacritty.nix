@@ -43,7 +43,12 @@ in {
           # Base config
           ${std.serde.toTOML {
             env.TERM = "alacritty";
-            terminal.shell.program = "zsh";
+            terminal = {
+              shell = {
+                program = "zsh";
+                args = [ "-c" "tmuxp load term || echo 'Tmuxp Closed'" ];
+              };
+            };
             scrolling.history = 15000;
             window = {
               option_as_alt = "Both";

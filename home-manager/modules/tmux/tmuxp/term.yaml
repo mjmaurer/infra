@@ -1,0 +1,15 @@
+# https://tmuxp.git-pull.com/configuration/examples.html#bootstrap-project-before-launch
+# before_script: "${MY_ENV_VAR}/test3.sh"
+session_name: terminal
+windows:
+  - window_name: terminal
+    layout: main-horizontal
+    options:
+      automatic-rename: false
+      main-pane-height: 75%
+    panes:
+      - shell_command:
+          - cmd: ""
+        focus: true
+      - shell_command:
+          - cmd: "aider"
