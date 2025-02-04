@@ -3,13 +3,16 @@
     # For use in aider
     # Bound to prefix-f
     (pkgs.writeShellScriptBin "tmux-file-pick" ''
+      # eval "$(tmux show-environment -s)"
       pane_dir=$(tmux display-message -p '#{pane_current_path}')
       pane_id=$(tmux display-message -p '#{pane_id}')
       cd "$pane_dir" || exit
       git_root=$(git rev-parse --show-toplevel)
 
+      # Running this via popup doesn't include default fzf / fd opts.
+      # The eval at the top may fix this
       selected_files=$(
-      	fd --type f |
+      	fd --type f --hidden --exclude .git |
       		fzf --multi --reverse \
             --min-height=20 --border \
             --border-label-pos=2 \

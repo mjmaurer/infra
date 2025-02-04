@@ -567,6 +567,14 @@ in {
       commands = [ "workbench.action.navigateForward" ];
     }
     {
+      before = [ "<leader>" "j" "f" ];
+      commands = [ "workbench.action.openPreviousRecentlyUsedEditor" ];
+    }
+    {
+      before = [ "<leader>" "k" "f" ];
+      commands = [ "workbench.action.openNextRecentlyUsedEditor" ];
+    }
+    {
       before = [ "<leader>" "j" "e" ];
       commands = [ "workbench.action.navigateBackInEditLocations" ];
     }
