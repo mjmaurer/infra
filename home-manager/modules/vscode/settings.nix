@@ -560,19 +560,30 @@ in {
       # Jumplist prev
       # "<C-o>"
       before = [ "<leader>" "j" "j" ];
-      commands = [ "workbench.action.navigateBack" ];
-    }
-    {
-      before = [ "<leader>" "k" "k" ];
-      commands = [ "workbench.action.navigateForward" ];
-    }
-    {
-      before = [ "<leader>" "j" "f" ];
       commands = [ "workbench.action.openPreviousRecentlyUsedEditor" ];
     }
     {
-      before = [ "<leader>" "k" "f" ];
+      before = [ "<leader>" "k" "k" ];
       commands = [ "workbench.action.openNextRecentlyUsedEditor" ];
+    }
+    # The navigation stack only affects certain navigations (like GoToDefinition)
+    # I'll call this the "view" or "vim" stack
+    # See https://github.com/microsoft/vscode/issues/142647
+    {
+      before = [ "<leader>" "j" "v" ];
+      commands = [ "workbench.action.navigateBackInNavigationLocations" ];
+    }
+    {
+      before = [ "<leader>" "k" "v" ];
+      commands = [ "workbench.action.navigateForwardInNavigationLocations" ];
+    }
+    {
+      before = [ "<leader>" "j" "f" ];
+      commands = [ "workbench.action.navigateBack" ];
+    }
+    {
+      before = [ "<leader>" "k" "f" ];
+      commands = [ "workbench.action.navigateForward" ];
     }
     {
       before = [ "<leader>" "j" "e" ];

@@ -28,8 +28,8 @@ in {
       )
 
       if [ -n "$selected" ]; then
-      	oneline=$(echo "$selected_files" | tr '\n' ' ' | sed 's/ $//')
-      	tmux send-keys -t "$pane_id" "/model $oneline"
+      	# oneline=$(echo "$selected" | tr '\n' ' ' | sed 's/ $//')
+      	tmux send-keys -t "$pane_id" "/model $selected"
       fi
     '')
     # Bound to prefix-m
