@@ -29,12 +29,12 @@ in {
     (defaultTerminalTaskConfig // {
       label = "Aider";
       command = "tmuxp";
-      args = [ "load" "vscode-aider" ];
+      args = [ "load" "--yes" "vscode-aider" ];
     })
     (defaultTerminalTaskConfig // {
       label = "Main";
       command = "tmuxp";
-      args = [ "load" "vscode-main" ];
+      args = [ "load" "--yes" "vscode-main" ];
     })
     # {
     #     "label": "Aider",
