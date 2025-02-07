@@ -6,7 +6,8 @@ in {
   imports = [ ./tmux-aider-pick.nix ];
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.aider-chat ];
+    # Include playwright for web requests
+    home.packages = [ pkgs.aider-chat.withPlaywright ];
     home.file = {
       ".config/aider/.aiderignore" = { source = ./.aiderignore; };
       ".aider.conf.yml" = { source = ./aider.conf.yml; };
