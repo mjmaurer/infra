@@ -99,6 +99,9 @@ in {
   };
   "git.autorefresh" = false;
   "git.openRepositoryInParentFolders" = "always";
+  "git.autoRepositoryDetection" = true;
+  # Don't offer to pull branch
+  "githubPullRequests.pullBranch" = "never";
   "github.copilot.editor.enableAutoCompletions" = true;
   "github.copilot.chat.scopeSelection" = true;
   "github.copilot.chat.followUps" = "firstOnly";
