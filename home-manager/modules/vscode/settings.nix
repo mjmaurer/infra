@@ -384,6 +384,9 @@ in {
   "terminal.integrated.fontFamily" = "'MesloLGS NF'";
   "terminal.integrated.macOptionIsMeta" = true;
   "terminal.integrated.minimumContrastRatio" = 2;
+  # These next two are an attempt to get a blank zsh shell from auto-opening (and instead depend on tmuxp tasks)
+  "terminal.integrated.enablePersistentSessions" = false;
+  "terminal.integrated.hideOnStartup" = "always";
   "terminal.integrated.profiles.linux" = {
     tmux-pwd = {
       args = [ "-l" "-i" "-c" "tmux_pwd \${workspaceFolder}" ];
@@ -481,6 +484,11 @@ in {
       # Duplicated in case I forget
       before = [ "<leader>" "g" "d" ];
       commands = [ "gitlens.diffLineWithPrevious" ];
+    }
+    {
+      # Revert current line change
+      before = [ "<leader>" "g" "r" ];
+      commands = [ "git.revertSelectRanges" ];
     }
     {
       # Prev: Diff current file with most recent previous version of it
