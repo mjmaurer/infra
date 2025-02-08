@@ -46,7 +46,7 @@ in {
             terminal = {
               shell = {
                 program = "zsh";
-                args = [ "-c" "tmuxp load term || echo 'Tmuxp Closed'" ];
+                args = [ "-c" "echo 'Run: tmuxp load term'; exec zsh" ];
               };
             };
             scrolling.history = 15000;
