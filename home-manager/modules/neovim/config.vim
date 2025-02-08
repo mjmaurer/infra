@@ -1,3 +1,5 @@
+" Use system clipboard
+set clipboard^=unnamed,unnamedplus
 " ------ style ----------"
 " set t_Co=256
 syntax on
