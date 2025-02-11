@@ -99,7 +99,7 @@
       nix-search-cli
       nixfmt-classic
       # nixpkgs-fmt
-      vulnix
+      # vulnix (was causing buidl issues)
 
       # Git
       git-lfs
