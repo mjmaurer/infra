@@ -5,7 +5,7 @@
     # for recommendations on how to manage nixpkgs versions.
 
     # Default to the nixos-unstable branch:
-    nixpkgs.url = "github:nixos/nixpkgs/0b2f6b33aace254082b2082ef913c934dd80889a";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # Latest nixpkgs, to get latest versions of some packages 
     # nixpkgs-latest.url = "github:nixos/nixpkgs/master";
 
