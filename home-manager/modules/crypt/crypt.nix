@@ -9,6 +9,12 @@ in {
 
   config = lib.mkMerge [{
     home.packages = [
+      # These are to get a stable path for the `opensc-pkcs11.so` and `libykcs11.dylib` files (see PIV setup in README).
+      # At ~/.nix-profile/lib/opensc-pkcs11.so
+      pkgs.opensc
+      # At ~/.nix-profile/lib/libykcs11.dylib
+      pkgs.yubico-piv-tool
+
       pkgs.yubikey-personalization
       pkgs.yubikey-manager
       (pkgs.writeScriptBin "yubi-conf"
@@ -23,11 +29,12 @@ in {
         (builtins.readFile ./scripts/gpg-new-key.sh))
     ];
 
-    # TODO: https://developer.okta.com/blog/2021/07/07/developers-guide-to-gpg#use-your-gpg-key-on-multiple-computers
-
     modules.commonShell.shellAliases = {
       "ybs" = "yubi-switch";
       "gpgr" = "gpg-connect-agent reloadagent /bye";
+      # Uses resident PIV on yubikey for SSH
+      # dylib is only for Mac
+      "sshyk" = lib.mkIf isDarwin "ssh -I ~/.nix-profile/lib/libykcs11.dylib";
     };
 
     programs = {
@@ -71,7 +78,7 @@ in {
         pinentryPackage = pkgs.pinentry-curses;
         # Prefer gpg-agent over ssh-agent
         enableSshSupport = true;
-        # Smartcard support. This talks to pcscd:
+        # Smartcard support. This talks to pcscd (enabled in system crypt modules):
         enableScDaemon = true;
       };
     };

@@ -6,7 +6,7 @@ in lib.mkMerge [
     # Give Yubikey access to the udev (device) rules
     services.udev.packages = with pkgs; [ yubikey-personalization ];
 
-    # Smartcard communication daemon
+    # Smartcard communication daemon. Includes PKCS#11 support.
     services.pcscd.enable = true;
   })
   (lib.optionalAttrs isDarwin { })

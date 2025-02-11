@@ -13,7 +13,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 
-## NixOS
+## Install: NixOS
 
 ```
 cd install
@@ -27,7 +27,7 @@ echo "<hostname>" >> /mnt/etc/nixos/hostname # Must match the name of the file i
 nixos-install --flake /mnt/infra
 ```
 
-## Darwin:
+## Install: Darwin
 
 This is just a summary of the [Darwin README](https://github.com/LnL7/nix-darwin?tab=readme-ov-file#step-1-creating-flakenix).
 
@@ -65,7 +65,7 @@ Keyboard -> Text Input -> Edit -> click +
 Select "Unicode Hex Input" and hit "Add"
 ```
 
-## Home Manager
+## Install: Standalone Home Manager
 
 ### Install / Switch
 
@@ -97,13 +97,13 @@ nix run home-manager/master -- init --switch
 
 You'd need to run `nix flake update` to update the standalone flake.
 
+# Implementation Notes
+
 ## Updating
 
 Go to this repo and run `nix flake update`.
 
 This will update the flake inputs (e.g. nixpkgs, home-manager, etc).
-
-# Implementation Notes
 
 ## NixOS vs Darwin
 
@@ -132,11 +132,47 @@ See [this GH issue](https://github.com/mjmaurer/infra/issues/11) for future work
 
 - Sequoia (15.0.0): Need to follow this to fix eDSRecordNotFound error: https://determinate.systems/posts/nix-support-for-macos-sequoia/
 
-# Installation Notes
+## Yubikey OpenPGP setup
 
-## Yubikey
+See the scripts under the home-manager crypt modules.
+
+## Yubikey PIV (Resident) SSH Keys
+
+Follow [this guide](https://github.com/fredxinfan/ykman-piv-ssh) to setup a yubikey with a new resident SSH keys:
 
 ```
-# Set retries to 5 before wipe
-ykman openpgp access set-retries 5 5 5 -f -a $ADMIN_PIN
+# Only if you haven't already (this might take a while)
+ykman piv keys generate -a RSA4096 --touch-policy ALWAYS --pin-policy ONCE 9a ./yubikey-public.pem
+ykman piv certificates generate -s 'some comment' 9a ./yubikey-public.pem
+rm ./yubikey-public.pem
+
+# NOTE FOR BELOW: opensc-pkcs11.so was having issues when used with `ssh -I`, but could theoretically work there instead. opensc does have the benefit when using `ssh-keygen` that it only prints the single PIV public key in slot 9a.
+
+# Get public key (add to sops and AuthorizedKeys):
+ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e
+# Authenticate (See below for running a test server):
+# This is aliased to sshyk
+ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 localhost 
+
+# [Optional] Test:
+pkcs11-tool --login --test 
+
 ```
+
+Can quickly run a test server with:
+```
+mkdir -p /tmp/ssh_test
+
+# Generate host keys
+ssh-keygen -t rsa -f /tmp/ssh_test/ssh_host_rsa_key -N ""
+
+echo "Port 2222
+HostKey /tmp/ssh_test/ssh_host_rsa_key
+AuthorizedKeysCommand /bin/echo \"$(ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e)\"
+AuthorizedKeysCommandUser $(whoami)" > /tmp/ssh_test/sshd_config
+
+/usr/sbin/sshd -f /tmp/ssh_test/sshd_config -D -dd
+```
+<!-- AuthorizedKeysCommand /bin/echo \"$(ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e)\" -->
+
+Right now, these are just used for logging into the USB ISO with SSH.

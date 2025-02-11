@@ -24,6 +24,15 @@ echo "Change the user PIV PIN (Default: 123456)"
 echo "Choose a secure PIN of 6 or more digits"
 ykman piv access change-pin
 
+echo "Changing the management key (Default: 010203040506070801020304050607080102030405060708)"
+# Store on yubikey, protected by pin / touch
+# Use user pin
+ykman piv access change-management-key -pt
+
+ykman piv access set-retries 8 8 -f
+
+echo "See README.md for setting up PIV resident key"
+
 echo "Change the admin OpenPGP PIN (Default: 12345678)"
 echo "Choose a secure PIN of 8 or more digits"
 ykman openpgp access change-admin-pin
