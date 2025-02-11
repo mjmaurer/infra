@@ -389,14 +389,16 @@ in {
   "terminal.integrated.hideOnStartup" = "always";
   "terminal.integrated.profiles.linux" = {
     tmux-pwd = {
-      args = [ "-l" "-i" "-c" "tmux_pwd \${workspaceFolder}" ];
+      args = [ "-l" "-c" "tmux_pwd \${@:1} \${workspaceFolder}" "_" ];
       path = "zsh";
     };
   };
   "terminal.integrated.defaultProfile.osx" = "tmux-pwd";
   "terminal.integrated.profiles.osx" = {
     tmux-pwd = {
-      args = [ "-l" "-i" "-c" "tmux_pwd \${workspaceFolder}" ];
+      # This passes all arguments after underscore to tmux_pwd. Useful for treating tmux as a shell (becuase tmux_pwd accepts '-c' for commands)
+      # Used to have -i here (but don't need it I think. was causing problems for automation profile usage)
+      args = [ "-l" "-c" "tmux_pwd \${@:1} \${workspaceFolder}" "_" ];
       path = "zsh";
     };
     zsh-login = {

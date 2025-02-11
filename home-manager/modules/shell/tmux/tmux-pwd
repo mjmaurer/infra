@@ -3,22 +3,26 @@
 # Creates or attaches to a tmux session based on the current/provided directory
 # The session name will be the basename of the directory
 #
-# Usage: tmux_pwd [-w window_name] [directory_path]
+# Usage: tmux_pwd [-w window_name] [-c command] [directory_path]
 #
 # Examples:
 #   tmux_pwd                     # Creates/attaches session named after current dir
 #   tmux_pwd -w dev             # Creates/attaches with window named "dev"
 #   tmux_pwd ~/projects/foo     # Creates/attaches session named "foo"
 #   tmux_pwd -w dev ~/proj/foo  # Combines both options
+#   tmux_pwd -c "vim ."         # Creates session and runs vim in shell
+#   tmux_pwd -w dev -c "vim ."  # Creates window named "dev" and runs vim in shell
 
-while getopts "w:" opt; do
+while getopts "w:c:" opt; do
     case $opt in
         w) WINDOW_NAME="$OPTARG" ;;
+        c) COMMAND="$OPTARG" ;;
     esac
 done
 shift $((OPTIND-1))
 DIR_PATH=${1:-$(pwd)}
 WINDOW_NAME=${WINDOW_NAME:-"base"}
+COMMAND=${COMMAND:-""}
 SESSION_NAME=$(basename $DIR_PATH)
 # TODO: Change to $SHELL after moving to nixos
 # COMMAND="zsh -c 'if [ -f \"./flake.nix\" ]; then nix develop --command \"zsh\"; elif [ -f \"./shell.nix\" ]; then nix-shell --command \"zsh\"; else zsh; fi'"
@@ -37,5 +41,8 @@ if tmux has-session -t $SESSION_NAME 2>/dev/null; then
 else
     echo "Creating new session: $SESSION_NAME"
     tmux new-session -d -s $SESSION_NAME -n $WINDOW_NAME $SHELL
+fi
+if [ -n "$COMMAND" ]; then
+    tmux send-keys -t $SESSION_NAME:$WINDOW_NAME "$COMMAND" Enter
 fi
 tmux attach-session -t $SESSION_NAME
