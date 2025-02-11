@@ -78,6 +78,7 @@
         DSDontWriteNetworkStores = true;
         DSDontWriteUSBStores = true;
       };
+      "com.apple.dock" = { no-bouncing = true; };
       "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
       # Prevent Photos from opening automatically when plugging in certain removable media
       "com.apple.ImageCapture".disableHotPlug = true;
