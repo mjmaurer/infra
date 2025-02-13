@@ -1,4 +1,4 @@
-{ pkgs, config, lib, isDarwin, derivationName, username, ... }:
+{ pkgs, pubkeys, config, lib, isDarwin, derivationName, username, ... }:
 let
   isNixOS = !isDarwin;
   ifTheyExist = groups:
@@ -24,9 +24,13 @@ in lib.mkMerge [
             "networkmanager"
             "docker"
           ];
-          openssh.authorizedKeys.keys = lib.splitString "\n" (builtins.readFile ../../../../home/gabriel/ssh.pub);
-          hashedPasswordFile = config.sops.secrets.gabriel-password.path;
-          passwordFile = config.sops.secrets.mjmaurerPassword.path;
+          openssh.authorizedKeys.keys = [
+            pubkeys.sshPubYkcWal
+            pubkeys.sshPubYkaStub
+            pubkeys.sshPubYkcKey
+            pubkeys.sshPubBw
+          ];
+          hashedPasswordFile = config.sops.secrets.mjmaurerHashedPassword.path;
         };
       };
     };

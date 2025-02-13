@@ -131,7 +131,7 @@
                       inherit homeModule homeStateVersion;
                     })))
                 { system.stateVersion = systemStateVersion; }
-                impermanence.nixosModules.impermanence
+                # impermanence.nixosModules.impermanence
               ] ++ systemModules;
             };
         };
