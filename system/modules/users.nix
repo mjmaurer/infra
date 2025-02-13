@@ -1,16 +1,31 @@
 { pkgs, config, lib, isDarwin, derivationName, username, ... }:
-let isNixOS = !isDarwin;
+let
+  isNixOS = !isDarwin;
+  ifTheyExist = groups:
+    builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
 in lib.mkMerge [
   (lib.optionalAttrs isNixOS {
     users = {
       mutableUsers = false;
       defaultUserShell = pkgs.zsh;
+      # I believe not declaring a root user is equivalent to disabling root login:
+      # https://wiki.archlinux.org/title/Sudo#Disable_root_login
       users = {
-        root.passwordFile = config.sops.secrets.rootPassword.path;
         ${username} = {
+          # This automatically sets group to users, createHome to true,
+          # home to /home/«username», useDefaultShell to true, and isSystemUser to false.
           isNormalUser = true;
-          extraGroups =
-            [ "wheel" "audio" "video" "sway" "plugdev" "networkmanager" ];
+          extraGroups = ifTheyExist [
+            "wheel"
+            "audio"
+            "video"
+            "sway"
+            "plugdev"
+            "networkmanager"
+            "docker"
+          ];
+          openssh.authorizedKeys.keys = lib.splitString "\n" (builtins.readFile ../../../../home/gabriel/ssh.pub);
+          hashedPasswordFile = config.sops.secrets.gabriel-password.path;
           passwordFile = config.sops.secrets.mjmaurerPassword.path;
         };
       };
