@@ -13,7 +13,14 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
 
-## Install: NixOS
+## Install: NixOS (Local Machine)
+
+1. Flash live.iso from the github action to a USB stick.
+2. Boot into it. It should start an SSH server automatically, and uses dhcpcd
+  - Debugging: Look at dhcpcd
+3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
+  - Debugging: Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
+
 
 ```
 cd install

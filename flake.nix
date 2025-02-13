@@ -143,9 +143,9 @@
           derivationName = "live-iso";
           extraSpecialArgs = { inherit (inputs) nixpkgs; };
         }).mkNixosSystem {
+          # No home-manager state, so HM is disabled
           systemStateVersion = "24.05";
           systemModules = [ ./system/machines/live-iso/live-iso.nix ];
-          homeModule = { };
         };
         #   core = nixpkgs.lib.nixosSystem {
         #     system = "x86_64-linux";

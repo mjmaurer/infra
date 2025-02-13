@@ -10,26 +10,24 @@
 
     defaultSopsFile = ./secrets/common.yaml;
     secrets = {
-      # TODO: probably want this via sops home-manager module
-      # "shellDotEnv" = {
-      #   sopsFile = ./secrets/shell.env;
-      #   mode = "0400";
-      #   owner = config.users.users.${username}.name;
-      #   group = config.users.groups.${username}.name;
-      # };
       gpgAuthKeygrip = { };
 
       smbHost = { };
       smbUrl = { };
 
+      # TODO: probably want this via sops home-manager module,
+      # but it does create issues with (permissions? I tried but can't remember the error)
       apiKeyAnthropic = { };
       apiKeyCodestral = { };
       apiKeyVoyage = { };
       apiKeyOpenai = { };
+
+      mjmaurerHashedPassword = { neededForUsers = true; };
     };
     templates = {
       "shell.env" = {
-        #   mode = "0400";
+        # mode = "0400";
+        # group = config.users.groups.${username}.name;
         owner = config.users.users.${username}.name;
         content = ''
           export ANTHROPIC_API_KEY=${config.sops.placeholder.apiKeyAnthropic}
@@ -41,11 +39,11 @@
       };
       "gpg_sshcontrol" = {
         owner = config.users.users.${username}.name;
+        # Newlines in 'content' are needed!
         content = ''
           ${config.sops.placeholder.gpgAuthKeygrip}
 
         '';
-        # Newlines are needed!
       };
     };
   };
