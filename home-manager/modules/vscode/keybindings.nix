@@ -34,6 +34,12 @@ in [
       "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
+    # This is to unset the comment divider command
+    command = "";
+    key = "alt+x";
+    when = "!inDebugMode";
+  }
+  {
     command = "testing.debugAtCursor";
     key = "alt+e";
   }

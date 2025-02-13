@@ -441,8 +441,20 @@ in {
       commands = [ "workbench.action.quickOpen" ];
     }
     {
-      before = [ "<leader>" "w" ];
+      before = [ "<leader>" "w" "w" ];
       commands = [ "workbench.action.closeActiveEditor" ];
+    }
+    {
+      before = [ "<leader>" "w" "h" ];
+      commands = [ "workbench.action.closeEditorsToTheLeft" ];
+    }
+    {
+      before = [ "<leader>" "w" "l" ];
+      commands = [ "workbench.action.closeEditorsToTheRight" ];
+    }
+    {
+      before = [ "<leader>" "w" "o" ];
+      commands = [ "workbench.action.closeOtherEditors" ];
     }
     {
       before = [ "<leader>" "f" ];
