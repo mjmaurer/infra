@@ -159,7 +159,6 @@ in {
         input = {
           "*" = {
             xkb_layout = "us";
-            xkb_variant = "dvp";
             xkb_options = "caps:swapescape";
           };
         };
