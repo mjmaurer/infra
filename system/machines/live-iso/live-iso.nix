@@ -1,4 +1,4 @@
-{ nixpkgs, pkgs, ... }: {
+{ nixpkgs, pkgs, pubkeys, ... }: {
   imports = [
     "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     # Provide an initial copy of the NixOS channel so that the user
@@ -13,7 +13,10 @@
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
   users.users.root.openssh.authorizedKeys.keys = [
-    "ssh-ed25519 AaAeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee username@host"
+    pubkeys.sshPubYkcWal
+    pubkeys.sshPubYkaStub
+    pubkeys.sshPubYkcKey
+    pubkeys.sshPubBw
   ];
 
   services = {
@@ -29,7 +32,10 @@
   networking = {
     firewall.enable = true;
     usePredictableInterfaceNames = false;
+    # Whether to use DHCP to obtain an IP address and other configuration
+    # for all network interfaces that do not have any manually configured IPv4 addresses.
     useDHCP = true;
+    dhcpcd.enable = true; # True by default
     nameservers = [ "8.8.8.8" "8.8.4.4" ];
   };
 

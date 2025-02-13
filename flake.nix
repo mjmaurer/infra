@@ -69,6 +69,7 @@
             inherit username derivationName system;
             # pkgs-latest = nixpkgs-latest.legacyPackages.${system};
             colors = import ./lib/colors.nix { lib = nixpkgs.lib; };
+            pubkeys = import ./lib/pubkeys.nix;
             isDarwin = system == "aarch64-darwin";
           } // extraSpecialArgs;
           mkHomeManagerStandalone = { modules ? [ ] }:
@@ -144,6 +145,7 @@
         }).mkNixosSystem {
           systemStateVersion = "24.05";
           systemModules = [ ./system/machines/live-iso/live-iso.nix ];
+          homeModule = { };
         };
         #   core = nixpkgs.lib.nixosSystem {
         #     system = "x86_64-linux";

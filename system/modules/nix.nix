@@ -9,7 +9,7 @@
       trusted-users = [
         username
         "root"
-        # "@wheel"
+        # "@wheel" Darwin doesn't like this maybe?
       ];
       experimental-features = "nix-command flakes";
     };
