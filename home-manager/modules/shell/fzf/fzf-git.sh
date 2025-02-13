@@ -157,7 +157,7 @@ _fzf_git_fzf() {
     --layout=reverse --multi --min-height=20 --border \
     --border-label-pos=2 \
     --color='header:italic:underline,label:blue' \
-    --preview-window='right,60%,border-left' \
+    --preview-window='down,70%,border-top' \
     --bind='ctrl-/:change-preview-window(down,50%,border-top|hidden|)' \
     "$@"
 }
@@ -187,6 +187,7 @@ _fzf_git_files() {
     --bind "ctrl-o:execute-silent:bash $__fzf_git file {-1}" \
     --bind "alt-e:execute:${EDITOR:-vim} {-1} > /dev/tty" \
     --query "$query" \
+    --preview-window='down,75%,border-top' \
     --preview "git diff --no-ext-diff --color=$(__fzf_git_color .) -- {-1} | $(__fzf_git_pager); $(__fzf_git_cat) {-1}" "$@" |
   cut -c4- | sed 's/.* -> //'
 }
@@ -198,7 +199,7 @@ _fzf_git_branches() {
     --border-label '🌲 Branches' \
     --header-lines 2 \
     --tiebreak begin \
-    --preview-window down,border-top,40% \
+    --preview-window down,border-top,50% \
     --color hl:underline,hl+:underline \
     --no-hscroll \
     --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' \
@@ -211,7 +212,7 @@ _fzf_git_branches() {
 _fzf_git_tags() {
   _fzf_git_check || return
   git tag --sort -version:refname |
-  _fzf_git_fzf --preview-window right,70% \
+  _fzf_git_fzf --preview-window down,70% \
     --border-label '📛 Tags' \
     --header $'CTRL-O (open in browser)\n\n' \
     --bind "ctrl-o:execute-silent:bash $__fzf_git tag {}" \
@@ -280,7 +281,7 @@ _fzf_git_remotes() {
     --border-label '📡 Remotes' \
     --header $'CTRL-O (open in browser)\n\n' \
     --bind "ctrl-o:execute-silent:bash $__fzf_git remote {1}" \
-    --preview-window right,70% \
+    --preview-window down,70% \
     --preview "git log --oneline --graph --date=short --color=$(__fzf_git_color .) --pretty='format:%C(auto)%cd %h%d %s' '{1}/$(git rev-parse --abbrev-ref HEAD)' --" "$@" |
   cut -d$'\t' -f1
 }
@@ -310,7 +311,7 @@ _fzf_git_each_ref() {
     --tiebreak begin \
     --border-label '☘️  Each ref' \
     --header-lines 2 \
-    --preview-window down,border-top,40% \
+    --preview-window down,border-top,50% \
     --color hl:underline,hl+:underline \
     --no-hscroll \
     --bind 'ctrl-/:change-preview-window(down,70%|hidden|)' \

@@ -17,7 +17,7 @@
             --min-height=20 --border \
             --border-label-pos=2 \
             --color='header:italic:underline,label:blue' \
-            --preview-window='right,60%,border-left' \
+            --preview-window='down,70%,border-top' \
             --bind='pgdn:preview-half-page-down' \
             --bind='pgup:preview-half-page-up' \
       			--preview 'bat --style=numbers --color=always {}' |
