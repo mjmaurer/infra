@@ -97,8 +97,10 @@
             ];
           };
           mkDarwinSystem = { systemStateVersion, homeStateVersion
-            , systemModules ? [ ./system/common/darwin.nix ]
-            , homeModule ? import ./home-manager/common/mac.nix }:
+            , systemModules ? [
+              ./system/common/darwin.nix
+              sops-nix.darwinModules.sops
+            ], homeModule ? import ./home-manager/common/mac.nix }:
             darwin.lib.darwinSystem {
               system = if system == "aarch64-darwin" then
                 system
@@ -106,7 +108,6 @@
                 throw "System must be aarch64-darwin";
               specialArgs = mkSpecialArgs;
               modules = [
-                sops-nix.darwinModules.sops
                 home-manager.darwinModules.home-manager
                 (mkHomeManagerModuleConfig {
                   inherit homeModule homeStateVersion;
@@ -118,19 +119,22 @@
               ] ++ systemModules;
             };
           mkNixosSystem = { systemStateVersion, homeStateVersion ? null
-            , systemModules ? [ ./system/common/nixos.nix ]
-            , homeModule ? import ./home-manager/common/nixos.nix }:
+            , systemModules ? [
+              ./system/common/nixos.nix
+              sops-nix.nixosModules.sops
+            ], homeModule ? import ./home-manager/common/nixos.nix }:
             nixpkgs.lib.nixosSystem {
               system = system;
               specialArgs = mkSpecialArgs;
               modules = [
-                sops-nix.nixosModules.sops
                 (nixpkgs.lib.optionalAttrs (homeStateVersion != null)
                   (home-manager.nixosModules.home-manager
                     (mkHomeManagerModuleConfig {
                       inherit homeModule homeStateVersion;
                     })))
-                { system.stateVersion = systemStateVersion; }
+                {
+                  system.stateVersion = systemStateVersion;
+                }
                 # impermanence.nixosModules.impermanence
               ] ++ systemModules;
             };
@@ -145,6 +149,8 @@
         }).mkNixosSystem {
           # No home-manager state, so HM is disabled
           systemStateVersion = "24.05";
+          # live-iso doesn't inherit _base.nix or nixos.nix modules
+          # to keep from accidently including them in the ISO
           systemModules = [ ./system/machines/live-iso/live-iso.nix ];
         };
         #   core = nixpkgs.lib.nixosSystem {
