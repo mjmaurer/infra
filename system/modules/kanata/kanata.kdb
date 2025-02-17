@@ -1,0 +1,197 @@
+(defcfg
+  process-unmapped-keys yes
+ ;; log-layer-changes no
+  linux-continue-if-no-devs-found yes)
+
+;; ------------------------------------- Testing ------------------------------------ #
+
+;; (Script: kanload / kanunload)
+;; sudo launchctl unload /Library/LaunchDaemons/org.nixos.kanata_daemons.plist
+;; In Alacritty (VSCode works for config sanity check): 
+;; (Script: kanrun / kankill)
+;; sudo kanata --debug -c ~/infra/system/modules/kanata/kanata.kdb
+;; It might help to comment out 'log-layer-changes' as well
+
+;; ------------------------------------- Source ------------------------------------ #
+;; Key names here
+;; https://github.com/jtroo/kanata/blob/main/parser/src/keys/mod.rs#L350
+
+
+(platform (macos)
+  (defvar
+    lfar  fn   ;; NOTE: Not sure if you can actually map fn to anything (in any keyboard)
+    lout  lctl
+    lmid  lalt
+    linr  lmet
+
+    rinr  rmet
+    rmid  ralt
+    rout  rctl ;; Doesn't actually exist on mac, but does on UHK
+    rfar  apps ;; Doesn't actually exist on mac, but does on UHK
+  )
+)
+
+;; Could base this off envar in the future
+(platform (linux win winiov2 wintercept)
+  ;; Typical windows keyboard:
+  ;; _   ctl  met  alt            spc            alt  met  apps ctrl 
+
+  (defvar
+    lfar  fn 
+    lout  lctl
+    lmid  lmet
+    linr  lalt
+
+    rinr  ralt
+    rmid  rmet
+    rout  apps
+    rfar  rctl
+  )
+)
+
+
+;; Arbitrarily arrange src as mac keyboard layout
+;; 'met' == Windows / Command / Super 
+(defsrc
+  grv  1    2    3    4    5    6    7    8    9    0    -    =    bspc
+  tab  q    w    e    r    t    y    u    i    o    p    [    ]    \
+  caps a    s    d    f    g    h    j    k    l    ;    '    ret
+  lsft z    x    c    v    b    n    m    ,    .    /    rsft      up  down
+  fn   lctl lalt lmet           spc            rmet ralt apps rctl left rght
+)
+
+;; ------------------------------------- Default ------------------------------------ #
+
+;; The goal is to have all keyboards at least share the following modifier order (relative to space):
+;;                  lmet lctl @hyp    spc    ralt(@arr) rctl
+
+(deflayermap (default)
+  caps esc
+  $lfar fn
+  $lout lmet
+  $lmid lctl
+  $linr @hyp
+
+  $rinr @raltarr
+  $rmid rctl
+  $rout rmet
+  $rfar fn
+
+  ;; Layers
+  v     @v
+  ;     @;
+)
+;; ---------------------------- Alt[tab] / Arrow Layer ------------------------------------ #
+
+(deflayermap (alt-arrow)
+  h    @lft
+  j    @dwn
+  k    @up
+  l    @rgt
+
+  tab  @ralttab
+)
+
+(deflayermap (alttab-arrow)
+  h    RA-left 
+  j    RA-down 
+  k    RA-up
+  l    RA-rght
+
+  tab  XX 
+)
+
+;; ---------------------------- Paren Layer (v) ------------------------------------ #
+
+(deflayermap (paren)
+  h [   ;; [
+  j S-9 ;; (
+  k S-0 ;; )
+  l ]   ;; ]
+
+  y S-, ;; <
+  u S-[ ;; {
+  i S-] ;; }
+  o S-. ;; > 
+)
+
+;; ---------------------------- Number / Symbol Layer (;) ------------------------------------ #
+
+(deflayermap (number)
+
+  ;; Left Side
+  a   -   ;; minus
+  s   S-- ;; underscore
+  d   =   ;; =
+  f   S-= ;; + 
+  g   S-1 ;; !
+
+  z   S-2 ;; @
+  x   S-3 ;; #
+  c   S-4 ;; $
+  v   S-5 ;; %
+
+  q   S-6 ;; ^ 
+  w   S-7 ;; & 
+  e   S-8 ;; * 
+  r   S-\ ;; | 
+  t   `   ;; `
+  tab S-` ;; ~ 
+
+
+  ;; Right Side
+  u   7 
+  i   8
+  o   9
+  j   4
+  k   5
+  l   6
+  m   1
+  ,   2
+  .   3
+  n   0
+
+)
+
+;; -------------------------------- Aliases ------------------------------------ #
+
+(defvar
+  hypkey1 lmet
+  hypkey2 lctl
+  hypkeys ($hypkey1 $hypkey2)
+)
+
+(defalias
+  ;; Hyper Key (lalt -> lmet lctl)
+  hyp (multi $hypkey1 $hypkey2)
+  end-hyp (multi (release-key $hypkey1) (release-key $hypkey2))
+
+  ;; Alt / Arrow Layer
+  raltarr (multi ralt (layer-while-held alt-arrow))
+  ralttab (multi tab (layer-switch default) (release-layer alt-arrow)) ;; Use vim keys for nav
+  rgt (unmod rght)
+  lft (unmod left)
+  dwn (fork (unmod down) (unmod pgdn) (lsft)) ;; page if @hyp active. could maybe use defoverrides instead
+  up  (fork (unmod up)   (unmod pgup) (lsft)) ;; or $hypkeys
+  
+  ;; Paren Layer
+  v (tap-hold 150 150 v (layer-toggle paren))
+
+  ;; Number Layer
+  ; (tap-hold 150 150 ; (layer-toggle number))
+)
+
+;; -------------------------------- Notes ------------------------------------ #
+
+;; 'multi' - For hyper-key logic where modifiers should continue to be held.
+;; 'chord' - For pressing modifiers and keys all at once. 
+
+;; defcfg notes
+;; transparent-key-resolution to-base-layer
+;;macos-dev-names-exclude (
+;; "UHK 60 v2"
+;;)
+;; This theoretically woudl be helpful, but I found
+;; it was using the default layer (instead of defsrc) anyway.
+;; You can test by trying the homerow scroll action in arrow layer
+;; delegate-to-first-layer yes

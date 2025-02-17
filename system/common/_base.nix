@@ -1,4 +1,4 @@
-{ config, pkgs, lib, ... }: {
+{ config, kanataPkg, pkgs, lib, ... }: {
 
   imports = [
     ../modules/nix.nix
@@ -6,9 +6,17 @@
     ../modules/networking.nix
     ../modules/programs.nix
     ../modules/smb-client.nix
+    ../modules/crypt.nix
+
+    ../modules/kanata/kanata.nix
 
     ../modules/sops
   ];
+
+  modules.kanata = {
+    enable = true;
+    package = kanataPkg;
+  };
 
   time.timeZone = "America/New_York";
 
