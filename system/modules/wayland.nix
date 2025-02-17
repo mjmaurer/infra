@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{ config, lib, pkgs, ... }: {
   # imports = [ ./screen-sharing.nix ];
   programs.sway.enable = true;
   environment.loginShellInit = ''
