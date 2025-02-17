@@ -114,13 +114,6 @@ Go to this repo and run `nix flake update`.
 
 This will update the flake inputs (e.g. nixpkgs, home-manager, etc).
 
-## NixOS vs Darwin
-
-There are enough mutually exclusive features between NixOS and Darwin that it's not practical to share many modules.
-
-- Most of Darwin's config is stuck in `system/common/darwin.nix`
-- Most of `system/modules` is NixOS-specific. See `system/common/_base.nix` for shared modules.
-
 ## Headed vs Headed-Minimal vs Headless
 
 Each OS derivation only needs one (configured in `flake.nix`):
@@ -133,9 +126,11 @@ Headed-Minimal ⊃ Headless
 
 Since the headless module is always included, it contains most of the basic configuration.
 
-Headed-Minimal system / HM modules do actually include a display server (Wayland) and Sway window manager.
+Headed-Minimal  modules do actually include a display server (Wayland) and Sway window manager.
 They also include a terminal (Alacritty) and browser (Firefox).
 However, many other GUI tools are not included.
+
+At the system-level, this layout only applies to NixOS. Darwin manages everything in `common/darwin.nix`.
 
 ## Impermanence
 
