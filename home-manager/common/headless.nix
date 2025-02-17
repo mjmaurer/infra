@@ -1,19 +1,7 @@
-{ nix-colors, config, pkgs, lib, username, ... }: {
-  # imports = lib.pipe ../modules [
-  #   builtins.readDir
-  #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
-  #   (lib.mapAttrsToList (name: _: ./services + "/${name}"))
-  # ];
+{ lib, pkgs, nix-colors, username, ... }: {
 
   # Never change this.
-  # If you need a newer version, you have to supply it to new users somehow. 
-  # The easiest option is to register a mkDefaultHomeConfig (with stateVersion) in flake.nix
-  # for each new user. 
-  # Another option is to start creating
-  # a home-manager flake (via `nix run home-manager/master -- init`)
-  # and then manage the stateVersion separately for each user that requires a newer version.
-  # You could use `--recreate-lock-file or --update-input` to automatically
-  # update the the central flake on every switch.
+  # If you need a newer version, supply via machine's flake.nix config. 
   home.stateVersion = lib.mkDefault "22.05";
 
   imports = [
@@ -22,20 +10,19 @@
     ../modules/nix.nix
 
     ../modules/shell/shell.nix
-    ../modules/alacritty/alacritty.nix
-    ../modules/continuedev/continuedev.nix
-    ../modules/obsidian/obsidian.nix
     ../modules/crypt/crypt.nix
     ../modules/git/git.nix
     ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
     ../modules/aider/aider.nix
-    ../modules/neovim/neovim.nix
     ../modules/aichat/aichat.nix
-    ../modules/wayland/wayland.nix
-    ../modules/firefox/firefox.nix
-    ../modules/ente-auth/ente-auth.nix
+    ../modules/neovim/neovim.nix
   ];
+  # imports = lib.pipe ../modules [
+  #   builtins.readDir
+  #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
+  #   (lib.mapAttrsToList (name: _: ./services + "/${name}"))
+  # ];
 
   # This exposes `config.colorScheme.palette.*` based on the color scheme.
   # You could define a custom scheme, or even defined based on a wallpaper pic.
@@ -45,35 +32,22 @@
   systemd.user.startServices = "sd-switch";
 
   modules = {
-    tmux.enable = true;
-    aider.enable = true;
-    aichat.enable = true;
-    neovim.enable = true;
-    alacritty.enable = true;
-    git.enable = true;
-    continuedev = {
-      enable = true;
-      justConfig = true;
-    };
+    tmux.enable = lib.mkDefault true;
+    aider.enable = lib.mkDefault true;
+    aichat.enable = lib.mkDefault true;
+    neovim.enable = lib.mkDefault true;
+    git.enable = lib.mkDefault true;
   };
 
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
-
-  xdg = {
-    # Sets up XDG_DATA_HOME, XDG_CONFIG_HOME, XDG_CACHE_HOME, etc.
-    enable = true;
-  };
+  # Sets up XDG_DATA_HOME, XDG_CONFIG_HOME, XDG_CACHE_HOME, etc.
+  xdg.enable = true;
 
   home = {
     # This might be set by the home-manager module for Darwin / NixOS
     username = lib.mkDefault username;
     file = {
-      # TODO: Move to flake.nix
-      ".config/nix/nix.conf".text = ''
-        # Enable flakes
-        experimental-features = nix-command flakes
-      '';
       # Used for various REPLs (python, psql, etc.)
       ".inputrc".text = ''
         # Show completion options immediately without requiring a second tab
