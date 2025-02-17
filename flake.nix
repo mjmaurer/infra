@@ -104,7 +104,7 @@
               ./system/common/darwin.nix
               sops-nix.darwinModules.sops
             ], extraSystemModules ? [ ], defaultHomeModules ? [
-              ./home-manager/common/mac.nix
+              ./home-manager/common/darwin.nix
               ./home-manager/common/headed.nix
             ], extraHomeModules ? [ ] }:
             darwin.lib.darwinSystem {
@@ -233,7 +233,7 @@
           username = "mjmaurer";
         }).mkHomeManagerStandalone {
           modules =
-            [ ./home-manager/common/mac.nix ./home-manager/common/headed.nix ];
+            [ ./home-manager/common/darwin.nix ./home-manager/common/headed.nix ];
         };
         "linux" = (withConfig {
           system = "x86_64-linux";
