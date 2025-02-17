@@ -11,7 +11,7 @@ let
     # Prefix-------------------------- Editor Leader --------------------------
     {
       before = [ "<leader>" "e" "e" ];
-      commands = [ "editor.action.addCommentLine" ];
+      commands = [ "editor.action.commentLine" ];
     }
     {
       before = [ "<leader>" "e" "r" ];

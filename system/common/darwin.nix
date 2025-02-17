@@ -113,19 +113,23 @@
   # `run` is used to obey Nix dry run 
   # run ${postSwitchAddScriptRsync} 
 
-  system.activationScripts.postActivation.text = ''
+  system.activationScripts.postUserActivation.text = ''
     #!/usr/bin/env bash
-    # From https://github.com/LnL7/nix-darwin/issues/214
+    # From https://github.com/LnL7/nix-darwin/issues/214#issuecomment-2050027696
 
-    # apps_source="$HOME/Applications/Home Manager Apps"
-    apps_source="${config.users.users.${username}.home}/Applications"
-    # Darwin: apps_source="{config.system.build.applications}/Applications"
-    moniker="Nix Trampolines"
-    app_target_base="$HOME/Applications"
-    app_target="$app_target_base/$moniker"
-    # Need to remove previous because rsync initially makes it read-only
+    # This used to work, but doesn't now
+    # apps_source="${config.users.users.${username}.home}/Applications"
+
+    apps_source="$HOME/Applications/Home Manager Apps"
+
+    # Darwin system app source. Already copied by Darwin to "/Applications/Nix Apps"
+    #apps_source="${config.system.build.applications}/Applications"
+
+    app_target="$HOME/Applications/Nix Trampolines"
+    
     mkdir -p "$app_target"
+
     echo "Copying apps from $apps_source to $app_target"
-    ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --copy-unsafe-links --delete "$apps_source/" "$app_target"
+    ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --delete --copy-unsafe-links "$apps_source/" "$app_target"
   '';
 }
