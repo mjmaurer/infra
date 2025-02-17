@@ -218,6 +218,7 @@ in [
     command = "runCommands";
     args = {
       commands = [
+        "editor.action.clipboardCopyAction"
         "workbench.action.terminal.focusAtIndex1"
         "editor.action.clipboardPasteAction"
       ];
@@ -225,42 +226,31 @@ in [
     key = "alt+shift+o";
     when = "editorHasSelection && !terminalFocus && view.terminal.visible";
   }
-  # {
-  #   command = "runCommands";
-  #   args = {
-  #     commands = [
-  #       { command = "copyRelativeFilePath"; }
-  #       { command = "workbench.action.terminal.focusAtIndex1"; }
-  #       {
-  #         command = "workbench.action.terminal.sendSequence";
-  #         args = {
-  #           text = ''
-  #             /reset
-  #             /add 
-  #           '';
-  #         };
-  #       }
-  #       { command = "editor.action.clipboardPasteAction"; }
-  #     ];
-  #   };
-  #   key = "alt+shift+o";
-  #   when = "!editorHasSelection && !terminalFocus && view.terminal.visible";
-  # }
+  {
+    command = "runCommands";
+    args = {
+      commands = [
+        # { command = "copyRelativeFilePath"; }
+        { command = "workbench.action.terminal.focusAtIndex1"; }
+        {
+          command = "workbench.action.terminal.sendSequence";
+          args = {
+            text = ''
+              /reset
+            '';
+          };
+        }
+        # { command = "editor.action.clipboardPasteAction"; }
+      ];
+    };
+    key = "alt+shift+o";
+    when = "!editorHasSelection && view.terminal.visible";
+  }
   {
     command = "workbench.action.focusActiveEditorGroup";
     key = "alt+o";
     when = "terminalFocus";
   }
-  # {
-  #   command = "workbench.action.terminal.sendSequence";
-  #   args = {
-  #     text = ''
-  #       /reset
-  #     '';
-  #   };
-  #   key = "alt+n";
-  #   when = "terminalFocus";
-  # }
   # Primary sidebar focus
   {
     command = "workbench.files.action.collapseExplorerFolders";
