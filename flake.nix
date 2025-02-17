@@ -127,6 +127,7 @@
           mkNixosSystem = { systemStateVersion, homeStateVersion ? null
             , defaultSystemModules ? [
               ./system/common/nixos.nix
+              ./system/common/headless-minimal.nix
               sops-nix.nixosModules.sops
             ], extraSystemModules ? [ ], defaultHomeModules ? [
               ./home-manager/common/nixos.nix
@@ -173,29 +174,6 @@
           # so override default to keep from accidently including them in the ISO
           defaultSystemModules = [ ./system/machines/live-iso/live-iso.nix ];
         };
-        #   core = nixpkgs.lib.nixosSystem {
-        #     system = "x86_64-linux";
-        #     specialArgs = mkSpecialArgs;
-
-        #     modules = [
-        #       # Base
-        #       ./system
-        #       # ./system/steam.nix
-        #       ./system/ssh.nix # For headless
-
-        #       # Hardware
-        #       ./machines/core
-        #       nixpkgs.nixosModules.notDetected
-
-        #       # Secrets
-        #       sops-nix.nixosModules.sops
-        #       ./sops
-        #     ];
-
-        #     # We'd use the following if we wanted to use home-manager as a nixos module,
-        #     # as opposed to managing home-manager configurations as a separate flake.
-        #     # home-manager.nixosModules.home-manager = {}
-        #   };
       };
 
       darwinConfigurations = {
@@ -232,8 +210,10 @@
           derivationName = "mac";
           username = "mjmaurer";
         }).mkHomeManagerStandalone {
-          modules =
-            [ ./home-manager/common/darwin.nix ./home-manager/common/headed.nix ];
+          modules = [
+            ./home-manager/common/darwin.nix
+            ./home-manager/common/headed.nix
+          ];
         };
         "linux" = (withConfig {
           system = "x86_64-linux";
