@@ -25,6 +25,11 @@ let
 
     # Only wait on ping for max .5 second
     if ping -c 1 -t 500 "$SMB_HOST" >/dev/null 2>&1; then
+      # Check if mount path exists and is empty, remove if so
+      if [ -d "${cfg.smbMountPath}" ] && [ -z "$(ls -A ${cfg.smbMountPath})" ]; then
+        echo "Removing empty mount path to prevent mount_smbfs error"
+        rmdir "${cfg.smbMountPath}"
+      fi
       # Run as user to avoid permission issues
       if ! su ${username} -c "mount_smbfs $SMB_MAIN_SHARE ${cfg.smbMountPath}"; then
         echo "Failed to mount SMB share"
@@ -66,7 +71,7 @@ in {
           # https://gist.github.com/jbfriedrich/49b186473486ac72c4fe194af01288be
           aapl_off=false
         '';
-        # Need mkOrder because sops-nix installs secrets using mkAfter (1500)
+        # Need mkOrder because sops-nix installs secrets using mkAfter (1500 priority)
         system.activationScripts.postActivation.text =
           lib.mkOrder 1600 darwinMountScript;
         launchd.daemons = lib.mkOrder 1600 {
