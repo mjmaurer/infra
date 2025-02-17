@@ -9,8 +9,11 @@ let
   kanataPerm = "NOPASSWD";
 in {
   options.modules.kanata = {
-    enable = lib.mkEnableOption "kanata";
-    package = lib.mkPackageOption pkgs "kanata" { };
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable kanata";
+    };
   };
 
   config = lib.mkIf cfg.enable (lib.mkMerge [

@@ -41,7 +41,11 @@ let
   '';
 in {
   options.modules.smbClient = {
-    enable = lib.mkEnableOption "smbClient";
+    enable = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Enable SMB client module.";
+    };
 
     smbMountPath = lib.mkOption {
       type = lib.types.str;
