@@ -1,24 +1,22 @@
 { config, pkgs, lib, ... }:
 
 {
-  imports = [ ./_base.nix ./headed.nix ../modules/karabiner/karabiner.nix ];
+  imports = [ ../modules/karabiner/karabiner.nix ];
 
   # This might be set by the home-manager module for Darwin
   # This is kept for HM-only systems
   home.homeDirectory = lib.mkDefault "/Users/${config.home.username}";
 
   modules = {
-    obsidian = {
-      enable = true;
-      justConfig = true;
-    };
-
+    # TODO Could enable after: https://github.com/NixOS/nixpkgs/issues/366581
+    firefox.enable = false;
+    wayland.enable = false;
     commonShell = {
       sessionVariables = { TERM = "xterm-256color"; };
       shellAliases = {
         "la" = "ls -A -G --color=auto";
         "ls" = "ls -G --color=auto";
-        "code" = "open -a 'Visual Studio Code'";
+        # "code" = "open -a 'Visual Studio Code'";
         "nrbnoreload" = "darwin-rebuild switch --show-trace --flake ~/infra";
         # cd to top Finder window
         "cdf" = ''

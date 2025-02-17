@@ -17,10 +17,12 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 1. Flash live.iso from the github action to a USB stick.
 2. Boot into it. It should start an SSH server automatically, and uses dhcpcd
-  - Debugging: Look at dhcpcd
-3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
-  - Debugging: Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
 
+- Debugging: Look at dhcpcd
+
+3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
+
+- Debugging: Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
 
 ```
 cd install
@@ -119,6 +121,22 @@ There are enough mutually exclusive features between NixOS and Darwin that it's 
 - Most of Darwin's config is stuck in `system/common/darwin.nix`
 - Most of `system/modules` is NixOS-specific. See `system/common/_base.nix` for shared modules.
 
+## Headed vs Headed-Minimal vs Headless
+
+Each OS derivation only needs one (configured in `flake.nix`):
+
+```
+# They directly import each other
+Headed         ⊃ Headed-Minimal
+Headed-Minimal ⊃ Headless
+```
+
+Since the headless module is always included, it contains most of the basic configuration.
+
+Headed-Minimal system / HM modules do actually include a display server (Wayland) and Sway window manager.
+They also include a terminal (Alacritty) and browser (Firefox).
+However, many other GUI tools are not included.
+
 ## Impermanence
 
 Motivation: https://grahamc.com/blog/erase-your-darlings/
@@ -134,10 +152,6 @@ Even though `/root` is currently persisted, we should prepare for impermanence. 
 See `tailscale.nix` for an example of how to use these.
 
 See [this GH issue](https://github.com/mjmaurer/infra/issues/11) for future work / more details.
-
-## Upgrade Notes
-
-- Sequoia (15.0.0): Need to follow this to fix eDSRecordNotFound error: https://determinate.systems/posts/nix-support-for-macos-sequoia/
 
 ## Yubikey OpenPGP setup
 
@@ -159,14 +173,15 @@ rm ./yubikey-public.pem
 ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e
 # Authenticate (See below for running a test server):
 # This is aliased to sshyk
-ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 localhost 
+ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 localhost
 
 # [Optional] Test:
-pkcs11-tool --login --test 
+pkcs11-tool --login --test
 
 ```
 
 Can quickly run a test server with:
+
 ```
 mkdir -p /tmp/ssh_test
 
@@ -180,13 +195,14 @@ AuthorizedKeysCommandUser $(whoami)" > /tmp/ssh_test/sshd_config
 
 /usr/sbin/sshd -f /tmp/ssh_test/sshd_config -D -dd
 ```
+
 <!-- AuthorizedKeysCommand /bin/echo \"$(ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e)\" -->
 
 Right now, these are just used for logging into the USB ISO with SSH.
 
 # Troubleshooting
 
-If there are any errors at all during the build, it could cause a potential issue with something downstream.
+If there are any error messages at all during a build / rebuild, it could cause a potential issue with something downstream.
 
 ## Darwin
 
@@ -214,4 +230,6 @@ nss karabiner
 defaults read /nix/store/k0xq3rhsg7ahz7nqk6wapvh7d075r4hc-karabiner-elements-15.3.0-driver/Library/Application\ Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/Info.plist
 ```
 
+### Sequioa Upgrade Notes
 
+Sequoia (15.0.0): Need to follow this to fix eDSRecordNotFound error: https://determinate.systems/posts/nix-support-for-macos-sequoia/

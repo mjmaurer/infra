@@ -4,6 +4,11 @@
   # If you need a newer version, supply via machine's flake.nix config. 
   home.stateVersion = lib.mkDefault "22.05";
 
+  # imports = lib.pipe ../modules [
+  #   builtins.readDir
+  #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
+  #   (lib.mapAttrsToList (name: _: ./services + "/${name}"))
+  # ];
   imports = [
     nix-colors.homeManagerModule
 
@@ -18,19 +23,8 @@
     ../modules/aichat/aichat.nix
     ../modules/neovim/neovim.nix
   ];
-  # imports = lib.pipe ../modules [
-  #   builtins.readDir
-  #   (lib.filterAttrs (name: _: lib.hasSuffix ".nix" name))
-  #   (lib.mapAttrsToList (name: _: ./services + "/${name}"))
-  # ];
 
-  # This exposes `config.colorScheme.palette.*` based on the color scheme.
-  # You could define a custom scheme, or even defined based on a wallpaper pic.
-  colorScheme = nix-colors.colorSchemes.gruvbox-material-light-hard;
-
-  # Reload system units when changing configs
-  systemd.user.startServices = "sd-switch";
-
+  # When adding here, consider if these should be disabled for some OS.
   modules = {
     tmux.enable = lib.mkDefault true;
     aider.enable = lib.mkDefault true;
@@ -38,6 +32,13 @@
     neovim.enable = lib.mkDefault true;
     git.enable = lib.mkDefault true;
   };
+
+  # This exposes `config.colorScheme.palette.*` based on the color scheme.
+  # You could define a custom scheme, or even defined based on a wallpaper pic.
+  colorScheme = nix-colors.colorSchemes.gruvbox-material-light-hard;
+
+  # Reload system units when changing configs
+  systemd.user.startServices = "sd-switch";
 
   programs.home-manager.enable = true;
   fonts.fontconfig.enable = true;
