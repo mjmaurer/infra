@@ -26,16 +26,16 @@ in {
     (lib.optionalAttrs isDarwin {
       environment.systemPackages = [
         # These aren't loaded in path for some reason https://github.com/LnL7/nix-darwin/issues/521
-        (pkgs.writeScriptBin "kanload" ''
-          launchctl load -w /Library/LaunchDaemons/org.nixos.kanata_daemons.plist
+        (pkgs.writeShellScriptBin "kanload" ''
+          sudo launchctl load -w /Library/LaunchDaemons/org.nixos.kanata_daemons.plist
         '')
-        (pkgs.writeScriptBin "kanunload" ''
-          launchctl unload /Library/LaunchDaemons/org.nixos.kanata_daemons.plist
+        (pkgs.writeShellScriptBin "kanunload" ''
+          sudo launchctl unload /Library/LaunchDaemons/org.nixos.kanata_daemons.plist
         '')
-        (pkgs.writeScriptBin "kanrun" ''
+        (pkgs.writeShellScriptBin "kanrun" ''
           sudo kanata --debug -c ~/infra/system/modules/kanata/kanata.kdb
         '')
-        (pkgs.writeScriptBin "kankill" ''
+        (pkgs.writeShellScriptBin "kankill" ''
           sudo kill -9 $(sudo pgrep -f "^sudo kanata") 
         '')
       ];

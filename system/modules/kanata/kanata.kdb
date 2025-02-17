@@ -66,7 +66,10 @@
 ;;                  lmet lctl @hyp    spc    ralt(@arr) rctl
 
 (deflayermap (default)
-  caps esc
+  caps  esc
+  tab   @alttab
+
+  ;; Modifiers
   $lfar fn
   $lout lmet
   $lmid lctl
@@ -84,21 +87,12 @@
 ;; ---------------------------- Alt[tab] / Arrow Layer ------------------------------------ #
 
 (deflayermap (alt-arrow)
+  tab  @alttab
+
   h    @lft
   j    @dwn
   k    @up
   l    @rgt
-
-  tab  @ralttab
-)
-
-(deflayermap (alttab-arrow)
-  h    RA-left 
-  j    RA-down 
-  k    RA-up
-  l    RA-rght
-
-  tab  XX 
 )
 
 ;; ---------------------------- Paren Layer (v) ------------------------------------ #
@@ -159,6 +153,7 @@
   hypkey1 lmet
   hypkey2 lctl
   hypkeys ($hypkey1 $hypkey2)
+  syskeys ($hypkey1 $hypkey2 ralt)
 )
 
 (defalias
@@ -168,11 +163,13 @@
 
   ;; Alt / Arrow Layer
   raltarr (multi ralt (layer-while-held alt-arrow))
-  ralttab (multi tab (layer-switch default) (release-layer alt-arrow)) ;; Use vim keys for nav
-  rgt (unmod rght)
-  lft (unmod left)
-  dwn (fork (unmod down) (unmod pgdn) (lsft)) ;; page if @hyp active. could maybe use defoverrides instead
-  up  (fork (unmod up)   (unmod pgup) (lsft)) ;; or $hypkeys
+  rgt     (unmod rght)
+  lft     (unmod left)
+  dwn     (fork (unmod down) (unmod pgdn) $hypkeys) ;; page if @hyp active. could maybe use defoverrides instead
+  up      (fork (unmod up)   (unmod pgup) $hypkeys) ;; or $hypkeys
+          ;; tab mode (Using vim keys in default layer for nav)
+  tabmode (multi (unmod $hypkeys tab) (layer-switch default) (release-layer alt-arrow)) 
+  alttab  (fork (unmod tab) @tabmode $hypkeys)
   
   ;; Paren Layer
   v (tap-hold 150 150 v (layer-toggle paren))
