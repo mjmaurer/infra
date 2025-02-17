@@ -54,9 +54,9 @@ nix run nix-darwin -- switch --flake ~/infra
 
 After this you can use `nrb` (nix-rebuild) to update the system.
 
-You should likely [update Homebrew](#homebrew-updates) next.
+You should likely [update Homebrew packages](#homebrew-updates) next.
 
-### Homebrew Updates
+### Homebrew Package Updates
 
 ```sh
 brew update
@@ -183,3 +183,35 @@ AuthorizedKeysCommandUser $(whoami)" > /tmp/ssh_test/sshd_config
 <!-- AuthorizedKeysCommand /bin/echo \"$(ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e)\" -->
 
 Right now, these are just used for logging into the USB ISO with SSH.
+
+# Troubleshooting
+
+If there are any errors at all during the build, it could cause a potential issue with something downstream.
+
+## Darwin
+
+### Launchd
+
+Launchd services will sometimes not get removed. You'll have to unload the service and remove it's plist manually. This applies to homebrew services and darwin launchd services.
+
+### Kanata
+
+[See here](https://github.com/jtroo/kanata/releases) for official installation instructions.
+
+If you see `connect-failed ...` from kanata, it likely means the kanata version is depending on a new Karabiner driver version than the one installed. I build this derivation manually so we can get quicker updates if needed. This message could also mean that the Karabiner system extension isn't getting activated properly.
+
+You can get more info on LaunchD daemons by checking their logs. Use this command to get more info about the command currently running:
+
+```
+sudo plutil -p /Library/LaunchDaemons/DAEMON.plist
+```
+
+You can find the current driver version by:
+
+```
+# to find the karabiner-driver store path
+nss karabiner
+defaults read /nix/store/k0xq3rhsg7ahz7nqk6wapvh7d075r4hc-karabiner-elements-15.3.0-driver/Library/Application\ Support/org.pqrs/Karabiner-DriverKit-VirtualHIDDevice/Applications/Karabiner-VirtualHIDDevice-Daemon.app/Contents/Info.plist
+```
+
+

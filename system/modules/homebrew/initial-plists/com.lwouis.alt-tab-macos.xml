@@ -10,8 +10,16 @@
 		<false/>
 		<key>blacklist</key>
 		<string>[{"ignore":"0","bundleIdentifier":"com.McAfee.McAfeeSafariHost","hide":"1"},{"bundleIdentifier":"com.apple.finder","hide":"2","ignore":"0"},{"ignore":"2","bundleIdentifier":"com.microsoft.rdc.macos","hide":"0"},{"ignore":"2","bundleIdentifier":"com.teamviewer.TeamViewer","hide":"0"},{"bundleIdentifier":"org.virtualbox.app.VirtualBoxVM","hide":"0","ignore":"2"},{"bundleIdentifier":"com.parallels.","ignore":"2","hide":"0"},{"hide":"0","bundleIdentifier":"com.citrix.XenAppViewer","ignore":"2"},{"bundleIdentifier":"com.citrix.receiver.icaviewer.mac","hide":"0","ignore":"2"},{"hide":"0","ignore":"2","bundleIdentifier":"com.nicesoftware.dcvviewer"},{"ignore":"2","bundleIdentifier":"com.vmware.fusion","hide":"0"},{"ignore":"2","hide":"0","bundleIdentifier":"com.apple.ScreenSharing"},{"hide":"0","ignore":"2","bundleIdentifier":"com.utmapp.UTM"}]</string>
+		<key>arrowKeysEnabled</key>
+		<string>false</string>
+		<key>focusWindowShortcut</key>
+		<string>↩</string>
+		<key>hideShowAppShortcut</key>
+		<string></string>
 		<key>holdShortcut</key>
-		<string>⌘</string>
+		<string>⌥</string>
+		<key>vimKeysEnabled</key>
+		<string>true</string>
 		<key>preferencesVersion</key>
 		<string>7.11.0</string>
 		<key>updatePolicy</key>
