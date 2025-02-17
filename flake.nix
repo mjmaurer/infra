@@ -80,27 +80,33 @@
               pkgs = nixpkgs.legacyPackages.${system};
               modules = modules;
             };
-          mkHomeManagerModuleConfig = { homeModule, homeStateVersion }: {
-            # Keep these false so home-manager and nixos derivations don't diverge.
-            # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
-            # To instead use the global (system-level) pkgs, set to true.
-            home-manager.useGlobalPkgs = true;
-            # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
-            home-manager.useUserPackages = false;
-            home-manager.extraSpecialArgs = mkSpecialArgs;
-            home-manager.backupFileExtension = "home-manager-existing-backup";
-            # home-manager.verbose = true;
-            home-manager.users.${username} = homeModule;
-            home-manager.sharedModules = [
-              { home.stateVersion = homeStateVersion; }
-              sops-nix.homeManagerModules.sops
-            ];
-          };
+          mkHomeManagerModuleConfig =
+            { defaultHomeModules, extraHomeModules, homeStateVersion }: {
+              # Keep these false so home-manager and nixos derivations don't diverge.
+              # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
+              # To instead use the global (system-level) pkgs, set to true.
+              home-manager.useGlobalPkgs = true;
+              # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
+              home-manager.useUserPackages = false;
+              home-manager.extraSpecialArgs = mkSpecialArgs;
+              home-manager.backupFileExtension = "home-manager-existing-backup";
+              # home-manager.verbose = true;
+              home-manager.users.${username} = {
+                imports = defaultHomeModules ++ extraHomeModules;
+              };
+              home-manager.sharedModules = [
+                { home.stateVersion = homeStateVersion; }
+                sops-nix.homeManagerModules.sops
+              ];
+            };
           mkDarwinSystem = { systemStateVersion, homeStateVersion
-            , systemModules ? [
+            , defaultSystemModules ? [
               ./system/common/darwin.nix
               sops-nix.darwinModules.sops
-            ], homeModule ? import ./home-manager/common/mac.nix }:
+            ], extraSystemModules ? [ ], defaultHomeModules ? [
+              ./home-manager/common/mac.nix
+              ./home-manager/common/headed.nix
+            ], extraHomeModules ? [ ] }:
             darwin.lib.darwinSystem {
               system = if system == "aarch64-darwin" then
                 system
@@ -110,19 +116,22 @@
               modules = [
                 home-manager.darwinModules.home-manager
                 (mkHomeManagerModuleConfig {
-                  inherit homeModule homeStateVersion;
+                  inherit defaultHomeModules extraHomeModules homeStateVersion;
                 })
                 {
                   system.stateVersion = systemStateVersion;
                 }
                 # impermanence.nixosModules.impermanence
-              ] ++ systemModules;
+              ] ++ defaultSystemModules ++ extraSystemModules;
             };
           mkNixosSystem = { systemStateVersion, homeStateVersion ? null
-            , systemModules ? [
+            , defaultSystemModules ? [
               ./system/common/nixos.nix
               sops-nix.nixosModules.sops
-            ], homeModule ? import ./home-manager/common/nixos.nix }:
+            ], extraSystemModules ? [ ], defaultHomeModules ? [
+              ./home-manager/common/nixos.nix
+              ./home-manager/common/headless-minimal.nix
+            ], extraHomeModules ? [ ] }:
             nixpkgs.lib.nixosSystem {
               system = system;
               specialArgs = mkSpecialArgs;
@@ -130,28 +139,39 @@
                 (nixpkgs.lib.optionalAttrs (homeStateVersion != null)
                   (home-manager.nixosModules.home-manager
                     (mkHomeManagerModuleConfig {
-                      inherit homeModule homeStateVersion;
+                      inherit defaultHomeModules extraHomeModules
+                        homeStateVersion;
                     })))
                 {
                   system.stateVersion = systemStateVersion;
                 }
                 # impermanence.nixosModules.impermanence
-              ] ++ systemModules;
+              ] ++ defaultSystemModules ++ extraSystemModules;
             };
         };
     in {
       nixosConfigurations = {
+
+        maple = (withConfig {
+          system = "x86_64-linux";
+          derivationName = "maple";
+        }).mkNixosSystem {
+          homeStateVersion = "25.05";
+          systemStateVersion = "24.05";
+          extraSystemModules =
+            [{ services.xserver.videoDrivers = [ "intel" ]; }];
+        };
 
         live-iso = (withConfig {
           system = "x86_64-linux";
           derivationName = "live-iso";
           extraSpecialArgs = { inherit (inputs) nixpkgs; };
         }).mkNixosSystem {
-          # No home-manager state, so HM is disabled
+          homeStateVersion = null;
           systemStateVersion = "24.05";
-          # live-iso doesn't inherit _base.nix or nixos.nix modules
-          # to keep from accidently including them in the ISO
-          systemModules = [ ./system/machines/live-iso/live-iso.nix ];
+          # live-iso doesn't inherit _base.nix or nixos.nix modules,
+          # so override default to keep from accidently including them in the ISO
+          defaultSystemModules = [ ./system/machines/live-iso/live-iso.nix ];
         };
         #   core = nixpkgs.lib.nixosSystem {
         #     system = "x86_64-linux";
@@ -187,14 +207,13 @@
         }).mkDarwinSystem {
           systemStateVersion = 5;
           homeStateVersion = "22.05";
-          homeModule = {
-            imports = [ ./home-manager/common/mac.nix ];
+          extraHomeModules = [{
             modules = {
               commonShell = {
                 dirHashes = { box = "$HOME/Library/CloudStorage/Box-Box/"; };
               };
             };
-          };
+          }];
         };
 
         aspen = (withConfig {
@@ -213,14 +232,18 @@
           derivationName = "mac";
           username = "mjmaurer";
         }).mkHomeManagerStandalone {
-          modules = [ ./home-manager/common/mac.nix ];
+          modules =
+            [ ./home-manager/common/mac.nix ./home-manager/common/headed.nix ];
         };
         "linux" = (withConfig {
           system = "x86_64-linux";
           derivationName = "linux";
           username = "mjmaurer";
         }).mkHomeManagerStandalone {
-          modules = [ ./home-manager/common/linux.nix ];
+          modules = [
+            ./home-manager/common/linux.nix
+            ./home-manager/common/headed.nix
+          ];
         };
       };
 
