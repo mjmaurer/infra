@@ -63,12 +63,23 @@ in {
         serviceConfig.KeepAlive = true;
         serviceConfig.StandardOutPath = "/Library/Logs/Kanata/out.log";
         serviceConfig.StandardErrorPath = "/Library/Logs/Kanata/error.log";
+    };
+
+      launchd.daemons.start_kanata_daemons = {
+        script = ''
+            ${macAppDir}/.Karabiner-VirtualHIDDevice-Manager.app/Contents/MacOS/Karabiner-VirtualHIDDevice-Manager activate
+            # launchctl kickstart system/org.nixos.${deamonLaunchdName}
+        '';
+        serviceConfig.Label = "org.nixos.start_kanata_daemons";
+        serviceConfig.RunAtLoad = true;
+        serviceConfig.StandardOutPath = "/Library/Logs/Kanata-Starter/out.log";
+        serviceConfig.StandardErrorPath = "/Library/Logs/Kanata-Starter/error.log";
       };
 
       # system.activationScripts.postActivation.text = ''
       #   echo "Reloading kanata daemons" >&2
-      #   sudo launchctl unload /Library/LaunchDaemons/org.nixos.${deamonLaunchdName}.plist
-      #   sudo launchctl load -w /Library/LaunchDaemons/org.nixos.${deamonLaunchdName}.plist
+      #   sudo launchctl unload /Library/LaunchDaemons/org.nixos.start_kanata_daemons.plist
+      #   sudo launchctl load -w /Library/LaunchDaemons/org.nixos.start_kanata_daemons.plist
       # '';
 
       launchd.daemons.Karabiner-DriverKit-VirtualHIDDevice-Daemon = {

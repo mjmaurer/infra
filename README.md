@@ -211,6 +211,9 @@ Launchd services will sometimes not get removed. You'll have to unload the servi
 
 If you see `connect-failed ...` from kanata, it likely means the kanata version is depending on a new Karabiner driver version than the one installed. I build this derivation manually so we can get quicker updates if needed. This message could also mean that the Karabiner system extension isn't getting activated properly.
 
+The kanata exe (and any terminal you run it in) requires 'Input Monitoring' and 'Accessability' permissions. If you update the kanata binary (even via homebrew), you'll need to regrant them.
+If you get io errors, it could be because you're running Alacritty. Try the default terminal.
+
 You can get more info on LaunchD daemons by checking their logs. Use this command to get more info about the command currently running:
 
 ```
