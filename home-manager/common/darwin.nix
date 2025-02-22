@@ -12,6 +12,7 @@
     firefox.enable = false;
     wayland.enable = false;
     commonShell = {
+      enableShellTmuxTimeout = true;
       sessionVariables = { TERM = "xterm-256color"; };
       shellAliases = {
         "la" = "ls -A -G --color=auto";

@@ -60,6 +60,14 @@ in {
         interactive shell.
       '';
     };
+    enableShellTmuxTimeout = lib.mkOption {
+      default = false;
+      type = lib.types.bool;
+      description = ''
+          Enables a shell timeout that will also
+          kill any tmux sessions that the shell is currently in. 
+      '';
+    };
     assembleInitExtra = lib.mkOption {
       type = lib.types.functionTo lib.types.str;
       default = shellSpecificFile: ''
@@ -130,6 +138,31 @@ in {
         for file in ${./nix}/*.sh; do
           source $file
         done
+
+
+        ${lib.optionalString (cfg.enableShellTmuxTimeout) ''
+        # Timeout shells after 4 days of inactivity (will also kill tmux started with zsh)
+        export TMOUT=345600
+
+        kill_tmux_workspace() {
+            if [ ! -z "$TMUX" ]; then
+                current_session=$(tmux display-message -p "#{session_name}")
+                # Kill other sessions matching the pattern first
+                tmux list-sessions | grep "^$current_session" | cut -d: -f1 | grep -v "^$current_session$" | xargs -I{} tmux kill-session -t {}
+                # Then kill our own session
+                tmux kill-session -t "$current_session"
+            fi
+        }
+
+        if [ -n "$ZSH_VERSION" ]; then
+            TRAPALRM() {
+                kill_tmux_workspace;
+                exit
+            }
+        else
+            trap 'kill_tmux_workspace; exit' ALRM
+        fi
+        ''}
       '';
       sessionVariables = {
         NIX_TEMPLATE_FILE = templateFile;
