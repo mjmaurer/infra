@@ -27,8 +27,9 @@ let
     if ping -c 1 -t 500 "$SMB_HOST" >/dev/null 2>&1; then
       # Check if mount path exists and is empty, remove if so
       if [ -d "${cfg.smbMountPath}" ] && [ -z "$(ls -A ${cfg.smbMountPath})" ]; then
-        echo "Removing empty mount path to prevent mount_smbfs error"
-        rmdir "${cfg.smbMountPath}"
+        echo "empty mount path may cause mount_smbfs error"
+        # rmdir "${cfg.smbMountPath}"
+        # mkdir -p ${cfg.smbMountPath}
       fi
       # Run as user to avoid permission issues
       if ! su ${username} -c "mount_smbfs $SMB_MAIN_SHARE ${cfg.smbMountPath}"; then
