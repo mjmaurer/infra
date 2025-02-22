@@ -1,6 +1,6 @@
 (defcfg
   process-unmapped-keys yes
- ;; log-layer-changes no
+  log-layer-changes no
   linux-continue-if-no-devs-found yes)
 
 ;; ------------------------------------- Testing ------------------------------------ #
@@ -81,8 +81,9 @@
   $rfar fn
 
   ;; Layers
-  v     @v
-  ;     @;
+  f     @f
+  d     @d
+  l     @l
 )
 ;; ---------------------------- Alt[tab] / Arrow Layer ------------------------------------ #
 
@@ -111,14 +112,12 @@
 
 ;; ---------------------------- Number / Symbol Layer (;) ------------------------------------ #
 
-(deflayermap (number)
 
-  ;; Left Side
-  a   -   ;; minus
-  s   S-- ;; underscore
-  d   =   ;; =
-  f   S-= ;; + 
-  g   S-1 ;; !
+(deflayermap (symbol)
+  f   S-- ;; underscore
+  d   S-1 ;; !
+  a   S-4 ;; $
+  s   S-3 ;; #
 
   z   S-2 ;; @
   x   S-3 ;; #
@@ -127,10 +126,19 @@
 
   q   S-6 ;; ^ 
   w   S-7 ;; & 
-  e   S-8 ;; * 
   r   S-\ ;; | 
   t   `   ;; `
   tab S-` ;; ~ 
+)
+
+(deflayermap (number)
+
+  ;; Left Side
+  s   -   ;; minus
+  d   S-= ;; + 
+  w   S-8 ;; * 
+  e   /   ;; /
+  ;   =   ;; =
 
 
   ;; Right Side
@@ -143,17 +151,19 @@
   m   1
   ,   2
   .   3
-  n   0
-
+  /   0
+  h   0
 )
 
 ;; -------------------------------- Aliases ------------------------------------ #
 
 (defvar
-  hypkey1 lmet
-  hypkey2 lctl
-  hypkeys ($hypkey1 $hypkey2)
-  syskeys ($hypkey1 $hypkey2 ralt)
+  hypkey1      lmet
+  hypkey2      lctl
+  hypkeys      ($hypkey1 $hypkey2)
+  syskeys      ($hypkey1 $hypkey2 ralt)
+  tap-timeout  200
+  hold-time    250
 )
 
 (defalias
@@ -170,12 +180,19 @@
           ;; tab mode (Using vim keys in default layer for nav)
   tabmode (multi (unmod $hypkeys tab) (layer-switch default) (release-layer alt-arrow)) 
   alttab  (fork (unmod tab) @tabmode $hypkeys)
+
+  ;; NOTE: tap-timeout helps with holding down the tap key (i.e. for OS-level repeating)
+  ;; If it's 200 and you tap the tap key of 'a', holding 'a' again within 200ms will result in a hold of 'a'.
   
+  ;; Symbol Layer
+  l (tap-hold-release $tap-timeout $hold-time l (layer-toggle symbol))
+  ;; v (tap-hold-release $tap-timeout $hold-time 100 150 v (layer-while-held paren) (e))
+
   ;; Paren Layer
-  v (tap-hold 150 150 v (layer-toggle paren))
+  d (tap-hold-release $tap-timeout $hold-time d (layer-toggle paren))
 
   ;; Number Layer
-  ; (tap-hold 150 150 ; (layer-toggle number))
+  f (tap-hold-release  $tap-timeout $hold-time f (layer-toggle number))
 )
 
 ;; -------------------------------- Notes ------------------------------------ #
