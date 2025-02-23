@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 # To run when configuring a new (headed) machine
+# These host keys can only be read by root
 
 echo "Generating new host SSH key pair (requires sudo)"
 # Equivalent to `ssh-keygen -A`, but for just one key type (ED25519)

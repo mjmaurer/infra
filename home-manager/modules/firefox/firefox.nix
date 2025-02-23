@@ -3,6 +3,8 @@ let cfg = config.modules.firefox;
 in {
   options.modules.firefox = { enable = lib.mkEnableOption "firefox"; };
 
+  # Good place to start for more options:
+  # https://github.com/Misterio77/nix-config/blob/main/home/gabriel/features/desktop/common/firefox.nix
   config = lib.mkIf cfg.enable {
     xdg.configFile."environment.d/firefox-wayland.conf" =
       lib.mkIf config.modules.wayland.enable {

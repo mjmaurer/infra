@@ -6,6 +6,9 @@ in {
   options.modules.wayland = { enable = lib.mkEnableOption "wayland"; };
 
   config = lib.mkIf cfg.enable {
+    # Can find more packages / features here:
+    # https://github.com/Misterio77/nix-config/tree/main/home/gabriel/features/desktop/common/wayland-wm
+    # Might also want to split some of these out into separate modules for headless / headless-minimal
     home.packages = with pkgs; [
       xwayland # X11 compatibility layer for Wayland
       swaylock-effects # Screen locker for Sway with additional effects
@@ -18,11 +21,16 @@ in {
       imv # wayland image viewer that works
       pdfpc # pdf presentation viewer run with -s -S
     ];
-    xdg.configFile."environment.d/envvars.conf".text = ''
-      XDG_CURRENT_DESKTOP=sway
-      XDG_SESSION_TYPE=wayland
-      NIXOS_OZONE_WL=1
-    '';
+
+    xdg = {
+      configFile."environment.d/envvars.conf".text = ''
+        XDG_CURRENT_DESKTOP=sway
+        XDG_SESSION_TYPE=wayland
+        NIXOS_OZONE_WL=1
+      '';
+      mime.enable = true;
+    };
+
     programs = {
 
       rofi.enable = true;
