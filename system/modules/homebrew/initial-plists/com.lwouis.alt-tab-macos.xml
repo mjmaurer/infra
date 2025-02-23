@@ -14,10 +14,14 @@
 		<string>false</string>
 		<key>focusWindowShortcut</key>
 		<string>↩</string>
+		<key>closeWindowShortcut</key>
+		<string>W</string>
+		<key>quitAppShortcut</key>
+		<string>Q</string>
 		<key>hideShowAppShortcut</key>
 		<string></string>
 		<key>holdShortcut</key>
-		<string>⌥</string>
+		<string>⌃⌥⌘</string>
 		<key>vimKeysEnabled</key>
 		<string>true</string>
 		<key>preferencesVersion</key>
