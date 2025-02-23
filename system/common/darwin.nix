@@ -1,4 +1,8 @@
-{ config, pkgs, derivationName, username, lib, ... }: {
+{ config, pkgs, derivationName, username, lib, ... }: 
+let
+  screenshotDir = "${config.users.users.${username}.home}/Documents/screenshots";
+in
+{
   # Never change this here. Only in flake.nix
   system.stateVersion = lib.mkDefault 5;
 
@@ -52,7 +56,7 @@
       show-recents = false;
     };
     screencapture = {
-      location = "~/Documents/screenshots";
+      location = screenshotDir;
       type = "png";
     };
     screensaver = {
@@ -76,6 +80,7 @@
       NSAutomaticQuoteSubstitutionEnabled = false;
       NSAutomaticSpellingCorrectionEnabled = false;
     };
+    # Any settings here you could otherwise see with: 'defaults read <setting_name>'
     CustomUserPreferences = {
       NSGlobalDomain = {
         # Add a context menu item for showing the Web Inspector in web views
@@ -90,11 +95,25 @@
       "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
       # Prevent Photos from opening automatically when plugging in certain removable media
       "com.apple.ImageCapture".disableHotPlug = true;
+      "com.apple.symbolichotkeys" = {
+        AppleSymbolicHotKeys = {
+          # Disable 'Cmd + Space' for Spotlight Search
+          "64" = {
+            enabled = false;
+          };
+          # Disable 'Cmd + Alt + Space' for Finder search window
+          "65" = {
+            enabled = false;
+          };
+        };
+      };
     };
   };
 
   system.activationScripts.postUserActivation.text = ''
     #!/usr/bin/env bash
+    mkdir -p ${screenshotDir}
+
     # From https://github.com/LnL7/nix-darwin/issues/214#issuecomment-2050027696
 
     # This used to work, but doesn't now
