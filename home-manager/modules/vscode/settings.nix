@@ -21,6 +21,10 @@ let
       before = [ "<leader>" "e" "n" ];
       commands = [ "editor.action.rename" ];
     }
+    {
+      before = [ "<leader>" "e" "l" ];
+      commands = [ "editor.action.openLink" ];
+    }
     # Prefix-------------------------- Git Leader --------------------------
     {
       # git blame diff head (diff blame commit against head for file)
