@@ -11,7 +11,6 @@
     ../modules/audio.nix
     ../modules/boot.nix
     ../modules/ssh.nix
-    # TODO ../modules/tailscale.nix
 
     ../modules/sops
   ];
