@@ -22,6 +22,10 @@
         nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile \"$1\")"
       '')
 
+      (pkgs.writeShellScriptBin "sopsnew" ''
+        # Just a reminder. Use this for new hosts.
+        sops "$@"
+      '')
       (pkgs.writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
 

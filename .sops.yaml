@@ -16,3 +16,11 @@ creation_rules:
         age:
           - *aspen
           - *smac
+  # Daily Drivers
+  - path_regex: system/modules/sops/secrets/common-pc.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age:
+          - *aspen
+          - *smac

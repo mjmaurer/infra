@@ -84,10 +84,11 @@ in {
     };
     # GPG keys (by keygrip ID) to expose via SSH
     # Replaces gpg-agent's `sshKeys` option
-    home.file."${gnupgDir}/sshcontrol" = lib.mkIf (osConfig ? sops) {
-      source = config.lib.file.mkOutOfStoreSymlink
-        osConfig.sops.templates.gpg_sshcontrol.path;
-    };
+    home.file."${gnupgDir}/sshcontrol" = lib.mkIf (osConfig ? sops
+      && builtins.hasAttr "gpg_sshcontrol" osConfig.sops.templates) {
+        source = config.lib.file.mkOutOfStoreSymlink
+          osConfig.sops.templates.gpg_sshcontrol.path;
+      };
     home.sessionVariablesExtra =
       lib.mkIf config.services.gpg-agent.enableSshSupport ''
         if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
