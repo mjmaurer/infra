@@ -28,12 +28,27 @@
       '')
       (pkgs.writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
+        
+        host_key_path="/etc/ssh/ssh_host_ed25519_key"
+        
+        # Parse command line arguments
+        while [[ $# -gt 0 ]]; do
+          case $1 in
+            -k|--key-file)
+              host_key_path="$2"
+              shift 2
+              ;;
+            *)
+              break
+              ;;
+          esac
+        done
 
         # Create temp file with restricted permissions
         key_file=$(mktemp -t sops_age_key.XXXXXX)
         chmod 600 "$key_file"
         # Get key and store in temp file
-        sudo ssh-to-age -private-key -i /etc/ssh/ssh_host_ed25519_key > "$key_file" 2>/dev/null
+        sudo ssh-to-age -private-key -i "$host_key_path" > "$key_file" 2>/dev/null
         SOPS_AGE_KEY=$(cat "$key_file")
         rm "$key_file"
         SOPS_AGE_KEY=$SOPS_AGE_KEY sops "$@"

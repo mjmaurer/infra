@@ -9,6 +9,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ## Pre-Install
 
 - Clone this repo to `~/infra`
+- Create an ssh host key with `ssh-host-bootstrap.sh`. Configure SOPS with it as needed. Store this in a safe temporary location
 - For Home Manager / Darwin:
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
@@ -18,23 +19,20 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 1. Flash live.iso from the github action to a USB stick.
 2. Boot into it. It should start an SSH server automatically, and uses dhcpcd
 
-- Debugging: Look at dhcpcd
+   - **Debugging:** Look at dhcpcd
 
 3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
 
-- Debugging: Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
+   - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
 
-```
-cd install
-nix-build iso.nix
-sudo dd if=result/<iso> of=/dev/<usb>
-# Boot into nixos iso image on /dev/<usb>
-# Configure networking
-partition --device /dev/<harddrive> --bios ([l]egacy|[u]efi)
-# Make personal changes to /mnt/etc/nixos
-echo "<hostname>" >> /mnt/etc/nixos/hostname # Must match the name of the file in /machines
-nixos-install --flake /mnt/infra
-```
+4. Continue to `NixOS (Remote Machine)` section below
+
+## Install: NixOS (Remote Machine)
+
+1. Create a single-use, preauthorized Tailscale auth key
+1. Create a new directory under `system/machines`, with `secrets.yaml` and `default.nix`
+
+   - Add the tailscale key as a sops secret
 
 ## Install: Darwin
 
@@ -75,6 +73,8 @@ Select "Unicode Hex Input" and hit "Add"
 ```
 
 ## Install: Standalone Home Manager
+
+**Currently outdated. May or may not work**
 
 ### Install / Switch
 
@@ -126,7 +126,7 @@ Headed-Minimal ⊃ Headless
 
 Since the headless module is always included, it contains most of the basic configuration.
 
-Headed-Minimal  modules do actually include a display server (Wayland) and Sway window manager.
+Headed-Minimal modules do actually include a display server (Wayland) and Sway window manager.
 They also include a terminal (Alacritty) and browser (Firefox).
 However, many other GUI tools are not included.
 
