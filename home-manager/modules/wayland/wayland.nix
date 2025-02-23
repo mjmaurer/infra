@@ -2,7 +2,6 @@
 let
   cfg = config.modules.wayland;
   swayfont = "MesloLGS NF 14";
-  modifier = "Mod1";
 in {
   options.modules.wayland = { enable = lib.mkEnableOption "wayland"; };
 
@@ -111,6 +110,7 @@ in {
         text-color = colors.hex colors.light;
       };
 
+      # Notification daemon
       mako = {
         enable = true;
         anchor = "top-right";
@@ -163,7 +163,7 @@ in {
           };
         };
         output = {
-          "*" = { bg = "${../../artwork/lakelucerne.jpeg} center"; };
+          "*" = { bg = "${../../../artwork/ruinsoftheparthenon.jpeg} center"; };
         };
         colors.focused = {
           background = colors.hex colors.dark;
@@ -173,39 +173,36 @@ in {
           indicator = colors.hex colors.accent;
         };
         window.border = 2;
-        inherit modifier;
-        keybindings = {
-          # "${modifier}+d" = "exec rofi -show run | xargs swaymsg exec --";
-          # "${modifier}+c" = "kill";
-          # "${modifier}+Shift+r" = "reload";
-          # "${modifier}+f" = "fullscreen";
-          # "${modifier}+Return" = "exec alacritty";
-          # "${modifier}+w" = "exec firefox";
-          # "${modifier}+p" = "mode power";
+        # Sway can only have one main modifier, so we have to manually set most bindings
+        modifier = "Mod4"; # Super
+        keybindings = let
+          hypmods = "Ctrl+Mod4"; # Ctrl+Super
+          sysmods = "Ctrl+Mod4+Mod1"; # Ctrl+Super+Alt
+        in {
+          "${sysmods}+x" = "kill";
+
+          "${hypmods}+p" = "exec rofi -show run | xargs swaymsg exec --";
+          "${hypmods}+c" = "reload";
+          "${hypmods}+f" = "fullscreen";
+          "${hypmods}+t" = "exec alacritty";
+          "${hypmods}+w" = "exec firefox";
+          "${hypmods}+Return" = "mode power";
           # "${modifier}+n" = "exec makoctl dismiss";
           # "${modifier}+Shift+n" = "exec makoctl dismiss -a";
 
-          # "${modifier}+Ampersand" = "workspace number 1";
-          # "${modifier}+BracketLeft" = "workspace number 2";
-          # "${modifier}+BraceLeft" = "workspace number 3";
-          # "${modifier}+BraceRight" = "workspace number 4";
-          # "${modifier}+ParenLeft" = "workspace number 5";
-          # "${modifier}+Equal" = "workspace number 6";
-          # "${modifier}+Asterisk" = "workspace number 7";
-          # "${modifier}+ParenRight" = "workspace number 8";
-          # "${modifier}+Plus" = "workspace number 9";
+          "${hypmods}+1" = "workspace number 1";
+          "${hypmods}+2" = "workspace number 2";
+          "${hypmods}+3" = "workspace number 3";
 
-          # "${modifier}+Shift+Ampersand" = "move container to workspace number 1, workspace number 1";
-          # "${modifier}+Shift+BracketLeft" = "move container to workspace number 2, workspace number 2";
-          # "${modifier}+Shift+BraceLeft" = "move container to workspace number 3, workspace number 3";
-          # "${modifier}+Shift+BraceRight" = "move container to workspace number 4, workspace number 4";
-          # "${modifier}+Shift+ParenLeft" = "move container to workspace number 5, workspace number 5";
-          # "${modifier}+Shift+Equal" = "move container to workspace number 6, workspace number 6";
-          # "${modifier}+Shift+Asterisk" = "move container to workspace number 7, workspace number 7";
-          # "${modifier}+Shift+ParenRight" = "move container to workspace number 8, workspace number 8";
-          # "${modifier}+Shift+Plus" = "move container to workspace number 9, workspace number 9";
-          # "${modifier}+Shift+s" = "move scratchpad";
-          # "${modifier}+s" = "scratchpad show";
+          "${hypmods}+Shift+1" =
+            "move container to workspace number 1, workspace number 1";
+          "${hypmods}+Shift+2" =
+            "move container to workspace number 2, workspace number 2";
+          "${hypmods}+Shift+3" =
+            "move container to workspace number 3, workspace number 3";
+
+          "${hypmods}+s" = "scratchpad show";
+          "${hypmods}+Shift+s" = "move scratchpad";
         };
         workspaceAutoBackAndForth = true;
         modes = {
@@ -213,7 +210,6 @@ in {
             "q" = "exit";
             "r" = "exec systemctl reboot";
             "s" = "exec systemctl poweroff -i";
-            "p" = "mode default";
             "Escape" = "mode default";
             "Return" = "mode default";
           };
