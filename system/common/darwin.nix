@@ -1,8 +1,8 @@
-{ config, pkgs, derivationName, username, lib, ... }: 
+{ config, pkgs, derivationName, username, lib, ... }:
 let
-  screenshotDir = "${config.users.users.${username}.home}/Documents/screenshots";
-in
-{
+  screenshotDir =
+    "${config.users.users.${username}.home}/Documents/screenshots";
+in {
   # Never change this here. Only in flake.nix
   system.stateVersion = lib.mkDefault 5;
 
@@ -96,14 +96,73 @@ in
       # Prevent Photos from opening automatically when plugging in certain removable media
       "com.apple.ImageCapture".disableHotPlug = true;
       "com.apple.symbolichotkeys" = {
+        # Shorcut values: https://github.com/NUIKit/CGSInternal/blob/c4f6f559d624dc1cfc2bf24c8c19dbf653317fcf/CGSHotKeys.h
+        # parameters = [«ASCII», «KEY_CODE», «MODIFIERS» ];
+        # Ascii: https://www.ascii-code.com/
+        # Key_codes: https://eastmanreference.com/complete-list-of-applescript-key-codes
+        # Modifiers: https://gist.github.com/stephancasas/74c4621e2492fb875f0f42778d432973
+
+        # Might be easier to set the shorcut in system prefs, then run
+        # `defaults read com.apple.symbolichotkeys` to get the values.
+        # Also helping for seeing if there are conflicts
         AppleSymbolicHotKeys = {
           # Disable 'Cmd + Space' for Spotlight Search
-          "64" = {
-            enabled = false;
-          };
+          "64" = { enabled = false; };
           # Disable 'Cmd + Alt + Space' for Finder search window
-          "65" = {
-            enabled = false;
+          "65" = { enabled = false; };
+          # kCGSHotKeyScreenshot
+          "28" = {
+            enabled = true;
+            value = {
+              # cmd+3
+              parameters = [ 51 20 1048576 ];
+              type = "standard";
+            };
+          };
+          # kCGSHotKeyScreenshotToClipboard
+          "29" = {
+            enabled = true;
+            value = {
+              # cmd+alt+3
+              parameters = [ 51 20 1572864 ];
+              type = "standard";
+            };
+          };
+          # kCGSHotKeyScreenshotRegion
+          "30" = {
+            enabled = true;
+            value = {
+              # cmd+4
+              parameters = [ 52 21 1048576 ];
+              type = "standard";
+            };
+          };
+          # kCGSHotKeyScreenshotRegionToClipboard
+          "31" = {
+            enabled = true;
+            value = {
+              # cmd+alt+4
+              parameters = [ 52 21 1572864 ];
+              type = "standard";
+            };
+          };
+          # kCGSHotKeyDecreaseDisplayBrightness
+          "53" = {
+            enabled = true;
+            value = {
+              # cmd+9
+              parameters = [ 57 25 1048576 ];
+              type = "standard";
+            };
+          };
+          # kCGSHotKeyIncreaseDisplayBrightness
+          "54" = {
+            enabled = true;
+            value = {
+              # cmd+0
+              parameters = [ 48 29 1048576 ];
+              type = "standard";
+            };
           };
         };
       };
