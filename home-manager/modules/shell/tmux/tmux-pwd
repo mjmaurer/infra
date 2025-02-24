@@ -21,6 +21,11 @@ while getopts "w:c:" opt; do
 done
 shift $((OPTIND-1))
 DIR_PATH=${1:-$(pwd)}
+# Exit if directory is home directory
+if [[ "$DIR_PATH" == "$HOME" ]]; then
+    echo "Will not create session for home directory"
+    exit 1
+fi
 WINDOW_NAME=${WINDOW_NAME:-"base"}
 COMMAND=${COMMAND:-""}
 SESSION_NAME=$(basename $DIR_PATH)
