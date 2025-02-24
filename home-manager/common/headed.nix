@@ -9,10 +9,12 @@
     ../modules/ente-auth/ente-auth.nix
     ../modules/continuedev/continuedev.nix
     ../modules/obsidian/obsidian.nix
+    ../modules/repomix/repomix.nix
   ];
 
   # When adding here, consider if these should be disabled for some OS.
   modules = {
+    repomix.enable = lib.mkDefault true;
     continuedev = {
       enable = lib.mkDefault true;
       justConfig = true;
