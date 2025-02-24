@@ -39,6 +39,10 @@
       # inputs.nixpkgs.follows = "nixpkgs";
       # inputs.flake-utils.follows = "flake-utils";
     };
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
     # Build our own wsl
     # https://github.com/dmadisetti/.dots/blob/template/flake.nix
@@ -47,7 +51,7 @@
     # nixos-wsl.inputs.flake-utils.follows = "flake-utils";
   };
   outputs = { self, nixpkgs, home-manager, nixos-hardware, sops-nix, nix-colors
-    , nix-std, nix-homebrew, impermanence, flake-utils, darwin
+    , nix-std, nix-homebrew, impermanence, flake-utils, darwin, disko
     , nix-vscode-extensions, ... }@inputs:
     let
       defaultUsername = "mjmaurer";
@@ -129,6 +133,7 @@
               ./system/common/nixos.nix
               ./system/common/headless-minimal.nix
               sops-nix.nixosModules.sops
+              disko.nixosModules.disko
             ], extraSystemModules ? [ ], defaultHomeModules ? [
               ./home-manager/common/nixos.nix
               ./home-manager/common/headless-minimal.nix
@@ -159,8 +164,7 @@
         }).mkNixosSystem {
           homeStateVersion = "25.05";
           systemStateVersion = "24.05";
-          extraSystemModules =
-            [{ services.xserver.videoDrivers = [ "intel" ]; }];
+          extraSystemModules = [ ./system/machines/maple ];
         };
 
         live-iso = (withConfig {
