@@ -10,6 +10,7 @@
     ../modules/continuedev/continuedev.nix
     ../modules/obsidian/obsidian.nix
     ../modules/repomix/repomix.nix
+    ../modules/node/node.nix
   ];
 
   # When adding here, consider if these should be disabled for some OS.

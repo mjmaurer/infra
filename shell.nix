@@ -17,9 +17,14 @@
 
       fixjson
 
+      node2nix
 
       (pkgs.writeShellScriptBin "json-to-nix" ''
         nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile \"$1\")"
+      '')
+
+      (pkgs.writeShellScriptBin "updatenode" ''
+        (cd ./home-manager/modules/node && node2nix - -i ./node-packages.json -c node-import.nix)
       '')
 
       (pkgs.writeShellScriptBin "sopsnew" ''
@@ -28,9 +33,9 @@
       '')
       (pkgs.writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
-        
+
         host_key_path="/etc/ssh/ssh_host_ed25519_key"
-        
+
         # Parse command line arguments
         while [[ $# -gt 0 ]]; do
           case $1 in

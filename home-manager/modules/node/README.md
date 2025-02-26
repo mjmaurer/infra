@@ -1,0 +1,1 @@
+Run `updatenode` after modifying `node-packages.json` to update `default.nix`
