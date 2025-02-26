@@ -134,14 +134,14 @@
 
   ;; Right Side Home Row
   h   S-= ;; + 
-  j   -   ;; minus
+  j   -   ;; -
   k   S-- ;; underscore
   l   =   ;; =
   ;   ;   ;; ;
   '   `   ;; `
 
   ;; Right Side Bottom Row
-  n   0   ;; 0
+  n   \   ;; \
   m   S-1 ;; !
   .   S-8 ;; * 
   /   /   ;; /
