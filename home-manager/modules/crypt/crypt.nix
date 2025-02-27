@@ -32,6 +32,7 @@ in {
     modules.commonShell.shellAliases = {
       "ybs" = "yubi-switch";
       "gpgr" = "gpg-connect-agent reloadagent /bye";
+      "gpgrestart" = "gpgconf --kill gpg-agent && gpg-connect-agent /bye";
       # Uses resident PIV on yubikey for SSH
       # dylib is only for Mac
       "sshyk" = lib.mkIf isDarwin "ssh -I ~/.nix-profile/lib/libykcs11.dylib";
@@ -100,12 +101,15 @@ in {
         run mkdir -p "$HOME/.ssh"
         # This might break if the comment changes.
         # This might be better: gpg --export-ssh-key mjmaurer777@gmail.com
-        run export _YBPK="$(${pkgs.openssh}/bin/ssh-add -L | grep "cardno")"
+        # ai? how do I only select the first line for grep?
+        run export _YBPK="$(${pkgs.openssh}/bin/ssh-add -L | grep -m1 "cardno")"
         if [ -n "$_YBPK" ]; then
+          # Can test with 'ssh git@github.com'
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
           run chmod 600 ~/.ssh/id_rsa_yubikey.pub
         else
           run echo "No GPG SSH key with 'cardno' comment found."
+          run echo "Try running 'gpgrestart'"
           run echo "It's possible that ssh-agent is interfering with gpg-agent. See 'home-manager/.../crypt.nix'"
           run echo "You also might need to nix-rebuild with your Yubikey inserted."
 
