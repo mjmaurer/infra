@@ -65,10 +65,34 @@ in {
         fi
       fi
 
+      echo "Importing plists. If this requests permission, give Allacritty Full Disk Access"
       initialPlists=${pkgs.copyPathToStore ./initial-plists}
       for plist in "$initialPlists"/*.xml; do
-        echo "Importing plist $plist"
-        defaults import "$(basename "$plist" .xml)" "$plist"
+        domain="$(basename "$plist" .xml)"
+        defaults import "$domain" "$plist"
+
+        # Try converting the plist to JSON using plutil.
+        # desiredJson=$(plutil -convert json -o - "$plist" 2>/dev/null)
+
+        # diffFound=false
+        # # Iterate over each key defined in the plist.
+        # for key in $(echo "$desiredJson" | jq -r 'keys[]'); do
+        #   desiredVal=$(echo "$desiredJson" | jq -r --arg key "$key" '.[$key]')
+        #   # Read the current value for the key. (If the key isn't set, mark it as a unique placeholder.)
+        #   currentVal=$(defaults read "$domain" "$key" 2>/dev/null || echo "__UNSET__")
+        #   if [ "$currentVal" != "$desiredVal" ]; then
+        #     echo "Mismatch in '$domain': for key '$key', desired='$desiredVal' but current='$currentVal'"
+        #     diffFound=true
+        #     break
+        #   fi
+        # done
+
+        # if [ "$diffFound" = true ]; then
+        #   echo "Importing plist $plist"
+        #   defaults import "$domain" "$plist"
+        # else
+        #   echo "Skipping import for $plist; all defined keys already match."
+        # fi
       done
     '';
 
