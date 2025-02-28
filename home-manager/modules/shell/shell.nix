@@ -180,7 +180,7 @@ in {
       dirHashes = { };
       shellAliases = {
         ".." = "cd ..";
-        "cat" = "bat --plain --color=always";
+        "bat" = "bat --plain --color=always";
         "batl" = "bat --plain --color=always --style numbers";
         "t" = "tree --gitignore";
         "ta" = "tree --gitignore -a";
