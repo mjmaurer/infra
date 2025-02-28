@@ -1,0 +1,65 @@
+# Custom models / overriddes. See here for examples / defaults:
+# https://aider.chat/docs/config/adv-model-settings.html#model-settings
+
+# Just use a specific version since we can't define custom names
+# Looks like you actually can define custom names with model metadata: https://github.com/Aider-AI/aider/issues/3184
+- name: claude-3-7-sonnet-20250219
+  edit_format: diff
+  weak_model_name: claude-3-5-haiku-20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  use_temperature: false # This is different but added by aider
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+    thinking:
+      type: enabled
+      budget_tokens: 32000 # Adjust this number
+  cache_control: true
+  editor_model_name: claude-3-5-sonnet-latest
+  editor_edit_format: editor-diff
+
+# The below are just defaults to change the editor model
+# For some reason the `editor_model` config option wasn't working for all models
+
+- name: claude-3-7-sonnet-latest
+  edit_format: diff
+  weak_model_name: claude-3-5-haiku-20241022
+  use_repo_map: true
+  examples_as_sys_msg: true
+  extra_params:
+    extra_headers:
+      anthropic-beta: prompt-caching-2024-07-31,pdfs-2024-09-25,output-128k-2025-02-19
+    max_tokens: 64000
+  cache_control: true
+  editor_model_name: claude-3-5-sonnet-latest
+  editor_edit_format: editor-diff
+
+- name: o1
+  edit_format: diff
+  weak_model_name: gpt-4o-mini
+  use_repo_map: true
+  use_temperature: false
+  streaming: false
+  editor_model_name: claude-3-5-sonnet-latest
+  editor_edit_format: editor-diff
+  system_prompt_prefix: "Formatting re-enabled. "
+
+- name: o1-preview
+  edit_format: architect
+  weak_model_name: gpt-4o-mini
+  use_repo_map: true
+  use_system_prompt: false
+  use_temperature: false
+  editor_model_name: claude-3-5-sonnet-latest
+  editor_edit_format: editor-diff
+
+- name: o3-mini
+  edit_format: diff
+  weak_model_name: gpt-4o-mini
+  use_repo_map: true
+  use_temperature: false
+  editor_model_name: claude-3-5-sonnet-latest
+  editor_edit_format: editor-diff
+  system_prompt_prefix: "Formatting re-enabled. "

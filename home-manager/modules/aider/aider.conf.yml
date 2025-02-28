@@ -3,10 +3,33 @@
 # This file lists *all* the valid configuration entries.
 # Place in your home dir, or at the root of your git repo.
 ##########################################################
-model: "sonnet"
+model: "claude-3-7-sonnet-latest"
+
+editor-model: "claude-3-5-sonnet-latest" # Just used in architect. It's the best at diffs
+editor-edit-format: "editor-diff"
+
+# Hopefully this can someday be configured with model setting
+# It currently caueses issues with all Anthropic models on initial load:
+# https://github.com/Aider-AI/aider/issues/3177
+# reasoning-effort: "high"
 
 alias:
-  - "o1:o1-preview"
+  - "oo:o1"
+
+  - "oop:o1-preview"
+  - "o1p:o1-preview"
+
+  - "ot:o3-mini"
+  - "o3:o3-mini"
+
+  - "s5:claude-3-5-sonnet-latest"
+  - "sf:claude-3-5-sonnet-latest"
+
+  # Not sure if thinking is actually working or if these are being distinguished
+  - "s7:claude-3-7-sonnet-latest"
+  - "ss:claude-3-7-sonnet-latest"
+  - "sst:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
+  - "s7t:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
 
 ## Specify a file with aider model settings for unknown models
 #model-settings-file: .aider.model.settings.yml
@@ -83,6 +106,9 @@ llm-history-file: .devdata/.aider/.aider.llm.history
 ## Show diffs when committing changes (default: False)
 #show-diffs: false
 
+## Enable/disable suggesting shell commands (default: True)
+suggest-shell-commands: false
+
 #################
 # Cache settings:
 
@@ -91,7 +117,6 @@ cache-prompts: true
 
 ## Number of times to ping at 5min intervals to keep prompt cache warm (default: 0)
 #cache-keepalive-pings: false
-
 
 ###############
 # Git Settings:
@@ -103,7 +128,7 @@ git: true
 gitignore: false # Done via global gitignore
 
 ## Specify the aider ignore file (default: .aiderignore in git root)
-aiderignore: .gitignore 
+aiderignore: .gitignore
 
 ## Enable/disable auto commit of LLM changes (default: True)
 auto-commits: false
@@ -152,7 +177,6 @@ auto-lint: false
 
 ## Use VI editing mode in the terminal (default: False)
 vim: true
-
 ## Specify the language for voice using ISO 639-1 code (default: auto)
 #voice-language: en
 
@@ -197,3 +221,36 @@ vim: true
 
 ## Run aider in your browser
 #gui: false
+
+############
+# Upgrading:
+
+## Check for updates and return status in the exit code
+#just-check-update: false
+
+## Check for new aider versions on launch
+check-update: false
+
+## Show release notes on first run of new version (default: None, ask user)
+# show-release-notes: true
+
+## Install the latest version from the main branch
+#install-main-branch: false
+
+## Upgrade aider to the latest version from PyPI
+#upgrade: false
+
+## Show the version number and exit
+#version: xxx
+
+############
+# Analytics:
+
+## Enable/disable analytics for current session (default: random)
+#analytics: xxx
+
+## Specify a file to log analytics events
+#analytics-log: xxx
+
+## Permanently disable analytics
+analytics-disable: true
