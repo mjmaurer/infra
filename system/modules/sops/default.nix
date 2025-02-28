@@ -41,6 +41,7 @@ in {
           apiKeyCodestral = { sopsFile = pcSopsFile; };
           apiKeyVoyage = { sopsFile = pcSopsFile; };
           apiKeyOpenai = { sopsFile = pcSopsFile; };
+          apiKeyDeepseek = { sopsFile = pcSopsFile; };
         };
         templates = {
           "shell.env" = {
@@ -54,6 +55,7 @@ in {
               export CODESTRAL_API_KEY=${config.sops.placeholder.apiKeyCodestral}
               export VOYAGE_API_KEY=${config.sops.placeholder.apiKeyVoyage}
               export OPENAI_API_KEY=${config.sops.placeholder.apiKeyOpenai}
+              export DEEPSEEK_API_KEY=${config.sops.placeholder.apiKeyDeepseek}
             '';
           };
           "gpg_sshcontrol" = {

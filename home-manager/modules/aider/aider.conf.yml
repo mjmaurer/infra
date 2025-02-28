@@ -22,14 +22,17 @@ alias:
   - "ot:o3-mini"
   - "o3:o3-mini"
 
+  - "dr:deepseek/deepseek-reasoner"
+
   - "s5:claude-3-5-sonnet-latest"
   - "sf:claude-3-5-sonnet-latest"
 
   # Not sure if thinking is actually working or if these are being distinguished
+  - "s:claude-3-7-sonnet-latest"
   - "s7:claude-3-7-sonnet-latest"
   - "ss:claude-3-7-sonnet-latest"
-  - "sst:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
-  - "s7t:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
+  - "ssr:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
+  - "s7r:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
 
 ## Specify a file with aider model settings for unknown models
 #model-settings-file: .aider.model.settings.yml
