@@ -101,7 +101,6 @@ in {
         run mkdir -p "$HOME/.ssh"
         # This might break if the comment changes.
         # This might be better: gpg --export-ssh-key mjmaurer777@gmail.com
-        # ai? how do I only select the first line for grep?
         run export _YBPK="$(${pkgs.openssh}/bin/ssh-add -L | grep -m1 "cardno")"
         if [ -n "$_YBPK" ]; then
           # Can test with 'ssh git@github.com'

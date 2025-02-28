@@ -1,4 +1,7 @@
-{ pkgs, sops-nix-pkgs, ... }: {
+{ pkgs, sops-nix-pkgs, ... }:
+let
+  # project = pyproject-nix.lib.project.loadPyproject { projectRoot = ./.; };
+in {
   default = pkgs.mkShell {
     packages = with pkgs; [
       sops
