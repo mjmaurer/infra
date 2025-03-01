@@ -99,9 +99,8 @@ in {
     home.activation.addGpgSshIdentity =
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run mkdir -p "$HOME/.ssh"
-        # This might break if the comment changes.
-        # This might be better: gpg --export-ssh-key mjmaurer777@gmail.com
-        run export _YBPK="$(${pkgs.openssh}/bin/ssh-add -L | grep -m1 "cardno")"
+        # Export SSH public key from GPG
+        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --export-ssh-key mjmaurer777@gmail.com)"
         if [ -n "$_YBPK" ]; then
           # Can test with 'ssh git@github.com'
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
