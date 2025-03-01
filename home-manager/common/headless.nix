@@ -72,7 +72,7 @@
       nil
       nix-prefetch-git
       nix-search-cli
-      nixfmt-classic
+      nixfmt-rfc-style
       # nixpkgs-fmt
       # vulnix (was causing buidl issues)
 
