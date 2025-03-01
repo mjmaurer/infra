@@ -11,12 +11,10 @@
         "root"
         # "@wheel" Darwin doesn't like this maybe?
       ];
-      experimental-features = "nix-command flakes";
-
     };
 
     extraOptions = ''
-      experimental-features = nix-command flakes
+      experimental-features = nix-command flakes ca-derivations
     '';
 
     # This is also set for HM in home-manager/common/_base.nix

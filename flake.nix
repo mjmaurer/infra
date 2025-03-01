@@ -60,7 +60,8 @@
           let
             pkgs = nixpkgs.legacyPackages.${system};
             sops-nix-pkgs = sops-nix.packages.${system};
-          in f { inherit system pkgs sops-nix-pkgs; });
+            lib = nixpkgs.lib;
+          in f { inherit system pkgs sops-nix-pkgs lib; });
       withConfig = { system, derivationName, username ? defaultUsername
         , extraSpecialArgs ? { } }: rec {
           mkSpecialArgs = {
@@ -231,8 +232,8 @@
         };
       };
 
-    } // forEachSystem ({ system, pkgs, sops-nix-pkgs }: {
-      packages = import ./pkgs/pkgs.nix { inherit self pkgs; };
-      devShells = import ./shell.nix { inherit pkgs sops-nix-pkgs; };
+    } // forEachSystem ({ system, pkgs, sops-nix-pkgs, lib }: {
+      packages = import ./ad-hoc/pkgs { inherit self pkgs; };
+      devShells = import ./ad-hoc/shells { inherit pkgs sops-nix-pkgs lib; };
     });
 }

@@ -1,6 +1,6 @@
-{ pkgs, sops-nix-pkgs, ... }:
+{ pkgs, sops-nix-pkgs, lib, ... }:
 {
-  new-host = import ./new-host.nix { inherit pkgs sops-nix-pkgs; };
+  new-host = import ./new-host.nix { inherit pkgs lib; };
   default = pkgs.mkShell {
     packages = with pkgs; [
       sops
@@ -62,8 +62,5 @@
       '')
     ];
     nativeBuildInputs = [ sops-nix-pkgs.sops-import-keys-hook ];
-    shellHook = ''
-      export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations";
-    '';
   };
 }
