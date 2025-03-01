@@ -1,7 +1,6 @@
 { pkgs, sops-nix-pkgs, ... }:
-let
-  # project = pyproject-nix.lib.project.loadPyproject { projectRoot = ./.; };
-in {
+{
+  new-host = import ./new-host.nix { inherit pkgs sops-nix-pkgs; };
   default = pkgs.mkShell {
     packages = with pkgs; [
       sops
