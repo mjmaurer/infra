@@ -6,6 +6,8 @@
 
   config = {
 
+    time.hardwareClockInLocalTime = true;
+
     i18n.defaultLocale = "en_US.UTF-8";
     console = {
       font = "${pkgs.nerd-fonts.meslo-lg}/share/consolefonts/ter-132n.psf.gz";

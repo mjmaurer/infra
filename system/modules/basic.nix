@@ -1,3 +1,4 @@
+# Note: This is shared by nixos and darwin
 { lib, pkgs, ... }: {
   time.timeZone = "America/New_York";
   # ---------------------------------- Fonts ---------------------------------
