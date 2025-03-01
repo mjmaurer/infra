@@ -17,16 +17,6 @@ in {
 
       pkgs.yubikey-personalization
       pkgs.yubikey-manager
-      (pkgs.writeScriptBin "yubi-conf"
-        (builtins.readFile ./scripts/yubikey-configure.sh))
-      (pkgs.writeScriptBin "yubi-switch"
-        (builtins.readFile ./scripts/yubikey-switch.sh))
-      (pkgs.writeScriptBin "yubi-addgpg"
-        (builtins.readFile ./scripts/yubikey-addgpg.sh))
-      (pkgs.writeScriptBin "ssh-host-bootstrap"
-        (builtins.readFile ./scripts/ssh-host-bootstrap.sh))
-      (pkgs.writeScriptBin "gpg-new-key"
-        (builtins.readFile ./scripts/gpg-new-key.sh))
     ];
 
     modules.commonShell.shellAliases = {
