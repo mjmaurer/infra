@@ -3,6 +3,7 @@
   pubkeys,
   pkgs,
   username,
+  ...
 }:
 {
   # Enable SSH in the boot process.
