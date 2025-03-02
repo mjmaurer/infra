@@ -1,20 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# These host keys can only be read by root
-if [ "$(id -u)" -ne 0 ]; then
-    echo "Error: This script must be run with sudo privileges."
-    echo "Usage: sudo $0 -t <temp_dir> [-b <backup_dir>]"
-    exit 1
-fi
-
 # Usage information
 usage() {
-    echo "Usage: $0 -t <temp_dir> [-b <backup_dir>] [-s]"
-    echo "Example: $0 -t /tmp/ssh_keys -b /secure/host-keys-backup -s"
+    echo "Usage: $0 -t <temp_dir> [-b <backup_dir>] [-i <install_path>] [-s]"
+    echo "Example: $0 -t /tmp/ssh_keys -b /secure/host-keys-backup -i /etc/ssh -s"
     echo "Options:"
     echo "  -t <temp_dir>    Temporary directory for key generation"
     echo "  -b <backup_dir>  Optional backup directory"
+    echo "  -i <install_path> Path where SSH keys should be installed (default: /etc/ssh)"
     echo "  -s               Show SOPS/age key output. Useful if you're creating a host key for a new machine."
     exit 1
 }
@@ -23,8 +17,9 @@ usage() {
 temp_dir=""
 backup_dir=""
 show_sops=0
+install_path=""
 
-while getopts "t:b:hs" opt; do
+while getopts "t:b:i:hs" opt; do
     case ${opt} in
         t)
             temp_dir=$OPTARG
@@ -34,6 +29,9 @@ while getopts "t:b:hs" opt; do
             ;;
         s)
             show_sops=1
+            ;;
+        i)
+            install_path=$OPTARG
             ;;
         h)
             usage
@@ -56,7 +54,10 @@ if [ ! -d "$temp_dir" ]; then
     exit 1
 fi
 
-install_path="/etc/ssh"
+# Set default installation path if not specified via command line
+if [ -z "$install_path" ]; then
+    install_path="/etc/ssh"
+fi
 
 # Check if the install path already exists in temp_dir
 if [ -d "$temp_dir$install_path" ]; then
@@ -78,20 +79,20 @@ install -d -m755 "$temp_dir$install_path"
 echo "Generating new host SSH key pair (requires sudo)"
 # Equivalent to `ssh-keygen -A`, but for just one key type (ED25519)
 # Host keys aren't encrypted / don't need a passphrase
-ssh-keygen -N "" -t ed25519 -f "$temp_dir$install_path/ssh_host_ed25519_key"
+sudo ssh-keygen -N "" -t ed25519 -f "$temp_dir$install_path/ssh_host_ed25519_key"
 
 # Extra careful for private key:
-chmod 600 "$temp_dir$install_path/ssh_host_ed25519_key"
+sudo chmod 600 "$temp_dir$install_path/ssh_host_ed25519_key"
 echo "SSH created in $temp_dir$install_path"
 
 if [ "$show_sops" -eq 1 ]; then
+    echo "\n==== SOPS ====\n"
     echo "Converting SSH host public key to age format."
-    echo "If this is for a new host's /etc/ssh (not it's initrd):"
     echo "Add this to '.sops.yaml' for the new host and run 'sops updatekeys ...' for each relevant secrets yaml file:"
-    echo "After updating sops, you can run 'sopsa -k $temp_dir$install_path/ssh_host_ed25519_key --verbose /path/to/secrets.yaml' to test it."
     echo ""
     < "$temp_dir$install_path/ssh_host_ed25519_key.pub" ssh-to-age
     echo ""
+    echo "After updating sops, you can run 'sopsa -k $temp_dir$install_path/ssh_host_ed25519_key --verbose /path/to/secrets.yaml' to test it."
 fi
 
 # Only backup if a backup directory was specified
