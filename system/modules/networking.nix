@@ -81,7 +81,7 @@ in
           preauthorized = true;
         };
       };
-      fail2ban = {
+      services.fail2ban = {
         enable = true;
         maxretry = 5;
         # Tailscale Range
