@@ -1,8 +1,17 @@
 # This module is used to install Homebrew on Darwin.
 # It unfortunately depends on a user, but also is a system module.
-{ nix-homebrew, config, lib, pkgs, username, ... }:
-let cfg = config.modules.homebrew;
-in {
+{
+  nix-homebrew,
+  config,
+  lib,
+  pkgs,
+  username,
+  ...
+}:
+let
+  cfg = config.modules.homebrew;
+in
+{
   imports = [ nix-homebrew.darwinModules.nix-homebrew ];
 
   options.modules.homebrew = {
@@ -112,7 +121,7 @@ in {
       caskArgs.no_quarantine = true;
       global = {
         brewfile = true;
-        # Disables auto-update for various brew commands 
+        # Disables auto-update for various brew commands
         autoUpdate = false;
       };
       # With this setup, you must run `brew update` to get the latest versions of packages

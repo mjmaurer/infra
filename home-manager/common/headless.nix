@@ -1,7 +1,14 @@
-{ lib, pkgs, nix-colors, username, ... }: {
+{
+  lib,
+  pkgs,
+  nix-colors,
+  username,
+  ...
+}:
+{
 
   # Never change this.
-  # If you need a newer version, supply via machine's flake.nix config. 
+  # If you need a newer version, supply via machine's flake.nix config.
   home.stateVersion = lib.mkDefault "22.05";
 
   # imports = lib.pipe ../modules [

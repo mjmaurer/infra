@@ -1,4 +1,9 @@
-{ pkgs, sops-nix-pkgs, lib, ... }:
+{
+  pkgs,
+  sops-nix-pkgs,
+  lib,
+  ...
+}:
 {
   new-host = import ./new-host.nix { inherit pkgs lib; };
   default = pkgs.mkShell {

@@ -1,9 +1,18 @@
-{ pkgs, pubkeys, config, lib, isDarwin, derivationName, username, ... }:
+{
+  pkgs,
+  pubkeys,
+  config,
+  lib,
+  isDarwin,
+  derivationName,
+  username,
+  ...
+}:
 let
   isNixOS = !isDarwin;
-  ifTheyExist = groups:
-    builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
-in lib.mkMerge [
+  ifTheyExist = groups: builtins.filter (group: builtins.hasAttr group config.users.groups) groups;
+in
+lib.mkMerge [
   (lib.optionalAttrs isNixOS {
     users = {
       mutableUsers = false;
@@ -36,24 +45,26 @@ in lib.mkMerge [
     };
     security.sudo = {
       enable = true;
-      extraRules = [{
-        # 'wheel' users will be able to suspend, reboot, and poweroff without a password
-        commands = [
-          {
-            command = "${pkgs.systemd}/bin/systemctl suspend";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "${pkgs.systemd}/bin/reboot";
-            options = [ "NOPASSWD" ];
-          }
-          {
-            command = "${pkgs.systemd}/bin/poweroff";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-        groups = [ "wheel" ];
-      }];
+      extraRules = [
+        {
+          # 'wheel' users will be able to suspend, reboot, and poweroff without a password
+          commands = [
+            {
+              command = "${pkgs.systemd}/bin/systemctl suspend";
+              options = [ "NOPASSWD" ];
+            }
+            {
+              command = "${pkgs.systemd}/bin/reboot";
+              options = [ "NOPASSWD" ];
+            }
+            {
+              command = "${pkgs.systemd}/bin/poweroff";
+              options = [ "NOPASSWD" ];
+            }
+          ];
+          groups = [ "wheel" ];
+        }
+      ];
       # extraConfig = with pkgs; ''
       #   Defaults:picloud secure_path="${lib.makeBinPath [
       #     systemd
@@ -64,6 +75,8 @@ in lib.mkMerge [
   (lib.optionalAttrs isDarwin {
     # Even though Darwin doesn't manage users, we still need to register
     # the already-created user for the home-manager module to work.
-    users.users.${username} = { home = "/Users/${username}"; };
+    users.users.${username} = {
+      home = "/Users/${username}";
+    };
   })
 ]

@@ -1,8 +1,15 @@
-{ config, pkgs, derivationName, username, lib, ... }:
+{
+  config,
+  pkgs,
+  derivationName,
+  username,
+  lib,
+  ...
+}:
 let
-  screenshotDir =
-    "${config.users.users.${username}.home}/Documents/screenshots";
-in {
+  screenshotDir = "${config.users.users.${username}.home}/Documents/screenshots";
+in
+{
   # Never change this here. Only in flake.nix
   system.stateVersion = lib.mkDefault 5;
 
@@ -71,8 +78,7 @@ in {
       KeyRepeat = 3;
 
       # "com.apple.swipescrolldirection" = false; # enable natural scrolling(default to true)
-      "com.apple.sound.beep.feedback" =
-        0; # disable beep sound when pressing volume up/down key
+      "com.apple.sound.beep.feedback" = 0; # disable beep sound when pressing volume up/down key
 
       NSAutomaticCapitalizationEnabled = false;
       NSAutomaticDashSubstitutionEnabled = false;
@@ -91,8 +97,12 @@ in {
         DSDontWriteNetworkStores = true;
         DSDontWriteUSBStores = true;
       };
-      "com.apple.dock" = { no-bouncing = true; };
-      "com.apple.AdLib" = { allowApplePersonalizedAdvertising = false; };
+      "com.apple.dock" = {
+        no-bouncing = true;
+      };
+      "com.apple.AdLib" = {
+        allowApplePersonalizedAdvertising = false;
+      };
       # Prevent Photos from opening automatically when plugging in certain removable media
       "com.apple.ImageCapture".disableHotPlug = true;
       "com.apple.symbolichotkeys" = {
@@ -107,15 +117,23 @@ in {
         # Also helping for seeing if there are conflicts
         AppleSymbolicHotKeys = {
           # Disable 'Cmd + Space' for Spotlight Search
-          "64" = { enabled = false; };
+          "64" = {
+            enabled = false;
+          };
           # Disable 'Cmd + Alt + Space' for Finder search window
-          "65" = { enabled = false; };
+          "65" = {
+            enabled = false;
+          };
           # kCGSHotKeyScreenshot
           "28" = {
             enabled = true;
             value = {
               # cmd+3
-              parameters = [ 51 20 1048576 ];
+              parameters = [
+                51
+                20
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -124,7 +142,11 @@ in {
             enabled = true;
             value = {
               # cmd+alt+3
-              parameters = [ 51 20 1572864 ];
+              parameters = [
+                51
+                20
+                1572864
+              ];
               type = "standard";
             };
           };
@@ -133,7 +155,11 @@ in {
             enabled = true;
             value = {
               # cmd+4
-              parameters = [ 52 21 1048576 ];
+              parameters = [
+                52
+                21
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -142,7 +168,11 @@ in {
             enabled = true;
             value = {
               # cmd+alt+4
-              parameters = [ 52 21 1572864 ];
+              parameters = [
+                52
+                21
+                1572864
+              ];
               type = "standard";
             };
           };
@@ -151,7 +181,11 @@ in {
             enabled = true;
             value = {
               # cmd+9
-              parameters = [ 57 25 1048576 ];
+              parameters = [
+                57
+                25
+                1048576
+              ];
               type = "standard";
             };
           };
@@ -160,7 +194,11 @@ in {
             enabled = true;
             value = {
               # cmd+0
-              parameters = [ 48 29 1048576 ];
+              parameters = [
+                48
+                29
+                1048576
+              ];
               type = "standard";
             };
           };

@@ -6,7 +6,8 @@ let
       --border-label-pos=2 \
       --color='header:italic:underline,label:blue'
   '';
-in {
+in
+{
   home.packages = [
     # Bound to prefix-a
     (pkgs.writeShellScriptBin "tmux-aider-model" ''

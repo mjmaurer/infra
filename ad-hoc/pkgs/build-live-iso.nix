@@ -1,4 +1,8 @@
-{ lib, writeShellApplication, openssh }:
+{
+  lib,
+  writeShellApplication,
+  openssh,
+}:
 (writeShellApplication {
   name = "build-live-iso";
   runtimeInputs = [ openssh ];
@@ -16,7 +20,8 @@
     echo "Congrats 🎉! Flash ./live.iso to your device of choice."
     echo "Flash command: 'dd if=./live.iso of=/dev/<usb> bs=4M status=progress'"
   '';
-}) // {
+})
+// {
   meta = with lib; {
     licenses = licenses.mit;
     platforms = platforms.all;

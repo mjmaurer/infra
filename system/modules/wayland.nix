@@ -1,4 +1,10 @@
-{ config, lib, pkgs, ... }: {
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
   # imports = [ ./screen-sharing.nix ];
   programs.sway.enable = true;
   # Required for sway

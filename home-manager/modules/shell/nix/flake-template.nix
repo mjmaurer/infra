@@ -3,12 +3,22 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
-  outputs = { self, nixpkgs, flake-utils, base-flake }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+      base-flake,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         java = {
-          packages = with pkgs; [ jdk17 maven ];
+          packages = with pkgs; [
+            jdk17
+            maven
+          ];
           readme = ''
             For WSL external display server.
             ```bash
@@ -61,7 +71,10 @@
           '';
         };
         node = {
-          packages = with pkgs; [ nodejs_22 yarn ];
+          packages = with pkgs; [
+            nodejs_22
+            yarn
+          ];
           readme = "";
         };
         package = pythonPoetry;
@@ -75,21 +88,25 @@
 
           ${package.readme}
         '';
-      in with pkgs; {
+      in
+      with pkgs;
+      {
         devShells.default = mkShell {
-          buildInputs = with pkgs;
+          buildInputs =
+            with pkgs;
             [
               (writeShellScriptBin "inline_script" ''
                 echo "Inline script"
               '')
-              (writeScriptBin "local_script"
-                (builtins.readFile ./scripts/local.sh))
-            ] ++ package.packages;
+              (writeScriptBin "local_script" (builtins.readFile ./scripts/local.sh))
+            ]
+            ++ package.packages;
           shellHook = ''
             if [ -t 0 ]; then
               ${pkgs.glow}/bin/glow ${readme}
             fi
           '';
         };
-      });
+      }
+    );
 }

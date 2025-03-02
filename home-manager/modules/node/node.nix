@@ -4,7 +4,8 @@ let
     inherit pkgs;
     nodejs = pkgs.nodejs_22;
   };
-in {
+in
+{
   config = {
     home.packages = [ nodePackages."@anthropic-ai/claude-code-0.2.14" ];
   };

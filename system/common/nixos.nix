@@ -1,4 +1,10 @@
-{ config, pkgs, lib, ... }: {
+{
+  config,
+  pkgs,
+  lib,
+  ...
+}:
+{
   # Never change this here. Only in flake.nix
   system.stateVersion = lib.mkDefault "24.11";
 
@@ -35,7 +41,9 @@
       ];
     };
     programs = {
-      zsh = { enable = true; };
+      zsh = {
+        enable = true;
+      };
       git = {
         enable = true;
         lfs.enable = true;
@@ -43,4 +51,3 @@
     };
   };
 }
-

@@ -1,4 +1,11 @@
-{ config, kanataPkg, pkgs, lib, ... }: {
+{
+  config,
+  kanataPkg,
+  pkgs,
+  lib,
+  ...
+}:
+{
 
   # When adding to Darwin when adding here
   imports = [

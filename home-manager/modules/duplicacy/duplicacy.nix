@@ -1,16 +1,25 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 let
   cfg = config.modules.duplicacy;
   conf = "/etc/duplicacy/duplicacy.conf";
-  backup =
-    "backup -limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
-in {
-  options.modules.duplicacy = { enable = lib.mkEnableOption "duplicacy"; };
+  backup = "backup -limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
+in
+{
+  options.modules.duplicacy = {
+    enable = lib.mkEnableOption "duplicacy";
+  };
 
   config = lib.mkIf cfg.enable {
     home.packages = with pkgs; [ duplicacy ];
 
-    modules.nix = { unfreePackages = [ "duplicacy" ]; };
+    modules.nix = {
+      unfreePackages = [ "duplicacy" ];
+    };
 
     # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
     # https://forum.duplicacy.com/t/encryption-of-the-storage/1085

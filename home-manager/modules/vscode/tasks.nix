@@ -4,7 +4,9 @@ let
   defaultTerminalTaskConfig = {
     type = "shell";
     options = {
-      env = { WORKSPACE = "\${workspaceFolderBasename}"; };
+      env = {
+        WORKSPACE = "\${workspaceFolderBasename}";
+      };
       shell = {
         executable = "zsh";
         args = [ "-c" ];
@@ -20,25 +22,42 @@ let
       clear = false;
       close = true;
     };
-    runOptions = { runOn = "folderOpen"; };
+    runOptions = {
+      runOn = "folderOpen";
+    };
     problemMatcher = [ ];
   };
-in {
+in
+{
   version = "2.0.0";
   tasks = [
-    (defaultTerminalTaskConfig // {
-      label = "Aider";
-      command = "tmuxp";
-      args = [ "load" "--yes" "vscode-aider" ];
-    })
-    (defaultTerminalTaskConfig // {
-      label = "Main";
-      command = "tmuxp";
-      args = [ "load" "--yes" "vscode-main" ];
-    })
+    (
+      defaultTerminalTaskConfig
+      // {
+        label = "Aider";
+        command = "tmuxp";
+        args = [
+          "load"
+          "--yes"
+          "vscode-aider"
+        ];
+      }
+    )
+    (
+      defaultTerminalTaskConfig
+      // {
+        label = "Main";
+        command = "tmuxp";
+        args = [
+          "load"
+          "--yes"
+          "vscode-main"
+        ];
+      }
+    )
     # {
     #     "label": "Aider",
-    #     "type": "shell", 
+    #     "type": "shell",
     #     "command": "tmux_switch_by_name infra infra-aider",
     #     "options": {
     #         "shell": {

@@ -1,5 +1,6 @@
 # Note: This is shared by nixos and darwin
-{ lib, pkgs, ... }: {
+{ lib, pkgs, ... }:
+{
   time.timeZone = "America/New_York";
   # ---------------------------------- Fonts ---------------------------------
   # fonts.fontDir.enable = true; # DANGER
@@ -7,7 +8,12 @@
 
   environment = {
     # Permissible shells
-    shells = [ pkgs.zsh pkgs.bash ];
-    variables = { EDITOR = "nvim"; };
+    shells = [
+      pkgs.zsh
+      pkgs.bash
+    ];
+    variables = {
+      EDITOR = "nvim";
+    };
   };
 }

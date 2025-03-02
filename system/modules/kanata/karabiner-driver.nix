@@ -5,14 +5,20 @@ pkgs.stdenv.mkDerivation (finalAttrs: {
   version = "15.3.0";
 
   src = pkgs.fetchurl {
-    url =
-      "https://github.com/pqrs-org/Karabiner-Elements/releases/download/v${finalAttrs.version}/Karabiner-Elements-${finalAttrs.version}.dmg";
+    url = "https://github.com/pqrs-org/Karabiner-Elements/releases/download/v${finalAttrs.version}/Karabiner-Elements-${finalAttrs.version}.dmg";
     hash = "sha256-Szf2mBC8c4JA3Ky4QPTvS4GJ0PXFbN0Y7Rpum9lRABE=";
   };
 
-  outputs = [ "out" "driver" ];
+  outputs = [
+    "out"
+    "driver"
+  ];
 
-  nativeBuildInputs = with pkgs; [ cpio xar undmg ];
+  nativeBuildInputs = with pkgs; [
+    cpio
+    xar
+    undmg
+  ];
 
   unpackPhase = ''
     undmg $src
@@ -45,10 +51,8 @@ pkgs.stdenv.mkDerivation (finalAttrs: {
   passthru.updateScript = pkgs.nix-update-script { };
 
   meta = {
-    changelog =
-      "https://github.com/pqrs-org/Karabiner-Elements/releases/tag/v${finalAttrs.version}";
-    description =
-      "Karabiner-Elements is a powerful utility for keyboard customization on macOS Ventura (13) or later";
+    changelog = "https://github.com/pqrs-org/Karabiner-Elements/releases/tag/v${finalAttrs.version}";
+    description = "Karabiner-Elements is a powerful utility for keyboard customization on macOS Ventura (13) or later";
     homepage = "https://karabiner-elements.pqrs.org/";
     license = lib.licenses.unlicense;
     maintainers = [ ];

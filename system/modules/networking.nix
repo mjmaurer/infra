@@ -1,11 +1,21 @@
-{ lib, config, isDarwin, derivationName, ... }:
+{
+  lib,
+  config,
+  isDarwin,
+  derivationName,
+  ...
+}:
 let
   hostname = derivationName;
   isNixOS = !isDarwin;
   tailscaleInterface = "tailscale0"; # Default
   # Must support DNSSEC
-  nameservers = [ "1.1.1.1" "8.8.8.8" ];
-in {
+  nameservers = [
+    "1.1.1.1"
+    "8.8.8.8"
+  ];
+in
+{
   config = lib.mkMerge [
     {
       # In all systems, the flake depends on hostname already being set.
@@ -14,7 +24,9 @@ in {
     }
 
     (lib.optionalAttrs isDarwin {
-      networking = { computerName = derivationName; };
+      networking = {
+        computerName = derivationName;
+      };
       services.tailscale = {
         enable = true;
         # overrideLocalDNS = true;
@@ -53,9 +65,8 @@ in {
 
       sops.secrets.oneTimeTailscaleAuthKey = {
         # This is just hardcoded to the tailscale module. Might break
-        owner =
-          config.services.tailscale.systemd.services.tailscaled-autoconnect.serviceConfig.User;
-        # sopsFile is provided by each machine's config 
+        owner = config.services.tailscale.systemd.services.tailscaled-autoconnect.serviceConfig.User;
+        # sopsFile is provided by each machine's config
       };
       services.tailscale = {
         enable = true;
@@ -66,12 +77,14 @@ in {
         # extraUpFlags = [ "--login-server" ];
 
         authKeyFile = config.sops.secrets.oneTimeTailscaleAuthKey.path;
-        authKeyParameters = { preauthorized = true; };
+        authKeyParameters = {
+          preauthorized = true;
+        };
       };
       fail2ban = {
         enable = true;
         maxretry = 5;
-        # Tailscale Range 
+        # Tailscale Range
         ignoreIP = [ "100.64.0.0/10" ];
         bantime = "15m";
         # jails = {

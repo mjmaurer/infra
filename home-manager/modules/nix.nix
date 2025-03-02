@@ -1,6 +1,8 @@
 { lib, config, ... }:
-let cfg = config.modules.nix;
-in {
+let
+  cfg = config.modules.nix;
+in
+{
   options.modules.nix = {
     unfreePackages = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -11,8 +13,7 @@ in {
   config = {
     nixpkgs = {
       config = {
-        allowUnfreePredicate = pkg:
-          builtins.elem (lib.getName pkg) cfg.unfreePackages;
+        allowUnfreePredicate = pkg: builtins.elem (lib.getName pkg) cfg.unfreePackages;
       };
     };
     nix = {

@@ -1,9 +1,18 @@
-{ lib, config, colors, pkgs, ... }:
+{
+  lib,
+  config,
+  colors,
+  pkgs,
+  ...
+}:
 let
   cfg = config.modules.wayland;
   swayfont = "MesloLGS NF 14";
-in {
-  options.modules.wayland = { enable = lib.mkEnableOption "wayland"; };
+in
+{
+  options.modules.wayland = {
+    enable = lib.mkEnableOption "wayland";
+  };
 
   config = lib.mkIf cfg.enable {
     # Can find more packages / features here:
@@ -37,24 +46,31 @@ in {
 
       waybar = {
         enable = true;
-        settings = [{
-          layer = "bottom";
-          position = "top";
-          height = 40;
-          modules-left = [ "sway/workspaces" "sway/mode" ];
-          modules-center = [ "sway/window" ];
-          modules-right = [ "clock" ];
-          "sway/window" = {
-            format = "{}";
-            max-length = 50;
-          };
-          "sway/mode" = { format = "{}"; };
-          clock = {
-            format = "{:%H:%M}";
-            tooltip-format = "{:%Y-%m-%d | %H:%M}";
-            format-alt = "{:%Y-%m-%d}";
-          };
-        }];
+        settings = [
+          {
+            layer = "bottom";
+            position = "top";
+            height = 40;
+            modules-left = [
+              "sway/workspaces"
+              "sway/mode"
+            ];
+            modules-center = [ "sway/window" ];
+            modules-right = [ "clock" ];
+            "sway/window" = {
+              format = "{}";
+              max-length = 50;
+            };
+            "sway/mode" = {
+              format = "{}";
+            };
+            clock = {
+              format = "{:%H:%M}";
+              tooltip-format = "{:%Y-%m-%d | %H:%M}";
+              format-alt = "{:%Y-%m-%d}";
+            };
+          }
+        ];
         style = ''
           * {
             border: none;
@@ -171,7 +187,9 @@ in {
           };
         };
         output = {
-          "*" = { bg = "${../../../artwork/ruinsoftheparthenon.jpeg} center"; };
+          "*" = {
+            bg = "${../../../artwork/ruinsoftheparthenon.jpeg} center";
+          };
         };
         colors.focused = {
           background = colors.hex colors.dark;
@@ -183,35 +201,34 @@ in {
         window.border = 2;
         # Sway can only have one main modifier, so we have to manually set most bindings
         modifier = "Mod4"; # Super
-        keybindings = let
-          hypmods = "Ctrl+Mod4"; # Ctrl+Super
-          sysmods = "Ctrl+Mod4+Mod1"; # Ctrl+Super+Alt
-        in {
-          "${sysmods}+x" = "kill";
+        keybindings =
+          let
+            hypmods = "Ctrl+Mod4"; # Ctrl+Super
+            sysmods = "Ctrl+Mod4+Mod1"; # Ctrl+Super+Alt
+          in
+          {
+            "${sysmods}+x" = "kill";
 
-          "${hypmods}+p" = "exec rofi -show run | xargs swaymsg exec --";
-          "${hypmods}+c" = "reload";
-          "${hypmods}+f" = "fullscreen";
-          "${hypmods}+t" = "exec alacritty";
-          "${hypmods}+w" = "exec firefox";
-          "${hypmods}+Return" = "mode power";
-          # "${modifier}+n" = "exec makoctl dismiss";
-          # "${modifier}+Shift+n" = "exec makoctl dismiss -a";
+            "${hypmods}+p" = "exec rofi -show run | xargs swaymsg exec --";
+            "${hypmods}+c" = "reload";
+            "${hypmods}+f" = "fullscreen";
+            "${hypmods}+t" = "exec alacritty";
+            "${hypmods}+w" = "exec firefox";
+            "${hypmods}+Return" = "mode power";
+            # "${modifier}+n" = "exec makoctl dismiss";
+            # "${modifier}+Shift+n" = "exec makoctl dismiss -a";
 
-          "${hypmods}+1" = "workspace number 1";
-          "${hypmods}+2" = "workspace number 2";
-          "${hypmods}+3" = "workspace number 3";
+            "${hypmods}+1" = "workspace number 1";
+            "${hypmods}+2" = "workspace number 2";
+            "${hypmods}+3" = "workspace number 3";
 
-          "${hypmods}+Shift+1" =
-            "move container to workspace number 1, workspace number 1";
-          "${hypmods}+Shift+2" =
-            "move container to workspace number 2, workspace number 2";
-          "${hypmods}+Shift+3" =
-            "move container to workspace number 3, workspace number 3";
+            "${hypmods}+Shift+1" = "move container to workspace number 1, workspace number 1";
+            "${hypmods}+Shift+2" = "move container to workspace number 2, workspace number 2";
+            "${hypmods}+Shift+3" = "move container to workspace number 3, workspace number 3";
 
-          "${hypmods}+s" = "scratchpad show";
-          "${hypmods}+Shift+s" = "move scratchpad";
-        };
+            "${hypmods}+s" = "scratchpad show";
+            "${hypmods}+Shift+s" = "move scratchpad";
+          };
         workspaceAutoBackAndForth = true;
         modes = {
           power = {

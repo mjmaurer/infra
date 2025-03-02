@@ -3,8 +3,10 @@ let
   editorConf = {
     cursor = {
       closeChat = [ "aichat.close-sidebar" ];
-      openWithSelection =
-        [ "aichat.newchataction" "aichat.insertselectionintochat" ];
+      openWithSelection = [
+        "aichat.newchataction"
+        "aichat.insertselectionintochat"
+      ];
       openExisting = [ "aichat.newfollowupaction" ];
     };
     vscode = {
@@ -14,24 +16,22 @@ let
     };
   };
   cfg = editorConf.${editor};
-in [
+in
+[
   {
     command = "workbench.action.compareEditor.nextChange";
     key = "down";
-    when =
-      "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
     command = "workbench.action.compareEditor.previousChange";
     key = "up";
-    when =
-      "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
     command = "git.revertSelectedRanges";
     key = "right";
-    when =
-      "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
     # This is to unset the comment divider command
@@ -64,20 +64,17 @@ in [
   {
     command = "workbench.action.debug.stepOver";
     key = "down";
-    when =
-      "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
     command = "workbench.action.debug.stepInto";
     key = "right";
-    when =
-      "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
     command = "workbench.action.debug.stepOut";
     key = "left";
-    when =
-      "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
     command = "workbench.action.debug.restart";
@@ -107,8 +104,7 @@ in [
   {
     command = "editor.action.triggerSuggest";
     key = "alt+d";
-    when =
-      "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly";
+    when = "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly";
   }
   {
     command = "workbench.action.increaseViewSize";
@@ -121,9 +117,10 @@ in [
   # Hide / Maximize
   {
     args = {
-      commands =
-        [ "workbench.action.closeSidebar" "workbench.action.closePanel" ]
-        ++ cfg.closeChat;
+      commands = [
+        "workbench.action.closeSidebar"
+        "workbench.action.closePanel"
+      ] ++ cfg.closeChat;
     };
     command = "runCommands";
     key = "alt+escape";
@@ -146,8 +143,7 @@ in [
   {
     command = "chatEditing.acceptAllFiles";
     key = "alt+enter";
-    when =
-      "hasUndecidedChatEditingResource && inChatInput && !chatSessionRequestInProgress && chatLocation == 'editing-session'";
+    when = "hasUndecidedChatEditingResource && inChatInput && !chatSessionRequestInProgress && chatLocation == 'editing-session'";
   }
   # Chat open
   {
@@ -202,7 +198,9 @@ in [
   # Terminal (Aider) focus
   {
     args = {
-      commands = [ "editor.action.clipboardCopyAction" ] ++ cfg.closeChat
+      commands =
+        [ "editor.action.clipboardCopyAction" ]
+        ++ cfg.closeChat
         ++ [ "workbench.action.terminal.focusAtIndex1" ];
     };
     command = "runCommands";

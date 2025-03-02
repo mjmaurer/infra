@@ -1,10 +1,18 @@
 # Note: Also used by live-iso
-{ pubkeys, pkgs, username }: {
+{
+  pubkeys,
+  pkgs,
+  username,
+}:
+{
   # Enable SSH in the boot process.
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
 
-  users.users.root.openssh.authorizedKeys.keys =
-    [ pubkeys.sshPubYkcWal pubkeys.sshPubYkaStub pubkeys.sshPubYkcKey ];
+  users.users.root.openssh.authorizedKeys.keys = [
+    pubkeys.sshPubYkcWal
+    pubkeys.sshPubYkaStub
+    pubkeys.sshPubYkcKey
+  ];
 
   users.users.${username}.openssh.authorizedKeys.keys = [
     pubkeys.sshPubYkcWal

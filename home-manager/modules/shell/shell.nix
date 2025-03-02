@@ -1,9 +1,17 @@
-{ osConfig ? null, pkgs, lib, config, derivationName, ... }:
+{
+  osConfig ? null,
+  pkgs,
+  lib,
+  config,
+  derivationName,
+  ...
+}:
 let
   inherit (config.home) packages;
   templateFile = "${config.xdg.dataHome}/nix-templates/flake-template.nix";
   cfg = config.modules.commonShell;
-in {
+in
+{
   options.modules.commonShell = {
     enableBash = lib.mkOption {
       type = lib.types.bool;
@@ -16,7 +24,9 @@ in {
     dirHashes = lib.mkOption {
       default = { };
       type = lib.types.attrs;
-      example = { code = "$HOME/code"; };
+      example = {
+        code = "$HOME/code";
+      };
       description = ''
         A set of directory hashes.
         Only works for zsh right now.
@@ -25,7 +35,9 @@ in {
     sessionVariables = lib.mkOption {
       default = { };
       type = lib.types.attrs;
-      example = { MAILCHECK = 30; };
+      example = {
+        MAILCHECK = 30;
+      };
       description = ''
         Environment variables that will be set for the Bash session.
       '';
@@ -94,7 +106,9 @@ in {
     modules.bash.enable = cfg.enableBash;
     modules.zsh.enable = cfg.enableZsh;
     home.file = {
-      "${templateFile}" = { source = ./nix/flake-template.nix; };
+      "${templateFile}" = {
+        source = ./nix/flake-template.nix;
+      };
       # Scripts without '.sh' don't contain functions
       # and so are added to .local/bin (and thus the PATH so other programs can find them)
       ".local/bin/tmux_switch_by_name" = {
@@ -112,11 +126,10 @@ in {
         # The unset is a hack to source the file multiple times as needed
         unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 
-        ${lib.optionalString (osConfig ? sops
-          && builtins.hasAttr "shell.env" osConfig.sops.templates) ''
-            # --------------------------------- SOPS Secrets --------------------------------
-            source ${osConfig.sops.templates."shell.env".path}
-          ''}
+        ${lib.optionalString (osConfig ? sops && builtins.hasAttr "shell.env" osConfig.sops.templates) ''
+          # --------------------------------- SOPS Secrets --------------------------------
+          source ${osConfig.sops.templates."shell.env".path}
+        ''}
 
         source ${./defaults.sh}
 
@@ -215,8 +228,7 @@ in {
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
         "ndu" = "nix flake update";
-        "nrbnoreload" =
-          lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
+        "nrbnoreload" = lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
         "nrb" = ''
           nrbnoreload;
           exec zsh;
@@ -235,8 +247,7 @@ in {
         # TODO: We could instead specify each hostname in the flake.nix
         # It will use that for switch when no derivation is specified
         # 'noload' because you need to source the shell afterwards (which `hmswitch` does)
-        "hmswitchnoload" =
-          "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
+        "hmswitchnoload" = "nix run home-manager/master -- switch --flake ~/infra#${derivationName}";
         # `hmswitch` is defined per-shell
         "hms" = "hmswitch";
         "dtail" = "docker logs -tf --tail='50'";

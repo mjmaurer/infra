@@ -1,76 +1,133 @@
 let
   vimNormalAndVisual = [
     {
-      before = [ "<leader>" "p" ];
+      before = [
+        "<leader>"
+        "p"
+      ];
       commands = [ "workbench.action.showCommands" ];
     }
     {
-      before = [ "<leader>" "a" "a" ];
+      before = [
+        "<leader>"
+        "a"
+        "a"
+      ];
       commands = [ "inlineChat.start" ];
     }
     # Prefix-------------------------- Editor Leader --------------------------
     {
-      before = [ "<leader>" "e" "e" ];
+      before = [
+        "<leader>"
+        "e"
+        "e"
+      ];
       commands = [ "editor.action.commentLine" ];
     }
     {
-      before = [ "<leader>" "e" "r" ];
+      before = [
+        "<leader>"
+        "e"
+        "r"
+      ];
       commands = [ "editor.action.startFindReplaceAction" ];
     }
     {
-      before = [ "<leader>" "e" "n" ];
+      before = [
+        "<leader>"
+        "e"
+        "n"
+      ];
       commands = [ "editor.action.rename" ];
     }
     {
-      before = [ "<leader>" "e" "l" ];
+      before = [
+        "<leader>"
+        "e"
+        "l"
+      ];
       commands = [ "editor.action.openLink" ];
     }
     # Prefix-------------------------- Git Leader --------------------------
     {
       # git blame diff head (diff blame commit against head for file)
       # See what has changed since the commit
-      before = [ "<leader>" "g" "c" ];
+      before = [
+        "<leader>"
+        "g"
+        "c"
+      ];
       commands = [ "gitlens.copyRemoteFileUrlToClipboard" ];
     }
     {
-      before = [ "<leader>" "g" "r" ];
+      before = [
+        "<leader>"
+        "g"
+        "r"
+      ];
       commands = [ "git.revertSelectedRanges" ];
     }
   ];
-in {
-  "[R]" = { "editor.wordWrap" = "on"; };
+in
+{
+  "[R]" = {
+    "editor.wordWrap" = "on";
+  };
   "[css]" = {
     "editor.defaultFormatter" = "stylelint.vscode-stylelint";
     "editor.tabSize" = 2;
   };
   "[go]" = {
-    "editor.codeActionsOnSave" = { "source.organizeImports" = "explicit"; };
+    "editor.codeActionsOnSave" = {
+      "source.organizeImports" = "explicit";
+    };
     "editor.formatOnSave" = true;
   };
-  "[html]" = { "editor.defaultFormatter" = "vscode.html-language-features"; };
+  "[html]" = {
+    "editor.defaultFormatter" = "vscode.html-language-features";
+  };
   "[java]" = {
     "editor.defaultFormatter" = "redhat.java";
     "editor.tabSize" = 4;
   };
-  "[javascript]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
-  "[json]" = { "editor.defaultFormatter" = "vscode.json-language-features"; };
-  "[jsonc]" = { "editor.defaultFormatter" = "vscode.json-language-features"; };
-  "[nix]" = { "editor.defaultFormatter" = "jnoortheen.nix-ide"; };
+  "[javascript]" = {
+    "editor.defaultFormatter" = "esbenp.prettier-vscode";
+  };
+  "[json]" = {
+    "editor.defaultFormatter" = "vscode.json-language-features";
+  };
+  "[jsonc]" = {
+    "editor.defaultFormatter" = "vscode.json-language-features";
+  };
+  "[nix]" = {
+    "editor.defaultFormatter" = "jnoortheen.nix-ide";
+  };
   "[python]" = {
     "editor.defaultFormatter" = "ms-python.black-formatter";
     "editor.formatOnType" = true;
   };
-  "[r]" = { "editor.defaultFormatter" = "REditorSupport.r"; };
-  "[scss]" = { "editor.defaultFormatter" = "esbenp.prettier-vscode"; };
-  "[typescript]" = { "editor.defaultFormatter" = "dbaeumer.vscode-eslint"; };
+  "[r]" = {
+    "editor.defaultFormatter" = "REditorSupport.r";
+  };
+  "[scss]" = {
+    "editor.defaultFormatter" = "esbenp.prettier-vscode";
+  };
+  "[typescript]" = {
+    "editor.defaultFormatter" = "dbaeumer.vscode-eslint";
+  };
   "[typescriptreact]" = {
     "editor.defaultFormatter" = "dbaeumer.vscode-eslint";
   };
-  "[yaml]" = { "editor.defaultFormatter" = "redhat.vscode-yaml"; };
+  "[yaml]" = {
+    "editor.defaultFormatter" = "redhat.vscode-yaml";
+  };
   "auto-open-css-modules.manualMode" = true;
   "auto-open-css-modules.openAsPreview" = false;
   "cmake.configureOnOpen" = false;
-  "color-highlight.languages" = [ "!typescriptreact" "*" ];
+  "color-highlight.languages" = [
+    "!typescriptreact"
+    "*"
+  ];
   "css.validate" = false;
   "cursor.chat.premiumChatAutoScrollWhenAtBottom" = true;
   "debug.javascript.autoAttachFilter" = "disabled";
@@ -89,10 +146,14 @@ in {
   "editor.suggestSelection" = "first";
   "editor.tabSize" = 4;
   "editor.wordSeparators" = ''/\()"':,.;<>~!@#$%^&*|+=[]{}`?-'';
-  "emmet.includeLanguages" = { django-html = "html"; };
+  "emmet.includeLanguages" = {
+    django-html = "html";
+  };
   "eslint.format.enable" = true;
-  "eslint.workingDirectories" = [{ mode = "auto"; }];
-  "extensions.experimental.affinity" = { "vscodevim.vim" = 1; };
+  "eslint.workingDirectories" = [ { mode = "auto"; } ];
+  "extensions.experimental.affinity" = {
+    "vscodevim.vim" = 1;
+  };
   "files.associations" = {
     "**/requirements{/**,*}.{txt,in}" = "pip-requirements";
     "**/templates/*.html" = "django-html";
@@ -185,8 +246,10 @@ in {
       {
         name = "Browser: Chrome";
         request = "launch";
-        skipFiles =
-          [ "\${workspaceFolder}/node_modules/**" "<node_internals>/**" ];
+        skipFiles = [
+          "\${workspaceFolder}/node_modules/**"
+          "<node_internals>/**"
+        ];
         smartStep = true;
         type = "chrome";
         url = "http://localhost:3000";
@@ -308,8 +371,14 @@ in {
           default = null;
           description = "Which file?";
           options = [
-            [ "Previous" "\${remember:pickedFile}" ]
-            [ "Pick directory" "\${pickFile:pickedFile}" ]
+            [
+              "Previous"
+              "\${remember:pickedFile}"
+            ]
+            [
+              "Pick directory"
+              "\${pickFile:pickedFile}"
+            ]
           ];
           pickFile = {
             pickedFile = {
@@ -336,8 +405,7 @@ in {
   };
   "leetcode.hint.commandShortcut" = false;
   "leetcode.hint.configWebviewMarkdown" = false;
-  "leetcode.nodePath" =
-    "/nix/store/ridvrr7dsnxpvh3f1sr41xiwvwk1nnkg-nodejs-20.12.2/bin/node";
+  "leetcode.nodePath" = "/nix/store/ridvrr7dsnxpvh3f1sr41xiwvwk1nnkg-nodejs-20.12.2/bin/node";
   "leetcode.workspaceFolder" = "/Users/mmaurer7/code/problems/problems";
   "mypy.enabled" = false;
   "nix.enableLanguageServer" = true;
@@ -345,8 +413,15 @@ in {
   "nix.serverPath" = "nil";
   "nix.serverSettings" = {
     nil = {
-      diagnostics = { ignored = [ "unused_binding" "unused_with" ]; };
-      formatting = { command = [ "nixfmt" ]; };
+      diagnostics = {
+        ignored = [
+          "unused_binding"
+          "unused_with"
+        ];
+      };
+      formatting = {
+        command = [ "nixfmt" ];
+      };
     };
   };
   "nixEnvSelector.args" = "--command 'zsh'";
@@ -356,28 +431,62 @@ in {
   "redhat.telemetry.enabled" = false;
   "remote.SSH.enableX11Forwarding" = false;
   "remote.WSL.fileWatcher.polling" = true;
-  "remote.extensionKind" = { "vscode.typescript-language-features" = "ui"; };
+  "remote.extensionKind" = {
+    "vscode.typescript-language-features" = "ui";
+  };
   "scss.validate" = false;
-  "search.exclude" = { "/tmp/**" = true; };
+  "search.exclude" = {
+    "/tmp/**" = true;
+  };
   "search.followSymlinks" = false;
   "settingsSync.keybindingsPerPlatform" = false;
   "sonarlint.analyzerProperties" = { };
   "sonarlint.rules" = {
-    "java:S110" = { level = "off"; };
-    "java:S1118" = { level = "off"; };
-    "java:S117" = { level = "off"; };
-    "java:S1186" = { level = "off"; };
-    "java:S1192" = { level = "off"; };
-    "java:S125" = { level = "off"; };
-    "java:S1948" = { level = "off"; };
-    "java:S2119" = { level = "off"; };
-    "java:S2975" = { level = "off"; };
-    "java:S3457" = { level = "off"; };
-    "java:S3776" = { level = "off"; };
-    "javascript:S3923" = { level = "off"; };
-    "python:S1192" = { level = "off"; };
-    "python:S2208" = { level = "off"; };
-    "python:S3776" = { level = "off"; };
+    "java:S110" = {
+      level = "off";
+    };
+    "java:S1118" = {
+      level = "off";
+    };
+    "java:S117" = {
+      level = "off";
+    };
+    "java:S1186" = {
+      level = "off";
+    };
+    "java:S1192" = {
+      level = "off";
+    };
+    "java:S125" = {
+      level = "off";
+    };
+    "java:S1948" = {
+      level = "off";
+    };
+    "java:S2119" = {
+      level = "off";
+    };
+    "java:S2975" = {
+      level = "off";
+    };
+    "java:S3457" = {
+      level = "off";
+    };
+    "java:S3776" = {
+      level = "off";
+    };
+    "javascript:S3923" = {
+      level = "off";
+    };
+    "python:S1192" = {
+      level = "off";
+    };
+    "python:S2208" = {
+      level = "off";
+    };
+    "python:S3776" = {
+      level = "off";
+    };
   };
   "sonarlint.testFilePattern" = "**/*.js";
   "stylelint.enable" = true;
@@ -393,7 +502,12 @@ in {
   "terminal.integrated.hideOnStartup" = "always";
   "terminal.integrated.profiles.linux" = {
     tmux-pwd = {
-      args = [ "-l" "-c" "tmux_pwd \${@:1} \${workspaceFolder}" "_" ];
+      args = [
+        "-l"
+        "-c"
+        "tmux_pwd \${@:1} \${workspaceFolder}"
+        "_"
+      ];
       path = "zsh";
     };
   };
@@ -402,7 +516,12 @@ in {
     tmux-pwd = {
       # This passes all arguments after underscore to tmux_pwd. Useful for treating tmux as a shell (becuase tmux_pwd accepts '-c' for commands)
       # Used to have -i here (but don't need it I think. was causing problems for automation profile usage)
-      args = [ "-l" "-c" "tmux_pwd \${@:1} \${workspaceFolder}" "_" ];
+      args = [
+        "-l"
+        "-c"
+        "tmux_pwd \${@:1} \${workspaceFolder}"
+        "_"
+      ];
       path = "zsh";
     };
     zsh-login = {
@@ -429,134 +548,249 @@ in {
   "vim.normalModeKeyBindingsNonRecursive" = vimNormalAndVisual ++ [
     # Prefix---------------------------- Editor Raw ---------------------------
     {
-      before = [ "<leader>" "d" ];
+      before = [
+        "<leader>"
+        "d"
+      ];
       commands = [ "editor.action.showDefinitionPreviewHover" ];
     }
     {
-      before = [ "<leader>" ";" ];
+      before = [
+        "<leader>"
+        ";"
+      ];
       commands = [ "workbench.action.quickSwitchWindow" ];
     }
     {
-      before = [ "<leader>" "i" ];
+      before = [
+        "<leader>"
+        "i"
+      ];
       commands = [ "workbench.action.showAllSymbols" ];
     }
     {
-      before = [ "<leader>" "o" ];
+      before = [
+        "<leader>"
+        "o"
+      ];
       commands = [ "workbench.action.quickOpen" ];
     }
     {
-      before = [ "<leader>" "w" "w" ];
+      before = [
+        "<leader>"
+        "w"
+        "w"
+      ];
       commands = [ "workbench.action.closeActiveEditor" ];
     }
     {
-      before = [ "<leader>" "w" "h" ];
+      before = [
+        "<leader>"
+        "w"
+        "h"
+      ];
       commands = [ "workbench.action.closeEditorsToTheLeft" ];
     }
     {
-      before = [ "<leader>" "w" "l" ];
+      before = [
+        "<leader>"
+        "w"
+        "l"
+      ];
       commands = [ "workbench.action.closeEditorsToTheRight" ];
     }
     {
-      before = [ "<leader>" "w" "o" ];
+      before = [
+        "<leader>"
+        "w"
+        "o"
+      ];
       commands = [ "workbench.action.closeOtherEditors" ];
     }
     {
-      before = [ "<leader>" "f" ];
+      before = [
+        "<leader>"
+        "f"
+      ];
       commands = [ "editor.action.formatDocument" ];
     }
     {
-      before = [ "<leader>" "c" ];
+      before = [
+        "<leader>"
+        "c"
+      ];
       commands = [ "workbench.files.action.collapseExplorerFolders" ];
     }
     {
-      before = [ "<leader>" "r" ];
+      before = [
+        "<leader>"
+        "r"
+      ];
       commands = [ "editor.action.rename" ];
     }
     # Prefix------------------------- LLM / AI / Cursor -------------------------
     {
-      before = [ "<leader>" "a" "f" ];
+      before = [
+        "<leader>"
+        "a"
+        "f"
+      ];
       commands = [ "github.copilot.edits.attachFile" ]; # "composer.createNew"
     }
     # Prefix---------------------------- Git -----------------------------
     {
-      before = [ "<leader>" "g" "s" ];
+      before = [
+        "<leader>"
+        "g"
+        "s"
+      ];
       commands = [ "gitlens.copyShaToClipboard" ];
     }
     {
       # git blame diff head (diff blame commit against head for file)
       # See what has changed since the commit
-      before = [ "<leader>" "g" "b" "h" ];
+      before = [
+        "<leader>"
+        "g"
+        "b"
+        "h"
+      ];
       commands = [ "gitlens.diffLineWithWorking" ];
     }
     {
       # Duplicated in case I forget
-      before = [ "<leader>" "g" "g" ];
+      before = [
+        "<leader>"
+        "g"
+        "g"
+      ];
       commands = [ "gitlens.diffLineWithWorking" ];
     }
     {
       # git show blame commit
-      before = [ "<leader>" "g" "b" "b" ];
+      before = [
+        "<leader>"
+        "g"
+        "b"
+        "b"
+      ];
       commands = [ "gitlens.diffLineWithPrevious" ];
     }
     {
       # Duplicated in case I forget
-      before = [ "<leader>" "g" "d" ];
+      before = [
+        "<leader>"
+        "g"
+        "d"
+      ];
       commands = [ "gitlens.diffLineWithPrevious" ];
     }
     {
       # Revert current line change
-      before = [ "<leader>" "g" "r" ];
+      before = [
+        "<leader>"
+        "g"
+        "r"
+      ];
       commands = [ "git.revertSelectRanges" ];
     }
     {
       # Prev: Diff current file with most recent previous version of it
-      before = [ "<leader>" "g" "h" ];
+      before = [
+        "<leader>"
+        "g"
+        "h"
+      ];
       commands = [ "gitlens.diffWithPreviousInDiffRight" ];
     }
     {
       # Next: Diff current file with most recent version after it
-      before = [ "<leader>" "g" "l" ];
+      before = [
+        "<leader>"
+        "g"
+        "l"
+      ];
       commands = [ "gitlens.diffWithNextInDiffRight" ];
     }
     # Prefix-------------------------- Debugging --------------------------
     {
-      before = [ "<leader>" "b" "r" ];
+      before = [
+        "<leader>"
+        "b"
+        "r"
+      ];
       commands = [ "workbench.action.debug.restart" ];
     }
     {
-      before = [ "<leader>" "b" "x" ];
+      before = [
+        "<leader>"
+        "b"
+        "x"
+      ];
       commands = [ "workbench.debug.viewlet.action.removeAllBreakpoints" ];
     }
     {
-      before = [ "<leader>" "b" "d" ];
+      before = [
+        "<leader>"
+        "b"
+        "d"
+      ];
       commands = [ "workbench.debug.action.focusRepl" ];
     }
     {
-      before = [ "<leader>" "b" "w" ];
+      before = [
+        "<leader>"
+        "b"
+        "w"
+      ];
       commands = [ "editor.debug.action.selectionToWatch" ];
     }
     {
-      before = [ "<leader>" "b" "s" ];
+      before = [
+        "<leader>"
+        "b"
+        "s"
+      ];
       commands = [ "workbench.action.debug.start" ];
     }
     {
-      before = [ "<leader>" "b" "S" ];
+      before = [
+        "<leader>"
+        "b"
+        "S"
+      ];
       commands = [ "workbench.action.debug.selectandstart" ];
     }
     {
-      before = [ "<leader>" "b" "f" ];
+      before = [
+        "<leader>"
+        "b"
+        "f"
+      ];
       commands = [ "workbench.action.debug.selectDebugSession" ];
     }
     {
-      before = [ "<leader>" "b" "c" ];
+      before = [
+        "<leader>"
+        "b"
+        "c"
+      ];
       commands = [ "editor.debug.action.conditionalBreakpoint" ];
     }
     {
-      before = [ "<leader>" "b" "b" ];
+      before = [
+        "<leader>"
+        "b"
+        "b"
+      ];
       commands = [ "editor.debug.action.toggleBreakpoint" ];
     }
     {
-      before = [ "<leader>" "b" "j" ];
+      before = [
+        "<leader>"
+        "b"
+        "j"
+      ];
       commands = [ "debug.jumpToCursor" ];
     }
     # Prefix--------------------- Movement: Left / Right -----------------------
@@ -569,11 +803,19 @@ in {
       commands = [ "workbench.action.nextEditor" ];
     }
     {
-      before = [ "<leader>" "h" "h" ];
+      before = [
+        "<leader>"
+        "h"
+        "h"
+      ];
       commands = [ "workbench.action.openPreviousRecentlyUsedEditorInGroup" ];
     }
     {
-      before = [ "<leader>" "l" "l" ];
+      before = [
+        "<leader>"
+        "l"
+        "l"
+      ];
       commands = [ "workbench.action.openNextRecentlyUsedEditorInGroup" ];
     }
     # Prefix--------------------- Movement: Up / Down ------------------------
@@ -588,60 +830,111 @@ in {
     {
       # Jumplist prev
       # "<C-o>"
-      before = [ "<leader>" "j" "j" ];
+      before = [
+        "<leader>"
+        "j"
+        "j"
+      ];
       commands = [ "workbench.action.openPreviousRecentlyUsedEditor" ];
     }
     {
-      before = [ "<leader>" "k" "k" ];
+      before = [
+        "<leader>"
+        "k"
+        "k"
+      ];
       commands = [ "workbench.action.openNextRecentlyUsedEditor" ];
     }
     # The navigation stack only affects certain navigations (like GoToDefinition)
     # I'll call this the "view" or "vim" stack
     # See https://github.com/microsoft/vscode/issues/142647
     {
-      before = [ "<leader>" "j" "v" ];
+      before = [
+        "<leader>"
+        "j"
+        "v"
+      ];
       commands = [ "workbench.action.navigateBackInNavigationLocations" ];
     }
     {
-      before = [ "<leader>" "k" "v" ];
+      before = [
+        "<leader>"
+        "k"
+        "v"
+      ];
       commands = [ "workbench.action.navigateForwardInNavigationLocations" ];
     }
     {
-      before = [ "<leader>" "j" "f" ];
+      before = [
+        "<leader>"
+        "j"
+        "f"
+      ];
       commands = [ "workbench.action.navigateBack" ];
     }
     {
-      before = [ "<leader>" "k" "f" ];
+      before = [
+        "<leader>"
+        "k"
+        "f"
+      ];
       commands = [ "workbench.action.navigateForward" ];
     }
     {
-      before = [ "<leader>" "j" "e" ];
+      before = [
+        "<leader>"
+        "j"
+        "e"
+      ];
       commands = [ "workbench.action.navigateBackInEditLocations" ];
     }
     {
-      before = [ "<leader>" "k" "e" ];
+      before = [
+        "<leader>"
+        "k"
+        "e"
+      ];
       commands = [ "workbench.action.navigateForwardInEditLocations" ];
     }
     {
-      before = [ "<leader>" "j" "d" ];
+      before = [
+        "<leader>"
+        "j"
+        "d"
+      ];
       commands = [ "editor.action.marker.next" ];
     }
     {
-      before = [ "<leader>" "k" "d" ];
+      before = [
+        "<leader>"
+        "k"
+        "d"
+      ];
       commands = [ "editor.action.marker.prev" ];
     }
     {
-      before = [ "<leader>" "j" "g" ];
+      before = [
+        "<leader>"
+        "j"
+        "g"
+      ];
       commands = [ "workbench.action.editor.nextChange" ];
     }
     {
-      before = [ "<leader>" "k" "g" ];
+      before = [
+        "<leader>"
+        "k"
+        "g"
+      ];
       commands = [ "workbench.action.editor.previousChange" ];
     }
   ];
   "vim.visualModeKeyBindingsNonRecursive" = vimNormalAndVisual ++ [
     {
-      before = [ "<leader>" "s" ];
+      before = [
+        "<leader>"
+        "s"
+      ];
       commands = [ "editor.action.triggerSuggest" ];
     }
     {
@@ -653,8 +946,7 @@ in {
       before = [ "K" ];
     }
   ];
-  "vsintellicode.modify.editor.suggestSelection" =
-    "automaticallyOverrodeDefaultValue";
+  "vsintellicode.modify.editor.suggestSelection" = "automaticallyOverrodeDefaultValue";
   "window.customMenuBarAltFocus" = false;
   "window.menuBarVisibility" = "hidden";
   "window.zoomLevel" = 1;

@@ -7,8 +7,7 @@
   personal-digest-preferences = "SHA512 SHA384 SHA256";
   personal-compress-preferences = "ZLIB BZIP2 ZIP Uncompressed";
   # Default preferences for new keys
-  default-preference-list =
-    "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
+  default-preference-list = "SHA512 SHA384 SHA256 AES256 AES192 AES ZLIB BZIP2 ZIP Uncompressed";
 
   # SHA512 as digest to sign keys
   cert-digest-algo = "SHA512";

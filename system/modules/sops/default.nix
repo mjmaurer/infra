@@ -1,6 +1,14 @@
-{ config, pkgs, username, lib, ... }:
-let cfg = config.modules.sops;
-in {
+{
+  config,
+  pkgs,
+  username,
+  lib,
+  ...
+}:
+let
+  cfg = config.modules.sops;
+in
+{
 
   options.modules.sops = {
     includePcSecrets = lib.mkOption {
@@ -25,24 +33,43 @@ in {
         defaultSopsFile = ./secrets/common.yaml;
         secrets = {
           gpgAuthKeygrip = { };
-          mjmaurerHashedPassword = { neededForUsers = true; };
+          mjmaurerHashedPassword = {
+            neededForUsers = true;
+          };
         };
       }
 
       (lib.optionalAttrs cfg.includePcSecrets {
-        secrets = let pcSopsFile = ./secrets/common-pc.yaml;
-        in {
-          smbHost = { sopsFile = pcSopsFile; };
-          smbUrl = { sopsFile = pcSopsFile; };
+        secrets =
+          let
+            pcSopsFile = ./secrets/common-pc.yaml;
+          in
+          {
+            smbHost = {
+              sopsFile = pcSopsFile;
+            };
+            smbUrl = {
+              sopsFile = pcSopsFile;
+            };
 
-          # TODO: probably want this via sops home-manager module,
-          # but it does create issues with (permissions? I tried but can't remember the error)
-          apiKeyAnthropic = { sopsFile = pcSopsFile; };
-          apiKeyCodestral = { sopsFile = pcSopsFile; };
-          apiKeyVoyage = { sopsFile = pcSopsFile; };
-          apiKeyOpenai = { sopsFile = pcSopsFile; };
-          apiKeyDeepseek = { sopsFile = pcSopsFile; };
-        };
+            # TODO: probably want this via sops home-manager module,
+            # but it does create issues with (permissions? I tried but can't remember the error)
+            apiKeyAnthropic = {
+              sopsFile = pcSopsFile;
+            };
+            apiKeyCodestral = {
+              sopsFile = pcSopsFile;
+            };
+            apiKeyVoyage = {
+              sopsFile = pcSopsFile;
+            };
+            apiKeyOpenai = {
+              sopsFile = pcSopsFile;
+            };
+            apiKeyDeepseek = {
+              sopsFile = pcSopsFile;
+            };
+          };
         templates = {
           "shell.env" = {
             # mode = "0400";
@@ -71,4 +98,3 @@ in {
     ];
   };
 }
-

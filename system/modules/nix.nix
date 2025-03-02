@@ -1,4 +1,10 @@
-{ lib, username, isDarwin, ... }: {
+{
+  lib,
+  username,
+  isDarwin,
+  ...
+}:
+{
   nixpkgs.config = {
     allowUnfree = true;
     allowBroken = false;

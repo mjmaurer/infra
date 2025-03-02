@@ -3,7 +3,9 @@
 {
   imports = [ ./linux.nix ];
 
-  modules.commonShell = { machineName = config.networking.hostName; };
+  modules.commonShell = {
+    machineName = config.networking.hostName;
+  };
 
   # services = {
   #   gpg-agent = {

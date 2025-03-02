@@ -1,14 +1,26 @@
-{ config, lib, pkgs, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  ...
+}:
 with lib;
 let
   cfg = config.modules.zsh;
   commonShell = config.modules.commonShell;
-in {
-  options.modules.zsh = { enable = lib.mkEnableOption "zsh"; };
+in
+{
+  options.modules.zsh = {
+    enable = lib.mkEnableOption "zsh";
+  };
 
   config = lib.mkIf cfg.enable {
 
-    home.file = { ".p10k.zsh" = { source = ./p10k.zsh; }; };
+    home.file = {
+      ".p10k.zsh" = {
+        source = ./p10k.zsh;
+      };
+    };
 
     programs.zsh = {
       enable = true;

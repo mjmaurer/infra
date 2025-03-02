@@ -8,7 +8,9 @@
 
   modules.commonShell = {
     machineName = "proxy";
-    sessionVariables = { WIN_DOWNLOADS = "/mnt/c/Users/mjmau/Downloads/"; };
+    sessionVariables = {
+      WIN_DOWNLOADS = "/mnt/c/Users/mjmau/Downloads/";
+    };
     initExtraFirst = ''
       whitelist_user () {
         env_var_name="VOUCH_WHITELIST"

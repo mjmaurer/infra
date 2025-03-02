@@ -1,4 +1,10 @@
-{ nixpkgs, pkgs, pubkeys, ... }: {
+{
+  nixpkgs,
+  pkgs,
+  pubkeys,
+  ...
+}:
+{
   imports = [
     "${nixpkgs}/nixos/modules/installer/cd-dvd/installation-cd-minimal.nix"
     # Provide an initial copy of the NixOS channel so that the user
@@ -6,8 +12,9 @@
     "${nixpkgs}/nixos/modules/installer/cd-dvd/channel.nix"
   ];
 
-  environment.systemPackages = with pkgs;
-    [ (writeScriptBin "partition" (builtins.readFile ./partition)) ];
+  environment.systemPackages = with pkgs; [
+    (writeScriptBin "partition" (builtins.readFile ./partition))
+  ];
 
   # Enable SSH in the boot process.
   systemd.services.sshd.wantedBy = pkgs.lib.mkForce [ "multi-user.target" ];
@@ -36,7 +43,10 @@
     # for all network interfaces that do not have any manually configured IPv4 addresses.
     useDHCP = true;
     dhcpcd.enable = true; # True by default
-    nameservers = [ "8.8.8.8" "8.8.4.4" ];
+    nameservers = [
+      "8.8.8.8"
+      "8.8.4.4"
+    ];
   };
 
   isoImage = {

@@ -1,7 +1,16 @@
-{ lib, config, pkgs, ... }:
-let cfg = config.modules.repomix;
-in {
-  options.modules.repomix = { enable = lib.mkEnableOption "repomix"; };
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
+let
+  cfg = config.modules.repomix;
+in
+{
+  options.modules.repomix = {
+    enable = lib.mkEnableOption "repomix";
+  };
 
   config = lib.mkIf cfg.enable {
     home.packages = [ pkgs.repomix ];
@@ -39,10 +48,16 @@ in {
             "!**/README*"
           ];
         };
-        security = { enableSecurityCheck = true; };
+        security = {
+          enableSecurityCheck = true;
+        };
       };
     };
 
-    modules.commonShell = { shellAliases = { rpmxr = "repomix --remote"; }; };
+    modules.commonShell = {
+      shellAliases = {
+        rpmxr = "repomix --remote";
+      };
+    };
   };
 }

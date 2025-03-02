@@ -6,7 +6,7 @@
 
     # Default to the nixos-unstable branch:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    # Latest nixpkgs, to get latest versions of some packages 
+    # Latest nixpkgs, to get latest versions of some packages
     # nixpkgs-latest.url = "github:nixos/nixpkgs/master";
 
     flake-utils.url = "github:numtide/flake-utils";
@@ -50,43 +50,86 @@
     # nixos-wsl.inputs.nixpkgs.follows = "nixpkgs";
     # nixos-wsl.inputs.flake-utils.follows = "flake-utils";
   };
-  outputs = { self, nixpkgs, home-manager, nixos-hardware, sops-nix, nix-colors
-    , nix-std, nix-homebrew, impermanence, flake-utils, darwin, disko
-    , nix-vscode-extensions, ... }@inputs:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      nixos-hardware,
+      sops-nix,
+      nix-colors,
+      nix-std,
+      nix-homebrew,
+      impermanence,
+      flake-utils,
+      darwin,
+      disko,
+      nix-vscode-extensions,
+      ...
+    }@inputs:
     let
       defaultUsername = "mjmaurer";
-      forEachSystem = f:
-        flake-utils.lib.eachDefaultSystem (system:
+      forEachSystem =
+        f:
+        flake-utils.lib.eachDefaultSystem (
+          system:
           let
             pkgs = nixpkgs.legacyPackages.${system};
             sops-nix-pkgs = sops-nix.packages.${system};
             lib = nixpkgs.lib;
-          in f { inherit system pkgs sops-nix-pkgs lib; });
-      withConfig = { system, derivationName, username ? defaultUsername
-        , extraSpecialArgs ? { } }: rec {
+          in
+          f {
+            inherit
+              system
+              pkgs
+              sops-nix-pkgs
+              lib
+              ;
+          }
+        );
+      withConfig =
+        {
+          system,
+          derivationName,
+          username ? defaultUsername,
+          extraSpecialArgs ? { },
+        }:
+        rec {
           mkSpecialArgs = {
             # The `specialArgs` parameter passes the
             # non-default arguments to nix modules.
             # Default arguments are things like `pkgs`, `lib`, etc.
 
             inherit (inputs)
-              nix-std nix-colors nix-vscode-extensions nix-homebrew;
+              nix-std
+              nix-colors
+              nix-vscode-extensions
+              nix-homebrew
+              ;
             inherit username derivationName system;
             # pkgs-latest = nixpkgs-latest.legacyPackages.${system};
             colors = import ./lib/colors.nix { lib = nixpkgs.lib; };
             pubkeys = import ./lib/pubkeys.nix;
             isDarwin = system == "aarch64-darwin";
           } // extraSpecialArgs;
-          mkHomeManagerStandalone = { modules ? [ ] }:
+          mkHomeManagerStandalone =
+            {
+              modules ? [ ],
+            }:
             home-manager.lib.homeManagerConfiguration {
               extraSpecialArgs = mkSpecialArgs;
-              # See here on legacyPackages vs import: 
+              # See here on legacyPackages vs import:
               # https://discourse.nixos.org/t/using-nixpkgs-legacypackages-system-vs-import/17462/8
               pkgs = nixpkgs.legacyPackages.${system};
               modules = modules;
             };
           mkHomeManagerModuleConfig =
-            { defaultHomeModules, extraHomeModules, homeStateVersion }: {
+            {
+              defaultHomeModules,
+              extraHomeModules,
+              homeStateVersion,
+            }:
+            {
               # Keep these false so home-manager and nixos derivations don't diverge.
               # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
               # To instead use the global (system-level) pkgs, set to true.
@@ -104,136 +147,182 @@
                 sops-nix.homeManagerModules.sops
               ];
             };
-          mkDarwinSystem = { systemStateVersion, homeStateVersion
-            , defaultSystemModules ? [
-              ./system/common/darwin.nix
-              sops-nix.darwinModules.sops
-            ], extraSystemModules ? [ ], defaultHomeModules ? [
-              ./home-manager/common/darwin.nix
-              ./home-manager/common/headed.nix
-            ], extraHomeModules ? [ ] }:
+          mkDarwinSystem =
+            {
+              systemStateVersion,
+              homeStateVersion,
+              defaultSystemModules ? [
+                ./system/common/darwin.nix
+                sops-nix.darwinModules.sops
+              ],
+              extraSystemModules ? [ ],
+              defaultHomeModules ? [
+                ./home-manager/common/darwin.nix
+                ./home-manager/common/headed.nix
+              ],
+              extraHomeModules ? [ ],
+            }:
             darwin.lib.darwinSystem {
-              system = if system == "aarch64-darwin" then
-                system
-              else
-                throw "System must be aarch64-darwin";
+              system = if system == "aarch64-darwin" then system else throw "System must be aarch64-darwin";
               specialArgs = mkSpecialArgs;
-              modules = [
-                home-manager.darwinModules.home-manager
-                (mkHomeManagerModuleConfig {
-                  inherit defaultHomeModules extraHomeModules homeStateVersion;
-                })
-                {
-                  system.stateVersion = systemStateVersion;
-                }
-                # impermanence.nixosModules.impermanence
-              ] ++ defaultSystemModules ++ extraSystemModules;
+              modules =
+                [
+                  home-manager.darwinModules.home-manager
+                  (mkHomeManagerModuleConfig {
+                    inherit defaultHomeModules extraHomeModules homeStateVersion;
+                  })
+                  {
+                    system.stateVersion = systemStateVersion;
+                  }
+                  # impermanence.nixosModules.impermanence
+                ]
+                ++ defaultSystemModules
+                ++ extraSystemModules;
             };
-          mkNixosSystem = { systemStateVersion, homeStateVersion ? null
-            , defaultSystemModules ? [
-              ./system/common/nixos.nix
-              ./system/common/headless-minimal.nix
-              sops-nix.nixosModules.sops
-              disko.nixosModules.disko
-            ], extraSystemModules ? [ ], defaultHomeModules ? [
-              ./home-manager/common/nixos.nix
-              ./home-manager/common/headless-minimal.nix
-            ], extraHomeModules ? [ ] }:
+          mkNixosSystem =
+            {
+              systemStateVersion,
+              homeStateVersion ? null,
+              defaultSystemModules ? [
+                ./system/common/nixos.nix
+                ./system/common/headless-minimal.nix
+                sops-nix.nixosModules.sops
+                disko.nixosModules.disko
+              ],
+              extraSystemModules ? [ ],
+              defaultHomeModules ? [
+                ./home-manager/common/nixos.nix
+                ./home-manager/common/headless-minimal.nix
+              ],
+              extraHomeModules ? [ ],
+            }:
             nixpkgs.lib.nixosSystem {
               system = system;
               specialArgs = mkSpecialArgs;
-              modules = [
-                (nixpkgs.lib.optionalAttrs (homeStateVersion != null)
-                  (home-manager.nixosModules.home-manager
-                    (mkHomeManagerModuleConfig {
-                      inherit defaultHomeModules extraHomeModules
-                        homeStateVersion;
-                    })))
-                {
-                  system.stateVersion = systemStateVersion;
-                }
-                # impermanence.nixosModules.impermanence
-              ] ++ defaultSystemModules ++ extraSystemModules;
+              modules =
+                [
+                  (nixpkgs.lib.optionalAttrs (homeStateVersion != null) (
+                    home-manager.nixosModules.home-manager (mkHomeManagerModuleConfig {
+                      inherit
+                        defaultHomeModules
+                        extraHomeModules
+                        homeStateVersion
+                        ;
+                    })
+                  ))
+                  {
+                    system.stateVersion = systemStateVersion;
+                  }
+                  # impermanence.nixosModules.impermanence
+                ]
+                ++ defaultSystemModules
+                ++ extraSystemModules;
             };
         };
-    in {
+    in
+    {
       nixosConfigurations = {
 
-        maple = (withConfig {
-          system = "x86_64-linux";
-          derivationName = "maple";
-        }).mkNixosSystem {
-          homeStateVersion = "25.05";
-          systemStateVersion = "24.05";
-          extraSystemModules = [ ./system/machines/maple ];
-        };
+        maple =
+          (withConfig {
+            system = "x86_64-linux";
+            derivationName = "maple";
+          }).mkNixosSystem
+            {
+              homeStateVersion = "25.05";
+              systemStateVersion = "24.05";
+              extraSystemModules = [ ./system/machines/maple ];
+            };
 
-        live-iso = (withConfig {
-          system = "x86_64-linux";
-          derivationName = "live-iso";
-          extraSpecialArgs = { inherit (inputs) nixpkgs; };
-        }).mkNixosSystem {
-          homeStateVersion = null;
-          systemStateVersion = "24.05";
-          # live-iso doesn't inherit _base.nix or nixos.nix modules,
-          # so override default to keep from accidently including them in the ISO
-          defaultSystemModules = [ ./system/machines/live-iso/live-iso.nix ];
-        };
+        live-iso =
+          (withConfig {
+            system = "x86_64-linux";
+            derivationName = "live-iso";
+            extraSpecialArgs = { inherit (inputs) nixpkgs; };
+          }).mkNixosSystem
+            {
+              homeStateVersion = null;
+              systemStateVersion = "24.05";
+              # live-iso doesn't inherit _base.nix or nixos.nix modules,
+              # so override default to keep from accidently including them in the ISO
+              defaultSystemModules = [ ./system/machines/live-iso/live-iso.nix ];
+            };
       };
 
       darwinConfigurations = {
 
-        smac = (withConfig {
-          system = "aarch64-darwin";
-          derivationName = "smac";
-          username = "mmaurer7";
-        }).mkDarwinSystem {
-          systemStateVersion = 5;
-          homeStateVersion = "22.05";
-          extraHomeModules = [{
-            modules = {
-              commonShell = {
-                dirHashes = { box = "$HOME/Library/CloudStorage/Box-Box/"; };
-              };
+        smac =
+          (withConfig {
+            system = "aarch64-darwin";
+            derivationName = "smac";
+            username = "mmaurer7";
+          }).mkDarwinSystem
+            {
+              systemStateVersion = 5;
+              homeStateVersion = "22.05";
+              extraHomeModules = [
+                {
+                  modules = {
+                    commonShell = {
+                      dirHashes = {
+                        box = "$HOME/Library/CloudStorage/Box-Box/";
+                      };
+                    };
+                  };
+                }
+              ];
             };
-          }];
-        };
 
-        aspen = (withConfig {
-          system = "aarch64-darwin";
-          derivationName = "aspen";
-        }).mkDarwinSystem {
-          systemStateVersion = 5;
-          homeStateVersion = "25.05";
-        };
+        aspen =
+          (withConfig {
+            system = "aarch64-darwin";
+            derivationName = "aspen";
+          }).mkDarwinSystem
+            {
+              systemStateVersion = 5;
+              homeStateVersion = "25.05";
+            };
       };
 
       # For non-Nix machines: Manage home configurations as a separate flake.
       homeConfigurations = {
-        "mac" = (withConfig {
-          system = "aarch64-darwin";
-          derivationName = "mac";
-          username = "mjmaurer";
-        }).mkHomeManagerStandalone {
-          modules = [
-            ./home-manager/common/darwin.nix
-            ./home-manager/common/headed.nix
-          ];
-        };
-        "linux" = (withConfig {
-          system = "x86_64-linux";
-          derivationName = "linux";
-          username = "mjmaurer";
-        }).mkHomeManagerStandalone {
-          modules = [
-            ./home-manager/common/linux.nix
-            ./home-manager/common/headed.nix
-          ];
-        };
+        "mac" =
+          (withConfig {
+            system = "aarch64-darwin";
+            derivationName = "mac";
+            username = "mjmaurer";
+          }).mkHomeManagerStandalone
+            {
+              modules = [
+                ./home-manager/common/darwin.nix
+                ./home-manager/common/headed.nix
+              ];
+            };
+        "linux" =
+          (withConfig {
+            system = "x86_64-linux";
+            derivationName = "linux";
+            username = "mjmaurer";
+          }).mkHomeManagerStandalone
+            {
+              modules = [
+                ./home-manager/common/linux.nix
+                ./home-manager/common/headed.nix
+              ];
+            };
       };
 
-    } // forEachSystem ({ system, pkgs, sops-nix-pkgs, lib }: {
-      packages = import ./ad-hoc/pkgs { inherit self pkgs; };
-      devShells = import ./ad-hoc/shells { inherit pkgs sops-nix-pkgs lib; };
-    });
+    }
+    // forEachSystem (
+      {
+        system,
+        pkgs,
+        sops-nix-pkgs,
+        lib,
+      }:
+      {
+        packages = import ./ad-hoc/pkgs { inherit self pkgs; };
+        devShells = import ./ad-hoc/shells { inherit pkgs sops-nix-pkgs lib; };
+      }
+    );
 }

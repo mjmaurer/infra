@@ -1,9 +1,17 @@
-{ lib, config, pkgs, ... }:
+{
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.modules.aider;
   aider-package = import ./aider-deriv.nix { inherit pkgs lib; };
-in {
-  options.modules.aider = { enable = lib.mkEnableOption "aider"; };
+in
+{
+  options.modules.aider = {
+    enable = lib.mkEnableOption "aider";
+  };
 
   imports = [ ./tmux-aider-pick.nix ];
 
@@ -11,9 +19,15 @@ in {
     # Include playwright for web requests
     home.packages = [ aider-package.withPlaywright ];
     home.file = {
-      ".config/aider/.aiderignore" = { source = ./.aiderignore; };
-      ".aider.conf.yml" = { source = ./aider.conf.yml; };
-      ".aider.model.settings.yml" = { source = ./aider-models.conf.yml; };
+      ".config/aider/.aiderignore" = {
+        source = ./.aiderignore;
+      };
+      ".aider.conf.yml" = {
+        source = ./aider.conf.yml;
+      };
+      ".aider.model.settings.yml" = {
+        source = ./aider-models.conf.yml;
+      };
       # ".aider.model.metadata.json" = { source = ./aider-registry.json; };
     };
 

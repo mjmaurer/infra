@@ -1,4 +1,10 @@
-{ username, lib, config, pkgs, ... }:
+{
+  username,
+  lib,
+  config,
+  pkgs,
+  ...
+}:
 let
   cfg = config.modules.smbClient;
   userHomeCfg = config.users.users.${username};
@@ -40,7 +46,8 @@ let
       echo "Could not reach SMB host. Are you connected to tailscale?"
     fi
   '';
-in {
+in
+{
   options.modules.smbClient = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -50,44 +57,43 @@ in {
 
     smbMountPath = lib.mkOption {
       type = lib.types.str;
-      default = if pkgs.stdenv.isDarwin then
-        "/Volumes/nas/personal"
-      else
-        "/nas/personal";
+      default = if pkgs.stdenv.isDarwin then "/Volumes/nas/personal" else "/nas/personal";
       description = "Absolute mount path for personal SMB share.";
     };
   };
 
-  config = lib.mkIf cfg.enable (lib.mkMerge [
+  config = lib.mkIf cfg.enable (
+    lib.mkMerge [
 
-    (lib.mkIf (pkgs.stdenv.isLinux) { })
+      (lib.mkIf (pkgs.stdenv.isLinux) { })
 
-    (lib.mkIf (pkgs.stdenv.isDarwin)
-    # consider multichannel: https://support.apple.com/en-us/102010
-    # also: https://support.7fivefive.com/kb/latest/mac-os-smb-client-configuration
-      {
-        environment.etc."nsmb.conf".text = ''
-          [default]
-          # https://support.apple.com/en-gb/101442
-          signing_required=no
-          # Use NTFS streams if supported
-          streams=yes
+      (lib.mkIf (pkgs.stdenv.isDarwin)
+        # consider multichannel: https://support.apple.com/en-us/102010
+        # also: https://support.7fivefive.com/kb/latest/mac-os-smb-client-configuration
+        {
+          environment.etc."nsmb.conf".text = ''
+            [default]
+            # https://support.apple.com/en-gb/101442
+            signing_required=no
+            # Use NTFS streams if supported
+            streams=yes
 
-          # https://gist.github.com/jbfriedrich/49b186473486ac72c4fe194af01288be
-          aapl_off=false
-        '';
-        # Need mkOrder because sops-nix installs secrets using mkAfter (1500 priority)
-        system.activationScripts.postActivation.text =
-          lib.mkOrder 1600 darwinMountScript;
-        launchd.daemons = lib.mkOrder 1600 {
-          smb-mount = {
-            command = "sh -c ${lib.escapeShellArg darwinMountScript}";
-            serviceConfig = {
-              RunAtLoad = true;
-              KeepAlive = false;
+            # https://gist.github.com/jbfriedrich/49b186473486ac72c4fe194af01288be
+            aapl_off=false
+          '';
+          # Need mkOrder because sops-nix installs secrets using mkAfter (1500 priority)
+          system.activationScripts.postActivation.text = lib.mkOrder 1600 darwinMountScript;
+          launchd.daemons = lib.mkOrder 1600 {
+            smb-mount = {
+              command = "sh -c ${lib.escapeShellArg darwinMountScript}";
+              serviceConfig = {
+                RunAtLoad = true;
+                KeepAlive = false;
+              };
             };
           };
-        };
-      })
-  ]);
+        }
+      )
+    ]
+  );
 }

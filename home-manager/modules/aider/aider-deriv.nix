@@ -117,8 +117,7 @@ let
 
     buildInputs = [ pkgs.portaudio ];
 
-    nativeCheckInputs = (with python3.pkgs; [ pytestCheckHook ])
-      ++ [ pkgs.gitMinimal ];
+    nativeCheckInputs = (with python3.pkgs; [ pytestCheckHook ]) ++ [ pkgs.gitMinimal ];
 
     disabledTestPaths = [
       # Tests require network access
@@ -127,30 +126,34 @@ let
       "tests/help/test_help.py"
     ];
 
-    disabledTests = [
-      # Tests require network
-      "test_urls"
-      "test_get_commit_message_with_custom_prompt"
-      # FileNotFoundError
-      "test_get_commit_message"
-      # Expected 'launch_gui' to have been called once
-      "test_browser_flag_imports_streamlit"
-      # AttributeError
-      "test_simple_send_with_retries"
-      # Expected 'check_version' to have been called once
-      "test_main_exit_calls_version_check"
-      # AssertionError: assert 2 == 1
-      "test_simple_send_non_retryable_error"
-    ] ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
-      # Tests fails on darwin
-      "test_dark_mode_sets_code_theme"
-      "test_default_env_file_sets_automatic_variable"
-      # FileNotFoundError: [Errno 2] No such file or directory: 'vim'
-      "test_pipe_editor"
-    ];
+    disabledTests =
+      [
+        # Tests require network
+        "test_urls"
+        "test_get_commit_message_with_custom_prompt"
+        # FileNotFoundError
+        "test_get_commit_message"
+        # Expected 'launch_gui' to have been called once
+        "test_browser_flag_imports_streamlit"
+        # AttributeError
+        "test_simple_send_with_retries"
+        # Expected 'check_version' to have been called once
+        "test_main_exit_calls_version_check"
+        # AssertionError: assert 2 == 1
+        "test_simple_send_non_retryable_error"
+      ]
+      ++ lib.optionals pkgs.stdenv.hostPlatform.isDarwin [
+        # Tests fails on darwin
+        "test_dark_mode_sets_code_theme"
+        "test_default_env_file_sets_automatic_variable"
+        # FileNotFoundError: [Errno 2] No such file or directory: 'vim'
+        "test_pipe_editor"
+      ];
 
-    makeWrapperArgs =
-      [ "--set AIDER_CHECK_UPDATE false" "--set AIDER_ANALYTICS false" ];
+    makeWrapperArgs = [
+      "--set AIDER_CHECK_UPDATE false"
+      "--set AIDER_ANALYTICS false"
+    ];
 
     preCheck = ''
       export HOME=$(mktemp -d)
@@ -158,15 +161,25 @@ let
     '';
 
     optional-dependencies = with python3.pkgs; {
-      playwright = [ greenlet playwright pyee typing-extensions ];
+      playwright = [
+        greenlet
+        playwright
+        pyee
+        typing-extensions
+      ];
     };
 
     passthru = {
-      withPlaywright = aider-chat.overridePythonAttrs
-        ({ dependencies, buildInputs, makeWrapperArgs, ... }: {
+      withPlaywright = aider-chat.overridePythonAttrs (
+        {
+          dependencies,
+          buildInputs,
+          makeWrapperArgs,
+          ...
+        }:
+        {
 
-          dependencies = dependencies
-            ++ aider-chat.optional-dependencies.playwright;
+          dependencies = dependencies ++ aider-chat.optional-dependencies.playwright;
 
           buildInputs = buildInputs ++ [ pkgs.playwright-driver.browsers ];
 
@@ -174,17 +187,18 @@ let
             "--set PLAYWRIGHT_BROWSERS_PATH ${pkgs.playwright-driver.browsers}"
             "--set PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true"
           ];
-        });
+        }
+      );
     };
 
     meta = {
       description = "AI pair programming in your terminal";
       homepage = "https://github.com/paul-gauthier/aider";
-      changelog =
-        "https://github.com/paul-gauthier/aider/blob/v${version}/HISTORY.md";
+      changelog = "https://github.com/paul-gauthier/aider/blob/v${version}/HISTORY.md";
       license = lib.licenses.asl20;
       maintainers = with lib.maintainers; [ happysalada ];
       mainProgram = "aider";
     };
   };
-in aider-chat
+in
+aider-chat
