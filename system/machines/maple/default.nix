@@ -96,7 +96,8 @@
     kernelParams = [ "ip=dhcp" ];
     initrd = {
       # Run: lspci -k | grep -EA3 'VGA|3D|Display'
-      # kernelModules = [ "i915" ]; Might need this
+      # Early loading so the passphrase prompt appears on external displays
+      # kernelModules = [ "i915" ];
       # Intel NIC
       # availableKernelModules = [ "e1000e" ]; Probably set in hardware-configuration.nix
       # Configure Dropbear SSH server for remote boot with encrypted drives
