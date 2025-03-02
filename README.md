@@ -9,30 +9,42 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ## Pre-Install
 
 - Clone this repo to `~/infra`
-- Create an ssh host key with `ssh-host-bootstrap.sh`. Configure SOPS with it as needed. Store this in a safe temporary location
+- Run `nix develop "~/infra#new-host"` to enter a shell which walks through steps of creating keys / config for new host. The following assumes you have a NEW_HOST environment variable created by this.
 - For Home Manager / Darwin:
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
-  - You need to add `experimental-features = nix-command flakes` to `/etc/nix/nix.conf` first. This can be removed once `--extra-experimental-features "nix-command flakes"` on the command below starts working again.
+  - You need to run `export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations"` first. This can be removed once `--extra-experimental-features` on the commands below starts working again.
 
 ## Install: NixOS (Local Machine)
 
 1. Flash live.iso from the github action to a USB stick.
-2. Boot into it. It should start an SSH server automatically, and uses dhcpcd
-
-   - **Debugging:** Look at dhcpcd
-
+2. Boot into it. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
 3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
 
-4. Continue to `NixOS (Remote Machine)` section below
+4. Get the disk device paths using `lsblk`. You will use this to write the the disko config.
+5. Continue to `NixOS (Remote Machine)` section below
 
 ## Install: NixOS (Remote Machine)
 
+1. Copy some machine's config (Create a new directory under `system/machines`, with `secrets.yaml`, `default.nix`, `disko.nix`, and an empty `hardware-configuration.nix`)
 1. Create a single-use, preauthorized Tailscale auth key
-1. Create a new directory under `system/machines`, with `secrets.yaml` and `default.nix`
 
    - Add the tailscale key as a sops secret
+
+```sh
+cd ~/infra
+MACHINE_PATH=./system/machines/<my_derivation_name>
+HOST_NAME=$(basename $MACHINE_PATH)
+IP=<my_ip_address>
+nix run github:nix-community/nixos-anywhere -- \
+   -i ~/.nix-profile/lib/libykcs11.dylib \
+   --flake .#$HOST_NAME --target-host root@$IP \
+   --extra-files "$NEW_HOST/ssh_host_keys" \
+   --disk-encryption-keys /tmp/disk.key "$NEW_HOST/luks_keys/disk.key" \
+   --generate-hardware-config nixos-generate-config ./system/machines/$HOST_NAME/hardware-configuration.nix \
+   --build-on-remote --print-build-logs
+```
 
 ## Install: Darwin
 
@@ -148,11 +160,20 @@ See `tailscale.nix` for an example of how to use these.
 
 See [this GH issue](https://github.com/mjmaurer/infra/issues/11) for future work / more details.
 
-## Yubikey OpenPGP setup
+## Adding arbitrary SSH keys to GPG-agent for authentication
 
-See the scripts under the home-manager crypt modules.
+[See here](https://github.com/drduh/YubiKey-Guide?tab=readme-ov-file#import-ssh-keys)
 
-## Yubikey PIV (Resident) SSH Keys
+```
+# Same as with ssh-agent:
+ssh-add ~/.ssh/id_rsa
+```
+
+## Yubikey OpenPGP Key Setup
+
+See the scripts under `ad-hoc/pkgs/crypt`.
+
+## Yubikey PIV (Resident) SSH Key Setup
 
 Follow [this guide](https://github.com/fredxinfan/ykman-piv-ssh) to setup a yubikey with a new resident SSH keys:
 
@@ -194,6 +215,40 @@ AuthorizedKeysCommandUser $(whoami)" > /tmp/ssh_test/sshd_config
 <!-- AuthorizedKeysCommand /bin/echo \"$(ssh-keygen -D ~/.nix-profile/lib/opensc-pkcs11.so -e)\" -->
 
 Right now, these are just used for logging into the USB ISO with SSH.
+
+## Partitioning Schemes
+
+Went with LUKS encrypted root with ZFS on top. Didn't choose zfs encryption because it's reported to be a [bit](https://github.com/openzfs/zfs/issues/13736) buggy.
+
+## GitHub Setup
+
+After setting up your GPG key, you'll need to configure GitHub to work with it:
+
+1. Make sure the SIGN subkey ID is configured in home-manager for `git.signingKey`
+2. Add the AUTH subkey's keygrip ID to SOPS (which sets gpg-agent's sshcontrol)
+   ```
+   gpg --list-keys --with-keygrip
+   ```
+3. Run Nix Rebuild (`nrb`)
+4. Confirm that gpg-agent is now managing the SSH key:
+   ```
+   ssh-add -L
+   ```
+5. Add the SSH public key to GitHub SSH keys
+   ```
+   gpg --export-ssh-key mjmaurer777@gmail.com
+   ```
+6. Add the GPG public key to GitHub GPG keys to enable signing:
+   ```
+   gpg --armor --export mjmaurer777@gmail.com
+   ```
+7. Test authentication with:
+   ```
+   ssh -T git@github.com
+   ```
+8. Test signing with a commit
+
+Note: This also depends on the `addGpgSshIdentity` activation, which sets ~/.ssh/id_rsa_yubikey.pub.
 
 # Troubleshooting
 
