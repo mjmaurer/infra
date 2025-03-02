@@ -32,7 +32,10 @@ in
         # Might need https://dev.to/shanu-kumawat/how-to-set-up-kanata-on-nixos-a-step-by-step-guide-1jkc
         services.kanata = {
           enable = true;
-          configFile = ./kanata.kdb;
+          keyboards.default = {
+            configFile = ./kanata.kdb;
+            devices = [ ]; # Auto-detect
+          };
         };
       })
 
