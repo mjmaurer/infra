@@ -1,4 +1,4 @@
-{ }:
+{ ... }:
 let
   zfsPoolName = "zroot";
 in
