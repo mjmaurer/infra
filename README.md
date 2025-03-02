@@ -34,16 +34,16 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 ```sh
 cd ~/infra
-MACHINE_PATH=./system/machines/<my_derivation_name>
-HOST_NAME=$(basename $MACHINE_PATH)
+HOST_NAME=<machine_name>
 IP=<my_ip_address>
+PKPATH=<my_bitpk_path>
 nix run github:nix-community/nixos-anywhere -- \
-   -i ~/.nix-profile/lib/libykcs11.dylib \
-   --flake .#$HOST_NAME --target-host root@$IP \
+   -i "$PKPATH" \
+   --flake ".#$HOST_NAME" --target-host root@$IP \
    --extra-files "$NEW_HOST/ssh_host_keys" \
    --disk-encryption-keys /tmp/disk.key "$NEW_HOST/luks_keys/disk.key" \
-   --generate-hardware-config nixos-generate-config ./system/machines/$HOST_NAME/hardware-configuration.nix \
-   --build-on-remote --print-build-logs
+   --generate-hardware-config nixos-generate-config "./system/machines/$HOST_NAME/hardware-configuration.nix" \
+   --build-on remote --print-build-logs
 ```
 
 ## Install: Darwin
