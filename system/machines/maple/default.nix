@@ -33,6 +33,11 @@
       pkgs.intel-gpu-tools
     ];
 
+    #  (See `hardware.graphics` below) Force use of iHD driver, but Nix says Skylake has trouble.
+    environment.sessionVariables = {
+      LIBVA_DRIVER_NAME = "iHD";
+    }; # or 'i965'
+
     hardware = {
       # Should be set in hardware-configuration.nix:
       # cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware; Should be set in hardware-configuration.nix
@@ -45,12 +50,7 @@
       # Good intel media stack wiki: https://github.com/intel/media-driver/wiki
       graphics = {
         enable = true;
-        # Force use of iHD driver, but Nix says Skylake has trouble.
-        environment.sessionVariables = {
-          LIBVA_DRIVER_NAME = "iHD";
-        }; # or 'i965'
         extraPackages = with pkgs; [
-
           # Older driver for fallback (previously vaapiIntel):
           intel-vaapi-driver # LIBVA_DRIVER_NAME=i965
           # Newer driver:
