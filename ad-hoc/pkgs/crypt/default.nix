@@ -6,15 +6,9 @@
 let
   shellApp =
     { name, text }:
-    callPackage (writeShellApplication {
+    writeShellApplication {
       inherit name text;
       runtimeInputs = [ ];
-    })
-    // {
-      meta = with lib; {
-        licenses = licenses.mit;
-        platforms = platforms.all;
-      };
     };
 in
 {
