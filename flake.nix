@@ -185,7 +185,7 @@
               homeStateVersion ? null,
               defaultSystemModules ? [
                 ./system/common/nixos.nix
-                ./system/common/headless-minimal.nix
+                ./system/common/headed-minimal.nix
                 sops-nix.nixosModules.sops
                 disko.nixosModules.disko
                 # impermanence.nixosModules.impermanence
@@ -193,7 +193,7 @@
               extraSystemModules ? [ ],
               defaultHomeModules ? [
                 ./home-manager/common/nixos.nix
-                ./home-manager/common/headless-minimal.nix
+                ./home-manager/common/headed-minimal.nix
               ],
               extraHomeModules ? [ ],
             }:
