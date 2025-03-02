@@ -17,6 +17,20 @@ in {
 
       pkgs.yubikey-personalization
       pkgs.yubikey-manager
+
+
+      (pkgs.writeShellScriptBin "yubi-switch" ''
+        echo "\nIf ERR: run 'gpg --import gpg.pub' to import the public key\n"
+        gpg-connect-agent "scd serialno" "learn --force" /bye 
+
+        # Alternative:
+
+        # KEYGRIPS=$(gpg --with-keygrip --list-secret-keys mjmaurer777@gmail.com | awk '/Keygrip/ { print $3 }')
+        # for keygrip in $KEYGRIPS
+        # do
+        #     rm "$HOME/.gnupg/private-keys-v1.d/$keygrip.key" 2> /dev/null
+        # done
+      '')
     ];
 
     modules.commonShell.shellAliases = {

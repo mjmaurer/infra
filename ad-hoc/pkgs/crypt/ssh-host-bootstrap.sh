@@ -90,7 +90,7 @@ if [ "$show_sops" -eq 1 ]; then
     echo "Add this to '.sops.yaml' for the new host and run 'sops updatekeys ...' for each relevant secrets yaml file:"
     echo "After updating sops, you can run 'sopsa -k $temp_dir$install_path/ssh_host_ed25519_key --verbose /path/to/secrets.yaml' to test it."
     echo ""
-    cat "$temp_dir$install_path/ssh_host_ed25519_key.pub" | ssh-to-age
+    < "$temp_dir$install_path/ssh_host_ed25519_key.pub" ssh-to-age
     echo ""
 fi
 
