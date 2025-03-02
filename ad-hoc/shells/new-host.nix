@@ -102,14 +102,18 @@ in
     # Copy the generated files to the backup directory if specified
     if [[ -n "$BACKUP_ARGS" && -n "$BACKUP_DIR" ]]; then
       echo "Copying generated files to backup directory..."
-      cp -rp "$NEW_HOST/." "$BACKUP_DIR/"
+      sudo cp -rp "$NEW_HOST/." "$BACKUP_DIR/"
       echo "Files copied to $BACKUP_DIR with original permissions preserved."
     fi
 
     echo -e "\n\n--------------------------- Completed ------------------------------\n\n"
     echo "Files are located at NEW_HOST ($NEW_HOST)"
     echo "ls \$NEW_HOST"
-    echo "\nPlease read through the output and make sure to follow any additional steps (i.e. for SOPS)"
+    if [[ -n "$BACKUP_ARGS" && -n "$LUKS_GEN" ]]; then
+      echo "Run the following outside this shell to prepare for nixos-anywhere:"
+      echo "export NEW_HOST=$BACKUP_DIR"
+    fi
+    echo -e "\n\033[0;31mPlease read through the output and make sure to follow any additional steps (i.e. for SOPS)\033[0m"
 
     echo -e "\n\033[0;31m---- LEAVING THIS SHELL WILL DESTROY THE NEW DIRECTORY ------\033[0m\n"
 
