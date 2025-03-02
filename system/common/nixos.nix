@@ -5,12 +5,12 @@
   ...
 }:
 {
-  # Never change this here. Only in flake.nix
-  system.stateVersion = lib.mkDefault "24.11";
-
   imports = [ ];
 
   config = {
+
+    # Never change this here. Only in flake.nix
+    system.stateVersion = lib.mkDefault "24.11";
 
     time.hardwareClockInLocalTime = true;
 
