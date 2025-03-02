@@ -154,6 +154,7 @@
               defaultSystemModules ? [
                 ./system/common/darwin.nix
                 sops-nix.darwinModules.sops
+                # impermanence.nixosModules.impermanence
               ],
               extraSystemModules ? [ ],
               defaultHomeModules ? [
@@ -174,7 +175,6 @@
                   {
                     system.stateVersion = systemStateVersion;
                   }
-                  # impermanence.nixosModules.impermanence
                 ]
                 ++ defaultSystemModules
                 ++ extraSystemModules;
@@ -188,6 +188,7 @@
                 ./system/common/headless-minimal.nix
                 sops-nix.nixosModules.sops
                 disko.nixosModules.disko
+                # impermanence.nixosModules.impermanence
               ],
               extraSystemModules ? [ ],
               defaultHomeModules ? [
@@ -200,20 +201,16 @@
               system = system;
               specialArgs = mkSpecialArgs;
               modules =
-                [
-                  (nixpkgs.lib.optionalAttrs (homeStateVersion != null) (
-                    home-manager.nixosModules.home-manager (mkHomeManagerModuleConfig {
-                      inherit
-                        defaultHomeModules
-                        extraHomeModules
-                        homeStateVersion
-                        ;
-                    })
-                  ))
+                (nixpkgs.lib.optionals (homeStateVersion != null) [
+                  home-manager.nixosModules.home-manager
+                  (mkHomeManagerModuleConfig {
+                    inherit defaultHomeModules extraHomeModules homeStateVersion;
+                  })
+                ])
+                ++ [
                   {
                     system.stateVersion = systemStateVersion;
                   }
-                  # impermanence.nixosModules.impermanence
                 ]
                 ++ defaultSystemModules
                 ++ extraSystemModules;
