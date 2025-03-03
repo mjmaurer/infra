@@ -10,7 +10,7 @@ let
   cfg = config.modules.smbClient;
   userHomeCfg = config.users.users.${username};
   darwinMountScript =
-    if cfg.enable then
+    if isDarwin then
       ''
         # Return early if already mounted
         if mount | grep -q "${cfg.smbMountPath}"; then
