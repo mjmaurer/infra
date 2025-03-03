@@ -18,7 +18,6 @@
       sopsFile = ./secrets.yaml;
     };
 
-    services.xserver.videoDrivers = [ "intel" ];
     # Consider: https://github.com/NixOS/nixos-hardware/tree/master/common/gpu/intel
 
     networking = {

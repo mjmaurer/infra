@@ -42,7 +42,7 @@
           }
         else
           {
-            dates = [ "Fri 19:00" ];
+            dates = "Fri 19:00";
           }
       );
 
