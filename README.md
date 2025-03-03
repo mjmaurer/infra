@@ -31,7 +31,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ## Install: NixOS (Remote Machine)
 
 1. Create (or copy) a new directory under `system/machines`, with `secrets.yaml`, `default.nix`, `disko.nix`, and an empty `hardware-configuration.nix`
-1. Create a single-use, preauthorized Tailscale auth key
+1. Create a preauthorized Tailscale auth key (single-use or alternatively a reusable key thats only valid for a day)
 
    - Add the tailscale key as a sops secret
 
