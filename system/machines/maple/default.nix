@@ -91,7 +91,10 @@
         grub = {
           enable = true;
           efiSupport = true;
-          # disko will add devices that have a EF02 partition here:
+          device = "nodev"; # EFI w/ GPT
+
+          # For BIOS w/ GPT (EF02) disko would add EF02 devices automatically
+          # I use EFI here so not needed
           # devices = [ ];
         };
       };
