@@ -52,9 +52,11 @@ in
             };
 
             nameservers = nameservers; # Not sure if this is actually used
-            firewall.enable = true;
-            # Always allow traffic from Tailscale network
-            trustedInterfaces = [ tailscaleInterface ];
+            firewall = {
+              enable = true;
+              # Always allow traffic from Tailscale network
+              trustedInterfaces = [ tailscaleInterface ];
+            };
 
             # Disable wpa_supplicant as NetworkManager will handle wireless
             wireless.enable = false;
