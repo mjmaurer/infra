@@ -25,28 +25,50 @@
 
     # This is also set for HM in home-manager/common/_base.nix
     # We should probably move to top-level config
-    gc = {
-      automatic = lib.mkDefault true;
-      options = lib.mkDefault "--delete-older-than 90d";
-      # Friday at 7pm
-      dates = lib.mkIf (!isDarwin) [ "Fri 19:00" ];
-      interval = lib.mkIf isDarwin {
-        Weekday = 5;
-        Hour = 19;
-        Minute = 0;
-      };
-    };
+    gc =
+      {
+        automatic = lib.mkDefault true;
+        options = lib.mkDefault "--delete-older-than 90d";
+      }
+      // (
+        # Friday at 7pm
+        if isDarwin then
+          {
 
-    optimise = {
-      automatic = lib.mkDefault true;
-      # Saturday at 7pm
-      dates = lib.mkIf (!isDarwin) [ "Sat 19:00" ];
-      interval = lib.mkIf isDarwin {
-        Weekday = 6;
-        Hour = 19;
-        Minute = 0;
-      };
-    };
+            dates = [ "Fri 19:00" ];
+          }
+        else
+          {
+
+            interval = {
+              Weekday = 5;
+              Hour = 19;
+              Minute = 0;
+            };
+          }
+      );
+
+    optimise =
+      {
+        automatic = lib.mkDefault true;
+      }
+      // (
+        # Saturday at 7pm
+        if isDarwin then
+          {
+
+            dates = [ "Sat 19:00" ];
+          }
+        else
+          {
+
+            interval = {
+              Weekday = 6;
+              Hour = 19;
+              Minute = 0;
+            };
+          }
+      );
 
     # Opinionated: disable channels
     # channel.enable = false;
