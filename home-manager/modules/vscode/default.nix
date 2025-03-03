@@ -11,8 +11,7 @@
 }:
 let
   cfg = config.modules.vscode;
-  isNixOS = !isDarwin;
-  package = if isNixOS then pkgs.vscode.fhs else pkgs.vscode;
+  package = if isDarwin then pkgs.vscode else pkgs.vscode.fhs;
   vsxmkt = nix-vscode-extensions.extensions.${system};
   nix4vscode = (import ./extensions.nix) { inherit pkgs lib; };
   vscode-marketplace = (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;

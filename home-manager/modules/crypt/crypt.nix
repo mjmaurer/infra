@@ -9,7 +9,6 @@
 }:
 let
   cfg = config.modules.crypt;
-  isNixOS = !isDarwin;
   gnupgDir = "${config.xdg.dataHome}/gnupg";
 in
 {

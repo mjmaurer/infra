@@ -10,12 +10,19 @@ let
   isNixOS = !isDarwin;
 in
 lib.mkMerge [
-  (lib.optionalAttrs isNixOS {
-    # Give Yubikey access to the udev (device) rules
-    services.udev.packages = with pkgs; [ yubikey-personalization ];
+  (
+    if isDarwin then
+      {
+      }
+    else
+      # NixOS
+      {
 
-    # Smartcard communication daemon. Includes PKCS#11 support.
-    services.pcscd.enable = true;
-  })
-  (lib.optionalAttrs isDarwin { })
+        # Give Yubikey access to the udev (device) rules
+        services.udev.packages = with pkgs; [ yubikey-personalization ];
+
+        # Smartcard communication daemon. Includes PKCS#11 support.
+        services.pcscd.enable = true;
+      }
+  )
 ]
