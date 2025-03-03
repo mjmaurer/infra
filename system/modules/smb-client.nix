@@ -8,7 +8,7 @@
 let
   cfg = config.modules.smbClient;
   userHomeCfg = config.users.users.${username};
-  darwinMountScript = ''
+  darwinMountScript = lib.mkIf cfg.enable ''
     # Return early if already mounted
     if mount | grep -q "${cfg.smbMountPath}"; then
       exit 0
@@ -51,7 +51,7 @@ in
   options.modules.smbClient = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = "Enable SMB client module.";
     };
 
