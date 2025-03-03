@@ -228,7 +228,7 @@ in
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
         "ndu" = "nix flake update";
-        "nrbnoreload" = lib.mkDefault "nixos-rebuild switch --show-trace --flake ~/infra";
+        "nrbnoreload" = lib.mkDefault "sudo nixos-rebuild switch --show-trace --flake ~/infra";
         "nrb" = ''
           nrbnoreload;
           exec zsh;
