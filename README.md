@@ -17,7 +17,10 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ## Install: NixOS (Local Machine)
 
 1. Flash live.iso from the github action to a USB stick.
-2. Boot into it. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
+1. Plug it in, reboot, and immediately go into BIOS settings:
+   - Change `Boot Mode` to `UEFI only`
+   - [Optional] Move the USB up in the boot order
+2. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
 3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
@@ -27,10 +30,12 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 ## Install: NixOS (Remote Machine)
 
-1. Copy some machine's config (Create a new directory under `system/machines`, with `secrets.yaml`, `default.nix`, `disko.nix`, and an empty `hardware-configuration.nix`)
+1. Create (or copy) a new directory under `system/machines`, with `secrets.yaml`, `default.nix`, `disko.nix`, and an empty `hardware-configuration.nix`
 1. Create a single-use, preauthorized Tailscale auth key
 
    - Add the tailscale key as a sops secret
+
+1. Run the install command (get ready to enter your SSH key's password a lot):
 
 ```sh
 cd ~/infra
@@ -45,6 +50,8 @@ nix run github:nix-community/nixos-anywhere -- \
    --generate-hardware-config nixos-generate-config "./system/machines/$HOST_NAME/hardware-configuration.nix" \
    --build-on remote --print-build-logs
 ```
+
+1. Remove USB, reboot and enjoy! 
 
 ## Install: Darwin
 
