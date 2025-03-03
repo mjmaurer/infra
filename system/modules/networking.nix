@@ -68,11 +68,6 @@ in
             fallbackDns = nameservers;
           };
 
-          sops.secrets.oneTimeTailscaleAuthKey = {
-            # This is just hardcoded to the tailscale module. Might break
-            owner = config.services.tailscale.systemd.services.tailscaled-autoconnect.serviceConfig.User;
-            # sopsFile is provided by each machine's config
-          };
           services.tailscale = {
             enable = true;
             openFirewall = true;
