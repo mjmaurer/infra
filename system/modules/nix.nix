@@ -34,17 +34,15 @@
         # Friday at 7pm
         if isDarwin then
           {
-
-            dates = [ "Fri 19:00" ];
-          }
-        else
-          {
-
             interval = {
               Weekday = 5;
               Hour = 19;
               Minute = 0;
             };
+          }
+        else
+          {
+            dates = [ "Fri 19:00" ];
           }
       );
 
@@ -56,17 +54,15 @@
         # Saturday at 7pm
         if isDarwin then
           {
-
-            dates = [ "Sat 19:00" ];
-          }
-        else
-          {
-
             interval = {
               Weekday = 6;
               Hour = 19;
               Minute = 0;
             };
+          }
+        else
+          {
+            dates = [ "Sat 19:00" ];
           }
       );
 
