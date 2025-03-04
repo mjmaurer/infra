@@ -4,16 +4,16 @@
   lib,
   config,
   isDarwin,
-  pkgs,
+  pkgs-latest,
   nix-vscode-extensions,
   system,
   ...
 }:
 let
   cfg = config.modules.vscode;
-  package = if isDarwin then pkgs.vscode else pkgs.vscode.fhs;
+  package = if isDarwin then pkgs-latest.vscode else pkgs-latest.vscode.fhs;
   vsxmkt = nix-vscode-extensions.extensions.${system};
-  nix4vscode = (import ./extensions.nix) { inherit pkgs lib; };
+  nix4vscode = (import ./extensions.nix) { inherit lib pkgs-latest; };
   vscode-marketplace = (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;
 in
 {
@@ -22,7 +22,9 @@ in
   config = lib.mkMerge [
     {
       modules.nix = {
-        unfreePackages = [ "vscode" ];
+        unfreePackages = [
+          "vscode"
+        ];
       };
 
       # NOTE: Home-manager vscode doesn't support FHS launch environment.
@@ -137,7 +139,7 @@ in
             sohibe.java-generate-setters-getters
 
           ])
-          ++ (pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+          ++ (pkgs-latest.vscode-utils.extensionsFromVscodeMarketplace [
             # Manually added extensions
 
             # {
@@ -147,7 +149,7 @@ in
             #   sha256 = "sha256-";
             # }
           ])
-          ++ (with pkgs.vscode-extensions; [
+          ++ (with pkgs-latest.vscode-extensions; [
             # Extensions from nixpkgs (tend to be outdated)
           ]);
         languageSnippets = { };

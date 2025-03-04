@@ -7,7 +7,7 @@
     # Default to the nixos-unstable branch:
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
     # Latest nixpkgs, to get latest versions of some packages
-    # nixpkgs-latest.url = "github:nixos/nixpkgs/master";
+    nixpkgs-latest.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-utils.url = "github:numtide/flake-utils";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -34,10 +34,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
     nix-vscode-extensions = {
-      url = "github:nix-community/nix-vscode-extensions";
-      # Don't follow nixpkgs so we can update the extensions more frequently.
-      # inputs.nixpkgs.follows = "nixpkgs";
-      # inputs.flake-utils.follows = "flake-utils";
+      # https://github.com/nix-community/nix-vscode-extensions/issues/99
+      url = "github:nix-community/nix-vscode-extensions/780a1d35ccd6158ed2c7d10d87c02825e97b4c89";
+      # Need to update nixpkgs-latest at the same time anyway
+      inputs.nixpkgs.follows = "nixpkgs-latest";
+      inputs.flake-utils.follows = "flake-utils";
     };
     disko = {
       url = "github:nix-community/disko";
@@ -54,6 +55,7 @@
     {
       self,
       nixpkgs,
+      nixpkgs-latest,
       home-manager,
       nixos-hardware,
       sops-nix,
@@ -107,7 +109,14 @@
               nix-homebrew
               ;
             inherit username derivationName system;
-            # pkgs-latest = nixpkgs-latest.legacyPackages.${system};
+
+            pkgs-latest = import nixpkgs-latest {
+              inherit system;
+              config = {
+                allowUnfree = true;
+                allowUnfreePredicate = (pkg: true);
+              };
+            };
             colors = import ./lib/colors.nix { lib = nixpkgs.lib; };
             pubkeys = import ./lib/pubkeys.nix;
             isDarwin = system == "aarch64-darwin";
