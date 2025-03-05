@@ -81,6 +81,7 @@
 
   ;; Layers
   f     @f
+  d     @d
   ;     @;
   tab   @tab
 )
@@ -101,6 +102,16 @@
 (deflayermap (semicolon)
   ;; Right Side 
   ;   ;   ;; ;
+
+  ;; Right Side Top Row
+  u   S-[ ;; {
+  i   S-] ;; }
+
+  ;; Right Side Home Row
+  h   [   ;; [
+  j   S-9 ;; (
+  k   S-0 ;; )
+  l   ]   ;; ]
 
   ;; Left Side Top Row
   e   S-[ ;; {
@@ -198,6 +209,7 @@
   tab     (fork (one-shot-press 1000 (layer-while-held tab)) tab (rsft))
 
   ;; Semicolon (paren and left S-num) Layer
+  d       (tap-hold-release $tap-timeout $hold-time d (layer-while-held semicolon))
   semitap (tap-hold 0 300 (one-shot-press 1000 (layer-while-held semicolon)) rmet)
   ;       (fork @semitap ; (lsft lctl lmet lalt ralt))
 )
