@@ -15,6 +15,7 @@ in
   imports = [ nix-homebrew.darwinModules.nix-homebrew ];
 
   options.modules.homebrew = {
+    enable = lib.mkEnableOption "homebrew";
     extraCasks = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [ ];
@@ -32,7 +33,7 @@ in
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       (pkgs.writeShellScriptBin "plist-write" ''
         # i.e. /Applications/superwhisper.app
