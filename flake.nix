@@ -118,7 +118,7 @@
         default =
           (sys.withConfig {
             system = "aarch64-darwin";
-            derivationName = "default";
+            derivationName = builtins.getEnv "HOST";
           }).mkDarwinSystem
             {
               systemStateVersion = 5;
