@@ -119,6 +119,7 @@
           (sys.withConfig {
             system = "aarch64-darwin";
             derivationName = builtins.getEnv "HOST";
+            username = buildins.getEnv "USERNAME";
           }).mkDarwinSystem
             {
               systemStateVersion = 5;
