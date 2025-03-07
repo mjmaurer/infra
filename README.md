@@ -78,7 +78,7 @@ You should likely [update Homebrew packages](#homebrew-updates) next.
 ### Installing Minimal Darwin system without OS config
 
 ```
-nix run nix-darwin -- switch --flake github:mjmaurer/infra#default --impure
+HOST="my-hostname" nix run nix-darwin -- switch --flake github:mjmaurer/infra/main#default --impure
 ```
 
 ### Homebrew Package Updates

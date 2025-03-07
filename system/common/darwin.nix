@@ -48,14 +48,16 @@ in
       # ];
     };
   
+    modules.darwin.enable = lib.mkDefault true;
+    modules.homebrew.enable = lib.mkDefault true;
     modules.smbClient.enable = lib.mkDefault true;
-  
+
     services.nix-daemon.enable = true;
   
     # Add ability to used TouchID for sudo authentication
     security.pam.enableSudoTouchIdAuth = true;
   
-    system.defaults = lib.mkIf config.enable {
+    system.defaults = lib.mkIf cfg.enable {
       finder = {
         AppleShowAllExtensions = true;
         AppleShowAllFiles = true;
