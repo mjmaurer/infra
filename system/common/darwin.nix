@@ -8,7 +8,7 @@
 }:
 let
   screenshotDir = "${config.users.users.${username}.home}/Documents/screenshots";
-  cfg = options.modules.darwin
+  cfg = options.modules.darwin;
 in
 {
 
