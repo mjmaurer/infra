@@ -75,6 +75,12 @@ After this you can use `nrb` (nix-rebuild) to update the system.
 
 You should likely [update Homebrew packages](#homebrew-updates) next.
 
+### Installing Minimal Darwin system without OS config
+
+```
+nix run nix-darwin -- switch --flake github:mjmaurer/infra#default --impure --argstr derivationName "my-hostname"
+```
+
 ### Homebrew Package Updates
 
 ```sh

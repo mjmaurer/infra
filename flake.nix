@@ -114,6 +114,23 @@
               systemStateVersion = 5;
               homeStateVersion = "25.05";
             };
+
+        default =
+          (sys.withConfig {
+            system = "aarch64-darwin";
+            derivationName = "default";
+          }).mkDarwinSystem
+            {
+              systemStateVersion = 5;
+              homeStateVersion = "25.05";
+              extraSystemModules = [
+                {
+                  modules.smbClient.enable = false;
+                  modules.homebrew.enable = false;
+                  modules.darwin.enable = false;
+                }
+              ];
+            };
       };
 
       # For non-Nix machines: Manage home configurations as a separate flake.
