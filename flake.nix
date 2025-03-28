@@ -31,7 +31,7 @@
     };
     nix-vscode-extensions = {
       # https://github.com/nix-community/nix-vscode-extensions/issues/99
-      url = "github:nix-community/nix-vscode-extensions/780a1d35ccd6158ed2c7d10d87c02825e97b4c89";
+      url = "github:nix-community/nix-vscode-extensions";
       # Need to update nixpkgs-latest at the same time anyway
       inputs.nixpkgs.follows = "nixpkgs-latest";
       inputs.flake-utils.follows = "flake-utils";

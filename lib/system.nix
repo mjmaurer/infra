@@ -27,7 +27,7 @@ rec {
       extraSpecialArgs ? { },
     }:
     rec {
-      mkSpecialArgs = {
+      mkSpecialArgs = rec {
         # The `specialArgs` parameter passes the
         # non-default arguments to nix modules.
         # Default arguments are things like `pkgs`, `lib`, etc.
@@ -46,6 +46,7 @@ rec {
             allowUnfree = true;
             allowUnfreePredicate = (pkg: true);
           };
+          overlays = [ inputs.nix-vscode-extensions.overlays.default ];
         };
         colors = import ./colors.nix { lib = inputs.nixpkgs.lib; };
         pubkeys = import ./pubkeys.nix;

@@ -14,8 +14,9 @@ let
   package = if isDarwin then pkgs-latest.vscode else pkgs-latest.vscode.fhs;
   vsxmkt = nix-vscode-extensions.extensions.${system};
   nix4vscode = (import ./extensions.nix) { inherit lib pkgs-latest; };
-  vscode-marketplace = (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;
+  vscode-marketplace = pkgs-latest.vscode-marketplace;
 in
+# vscode-marketplace = (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;
 {
   options.modules.vscode = { };
 
@@ -24,6 +25,7 @@ in
       modules.nix = {
         unfreePackages = [
           "vscode"
+          "vscode-extension-github-copilot"
         ];
       };
 
