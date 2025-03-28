@@ -139,7 +139,6 @@ clients:
   # See https://ai.google.dev/docs
   - type: gemini
     api_base: https://generativelanguage.googleapis.com/v1beta
-    api_key: xxx
     patch:
       chat_completions:
         '.*':
