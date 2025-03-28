@@ -4,6 +4,40 @@
   lib,
   ...
 }:
+let
+  nix4vscode = pkgs.rustPlatform.buildRustPackage rec {
+    pname = "nix4vscode";
+    version = "0.0.12"; # Use the latest version from the repo
+
+    src = pkgs.fetchFromGitHub {
+      owner = "nix-community";
+      repo = "nix4vscode";
+      rev = "21eb5896042345acd161f46416f4e826755f766f";
+      # You can get the hash by running: nix-prefetch
+      sha256 = "sha256-wRrC4fQcyeTwLK4SoZvIyG2kqp7NRkmh+i1QsVikULA=";
+    };
+
+    # You can get this by first trying to build with a fake hash and then copying the correct one from the error message
+    cargoHash = "sha256-Jwqwifu9TL21wDcY7E/8GcX5wZOLqBcfABbw9Ilb2fQ=";
+    useFetchCargoVendor = true;
+
+    RUSTC_BOOTSTRAP = 1; # Enable nightly features on stable compiler
+
+    # You might also need to patch the Cargo.toml to use a stable edition
+    postPatch = ''
+      substituteInPlace Cargo.toml --replace 'edition = "2024"' 'edition = "2021"'
+    '';
+
+    meta = with lib; {
+      description = "A tool to generate nix expressions for VSCode extensions";
+      homepage = "https://github.com/nix-community/nix4vscode";
+      license = licenses.asl20;
+      maintainers = with maintainers; [
+        # your name here
+      ];
+    };
+  };
+in
 {
   new-host = import ./new-host.nix { inherit pkgs lib; };
   default = pkgs.mkShell {
@@ -24,6 +58,7 @@
 
       fixjson
 
+      # nix4vscode
       node2nix
 
       (pkgs.writeShellScriptBin "json-to-nix" ''

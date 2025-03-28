@@ -13,7 +13,10 @@ let
   cfg = config.modules.vscode;
   package = if isDarwin then pkgs-latest.vscode else pkgs-latest.vscode.fhs;
   vsxmkt = nix-vscode-extensions.extensions.${system};
-  nix4vscode = (import ./extensions.nix) { inherit lib pkgs-latest; };
+  nix4vscode = (import ./extensions.nix) {
+    inherit lib;
+    pkgs = pkgs-latest;
+  };
   vscode-marketplace = pkgs-latest.vscode-marketplace;
 in
 # vscode-marketplace = (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;
