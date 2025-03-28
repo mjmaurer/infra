@@ -57,6 +57,9 @@ in
             apiKeyAnthropic = {
               sopsFile = pcSopsFile;
             };
+            apiKeyGemini = {
+              sopsFile = pcSopsFile;
+            };
             apiKeyCodestral = {
               sopsFile = pcSopsFile;
             };
@@ -78,6 +81,7 @@ in
             owner = config.users.users.${username}.name;
             content = ''
               export ANTHROPIC_API_KEY=${config.sops.placeholder.apiKeyAnthropic}
+              export GEMINI_API_KEY=${config.sops.placeholder.apiKeyGemini}
               export CLAUDE_API_KEY=${config.sops.placeholder.apiKeyAnthropic}
               export CODESTRAL_API_KEY=${config.sops.placeholder.apiKeyCodestral}
               export VOYAGE_API_KEY=${config.sops.placeholder.apiKeyVoyage}
