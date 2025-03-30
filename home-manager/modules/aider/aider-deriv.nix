@@ -4,7 +4,7 @@ let
     self = python3;
     packageOverrides = _: super: { tree-sitter = super.tree-sitter_0_21; };
   };
-  version = "0.74.1";
+  version = "0.75.2";
   aider-chat = python3.pkgs.buildPythonPackage {
     pname = "aider-chat";
     inherit version;
@@ -14,7 +14,7 @@ let
       owner = "Aider-AI";
       repo = "aider";
       tag = "v${version}";
-      hash = "sha256-JXzkvuSOOEUxNqF6l5USzIPftpnIW+CptEv/0yp0eGM=";
+      hash = "sha256-+XpvAnxsv6TbsJwTAgNdJtZxxoPXQ9cxRVUaFZCnS8w=";
     };
 
     pythonRelaxDeps = true;
@@ -92,6 +92,7 @@ let
       smmap
       sniffio
       sounddevice
+      socksio
       soundfile
       soupsieve
       tiktoken
@@ -113,6 +114,9 @@ let
       posthog
       propcache
       python-dateutil
+
+      # Gemini
+      google-generativeai
     ];
 
     buildInputs = [ pkgs.portaudio ];

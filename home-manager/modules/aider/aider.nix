@@ -1,12 +1,12 @@
 {
   lib,
   config,
-  pkgs,
+  pkgs-latest,
   ...
 }:
 let
   cfg = config.modules.aider;
-  aider-package = import ./aider-deriv.nix { inherit pkgs lib; };
+  aider-package = import ./aider-deriv.nix { inherit lib; pkgs = pkgs-latest; };
 in
 {
   options.modules.aider = {
