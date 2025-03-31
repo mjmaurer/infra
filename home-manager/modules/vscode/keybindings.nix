@@ -52,6 +52,11 @@ in
     key = "alt+e";
     when = "resourceFilename =~ /.*test\\.(js|jsx|ts|tsx)$/";
   }
+  {
+    command = "extension.watchJest";
+    key = "alt+shift+e";
+    when = "resourceFilename =~ /.*test\\.(js|jsx|ts|tsx)$/";
+  }
   # Now used for tmux:
   # {
   #   command = "workbench.action.debug.start";
