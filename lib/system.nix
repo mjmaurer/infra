@@ -46,7 +46,19 @@ rec {
             allowUnfree = true;
             allowUnfreePredicate = (pkg: true);
           };
-          overlays = [ inputs.nix-vscode-extensions.overlays.default ];
+          overlays = [
+            inputs.nix-vscode-extensions.overlays.default
+
+            # (self: super: {
+            #   python3Packages = super.python3Packages // {
+            #     aider-chat = super.python3Packages.aider-chat.overridePythonAttrs (old: {
+            #       dependencies = old.dependencies ++ [
+            #         super.python3Packages.google-generativeai
+            #       ];
+            #     });
+            #   };
+            # })
+          ];
         };
         colors = import ./colors.nix { lib = inputs.nixpkgs.lib; };
         pubkeys = import ./pubkeys.nix;
@@ -73,6 +85,8 @@ rec {
           # Keep these false so home-manager and nixos derivations don't diverge.
           # By default, Home Manager uses a private pkgs instance via `home-manager.users.<name>.nixpkgs`.
           # To instead use the global (system-level) pkgs, set to true.
+          # Effectively if true: you want to use the same overlays and settings for both home-manager and NixOS,
+          # and don’t want to have to repeat the configuration.
           home-manager.useGlobalPkgs = true;
           # Packages installed to `$HOME/.nix-profile` if true, otherwise `/etc/profiles/`.
           home-manager.useUserPackages = false;

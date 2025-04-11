@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.modules.aider;
-  aider-package = import ./aider-deriv.nix { inherit lib; pkgs = pkgs-latest; };
+  # NOTE: An overlay is defined in `lib/system.nix` to add google deps
 in
 {
   options.modules.aider = {
@@ -17,7 +17,11 @@ in
 
   config = lib.mkIf cfg.enable {
     # Include playwright for web requests
-    home.packages = [ aider-package.withPlaywright ];
+    home.packages = [
+      (pkgs-latest.aider-chat.withOptional {
+        withAll = true;
+      })
+    ];
     home.file = {
       ".config/aider/.aiderignore" = {
         source = ./.aiderignore;
