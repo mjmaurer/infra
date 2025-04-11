@@ -84,7 +84,8 @@ in
       NSGlobalDomain = {
         AppleShowAllExtensions = true;
         # normal minimum is 15 (225 ms), maximum is 120 (1800 ms)
-        InitialKeyRepeat = 14;
+        # Setting this too high will affect kanata (any_key + hold_key) will repeat any_key
+        InitialKeyRepeat = 18;
         # normal minimum is 2 (30 ms), maximum is 120 (1800 ms)
         KeyRepeat = 3;
   
