@@ -2,35 +2,31 @@
 { pkgs, lib }:
 
 let
-  inherit (pkgs.stdenv)
-    isDarwin
-    isLinux
-    isi686
-    isx86_64
-    isAarch32
-    isAarch64
-    ;
+  inherit (pkgs.stdenv) isDarwin isLinux isi686 isx86_64 isAarch32 isAarch64;
   vscode-utils = pkgs.vscode-utils;
   merge = lib.attrsets.recursiveUpdate;
 in
 merge
-  (merge (merge
-    (merge {
-      "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
-        name = "copilot-chat";
-        publisher = "github";
-        version = "0.25.1";
-        sha256 = "0qq55khxbn0r778sifbnbd3g8bv06012dixhhybdh74851zfj7vp";
+  (merge
+    (merge
+      (merge
+      {
+        "github"."copilot-chat" = vscode-utils.extensionFromVscodeMarketplace {
+          name = "copilot-chat";
+          publisher = "github";
+          version = "0.26.3";
+          sha256 = "0pzafzkfc0hmgaipxvsb7zq9qs62cnsyi2flp7lcxmswshhgn1s0";
 
-      };
-      "github"."vscode-pull-request-github" = vscode-utils.extensionFromVscodeMarketplace {
-        name = "vscode-pull-request-github";
-        publisher = "github";
-        version = "0.106.0";
-        sha256 = "07xlq6y3czj871sxlahzkyw9ajjl9fmflhpqvv2qlixlzs3rqvaf";
+        };
+        "github"."vscode-pull-request-github" = vscode-utils.extensionFromVscodeMarketplace {
+          name = "vscode-pull-request-github";
+          publisher = "github";
+          version = "0.108.0";
+          sha256 = "10p76fi8516gawjm9bvxgdw1val4mwrbmf3z7b7qld7kr5rlzlqq";
 
-      };
-    } (lib.attrsets.optionalAttrs (isLinux && (isi686 || isx86_64)) { }))
-    (lib.attrsets.optionalAttrs (isLinux && (isAarch32 || isAarch64)) { })
-  ) (lib.attrsets.optionalAttrs (isDarwin && (isi686 || isx86_64)) { }))
+        };
+      }
+        (lib.attrsets.optionalAttrs (isLinux && (isi686 || isx86_64)) { }))
+      (lib.attrsets.optionalAttrs (isLinux && (isAarch32 || isAarch64)) { }))
+    (lib.attrsets.optionalAttrs (isDarwin && (isi686 || isx86_64)) { }))
   (lib.attrsets.optionalAttrs (isDarwin && (isAarch32 || isAarch64)) { })
