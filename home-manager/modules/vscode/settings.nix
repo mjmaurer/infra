@@ -514,11 +514,11 @@ in
   "terminal.integrated.defaultProfile.osx" = "tmux-pwd";
   "terminal.integrated.profiles.osx" = {
     tmux-pwd = {
-      # This passes all arguments after underscore to tmux_pwd. Useful for treating tmux as a shell (becuase tmux_pwd accepts '-c' for commands)
       # Used to have -i here (but don't need it I think. was causing problems for automation profile usage)
       args = [
         "-l"
         "-c"
+        # This passes all arguments after underscore to tmux_pwd. Useful for treating tmux as a shell (becuase tmux_pwd accepts '-c' for commands)
         "tmux_pwd \${@:1} \${workspaceFolder}"
         "_"
       ];
@@ -684,15 +684,6 @@ in
         "d"
       ];
       commands = [ "gitlens.diffLineWithPrevious" ];
-    }
-    {
-      # Revert current line change
-      before = [
-        "<leader>"
-        "g"
-        "r"
-      ];
-      commands = [ "git.revertSelectRanges" ];
     }
     {
       # Prev: Diff current file with most recent previous version of it
