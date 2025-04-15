@@ -226,12 +226,12 @@ check-further-callbacks = false
 run = 'move-node-to-workspace notes'
 
 [[on-window-detected]]
-if.app-id = 'com.google.Chrome.app.fmpnliohjhemenmnlpbfagaolkdacoja'
+if.app-name-regex-substring = 'Gemini'
 check-further-callbacks = false
 run = 'move-node-to-workspace llm'
 
 [[on-window-detected]]
-if.app-id = 'com.google.Chrome.app.bkoempnccdngdbcdinnemijnjklpmmod'
+if.app-name-regex-substring = 'Claude'
 check-further-callbacks = false
 run = 'move-node-to-workspace llm'
 
