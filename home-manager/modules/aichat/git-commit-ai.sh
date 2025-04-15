@@ -20,4 +20,4 @@ Format the response as a commit message, without quotes or explanations."
 
 COMMIT_MSG=$(echo "$PROMPT" | aichat --model gemini:gemini-2.0-flash-exp)
 
-git commit -e -m "$COMMIT_MSG"
+git commit -e -m "$COMMIT_MSG" "$@"
