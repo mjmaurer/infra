@@ -3,6 +3,7 @@
   config,
   isDarwin,
   derivationName,
+  pkgs-latest,
   ...
 }:
 let
@@ -31,11 +32,9 @@ in
           };
           services.tailscale = {
             enable = true;
+            package = pkgs-latest.tailscale;
             # overrideLocalDNS = true;
           };
-          # Don't think we need this. It was requiring sudo access every switch:
-          # system.defaults.smb.NetBIOSName = derivationName;
-        }
       else
         # NixOS
         {
@@ -70,6 +69,7 @@ in
 
           services.tailscale = {
             enable = true;
+            package = pkgs-latest.tailscale;
             openFirewall = true;
             interfaceName = tailscaleInterface;
             useRoutingFeatures = lib.mkDefault "none";
