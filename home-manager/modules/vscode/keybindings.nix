@@ -1,4 +1,5 @@
 { editor }:
+# https://code.visualstudio.com/api/references/when-clause-contexts
 let
   editorConf = {
     cursor = {
@@ -188,7 +189,13 @@ in
     };
     command = "runCommands";
     key = "alt+t";
-    when = "!terminalFocus";
+    when = "!terminalFocus && !panelFocus";
+  }
+  {
+    # Maintain open panel if not terminal
+    command = "workbench.action.focusActiveEditorGroup";
+    key = "alt+t";
+    when = "!terminalFocus && panelFocus";
   }
   {
     command = "workbench.action.terminal.focusAtIndex2";
