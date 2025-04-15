@@ -35,6 +35,7 @@ in
             package = pkgs-latest.tailscale;
             # overrideLocalDNS = true;
           };
+        }
       else
         # NixOS
         {
