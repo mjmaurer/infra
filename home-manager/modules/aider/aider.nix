@@ -6,8 +6,12 @@
 }:
 let
   cfg = config.modules.aider;
-  # NOTE: An overlay is defined in `lib/system.nix` to add google deps
 in
+# NOTE: An overlay is defined in `lib/system.nix` to add google deps
+# aider-package = import ./aider-deriv.nix {
+#   inherit lib;
+#   pkgs = pkgs-latest;
+# };
 {
   options.modules.aider = {
     enable = lib.mkEnableOption "aider";
@@ -19,7 +23,7 @@ in
     # Include playwright for web requests
     home.packages = [
       (pkgs-latest.aider-chat.withOptional {
-        withAll = true;
+        withPlaywright = true;
       })
     ];
     home.file = {
