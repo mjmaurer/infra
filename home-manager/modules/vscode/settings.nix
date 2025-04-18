@@ -954,5 +954,6 @@ in
     "*.png" = "luna.editor";
   };
   "workbench.panel.defaultLocation" = "right";
+  "workbench.startupEditor" = "none";
   "yaml.format.enable" = true;
 }
