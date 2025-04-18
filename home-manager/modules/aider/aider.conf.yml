@@ -3,15 +3,15 @@
 # This file lists *all* the valid configuration entries.
 # Place in your home dir, or at the root of your git repo.
 ##########################################################
-model: "claude-3-7-sonnet-latest"
+model: "gemini/gemini-2.5-pro-preview-03-25"
 
-editor-model: "claude-3-5-sonnet-latest" # Just used in architect. It's the best at diffs
-editor-edit-format: "editor-diff"
+# editor-model: "claude-3-5-sonnet-latest" # Just used in architect. It's the best at diffs
+# editor-edit-format: "editor-diff"
 
-# Hopefully this can someday be configured with model setting
-# It currently caueses issues with all Anthropic models on initial load:
-# https://github.com/Aider-AI/aider/issues/3177
-# reasoning-effort: "high"
+# openai
+reasoning-effort: "high"
+# anthropic
+thinking-tokens: "8k"
 
 alias:
   - "oo:o1"
@@ -19,12 +19,16 @@ alias:
   - "oop:o1-preview"
   - "o1p:o1-preview"
 
-  - "ot:o3-mini"
-  - "o3:o3-mini"
+  - "o3:o3"
+  - "ot:o3"
+  - "otm:o3-mini"
+  - "o3m:o3-mini"
+  - "o4:o4-mini"
+  - "of:o4-mini"
 
   - "dr:deepseek/deepseek-reasoner"
 
-  - "g:gemini-2.5-pro"
+  - "g:gemini/gemini-2.5-pro-preview-03-25" # preview is paid, exp is free
   - "gf:gemini/gemini-2.0-flash-001" # 001 is Stable
   - "gft:gemini/gemini-2.0-flash-thinking-exp"
   - "gfr:gemini/gemini-2.0-flash-thinking-exp"
