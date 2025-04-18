@@ -1,20 +1,46 @@
-{ lib, pkgs, ... }:
+{
+  lib,
+  pkgs,
+  ...
+}:
 let
-  python3 = pkgs.python312.override {
-    self = python3;
-    packageOverrides = _: super: { tree-sitter = super.tree-sitter_0_21; };
+  # NOTE(mjmaurer): I added these
+  python3 = pkgs.python3.override {};
+  sentry-sdk-no-tests = python3.pkgs.sentry-sdk.overridePythonAttrs (oldAttrs: {
+    # Disable the check phase
+    doCheck = false;
+    # Remove check inputs to avoid unnecessary dependencies
+    nativeCheckInputs = [ ];
+    checkInputs = [ ];
+    # You might potentially need to remove pytest hooks if they cause issues
+    pytestCheckHook = null; # Uncomment if needed
+    disabledTestPaths = [
+      "tests/profiler/test_continuous_profiler.py"
+    ];
+  });
+  # End personal changes 
+
+  aider-nltk-data = pkgs.symlinkJoin {
+    name = "aider-nltk-data";
+    paths = [
+      pkgs.nltk-data.punkt_tab
+      pkgs.nltk-data.stopwords
+    ];
   };
-  version = "0.75.2";
+  version = "0.82.1";
   aider-chat = python3.pkgs.buildPythonPackage {
     pname = "aider-chat";
     inherit version;
     pyproject = true;
 
+    # needs exactly Python 3.12
+    disabled = python3.pkgs.pythonOlder "3.12" || python3.pkgs.pythonAtLeast "3.13";
+
     src = pkgs.fetchFromGitHub {
       owner = "Aider-AI";
       repo = "aider";
       tag = "v${version}";
-      hash = "sha256-+XpvAnxsv6TbsJwTAgNdJtZxxoPXQ9cxRVUaFZCnS8w=";
+      hash = "sha256-J9znZfPcg1cLINFOCSQ6mpr/slL/jQXqenyi3a++VVE=";
     };
 
     pythonRelaxDeps = true;
@@ -99,8 +125,9 @@ let
       tokenizers
       tqdm
       tree-sitter
-      tree-sitter-languages
+      tree-sitter-language-pack
       typing-extensions
+      typing-inspection
       urllib3
       watchfiles
       wcwidth
@@ -115,19 +142,26 @@ let
       propcache
       python-dateutil
 
-      # Gemini
+      # NOTE(mjmaurer): Added Gemini deps
       google-generativeai
     ];
 
     buildInputs = [ pkgs.portaudio ];
 
-    nativeCheckInputs = (with python3.pkgs; [ pytestCheckHook ]) ++ [ pkgs.gitMinimal ];
+    postPatch = ''
+      substituteInPlace aider/linter.py --replace-fail "\"flake8\"" "\"${python3.pkgs.flake8}\""
+    '';
 
     disabledTestPaths = [
       # Tests require network access
       "tests/scrape/test_scrape.py"
       # Expected 'mock' to have been called once
       "tests/help/test_help.py"
+    ];
+
+    nativeCheckInputs = [
+      python3.pkgs.pytestCheckHook
+      pkgs.gitMinimal
     ];
 
     disabledTests =
@@ -155,8 +189,12 @@ let
       ];
 
     makeWrapperArgs = [
-      "--set AIDER_CHECK_UPDATE false"
-      "--set AIDER_ANALYTICS false"
+      "--set"
+      "AIDER_CHECK_UPDATE"
+      "false"
+      "--set"
+      "AIDER_ANALYTICS"
+      "false"
     ];
 
     preCheck = ''
@@ -171,28 +209,74 @@ let
         pyee
         typing-extensions
       ];
+      browser = [
+        streamlit
+      ];
+      help = [
+        llama-index-core
+        llama-index-embeddings-huggingface
+        torch
+        nltk
+      ];
+      bedrock = [
+        boto3
+      ];
     };
 
     passthru = {
-      withPlaywright = aider-chat.overridePythonAttrs (
+      withOptional =
         {
-          dependencies,
-          buildInputs,
-          makeWrapperArgs,
+          withPlaywright ? false,
+          withBrowser ? false,
+          withHelp ? false,
+          withBedrock ? false,
+          withAll ? false,
           ...
         }:
-        {
+        aider-chat.overridePythonAttrs (
+          {
+            dependencies,
+            makeWrapperArgs,
+            propagatedBuildInputs ? [ ],
+            ...
+          }:
 
-          dependencies = dependencies ++ aider-chat.optional-dependencies.playwright;
+          {
+            dependencies =
+              dependencies
+              ++ lib.optionals (withAll || withPlaywright) aider-chat.optional-dependencies.playwright
+              ++ lib.optionals (withAll || withBrowser) aider-chat.optional-dependencies.browser
+              ++ lib.optionals (withAll || withHelp) aider-chat.optional-dependencies.help
+              ++ lib.optionals (withAll || withBedrock) aider-chat.optional-dependencies.bedrock;
 
-          buildInputs = buildInputs ++ [ pkgs.playwright-driver.browsers ];
+            propagatedBuildInputs =
+              propagatedBuildInputs
+              ++ lib.optionals (withAll || withPlaywright) [ pkgs.playwright-driver.browsers ];
 
-          makeWrapperArgs = makeWrapperArgs ++ [
-            "--set PLAYWRIGHT_BROWSERS_PATH ${pkgs.playwright-driver.browsers}"
-            "--set PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS=true"
-          ];
-        }
-      );
+            makeWrapperArgs =
+              makeWrapperArgs
+              ++ lib.optionals (withAll || withPlaywright) [
+                "--set"
+                "PLAYWRIGHT_BROWSERS_PATH"
+                "${pkgs.playwright-driver.browsers}"
+                "--set"
+                "PLAYWRIGHT_SKIP_VALIDATE_HOST_REQUIREMENTS"
+                "true"
+              ]
+              ++ lib.optionals (withAll || withHelp) [
+                "--set"
+                "NLTK_DATA"
+                "${aider-nltk-data}"
+              ];
+          }
+        );
+
+      updateScript = lib.nix-update-script {
+        extraArgs = [
+          "--version-regex"
+          "^v([0-9.]+)$"
+        ];
+      };
     };
 
     meta = {
