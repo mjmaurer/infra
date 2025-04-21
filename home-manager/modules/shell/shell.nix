@@ -207,9 +207,9 @@ in
         "dr" = "direnv reload";
         "da" = "direnv allow";
         "gp" = "git push";
-        "gpul" = "git pull --merge --ff-only";
-        "gpf" = "git pull --merge --ff-only";
-        "gpm" = "git pull --merge";
+        "gpul" = "git pull --ff-only";
+        "gpf" = "git pull --ff-only";
+        "gpm" = "git pull";
         "gpr" = "git pull --rebase";
         "gc" = "git commit -v";
         "gsh" = "_fzf_git_show";
