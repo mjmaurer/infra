@@ -566,6 +566,13 @@ in
         "<leader>"
         "i"
       ];
+      commands = [ "workbench.action.gotoSymbol" ];
+    }
+    {
+      before = [
+        "<leader>"
+        "I"
+      ];
       commands = [ "workbench.action.showAllSymbols" ];
     }
     {
