@@ -221,6 +221,21 @@ check-further-callbacks = false
 run = 'move-node-to-workspace web'
 
 [[on-window-detected]]
+if.app-id = 'com.microsoft.edgemac'
+check-further-callbacks = false
+run = 'move-node-to-workspace web'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.Safari'
+check-further-callbacks = false
+run = 'move-node-to-workspace web'
+
+[[on-window-detected]]
+if.app-id = 'org.mozilla.firefox'
+check-further-callbacks = false
+run = 'move-node-to-workspace web'
+
+[[on-window-detected]]
 if.app-id = 'md.obsidian'
 check-further-callbacks = false
 run = 'move-node-to-workspace notes'
