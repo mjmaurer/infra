@@ -228,6 +228,8 @@ in
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "s" = "rgt";
         "as" = "print -z $(_fzf_search_alias)";
+        "fdd" = "fd -td";
+        "fdf" = "fd -tf";
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
