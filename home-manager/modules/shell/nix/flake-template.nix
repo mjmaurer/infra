@@ -1,5 +1,7 @@
 {
   inputs = {
+    # nixpkgs.url = "github:NixOS/nixpkgs/24.11";
+    # nixpkgs.url = "github:NixOS/nixpkgs/835524c6ef2d5e91fa7820f6e81b3751f1154fc3";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -8,7 +10,6 @@
       self,
       nixpkgs,
       flake-utils,
-      base-flake,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:

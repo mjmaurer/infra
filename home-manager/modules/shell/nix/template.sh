@@ -18,9 +18,9 @@ new_nix_flake() {
     fi
 
 
-    # Copy selected template to shell.nix
     cp "$NIX_TEMPLATE_FILE" flake.nix
     chmod u+w flake.nix
     echo "Created flake.nix"
     echo "You can exclude it from git locally with: gle (git_local_exclude)"
+    echo "May also want to create .envrc with 'use flake'"
 }
