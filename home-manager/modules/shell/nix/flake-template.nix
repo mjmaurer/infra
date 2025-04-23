@@ -37,6 +37,7 @@
             Create a new virtual environment:
             ```zsh
             python -m venv .venv
+            source ./.venv/bin/activate
             ```
 
             Install requirements:
