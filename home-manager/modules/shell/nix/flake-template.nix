@@ -1,7 +1,11 @@
 {
   inputs = {
     # nixpkgs.url = "github:NixOS/nixpkgs/24.11";
+    # Arbitrary mainline / unstable April 23, 2025:
     # nixpkgs.url = "github:NixOS/nixpkgs/835524c6ef2d5e91fa7820f6e81b3751f1154fc3";
+    # Arbitrary mainline April 23, 2025:
+    # Run `cachix use nixpkgs-python` to avoid re-build
+    nixpkgs-python.url = "github:cachix/nixpkgs-python/40d2237867f219de1c1362e3d067a1673afa5f82";
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
   };
@@ -9,12 +13,14 @@
     {
       self,
       nixpkgs,
+      nixpkgs-python,
       flake-utils,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        pythonPkg = nixpkgs-python.packages.${system}."3.12";
         java = {
           packages = with pkgs; [
             jdk17
@@ -29,9 +35,9 @@
         };
         pythonPip = {
           packages = with pkgs; [
-            python312
-            python312.pkgs.debugpy
-            python312.pkgs.pip
+            pythonPkg
+            pythonPkg.pkgs.debugpy
+            pythonPkg.pkgs.pip
           ];
           readme = ''
             Create a new virtual environment:
