@@ -78,7 +78,7 @@
           ];
           readme = "";
         };
-        package = pythonPoetry;
+        package = pythonPip;
         readme = pkgs.writeText "readme" ''
           # Commands
 
@@ -99,7 +99,7 @@
               (writeShellScriptBin "inline_script" ''
                 echo "Inline script"
               '')
-              (writeScriptBin "local_script" (builtins.readFile ./scripts/local.sh))
+              # (writeScriptBin "local_script" (builtins.readFile ./scripts/local.sh))
             ]
             ++ package.packages;
           shellHook = ''
