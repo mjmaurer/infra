@@ -1,26 +1,27 @@
 {
   inputs = {
     # nixpkgs.url = "github:NixOS/nixpkgs/24.11";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Arbitrary NixOS_24.11 April 23, 2025
+    nixpkgs.url = "github:NixOS/nixpkgs/9684b53175fc6c09581e94cc85f05ab77464c7e3";
     # Arbitrary mainline / unstable April 23, 2025:
     # nixpkgs.url = "github:NixOS/nixpkgs/835524c6ef2d5e91fa7820f6e81b3751f1154fc3";
+    flake-utils.url = "github:numtide/flake-utils";
     # Arbitrary mainline April 23, 2025:
     # Run `cachix use nixpkgs-python` to avoid re-build
-    nixpkgs-python.url = "github:cachix/nixpkgs-python/40d2237867f219de1c1362e3d067a1673afa5f82";
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    # nixpkgs-python.url = "github:cachix/nixpkgs-python/40d2237867f219de1c1362e3d067a1673afa5f82";
   };
   outputs =
     {
       self,
       nixpkgs,
-      nixpkgs-python,
       flake-utils,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
-        pythonPkg = nixpkgs-python.packages.${system}."3.12";
+        pythonPkg = pkgs.python310;
         java = {
           packages = with pkgs; [
             jdk17
@@ -53,16 +54,16 @@
 
             Debugging:
             ```zsh
-            pydb / pydbw
+            pydb -m / pydbw -m
             ```
           '';
         };
         pythonPoetry = {
           packages = with pkgs; [
-            python312
-            python312.pkgs.debugpy
+            pythonPkg
+            pythonPkg.pkgs.debugpy
             poetry.override
-            { python3 = python312; }
+            { python3 = pythonPkg; }
           ];
           readme = ''
             Add the following to `poetry.toml`:
@@ -74,7 +75,7 @@
 
             Debugging:
             ```zsh
-            pydb / pydbw
+            pydb -m / pydbw -m
             ```
           '';
         };
