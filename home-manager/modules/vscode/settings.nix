@@ -926,6 +926,22 @@ in
       ];
       commands = [ "workbench.action.editor.previousChange" ];
     }
+    {
+      before = [
+        "<leader>"
+        "j"
+        "b"
+      ];
+      commands = [ "editor.debug.action.goToNextBreakpoint" ];
+    }
+    {
+      before = [
+        "<leader>"
+        "k"
+        "b"
+      ];
+      commands = [ "editor.debug.action.goToPreviousBreakpoint" ];
+    }
   ];
   "vim.visualModeKeyBindingsNonRecursive" = vimNormalAndVisual ++ [
     {
