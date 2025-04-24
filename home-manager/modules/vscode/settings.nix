@@ -102,13 +102,10 @@ in
   "[nix]" = {
     "editor.defaultFormatter" = "jnoortheen.nix-ide";
   };
+  "python.testing.pytestEnabled" = true;
   "[python]" = {
     "editor.defaultFormatter" = "ms-python.black-formatter";
     "editor.formatOnType" = true;
-    "python.testing.pytestEnabled" = true;
-    # "python.testing.pytestArgs": [
-    #   "./tests"
-    # ],
   };
   "[r]" = {
     "editor.defaultFormatter" = "REditorSupport.r";
@@ -431,7 +428,6 @@ in
   "nixEnvSelector.args" = "--command 'zsh'";
   "nixEnvSelector.nixShellPath" = "nix develop";
   "npm.runInTerminal" = false;
-  "python.testing.pytestEnabled" = true;
   "redhat.telemetry.enabled" = false;
   "remote.SSH.enableX11Forwarding" = false;
   "remote.WSL.fileWatcher.polling" = true;
