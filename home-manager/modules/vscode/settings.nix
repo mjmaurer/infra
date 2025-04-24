@@ -105,6 +105,10 @@ in
   "[python]" = {
     "editor.defaultFormatter" = "ms-python.black-formatter";
     "editor.formatOnType" = true;
+    "python.testing.pytestEnabled" = true;
+    # "python.testing.pytestArgs": [
+    #   "./tests"
+    # ],
   };
   "[r]" = {
     "editor.defaultFormatter" = "REditorSupport.r";
