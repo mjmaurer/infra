@@ -119,6 +119,10 @@ in
         source = ./tmux/tmux-pwd;
         executable = true;
       };
+      ".psqlrc" = {
+        # Toggle expanded display on startup
+        text = "\\x";
+      };
     };
     modules.commonShell = {
       initExtraFirst = ''
