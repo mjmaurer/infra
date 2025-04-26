@@ -644,6 +644,23 @@ in
       ];
       commands = [ "github.copilot.edits.attachFile" ]; # "composer.createNew"
     }
+    # Prefix------------------------- Testing -------------------------
+    {
+      before = [
+        "<leader>"
+        "t"
+        "q"
+      ];
+      commands = [ "testing.cancelRun" ];
+    }
+    {
+      before = [
+        "<leader>"
+        "t"
+        "x"
+      ];
+      commands = [ "testing.cancelRun" ];
+    }
     # Prefix---------------------------- Git -----------------------------
     {
       before = [
