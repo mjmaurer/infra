@@ -110,14 +110,20 @@ in
       '';
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run mkdir -p "$HOME/.ssh"
+        # Ensure gpg-agent is aware of the smartcard BEFORE exporting
+        if ! ${config.programs.gpg.package}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye >/dev/null 2>&1; then
+           echo "Warning: gpg-connect-agent learn command failed. Export might fail."
+        fi
+
         # Export SSH public key from GPG
-        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --export-ssh-key mjmaurer777@gmail.com)"
+        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --homedir ${gnupgDir} --export-ssh-key mjmaurer777@gmail.com 2>/tmp/gpg_export_error.log)"
         if [ -n "$_YBPK" ]; then
           # Can test with 'ssh git@github.com'
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
           run chmod 600 ~/.ssh/id_rsa_yubikey.pub
         else
-          run echo "No GPG SSH key with 'cardno' comment found."
+          run echo "No GPG SSH key could be exported"
+          run echo "Check /tmp/gpg_export_error.log for details from gpg command." >&2
           run echo "Try running 'gpgrestart'"
           run echo "It's possible that ssh-agent is interfering with gpg-agent. See 'home-manager/.../crypt.nix'"
           run echo "You also might need to nix-rebuild with your Yubikey inserted."

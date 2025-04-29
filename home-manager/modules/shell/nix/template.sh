@@ -22,5 +22,6 @@ new_nix_flake() {
     chmod u+w flake.nix
     echo "Created flake.nix"
     echo "You can exclude it from git locally with: gle (git_local_exclude)"
-    echo "May also want to create .envrc with 'use flake'"
+    echo "May also want to use direnv:"
+    echo "echo 'use flake' >> .envrc"
 }
