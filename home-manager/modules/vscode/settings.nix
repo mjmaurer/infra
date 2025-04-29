@@ -102,7 +102,13 @@ in
   "[nix]" = {
     "editor.defaultFormatter" = "jnoortheen.nix-ide";
   };
-  "python.testing.pytestEnabled" = true;
+  # For debugger:
+  "python.testing.pytestEnabled" = true; # Doesn't seem to be working for some reason
+  "python.testing.pytestArgs" = [
+    "--color=yes"
+    "-vv"
+    "--showlocals"
+  ];
   "[python]" = {
     "editor.defaultFormatter" = "ms-python.black-formatter";
     "editor.formatOnType" = true;
