@@ -10,12 +10,26 @@ let
     {
       before = [
         "<leader>"
+        "["
+      ];
+      commands = [ "workbench.action.openRecent" ];
+    }
+    {
+      before = [
+        "<leader>"
+        "]"
+      ];
+      commands = [ "workbench.action.files.openFolder" ];
+    }
+    {
+      before = [
+        "<leader>"
         "a"
         "a"
       ];
       commands = [ "inlineChat.start" ];
     }
-    # Prefix-------------------------- Editor Leader --------------------------
+    # Prefix--------------------------Editor Leader--------------------------
     {
       before = [
         "<leader>"
