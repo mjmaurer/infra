@@ -210,6 +210,7 @@ in
         "ndr" = "direnv reload && nix-direnv-reload";
         "dr" = "direnv reload";
         "da" = "direnv allow";
+        "gsha" = "get_archive_sha";
         "gp" = "git push";
         "gpul" = "git pull --ff-only";
         "gpf" = "git pull --ff-only";
