@@ -138,25 +138,29 @@
 
   tab tab
 
+  r   S-; ;; :
+
   ;; Right Side Top Row
   y   S-6 ;; ^ 
   u   S-7 ;; & 
   i   S-\ ;; | 
-  o   S-` ;; ~ 
+  o   S-1 ;; !
+  p   S-` ;; ~
 
   ;; Right Side Home Row
   h   S-= ;; + 
   j   -   ;; -
   k   S-- ;; underscore
   l   =   ;; =
-  ;   ;   ;; ;
+  ;   S-5 ;; %
   '   `   ;; `
 
   ;; Right Side Bottom Row
-  n   \   ;; \
-  m   S-1 ;; !
-  .   S-8 ;; * 
-  /   /   ;; /
+  n   S-8 ;; *
+  m   /   ;; /
+  ,   S-, ;; <
+  .   S-. ;; >
+  /   \   ;; \
 )
 
 (deflayermap (number)
