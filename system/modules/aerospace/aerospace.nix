@@ -5,7 +5,10 @@
   ...
 }:
 let
-  aerospace = pkgs.aerospace;
+  # aerospace = pkgs.aerospace;
+  aerospace = import ./deriv.nix {
+    inherit pkgs lib;
+  };
 in
 {
   environment.systemPackages = [ aerospace ];
