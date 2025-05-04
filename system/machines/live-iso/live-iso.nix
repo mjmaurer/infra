@@ -14,6 +14,18 @@
 
   environment.systemPackages = with pkgs; [
     (writeScriptBin "partition" (builtins.readFile ./partition))
+
+    pciutils
+    which
+    wget
+    tree
+    ripgrep
+    unzip
+    tcpdump
+    neovim
+    findutils
+    bind
+    parted
   ];
 
   # Enable SSH in the boot process.
