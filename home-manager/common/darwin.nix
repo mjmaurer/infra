@@ -16,6 +16,7 @@
     # TODO Could enable after: https://github.com/NixOS/nixpkgs/issues/366581
     firefox.enable = false;
     wayland.enable = false;
+    intellibar.enable = lib.mkDefault true;
     commonShell = {
       enableShellTmuxTimeout = true;
       sessionVariables = {
