@@ -26,13 +26,23 @@ in
                 mountOptions = [ "umask=0077" ];
               };
             };
+            swap = {
+              size = "16G";
+              uuid = "4457A311-2DA8-4B48-BB13-991016CE313E";
+              name = "main-swap";
+              label = "main-swap";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+              };
+            };
             # will probably need to figure out how to unlock multiple luks devices on initrd
             # (or have luks span device) (or store key for new devices on this device)
             luks = {
               uuid = "0F868E8B-F65B-4E39-810D-637F235176EF";
               name = "main-luks";
               label = "main-luks";
-              size = "-16G"; # Leave space for swap
+              size = "100%";
               content = {
                 type = "luks";
                 name = "main-luks";
@@ -50,16 +60,6 @@ in
                   # Can add this to multiple zfs partitions (for other machine config)
                   pool = zfsPoolName;
                 };
-              };
-            };
-            swap = {
-              size = "100%";
-              uuid = "4457A311-2DA8-4B48-BB13-991016CE313E";
-              name = "main-swap";
-              label = "main-swap";
-              content = {
-                type = "swap";
-                randomEncryption = true;
               };
             };
           };
