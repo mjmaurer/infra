@@ -7,17 +7,18 @@ in
     disk = {
       main = {
         type = "disk";
-        device = "/dev/sda";
+        device = "/dev/disk/by-id/wwn-0x53a5a27201158fcf";
         content = {
           type = "gpt";
           partitions = {
             efi = {
               type = "EF00";
-              name = "efi";
+              # Generate with `uuidgen -r`
+              uuid = "4493CF2E-7EB5-4D7C-BFD9-717DDBA20009";
+              name = "main-efi-boot";
+              label = "main-efi-boot";
               start = "1M";
               size = "1G";
-              # uuid = "XXXXX-XXXX-XXXX-BA4B-00A0C93EC93B";
-              # label = "EFI System Partition";
               content = {
                 type = "filesystem";
                 format = "vfat";
@@ -25,11 +26,17 @@ in
                 mountOptions = [ "umask=0077" ];
               };
             };
+            # will probably need to figure out how to unlock multiple luks devices on initrd
+            # (or have luks span device) (or store key for new devices on this device)
             luks = {
-              size = "100%";
+              type = "luks";
+              uuid = "0F868E8B-F65B-4E39-810D-637F235176EF";
+              name = "main-luks";
+              label = "main-luks";
+              size = "-16G"; # Leave space for swap
               content = {
                 type = "luks";
-                name = "crypt-main";
+                name = "main-luks";
                 extraFormatArgs = [
                   "--pbkdf argon2i"
                   "--use-random"
@@ -46,10 +53,21 @@ in
                 };
               };
             };
+            swap = {
+              size = "100%";
+              uuid = "4457A311-2DA8-4B48-BB13-991016CE313E";
+              name = "main-swap";
+              label = "main-swap";
+              content = {
+                type = "swap";
+                randomEncryption = true;
+              };
+            };
           };
         };
       };
     };
+    # Might need activation script for second pool: https://github.com/nix-community/disko/issues/359
     zpool = {
       ${zfsPoolName} = {
         type = "zpool";
