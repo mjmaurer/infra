@@ -29,7 +29,6 @@ in
             # will probably need to figure out how to unlock multiple luks devices on initrd
             # (or have luks span device) (or store key for new devices on this device)
             luks = {
-              type = "luks";
               uuid = "0F868E8B-F65B-4E39-810D-637F235176EF";
               name = "main-luks";
               label = "main-luks";
