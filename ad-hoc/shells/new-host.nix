@@ -5,9 +5,9 @@
 }:
 let
   cleanup-script = pkgs.writeScript "cleanup-temp" ''
-    if [ -d "$NEW_HOST" ]; then
-      echo "Cleaning up temporary directory: $NEW_HOST"
-      rm -rf "$NEW_HOST"
+    if [ -d "$NEW_HOST_DATA" ]; then
+      echo "Cleaning up temporary directory: $NEW_HOST_DATA"
+      rm -rf "$NEW_HOST_DATA"
     fi
   '';
   ssh-host-bootstrap = pkgs.writeScriptBin "ssh-host-bootstrap" (
@@ -27,9 +27,9 @@ in
     # Register cleanup on shell exit
     trap "$(cat ${cleanup-script})" EXIT
 
-    NEW_HOST=$(mktemp -d -t new_host.XXXXXX)
-    NEW_HOST_SSH="$NEW_HOST/ssh_host_keys"
-    NEW_HOST_LUKS="$NEW_HOST/luks_keys"
+    NEW_HOST_DATA=$(mktemp -d -t new_host.XXXXXX)
+    NEW_HOST_SSH="$NEW_HOST_DATA/ssh_host_keys"
+    NEW_HOST_LUKS="$NEW_HOST_DATA/luks_keys"
 
     mkdir -p "$NEW_HOST_SSH"
 
@@ -102,16 +102,16 @@ in
     # Copy the generated files to the backup directory if specified
     if [[ -n "$BACKUP_ARGS" && -n "$BACKUP_DIR" ]]; then
       echo "Copying generated files to backup directory..."
-      sudo cp -rp "$NEW_HOST/." "$BACKUP_DIR/"
+      sudo cp -rp "$NEW_HOST_DATA/." "$BACKUP_DIR/"
       echo "Files copied to $BACKUP_DIR with original permissions preserved."
     fi
 
     echo -e "\n\n--------------------------- Completed ------------------------------\n\n"
-    echo "Files are located at NEW_HOST ($NEW_HOST)"
-    echo "ls \$NEW_HOST"
+    echo "Files are located at NEW_HOST_DATA ($NEW_HOST_DATA)"
+    echo "ls \$NEW_HOST_DATA"
     if [[ -n "$BACKUP_ARGS" && -n "$LUKS_GEN" ]]; then
       echo "Run the following outside this shell to prepare for nixos-anywhere:"
-      echo "export NEW_HOST=$BACKUP_DIR"
+      echo "export NEW_HOST_DATA=$BACKUP_DIR"
     fi
     echo -e "\n\033[0;31mPlease read through the output and make sure to follow any additional steps (i.e. for SOPS)\033[0m"
 
