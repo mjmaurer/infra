@@ -36,6 +36,7 @@
     pubkeys.sshPubYkaStub
     pubkeys.sshPubYkcKey
     pubkeys.sshPubBw
+    pubkeys.sshPubLiveIso
   ];
 
   services = {
