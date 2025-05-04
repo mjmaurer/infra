@@ -104,17 +104,16 @@
         # Run: lspci -k | grep -EA3 'VGA|3D|Display'
         # Early loading so the passphrase prompt appears on external displays
         # kernelModules = [ "i915" ];
-        # Intel NIC
-        # availableKernelModules = [ "e1000e" ]; Probably set in hardware-configuration.nix
+        # Intel NIC (retrieve via lspci -k)
+        availableKernelModules = [ "e1000e" ];
         # Configure Dropbear SSH server for remote boot with encrypted drives
         # https://discourse.nixos.org/t/disk-encryption-on-nixos-servers-how-when-to-unlock/5030/13
         # https://wiki.archlinux.org/title/Dm-crypt/Specialties#Remote_unlocking_of_the_root_(or_other)_partition
+        # systemd.network.wait-online = {
+        #   enable = false;
+        # };
         network = {
           enable = true;
-          # wait-online = {
-          #   enable = true;
-          #   timeout = 60;
-          # };
           ssh = {
             enable = true;
             port = 2222;
