@@ -133,6 +133,8 @@ in
         separator-color = "00000000";
         text-color = colors.hex colors.light;
       };
+    };
+    services = {
 
       # Notification daemon
       mako = {
@@ -145,8 +147,7 @@ in
         borderSize = 2;
         font = "MesloLGS NF 14";
       };
-    };
-    services = {
+
       swayidle = {
         enable = true;
         timeouts = [
@@ -169,7 +170,7 @@ in
     };
     wayland.windowManager.sway = {
       enable = true;
-      systemdIntegration = true;
+      systemd = true;
       config = {
         fonts = {
           names = [ swayfont ];
