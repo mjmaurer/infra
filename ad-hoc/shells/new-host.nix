@@ -40,7 +40,7 @@ in
       INITRD_GEN="true"
     fi
     # Prompt for luks keys 
-    read -p "[Only needed for NixOS] Do you want to provide a luks disk key? (y/n): " LUKS_CHOICE
+    read -p "[Only needed for NixOS] Do you want to provide a luks disk ecryption key? (y/n): " LUKS_CHOICE
     LUKS_GEN=""
     if [[ "$LUKS_CHOICE" == "y" || "$LUKS_CHOICE" == "Y" ]]; then
       mkdir -p "$NEW_HOST_LUKS"

@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  derivationName,
   username,
   ...
 }:
@@ -99,7 +100,7 @@
       };
       # This was in the dropbear nix thread:
       # kernelParams = ["ip=:::::eth0:dhcp"];
-      kernelParams = [ "ip=dhcp" ];
+      kernelParams = [ "ip=::::${derivationName}-init::dhcp" ];
       initrd = {
         # Run: lspci -k | grep -EA3 'VGA|3D|Display'
         # Early loading so the passphrase prompt appears on external displays
