@@ -170,7 +170,7 @@ in
     };
     wayland.windowManager.sway = {
       enable = true;
-      systemd = true;
+      systemd.enable = true;
       config = {
         fonts = {
           names = [ swayfont ];
