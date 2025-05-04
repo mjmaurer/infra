@@ -78,7 +78,7 @@ in
         # https://github.com/NixOS/nix/issues/1577
         if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
           . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-        else
+        elif [ "$(uname)" = "Darwin" ]; then
           echo "WARNING: nix-daemon.sh not found"
         fi
 
