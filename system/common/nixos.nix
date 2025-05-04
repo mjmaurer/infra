@@ -22,6 +22,7 @@
 
     environment = {
       systemPackages = with pkgs; [
+        pciutils
         which
         wget
         tmux

@@ -25,6 +25,7 @@
   # This setups a SSH server for a headless system.
   services.openssh = {
     enable = true;
+    ports = [ 2222 ];
     openFirewall = true;
     settings = {
       PermitRootLogin = "prohibit-password";
