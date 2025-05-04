@@ -37,6 +37,7 @@
   };
 
   networking = {
+    hostName = "isoboot";
     firewall.enable = true;
     usePredictableInterfaceNames = false;
     # Whether to use DHCP to obtain an IP address and other configuration
