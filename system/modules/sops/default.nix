@@ -77,28 +77,50 @@ in
             };
           };
         templates = {
-          "flash-thinking-25-preview.yaml" = {
+          "pro-25-preview.yaml" = {
             owner = config.users.users.${username}.name;
             content = ''
-              name: Gemini Flash Thinking 2.5
-              id: google/gemini-2.5-flash-preview:thinking
-              apiKey: ${config.sops.placeholder.apiKeyOpenrouter}
-              url: https://openrouter.ai/api/v1
+              name: Gemini Pro 2.5
+              id: gemini-2.5-pro-preview-03-25 
+              apiKey: ${config.sops.placeholder.apiKeyGemini}
+              apiType: google
+              url: https://generativelanguage.googleapis.com
             '';
           };
           "flash-25-preview.yaml" = {
             owner = config.users.users.${username}.name;
             content = ''
               name: Gemini Flash 2.5
-              id: google/gemini-2.5-flash-preview
+              id: gemini-2.5-flash-preview-04-17
+              apiKey: ${config.sops.placeholder.apiKeyGemini}
+              apiType: google
+              url: https://generativelanguage.googleapis.com
+            '';
+          };
+          "flash-thinking-25-preview-openrouter.yaml" = {
+            owner = config.users.users.${username}.name;
+            content = ''
+              name: Gemini Flash Thinking 2.5 (OpenRouter)
+              id: google/gemini-2.5-flash-preview:thinking
               apiKey: ${config.sops.placeholder.apiKeyOpenrouter}
               url: https://openrouter.ai/api/v1
             '';
           };
-          "pro-25-preview.yaml" = {
+          "flash-25-preview-openrouter.yaml" = {
             owner = config.users.users.${username}.name;
             content = ''
-              name: Gemini Pro 2.5
+              name: Gemini Flash 2.5 (OpenRouter)
+              id: google/gemini-2.5-flash-preview
+              apiKey: ${config.sops.placeholder.apiKeyOpenrouter}
+              url: https://openrouter.ai/api/v1
+
+
+            '';
+          };
+          "pro-25-preview-openrouter.yaml" = {
+            owner = config.users.users.${username}.name;
+            content = ''
+              name: Gemini Pro 2.5 (OpenRouter)
               id: google/gemini-2.5-pro-preview-03-25
               apiKey: ${config.sops.placeholder.apiKeyOpenrouter}
               url: https://openrouter.ai/api/v1
