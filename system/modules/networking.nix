@@ -51,8 +51,14 @@ in
               enable = true;
               dns = "systemd-resolved";
               wifi.backend = "iwd";
-              connectionConfig = {
+              settings = {
                 # Was relying on kernelParam's hostname setting if not set:
+                ipv4.dhcp-hostname = derivationName;
+                ipv4.dhcp-send-hostname-v2 = true;
+                ipv6.dhcp-hostname = derivationName;
+                ipv6.dhcp-send-hostname-v2 = true;
+              };
+              connectionConfig = {
                 "ipv4.dhcp-send-hostname" = true;
                 "ipv6.dhcp-send-hostname" = true;
               };
