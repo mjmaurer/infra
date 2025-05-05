@@ -13,7 +13,8 @@ in
           partitions = {
             efi = {
               type = "EF00";
-              # vfat doesn't like supplied uuid 
+              # Generate with `uuidgen -r`
+              uuid = "4493CF2E-7EB5-4D7C-BFD9-717DDBA20009";
               name = "main-efi-boot";
               label = "main-efi-boot";
               start = "1M";
@@ -27,7 +28,6 @@ in
             };
             swap = {
               size = "16G";
-              # Generate with `uuidgen -r`
               uuid = "4457A311-2DA8-4B48-BB13-991016CE313E";
               name = "main-swap";
               label = "main-swap";
