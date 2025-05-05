@@ -52,9 +52,11 @@ in
               dns = "systemd-resolved";
               wifi.backend = "iwd";
               settings = {
-                # Was relying on kernelParam if not set
+                # Was relying on kernelParam's hostname setting if not set:
                 ipv4.dhcp-send-hostname = true;
+                ipv4.dhcp-hostname = derivationName;
                 ipv6.dhcp-send-hostname = true;
+                ipv6.dhcp-hostname = derivationName;
               };
             };
 
