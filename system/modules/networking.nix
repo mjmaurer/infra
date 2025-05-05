@@ -51,6 +51,11 @@ in
               enable = true;
               dns = "systemd-resolved";
               wifi.backend = "iwd";
+              settings = {
+                # Was relying on kernelParam if not set
+                ipv4.dhcp-send-hostname = true;
+                ipv6.dhcp-send-hostname = true;
+              };
             };
 
             nameservers = nameservers; # Not sure if this is actually used
