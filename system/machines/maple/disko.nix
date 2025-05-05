@@ -13,8 +13,7 @@ in
           partitions = {
             efi = {
               type = "EF00";
-              # Generate with `uuidgen -r`
-              uuid = "4493CF2E-7EB5-4D7C-BFD9-717DDBA20009";
+              # Maybe someday uuids will work (they failed for me). Could generate with `uuidgen -r`
               name = "main-efi-boot";
               label = "main-efi-boot";
               start = "1M";
@@ -28,7 +27,6 @@ in
             };
             swap = {
               size = "16G";
-              uuid = "4457A311-2DA8-4B48-BB13-991016CE313E";
               name = "main-swap";
               label = "main-swap";
               content = {
@@ -39,7 +37,6 @@ in
             # will probably need to figure out how to unlock multiple luks devices on initrd
             # (or have luks span device) (or store key for new devices on this device)
             luks = {
-              uuid = "0F868E8B-F65B-4E39-810D-637F235176EF";
               name = "main-luks";
               label = "main-luks";
               size = "100%";
