@@ -44,6 +44,8 @@ in
           programs.nm-applet.enable = true;
 
           networking = {
+            # Need to to override hardware-configuration.nix, which sets this to true
+            useDHCP = false;
             # Choosing networkmanager over systemd-networkd
             networkmanager = {
               enable = true;
