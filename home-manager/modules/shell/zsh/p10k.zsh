@@ -90,7 +90,7 @@
   vcs_dirty_fg=$normal_black
 
   # All apply only under SSH for now
-  host_bg=$normal_green
+  host_bg=$normal_blue
   host_fg=255
   host_priv_bg=$normal_red # privledged (sudo)
   host_priv_fg=$bright_white
