@@ -90,7 +90,7 @@
   vcs_dirty_fg=$normal_black
 
   # All apply only under SSH for now
-  host_bg=$normal_magenta
+  host_bg=$normal_green
   host_fg=255
   host_priv_bg=$normal_red # privledged (sudo)
   host_priv_fg=$bright_white
@@ -409,14 +409,14 @@
 
   #####################################[ vcs: git status ]######################################
   # Version control background colors.
-  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=$vcs_clean_bg # $normal_green
+  typeset -g POWERLEVEL9K_VCS_CLEAN_BACKGROUND=$vcs_clean_bg
   typeset -g POWERLEVEL9K_VCS_CLEAN_FOREGROUND=$vcs_clean_fg
-  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=$vcs_dirty #$normal_yellow
+  typeset -g POWERLEVEL9K_VCS_MODIFIED_BACKGROUND=$vcs_dirty
   typeset -g POWERLEVEL9K_VCS_MODIFIED_FOREGROUND=$vcs_dirty_fg
-  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=$vcs_clean_bg # $normal_green
+  typeset -g POWERLEVEL9K_VCS_UNTRACKED_BACKGROUND=$vcs_clean_bg
   typeset -g POWERLEVEL9K_VCS_UNTRACKED_FOREGROUND=$vcs_clean_fg
-  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=$vcs_dirty_bg # $normal_yellow
-  typeset -g POWERLEVEL9K_VCS_CONFLICTED_FOREGROUND=$vcs_dirty_fg # $normal_yellow
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_BACKGROUND=$vcs_dirty_bg
+  typeset -g POWERLEVEL9K_VCS_CONFLICTED_FOREGROUND=$vcs_dirty_fg
   typeset -g POWERLEVEL9K_VCS_LOADING_BACKGROUND=$bright_black
 
   # Branch icon. Set this parameter to '\UE0A0 ' for the popular Powerline branch icon.
