@@ -5,7 +5,7 @@
 
   modules.commonShell = { };
 
-  home.activation.cloneInfra = lib.hm.dag.after [ "writeBoundary" ] {
+  home.activation.cloneInfra = lib.hm.dag.entryAfter [ "writeBoundary" ] {
     text = ''
       if [ ! -d "$HOME/infra/.git" ]; then
         echo "Cloning infra repo into $HOME/infra"
