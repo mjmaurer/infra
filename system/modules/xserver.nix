@@ -1,14 +1,15 @@
 { ... }:
 {
-  # NOTE: Xserver (and this module) is currently unused.
   # Nix unfortunately uses "services.xserver" for some wayland
-  # configuration for legacy reasons
+  # configuration for legacy reasons.
+  # Xserver is just needed for lightdm and XWayland I believe.
+  # Xwayland is currently installed via home-manager
   services.xserver = {
     enable = true;
     autorun = false;
-    desktopManager.plasma5 = {
+    displayManager.lightdm = {
       enable = true;
+      greeters.gtk.enable = true;
     };
-    displayManager.lightdm.enable = true;
   };
 }
