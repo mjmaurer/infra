@@ -185,8 +185,8 @@ in
           size = 11.0;
         };
         gaps = {
-          inner = 5;
-          outer = 5;
+          inner = 0;
+          outer = 0;
         };
         input = {
           "*" = {
@@ -221,6 +221,14 @@ in
             "${hypmods}+c" = "reload";
             "${hypmods}+f" = "fullscreen";
             "${hypmods}+Return" = "mode power";
+
+            # Flattening workspace
+            "${hypmods}+Shift+f" = "layout stacking";
+
+            "${hypmods}+Shift+h" = "move left";
+            "${hypmods}+Shift+j" = "move down";
+            "${hypmods}+Shift+k" = "move up";
+            "${hypmods}+Shift+l" = "move right";
 
             # "${modifier}+n" = "exec makoctl dismiss";
             # "${modifier}+Shift+n" = "exec makoctl dismiss -a";
