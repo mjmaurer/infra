@@ -39,41 +39,55 @@ in
       else
         # NixOS
         {
+          systemd.network = {
+            enable = true;
 
-          # networkmanager UI applet. May not work out of the box with waybar
-          programs.nm-applet.enable = true;
+            networks = {
+              "10-wired" = {
+                matchConfig.Name = [
+                  "en*"
+                  "eth*"
+                ];
+                networkConfig = {
+                  DHCP = "ipv4";
+                  SendHostname = true;
+                };
+              };
+              "20-wireless" = {
+                matchConfig.Name = [
+                  "wl*"
+                ];
+                networkConfig = {
+                  DHCP = "ipv4";
+                  SendHostname = true;
+                };
+              };
+            };
+          };
 
+          # Chose systemd-networkd over dhcpcd (viable) and NetworkManager (imperative POS)
+          services.dhcpcd.enable = false;
           networking = {
             # Need to to override hardware-configuration.nix, which sets this to true
             useDHCP = false;
-            # Choosing networkmanager over systemd-networkd
-            networkmanager = {
-              enable = true;
-              dns = "systemd-resolved";
-              wifi.backend = "iwd";
-              settings = {
-                # Was relying on kernelParam's hostname setting if not set:
-                ipv4.dhcp-hostname = derivationName;
-                ipv4.dhcp-send-hostname-v2 = true;
-                ipv6.dhcp-hostname = derivationName;
-                ipv6.dhcp-send-hostname-v2 = true;
-              };
-              connectionConfig = {
-                "ipv4.dhcp-send-hostname" = true;
-                "ipv6.dhcp-send-hostname" = true;
-              };
-            };
+            networkmanager.enable = false;
 
-            nameservers = nameservers; # Not sure if this is actually used
+            # Enable wpa_supplicant
+            wireless.enable = true;
+            # Used by systemd-resolved
+            nameservers = nameservers;
+
             firewall = {
               enable = true;
               # Always allow traffic from Tailscale network
               trustedInterfaces = [ tailscaleInterface ];
             };
-
-            # Disable wpa_supplicant as NetworkManager will handle wireless
-            wireless.enable = false;
           };
+          # if we wanted dhcpcd:
+          # dhcpcd.extraConfig = ''
+          #   hostname ${derivationName}
+          # '';
+
           # Enable systemd-resolved for DNS management
           services.resolved = {
             enable = true;
