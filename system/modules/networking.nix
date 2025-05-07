@@ -66,11 +66,11 @@ in
           };
 
           # Chose systemd-networkd over dhcpcd (viable) and NetworkManager (imperative POS)
-          services.dhcpcd.enable = false;
+          services.dhcpcd.enable = lib.mkForce false;
           networking = {
             # Need to to override hardware-configuration.nix, which sets this to true
             useDHCP = false;
-            networkmanager.enable = false;
+            networkmanager.enable = lib.mkForce false;
 
             # Enable wpa_supplicant
             wireless.enable = true;
