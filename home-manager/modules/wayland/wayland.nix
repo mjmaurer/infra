@@ -29,6 +29,7 @@ in
       grim # wayland screenshot application that works
       imv # wayland image viewer that works
       pdfpc # pdf presentation viewer run with -s -S
+      # (e.g., Nautilus, Thunar)
     ];
 
     xdg = {
@@ -219,24 +220,62 @@ in
             "${hypmods}+p" = "exec rofi -show run | xargs swaymsg exec --";
             "${hypmods}+c" = "reload";
             "${hypmods}+f" = "fullscreen";
-            "${hypmods}+t" = "exec alacritty";
-            "${hypmods}+w" = "exec firefox";
             "${hypmods}+Return" = "mode power";
+
             # "${modifier}+n" = "exec makoctl dismiss";
             # "${modifier}+Shift+n" = "exec makoctl dismiss -a";
 
-            "${hypmods}+1" = "workspace number 1";
-            "${hypmods}+2" = "workspace number 2";
-            "${hypmods}+3" = "workspace number 3";
+            # Workspace navigation
+            "${hypmods}+w" = "workspace number 1:web";
+            "${hypmods}+t" = "workspace number 2:terminal";
+            "${hypmods}+e" = "workspace number 3:code";
+            "${hypmods}+g" = "workspace number 4:files";
+            "${hypmods}+a" = "workspace number 5:llm";
+            "${hypmods}+r" = "workspace number 6:notes";
+            "${hypmods}+m" = "workspace number 7:music";
 
-            "${hypmods}+Shift+1" = "move container to workspace number 1, workspace number 1";
-            "${hypmods}+Shift+2" = "move container to workspace number 2, workspace number 2";
-            "${hypmods}+Shift+3" = "move container to workspace number 3, workspace number 3";
+            # Move container to workspace and follow
+            "${hypmods}+Shift+w" = "move container to workspace number 1:web; workspace number 1:web";
+            "${hypmods}+Shift+t" = "move container to workspace number 2:terminal; workspace number 2:terminal";
+            "${hypmods}+Shift+e" = "move container to workspace number 3:code; workspace number 3:code";
+            "${hypmods}+Shift+g" = "move container to workspace number 4:files; workspace number 4:files";
+            "${hypmods}+Shift+a" = "move container to workspace number 5:llm; workspace number 5:llm";
+            "${hypmods}+Shift+r" = "move container to workspace number 6:notes; workspace number 6:notes";
+            "${hypmods}+Shift+m" = "move container to workspace number 7:music; workspace number 7:music";
 
             "${hypmods}+s" = "scratchpad show";
             "${hypmods}+Shift+s" = "move scratchpad";
           };
         workspaceAutoBackAndForth = true;
+
+        # For 'class', (?i) makes the match case-insensitive.
+        assigns = {
+          "1:web" = [
+            { class = "(?i)firefox"; }
+            { class = "(?i)brave-browser"; }
+            { class = "(?i)chromium"; }
+          ];
+          "2:terminal" = [
+            { class = "(?i)alacritty"; }
+          ];
+          "3:code" = [
+            { class = "(?i)code"; }
+          ];
+          "4:files" = [
+            { class = "(?i)imv"; }
+            { class = "(?i)pdfpc"; }
+          ];
+          "5:llm" = [
+            { class = "(?i)chat-gpt"; } 
+          ];
+          "6:notes" = [
+            { class = "(?i)obsidian"; }
+          ];
+          "7:music" = [
+            { class = "(?i)spotify"; }
+          ];
+        };
+
         modes = {
           power = {
             "q" = "exit";
