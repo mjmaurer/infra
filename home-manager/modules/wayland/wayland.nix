@@ -35,7 +35,11 @@ in
       configFile."environment.d/envvars.conf".text = ''
         XDG_CURRENT_DESKTOP=sway
         XDG_SESSION_TYPE=wayland
-        NIXOS_OZONE_WL=1
+        NIXOS_OZONE_WL=1 # For Electron apps (VSCode, Discord, etc.) using Ozone/Wayland
+        MOZ_ENABLE_WAYLAND = "1"; # For Firefox
+        QT_QPA_PLATFORM = "wayland;xcb"; # For Qt5/Qt6 apps, fallback to xcb
+        SDL_VIDEODRIVER = "wayland";
+        # GDK_BACKEND = "wayland"; # Usually handled by sway.wrapperFeatures.gtk or app defaults
       '';
       mime.enable = true;
     };
@@ -171,6 +175,8 @@ in
     wayland.windowManager.sway = {
       enable = true;
       systemd.enable = true;
+      wrapperFeatures.gtk = true;
+      checkConfig = true;
       config = {
         fonts = {
           names = [ swayfont ];
