@@ -69,7 +69,7 @@ in
           networking = {
             dhcpcd.enable = lib.mkForce false;
             # Need to to override hardware-configuration.nix, which sets this to true
-            useDHCP = false;
+            useDHCP = lib.mkForce false;
             networkmanager.enable = lib.mkForce false;
 
             # Enable wpa_supplicant
