@@ -50,6 +50,8 @@ in
                 ];
                 networkConfig = {
                   DHCP = "ipv4";
+                };
+                dhcpV4Config = {
                   SendHostname = true;
                 };
               };
@@ -59,6 +61,8 @@ in
                 ];
                 networkConfig = {
                   DHCP = "ipv4";
+                };
+                dhcpV4Config = {
                   SendHostname = true;
                 };
               };
