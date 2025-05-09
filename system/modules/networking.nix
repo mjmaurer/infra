@@ -66,8 +66,8 @@ in
           };
 
           # Chose systemd-networkd over dhcpcd (viable) and NetworkManager (imperative POS)
-          services.dhcpcd.enable = lib.mkForce false;
           networking = {
+            dhcpcd.enable = lib.mkForce false;
             # Need to to override hardware-configuration.nix, which sets this to true
             useDHCP = false;
             networkmanager.enable = lib.mkForce false;
