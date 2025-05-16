@@ -1,5 +1,8 @@
 { editor }:
 # https://code.visualstudio.com/api/references/when-clause-contexts
+# To inspect
+# 1. Help -> Toggle Developer Tools (Opens Console) 
+# 2. Run `Developer: Inspect Context Keys` 
 let
   editorConf = {
     cursor = {
@@ -152,21 +155,21 @@ in
     when = "hasUndecidedChatEditingResource && inChatInput && !chatSessionRequestInProgress && chatLocation == 'editing-session'";
   }
   # Chat open
-  {
-    args = {
-      commands = [ "workbench.action.closePanel" ] ++ cfg.openWithSelection;
-    };
-    command = "runCommands";
-    key = "alt+a";
-    when = "editorFocus && editorHasSelection";
-  }
+  # {
+  #   args = {
+  #     commands = [ "workbench.action.closePanel" ] ++ cfg.openWithSelection;
+  #   };
+  #   command = "runCommands";
+  #   key = "alt+a";
+  #   when = "editorFocus && editorHasSelection";
+  # }
   {
     args = {
       commands = [ "workbench.action.closePanel" ] ++ cfg.openExisting;
     };
     command = "runCommands";
     key = "alt+a";
-    when = "editorFocus && !editorHasSelection";
+    when = "editorFocus";
   }
   {
     command = "workbench.action.focusFirstEditorGroup";
