@@ -1,5 +1,6 @@
 shell_command_before:
   - "mkdir -p .devdata/.aider"
+  - "touch .devdata/CONVENTIONS.md"
 session_name: ${WORKSPACE}-aider
 windows:
   - window_name: aider

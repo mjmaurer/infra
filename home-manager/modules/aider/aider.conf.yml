@@ -13,6 +13,9 @@ reasoning-effort: "high"
 # anthropic
 thinking-tokens: "8k"
 
+read:
+  - .devdata/CONVENTIONS.md
+
 alias:
   - "oo:o1"
 
@@ -40,6 +43,8 @@ alias:
   - "ss:claude-3-7-sonnet-latest"
   - "ssr:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
   - "s7r:claude-3-7-sonnet-20250219" # See aider-models.conf.yml
+
+auto-accept-architect: false
 
 ## Specify a file with aider model settings for unknown models
 #model-settings-file: .aider.model.settings.yml
