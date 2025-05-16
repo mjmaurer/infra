@@ -79,7 +79,7 @@ let
         "g"
         "r"
       ];
-      commands = [ "git.revertSelectedRanges" ];
+      commands = [ "git.revertSelectedRanges" "diffEditor.revert" ];
     }
   ];
 in

@@ -33,7 +33,9 @@ in
     when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
   {
-    command = "git.revertSelectedRanges";
+    # Doesn't work:
+    # https://github.com/microsoft/vscode/issues/225879
+    command = "diffEditor.revert";
     key = "right";
     when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
   }
@@ -135,7 +137,7 @@ in
     key = "alt+escape";
   }
   {
-    command = "workbench.action.toggleMaximizedPanel";
+    command = "workbench.action.togglePanel";
     key = "alt+shift+t";
   }
   # Chat / AI Misc
