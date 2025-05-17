@@ -56,7 +56,7 @@ in
                   program = "zsh";
                   args = [
                     "-c"
-                    "echo 'Run: tmuxp load term'; exec zsh"
+                    "echo 'cd ~/infra && tmuxp load term'; exec zsh"
                   ];
                 };
               };
