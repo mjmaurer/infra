@@ -1,6 +1,6 @@
 shell_command_before:
-  - "mkdir -p .devdata/.aider"
-  - "touch .devdata/CONVENTIONS.md"
+  - "if [ -d .git ]; then mkdir -p .devdata/.aider && touch .devdata/CONVENTIONS.md && touch .devdata/SPECIFICATION.md; fi"
+  - "if [ -d .git ]; then [ -f ~/.aider/.aiderinclude ] && [ ! -f .devdata/.aiderinclude ] && cp ~/.config/aider/.aiderinclude .devdata/.aiderinclude; fi"
 session_name: ${WORKSPACE}-aider
 windows:
   - window_name: aider
@@ -8,7 +8,7 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - aidw
+          - aid
   # - window_name: aider-watch
   #   panes:
   #     - shell_command:

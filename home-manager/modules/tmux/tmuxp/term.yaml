@@ -3,13 +3,13 @@
 session_name: terminal
 windows:
   - window_name: terminal
-    layout: main-horizontal
+    layout: main-vertical
     options:
       automatic-rename: false
-      main-pane-height: 75%
+      main-pane-width: 60%
     panes:
       - shell_command:
           - cmd: ""
         focus: true
       - shell_command:
-          - cmd: "aider"
+          - cmd: "aid"
