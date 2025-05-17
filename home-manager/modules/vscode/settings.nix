@@ -699,7 +699,7 @@ in
         "b"
         "h"
       ];
-      commands = [ "gitlens.diffLineWithWorking" ];
+      commands = [ "workbench.action.closePanel" "gitlens.diffLineWithWorking" ];
     }
     {
       # Duplicated in case I forget
@@ -708,7 +708,7 @@ in
         "g"
         "g"
       ];
-      commands = [ "gitlens.diffLineWithWorking" ];
+      commands = [ "workbench.action.closePanel" "gitlens.diffLineWithWorking" ];
     }
     {
       # git show blame commit

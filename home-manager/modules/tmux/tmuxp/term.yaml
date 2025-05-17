@@ -12,4 +12,4 @@ windows:
           - cmd: ""
         focus: true
       - shell_command:
-          - cmd: "aid"
+          - cmd: "aidw"
