@@ -27,8 +27,11 @@ in
       })
     ];
     home.file = {
-      ".config/aider/.aiderignore" = {
-        source = ./.aiderignore;
+      ".config/aider/.aiderinclude" = {
+        source = ./.aiderinclude;
+      };
+      ".config/aider/SYSTEM.md" = {
+        source = ./rules/SYSTEM.md;
       };
       ".aider.conf.yml" = {
         source = ./aider.conf.yml;
@@ -41,8 +44,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        aid = "aider";
-        aidw = "aider --watch-files";
+        aid = "cat .gitignore .devdata/.aiderinclude > .devdata/.aiderignore && aider --aiderignore .devdata/.aiderignore";
+        aidw = "cat .gitignore .devdata/.aiderinclude > .devdata/.aiderignore && aider --aiderignore .devdata/.aiderignore --watch-files";
       };
     };
   };

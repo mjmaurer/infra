@@ -13,8 +13,12 @@ reasoning-effort: "high"
 # anthropic
 thinking-tokens: "8k"
 
-read:
+file:
   - .devdata/CONVENTIONS.md
+  - .devdata/SPECIFICATION.md
+
+read:
+  - ~/.config/aider/SYSTEM.md
 
 alias:
   - "oo:o1"
@@ -143,7 +147,7 @@ git: true
 gitignore: false # Done via global gitignore
 
 ## Specify the aider ignore file (default: .aiderignore in git root)
-aiderignore: .gitignore
+aiderignore: .devdata/.aiderignore
 
 ## Enable/disable auto commit of LLM changes (default: True)
 auto-commits: false
