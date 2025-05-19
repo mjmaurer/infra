@@ -52,11 +52,13 @@ in
             # https://github.com/nix-community/nix-vscode-extensions
             # Get list of extensions: https://github.com/nix-community/nix-vscode-extensions?tab=readme-ov-file#get-extensions-with-flakes
 
-            nix4vscode.github.vscode-pull-request-github
+            # nix4vscode.github.vscode-pull-request-github
             nix4vscode.github.copilot-chat
 
             vscodevim.vim
             github.copilot
+            # github.copilot-chat
+            github.vscode-pull-request-github
             visualstudioexptteam.intellicode-api-usage-examples
             visualstudioexptteam.vscodeintellicode
             ms-vscode-remote.remote-containers

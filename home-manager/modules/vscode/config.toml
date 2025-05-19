@@ -1,4 +1,4 @@
 # See ./README.md
-vscode_version = "1.99.0"
+vscode_version = "1.100.1"
 
-extensions = ["github.copilot-chat", "github.vscode-pull-request-github"]
+extensions = ["github.copilot-chat"]
