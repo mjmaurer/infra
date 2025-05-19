@@ -182,10 +182,11 @@
 ;; -------------------------------- Aliases ------------------------------------ #
 
 (defvar
+  arrkey       ralt
   hypkey1      lmet
   hypkey2      lctl
   hypkeys      ($hypkey1 $hypkey2)
-  syskeys      ($hypkey1 $hypkey2 ralt)
+  syskeys      ($hypkey1 $hypkey2 $arrkey)
   tap-timeout  200
   hold-time    250
 )
@@ -198,12 +199,14 @@
   end-hyp (multi (release-key $hypkey1) (release-key $hypkey2))
 
   ;; Alt / Arrow Layer
-  raltarr (multi ralt (layer-while-held alt-arrow))
-  rgt     (unmod rght)
-  lft     (unmod left)
-  dwn     (fork (unmod down) (unmod pgdn) (lsft)) ;; page if @hyp active. could maybe use defoverrides instead
-  up      (fork (unmod up)   (unmod pgup) (lsft)) ;; or $hypkeys
-          ;; tab mode (Using vim keys in default layer for nav)
+  raltarr (multi $arrkey (layer-while-held alt-arrow))
+  rgt     (unmod ($arrkey) rght)
+  lft     (unmod ($arrkey) left)
+      ;; page if hyp keys active. could maybe use defoverrides instead
+  dwn     (fork (unmod ($arrkey) down) (unmod $syskeys pgdn) $hypkeys)
+  up      (fork (unmod ($arrkey) up)   (unmod $syskeys pgup) $hypkeys)
+
+  ;; tab mode (Using vim keys in default layer for nav)
   tabmode  (multi tab (layer-switch default) (release-layer alt-arrow)) 
   alttab  (fork (unmod tab) @tabmode $hypkeys)
 
