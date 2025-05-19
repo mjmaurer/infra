@@ -188,6 +188,7 @@ in
   "git.autoRepositoryDetection" = true;
   # Don't offer to pull branch
   "githubPullRequests.pullBranch" = "never";
+  "github.copilot.nextEditSuggestions.enabled" = true;
   "github.copilot.editor.enableAutoCompletions" = true;
   "github.copilot.chat.scopeSelection" = true;
   "github.copilot.chat.followUps" = "firstOnly";

@@ -20,25 +20,51 @@ let
     };
   };
   cfg = editorConf.${editor};
+  conditionDebugArrows = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible";
+  conditionDiffArrows = "textCompareEditorActive && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible";
+  conditionInlineSuggestArrows = "editorTextFocus && inlineSuggestionVisible";
 in
 [
+  # Vim Ext Fixes (https://github.com/VSCodeVim/Vim/issues/9459#issuecomment-2648156285)
+  {
+    key = "escape";
+    command = "-extension.vim_escape";
+    when = "vim.active && vim.mode == 'Normal'";
+  }
+  {
+    # Remove VSCodeVim's handling of tab to enable default handling of tab
+    # e.g. for inline suggestions.
+    key = "tab";
+    command = "-extension.vim_tab";
+  }
+  {
+    key = "right";
+    command = "editor.action.inlineSuggest.commit";
+    when = conditionInlineSuggestArrows;
+  }
+  {
+    key = "shift+right";
+    command = "editor.action.inlineSuggest.acceptNextWord";
+    when = conditionInlineSuggestArrows;
+  }
+  # Diff Editor
   {
     command = "workbench.action.compareEditor.nextChange";
     key = "down";
-    when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = conditionDiffArrows;
   }
   {
     command = "workbench.action.compareEditor.previousChange";
     key = "up";
-    when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = conditionDiffArrows;
   }
   {
-    # Doesn't work:
-    # https://github.com/microsoft/vscode/issues/225879
+    # Doesn't work: https://github.com/microsoft/vscode/issues/225879
     command = "diffEditor.revert";
     key = "right";
-    when = "textCompareEditorActive && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = conditionDiffArrows;
   }
+  # Debug
   {
     # This is to unset the comment divider command
     command = "";
@@ -75,17 +101,17 @@ in
   {
     command = "workbench.action.debug.stepOver";
     key = "down";
-    when = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = conditionDebugArrows;
   }
   {
     command = "workbench.action.debug.stepInto";
     key = "right";
-    when = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = conditionDebugArrows;
   }
   {
     command = "workbench.action.debug.stepOut";
     key = "left";
-    when = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible";
+    when = conditionDebugArrows;
   }
   {
     command = "workbench.action.debug.restart";
@@ -142,29 +168,65 @@ in
   }
   # Chat / AI Misc
   {
-    command = "inlineChat.acceptChanges";
+    command = "chatEditing.acceptAllFiles";
     key = "alt+enter";
-    when = "inlineChatFocused";
+    when = "inChat";
+  }
+  {
+    command = "chatEditor.action.acceptHunk";
+    key = "alt+enter";
+    when = "editorFocus";
   }
   {
     command = "chatEditor.action.accept";
-    key = "alt+enter";
-    when = "chat.hasEditorModifications && editorFocus";
+    key = "alt+shift+enter";
+    when = "editorFocus";
   }
   {
-    command = "chatEditing.acceptAllFiles";
-    key = "alt+enter";
-    when = "hasUndecidedChatEditingResource && inChatInput && !chatSessionRequestInProgress && chatLocation == 'editing-session'";
+    command = "chatEditor.action.toggleDiff";
+    key = "alt+g";
+    when = "editorFocus";
   }
-  # Chat open
-  # {
-  #   args = {
-  #     commands = [ "workbench.action.closePanel" ] ++ cfg.openWithSelection;
-  #   };
-  #   command = "runCommands";
-  #   key = "alt+a";
-  #   when = "editorFocus && editorHasSelection";
-  # }
+  {
+    command = "workbench.action.chat.newChat";
+    key = "cmd+n";
+    when = "inChat";
+  }
+  {
+    command = "workbench.action.chat.history";
+    key = "cmd+y";
+    when = "inChat";
+  }
+  {
+    command = "workbench.action.chat.switchToNextModel";
+    key = "cmd+t";
+    when = "inChat";
+  }
+  {
+    command = "workbench.action.chat.toggleAgentMode";
+    key = "cmd+m";
+    when = "inChat";
+  }
+  {
+    command = "list.scrollDown";
+    key = "pagedown";
+    when = "inChat";
+  }
+  {
+    command = "list.scrollUp";
+    key = "pageup";
+    when = "inChat";
+  }
+  {
+    command = "workbench.action.chat.nextCodeBlock";
+    key = "down";
+    when = "inChat";
+  }
+  {
+    command = "workbench.action.chat.previousCodeBlock";
+    key = "up";
+    when = "inChat";
+  }
   {
     args = {
       commands = [ "workbench.action.closePanel" ] ++ cfg.openExisting;
@@ -181,11 +243,6 @@ in
   {
     command = "workbench.panel.chatEditing";
     key = "alt+shift+a";
-  }
-  {
-    command = "workbench.action.chat.newChat";
-    key = "alt+n";
-    when = "!editorFocus && !terminalFocus";
   }
   # Terminal (Main) focus
   {
