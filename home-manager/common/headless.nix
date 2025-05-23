@@ -27,6 +27,7 @@
     ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
     ../modules/aider/aider.nix
+    ../modules/claude/claude.nix
     ../modules/intellibar/intellibar.nix
     ../modules/aichat/aichat.nix
     ../modules/neovim/neovim.nix
@@ -36,6 +37,7 @@
   modules = {
     tmux.enable = lib.mkDefault true;
     aider.enable = lib.mkDefault true;
+    claude.enable = lib.mkDefault true;
     aichat.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;
     git.enable = lib.mkDefault true;
