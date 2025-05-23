@@ -249,6 +249,7 @@ in
         '';
         "nnf" = "new_nix_flake";
         "nps" = "nix-search";
+        "np" = "nix-shell -p";
         "nss" = "ls -1 /nix/store | grep";
         "nsd" = "nix-store --delete";
         "la" = lib.mkDefault "ls -a --color=auto";

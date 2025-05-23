@@ -7,6 +7,6 @@ let
 in
 {
   config = {
-    home.packages = [ nodePackages."@anthropic-ai/claude-code-0.2.14" ];
+    home.packages = [];
   };
 }

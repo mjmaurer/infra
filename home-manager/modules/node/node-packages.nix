@@ -14,22 +14,4 @@ let
   sources = { };
 in
 {
-  "@anthropic-ai/claude-code-0.2.14" = nodeEnv.buildNodePackage {
-    name = "_at_anthropic-ai_slash_claude-code";
-    packageName = "@anthropic-ai/claude-code";
-    version = "0.2.14";
-    src = fetchurl {
-      url = "https://registry.npmjs.org/@anthropic-ai/claude-code/-/claude-code-0.2.14.tgz";
-      sha512 = "p729wIUq9/K/TecpE64nzWKEZJ1qddn20eQg1nUoMdEQtwWjwWYiecwJ6lDxCmNRWr0ukC7ovu0Kgtmh+uOPYg==";
-    };
-    buildInputs = globalBuildInputs;
-    meta = {
-      description = "Use Claude, Anthropic's AI assistant, right from your terminal. Claude can understand your codebase, edit files, run terminal commands, and handle entire workflows for you.";
-      homepage = "https://github.com/anthropics/claude-code";
-      license = "SEE LICENSE IN README.md";
-    };
-    production = true;
-    bypassCache = true;
-    reconstructLock = true;
-  };
 }
