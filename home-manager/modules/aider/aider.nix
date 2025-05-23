@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs-latest,
+  pkgs,
   ...
 }:
 let
@@ -25,13 +26,16 @@ in
       (pkgs-latest.aider-chat.withOptional {
         withPlaywright = true;
       })
+      (pkgs.writeShellScriptBin "aider-setup" ''
+        ${builtins.readFile ./setup.sh}
+      '')
     ];
     home.file = {
       ".config/aider/.aiderinclude" = {
         source = ./.aiderinclude;
       };
-      ".config/aider/SYSTEM.md" = {
-        source = ./rules/SYSTEM.md;
+      ".config/aider/RULES.md" = {
+        source = ./rules/RULES.md;
       };
       ".aider.conf.yml" = {
         source = ./aider.conf.yml;
@@ -44,8 +48,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        aid = "cat .gitignore .devdata/.aiderinclude > .devdata/.aiderignore && aider --aiderignore .devdata/.aiderignore";
-        aidw = "cat .gitignore .devdata/.aiderinclude > .devdata/.aiderignore && aider --aiderignore .devdata/.aiderignore --watch-files";
+        aid = "aider-setup && aider --aiderignore .devdata/.aiderignore";
+        aidw = "aider-setup && aider --aiderignore .devdata/.aiderignore --watch-files";
       };
     };
   };

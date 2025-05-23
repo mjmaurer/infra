@@ -1,6 +1,3 @@
-shell_command_before:
-  - "if [ -d .git ]; then mkdir -p .devdata/.aider && touch .devdata/CONVENTIONS.md && touch .devdata/SPECIFICATION.md; fi"
-  - "if [ -d .git ]; then [ -f ~/.config/aider/.aiderinclude ] && [ ! -f .devdata/.aiderinclude ] && cp ~/.config/aider/.aiderinclude .devdata/.aiderinclude; fi"
 session_name: ${WORKSPACE}-aider
 windows:
   - window_name: aider

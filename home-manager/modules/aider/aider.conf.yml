@@ -14,11 +14,11 @@ reasoning-effort: "high"
 thinking-tokens: "8k"
 
 file:
-  - .devdata/CONVENTIONS.md
-  - .devdata/SPECIFICATION.md
 
 read:
-  - ~/.config/aider/SYSTEM.md
+  - ~/.config/aider/RULES.md
+  - .devdata/CONVENTIONS.md
+  - .devdata/PROJECT.md
 
 alias:
   - "oo:o1"
