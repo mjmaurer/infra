@@ -7,6 +7,7 @@
     allow = [
       "WebFetch(domain:github.com)"
       "Bash(nix flake check:*)"
+      "Bash(nixfmt:*)"
       "Edit(AI_README.md)"
       "Edit(README.md)"
     ];
