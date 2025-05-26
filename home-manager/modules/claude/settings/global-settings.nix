@@ -6,6 +6,7 @@
   permissions = {
     allow = [
       "WebFetch(domain:github.com)"
+      "Bash(nix flake check:*)"
       "Edit(PROJECT.md)"
       "Edit(README.md)"
     ];
