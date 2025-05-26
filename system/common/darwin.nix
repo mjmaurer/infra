@@ -17,8 +17,6 @@ in
   };
 
   imports = [
-    ../data
-
     ../modules/nix.nix
     ../modules/basic.nix
     ../modules/users.nix

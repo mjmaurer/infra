@@ -18,6 +18,7 @@
   # ];
   imports = [
     nix-colors.homeManagerModule
+    ../data
 
     ../modules/nix.nix
 
