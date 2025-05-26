@@ -40,8 +40,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        "a" = "aichat -e";
-        "ai" = "aichat";
+        "a" = "aichat --model gemini:gemini-2.5-flash-preview-04-17 -e";
+        "ai" = "aichat --model gemini:gemini-2.5-flash-preview-04-17";
         "gcai" = "git-commit-ai.sh";
       };
     };
