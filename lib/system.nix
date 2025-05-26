@@ -1,6 +1,9 @@
 { inputs, ... }:
 rec {
   defaultUsername = "mjmaurer";
+  defaultPersistMntPath = "/persist";
+  defaultBackupMntPath = "/backup";
+  defaultZfsRootPool = "zroot";
   forEachSystem =
     f:
     inputs.flake-utils.lib.eachDefaultSystem (
@@ -25,6 +28,9 @@ rec {
       derivationName,
       username ? defaultUsername,
       extraSpecialArgs ? { },
+      persistMntPath ? defaultPersistMntPath,
+      backupMntPath ? defaultBackupMntPath,
+      zfsRootPool ? defaultZfsRootPool,
     }:
     rec {
       mkSpecialArgs = rec {
@@ -38,7 +44,14 @@ rec {
           nix-vscode-extensions
           nix-homebrew
           ;
-        inherit username derivationName system;
+        inherit
+          username
+          derivationName
+          system
+          persistMntPath
+          backupMntPath
+          zfsRootPool
+          ;
 
         pkgs-latest = import inputs.nixpkgs-latest {
           inherit system;

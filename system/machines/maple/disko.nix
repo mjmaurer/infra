@@ -1,7 +1,4 @@
-{ ... }:
-let
-  zfsPoolName = "zroot";
-in
+{ zfsRootPool, ... }:
 {
   disko.devices = {
     disk = {
@@ -55,7 +52,7 @@ in
                 content = {
                   type = "zfs";
                   # Can add this to multiple zfs partitions (for other machine config)
-                  pool = zfsPoolName;
+                  pool = zfsRootPool;
                 };
               };
             };
@@ -65,10 +62,11 @@ in
     };
     # Might need activation script for second pool: https://github.com/nix-community/disko/issues/359
     zpool = {
-      ${zfsPoolName} = {
+      ${zfsRootPool} = {
         type = "zpool";
         # mode = "mirror";
         rootFsOptions = {
+          # These are inherited to all child datasets as the default value
           canmount = "off";
           mountpoint = "none";
           # Comparison: https://facebook.github.io/zstd/
@@ -81,39 +79,34 @@ in
         };
         options.ashift = "12";
         datasets = {
+          # Might have an issue with neededForUsers needing to be set on filesystem
           "root" = {
             type = "zfs_fs";
             mountpoint = "/";
-            # postCreateHook = "zfs snapshot zfspool/root@blank";
-            # "com.sun:auto-snapshot" = "true";
+            # Create a blank snapshot of root on creation (if it doesn't exist)
+            postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^${zfsRootPool}/root@blank$' || zfs snapshot ${zfsRootPool}/root@blank";
           };
+          # Everything below will be persisted
           "root/nix" = {
             type = "zfs_fs";
             mountpoint = "/nix";
+            options = {
+              # Don't use access time for nix store
+              atime = "off";
+            };
           };
           "root/persist" = {
             type = "zfs_fs";
             mountpoint = "/persist";
-            # "com.sun:auto-snapshot" = "true";
           };
-          "root/home" = {
+          "root/persist/backup" = {
+            type = "zfs_fs";
+            mountpoint = "/backup";
+          };
+          "root/persist/home" = {
             type = "zfs_fs";
             mountpoint = "/home";
             # postCreateHook = "zfs snapshot zfspool/home@blank";
-            # "com.sun:auto-snapshot" = "true";
-          };
-          "root/tmp" = {
-            type = "zfs_fs";
-            mountpoint = "/tmp";
-          };
-          # Can maybe remove these (make temp) after move to impermancne
-          "root/var" = {
-            type = "zfs_fs";
-            mountpoint = "/var";
-          };
-          "root/var/lib" = {
-            type = "zfs_fs";
-            mountpoint = "/var/lib";
           };
         };
       };
