@@ -2,13 +2,13 @@ if [ -d .git ]; then
     mkdir -p .devdata/ai/claude
     mkdir -p .claude
 
-    if [ ! -f ./PROJECT.md ]; then
-        if [ -f $XDG_DATA_HOME/PROJECT_TMPL.md ]; then
-            echo "Copying $XDG_DATA_HOME/PROJECT_TMPL.md to PROJECT.md"
-            # PROJECT.md is source controlled
-            cp -p $XDG_DATA_HOME/PROJECT_TMPL.md PROJECT.md
+    if [ ! -f ./AI_README.md ]; then
+        if [ -f $XDG_DATA_HOME/AI_README_TMPL.md ]; then
+            echo "Copying $XDG_DATA_HOME/AI_README_TMPL.md to AI_README.md"
+            # AI_README.md is source controlled
+            cp -p $XDG_DATA_HOME/AI_README_TMPL.md AI_README.md
         else
-            echo "$XDG_DATA_HOME/PROJECT_TMPL.md not found, skipping copy."
+            echo "$XDG_DATA_HOME/AI_README_TMPL.md not found, skipping copy."
         fi
     fi
 

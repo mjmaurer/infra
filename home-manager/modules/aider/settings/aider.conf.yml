@@ -14,7 +14,7 @@ reasoning-effort: "high"
 thinking-tokens: "8k"
 
 file:
-  - PROJECT.md
+  - AI_README.md
 
 read:
   - ~/.config/aider/RULES.md
@@ -147,7 +147,7 @@ git: true
 gitignore: false # Done via global gitignore
 
 ## Specify the aider ignore file (default: .aiderignore in git root)
-aiderignore: .devdata/.aiderignore
+# aiderignore: .devdata/.aider/.aiderignore
 
 ## Enable/disable auto commit of LLM changes (default: True)
 auto-commits: false

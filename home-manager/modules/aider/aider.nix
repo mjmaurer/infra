@@ -48,8 +48,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        aid = "aider-setup && aider --aiderignore .devdata/.aiderignore";
-        aidw = "aider-setup && aider --aiderignore .devdata/.aiderignore --watch-files";
+        aid = "aider-setup && aider --aiderignore .devdata/.aider/.aiderignore";
+        aidw = "aider-setup && aider --aiderignore .devdata/.aider/.aiderignore --watch-files";
       };
     };
   };

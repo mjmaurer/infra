@@ -1,4 +1,4 @@
-This PROJECT.md file provides project information specifically for use in LLM context. The README.md will contain project information that is more generally useful for humans and AI.
+This AI_README.md file provides project information specifically for use in LLM context. The README.md will contain project information that is more generally useful for humans and AI.
 
 # CONVENTIONS
 

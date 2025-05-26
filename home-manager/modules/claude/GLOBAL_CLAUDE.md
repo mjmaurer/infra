@@ -6,7 +6,7 @@ When implementing:
 
 - Focus on efficiently implementing the requested changes.
 - Write clean, type-annotated, well-structured code.
-- Make sure to consider the conventions listed in `PROJECT.md`
+- Make sure to consider the conventions listed in `AI_README.md`
 
 ## Engineering Mindset
 
