@@ -11,6 +11,8 @@ let
     inherit lib;
     pkgs = pkgs;
   };
+
+  commandFiles = builtins.readDir ./commands;
 in
 {
   options.modules.claude = {
@@ -37,6 +39,9 @@ in
       };
       ".claude/local-settings-tmpl.json" = {
         text = lib.generators.toJSON { } (import ./settings/local-settings-tmpl.nix);
+      };
+      ".claude/commands" = {
+        source = ./commands;
       };
     };
 

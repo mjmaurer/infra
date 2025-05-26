@@ -35,6 +35,9 @@ in
       package = pkgs.gitFull;
       userEmail = email;
       aliases = {
+        diffall = "git add --intent-to-add . && git --no-pager diff && git reset";
+        dap = "git add --intent-to-add . && git diff && git reset";
+        da = "diffall";
         pr = "pull --rebase";
         gc = "commit -v";
         gcs = "commit -v --gpg-sign";
