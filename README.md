@@ -9,7 +9,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ## Pre-Install
 
 - Clone this repo to `~/infra`
-- Run `nix develop "~/infra#new-host"` to enter a shell which walks through steps of creating keys / config for new host. The following assumes you have a NEW_HOST environment variable created by this.
+- Run `nix develop "~/infra#new-host"` to enter a shell which walks through steps of creating keys / config for new host. The following assumes you have a NEW_HOST_DATA environment variable created by this.
 - For Home Manager / Darwin:
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to run `export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations"` first. This can be removed once `--extra-experimental-features` on the commands below starts working again.
@@ -20,13 +20,15 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 1. Plug it in, reboot, and immediately go into BIOS settings:
    - Change `Boot Mode` to `UEFI only`
    - [Optional] Move the USB up in the boot order
-2. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
-3. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@IP`
+1. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
+1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@isoboot`
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
+   - **Debugging:**  isoboot should resolve via router DNS, but if not you have to use IP
 
-4. Get the disk device paths using `lsblk`. You will use this to write the the disko config.
-5. Continue to `NixOS (Remote Machine)` section below
+1. Get the disk device IDs using `ls -l /dev/disk/by-id`. You will use this to write the the disko config.
+1. Get the kernel module for your network card for initrd: `lspci -v | grep -iA8 'network\|ethernet'`
+1. Continue to `NixOS (Remote Machine)` section below
 
 ## Install: NixOS (Remote Machine)
 
@@ -39,19 +41,20 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 ```sh
 cd ~/infra
-HOST_NAME=<machine_name>
-IP=<my_ip_address>
-PKPATH=<my_bitpk_path>
-nix run github:nix-community/nixos-anywhere -- \
-   -i "$PKPATH" \
-   --flake ".#$HOST_NAME" --target-host root@$IP \
-   --extra-files "$NEW_HOST/ssh_host_keys" \
-   --disk-encryption-keys /tmp/disk.key "$NEW_HOST/luks_keys/disk.key" \
-   --generate-hardware-config nixos-generate-config "./system/machines/$HOST_NAME/hardware-configuration.nix" \
+NEW_HOST=<machine_name>
+IP=isoboot
+PKPATH=<my_liveiso_ssh_key_path>
+# Can remove the shell step after this is resolved: https://github.com/nix-community/nixos-anywhere/issues/510
+nix shell nixpkgs#nixos-anywhere
+nixos-anywhere -i "$PKPATH" \
+   --flake ".#$NEW_HOST" --target-host root@$IP \
+   --extra-files "$NEW_HOST_DATA/ssh_host_keys" \
+   --disk-encryption-keys /tmp/disk.key "$NEW_HOST_DATA/luks_keys/disk.key" \
+   --generate-hardware-config nixos-generate-config "./system/machines/$NEW_HOST/hardware-configuration.nix" \
    --build-on remote --print-build-logs
 ```
 
-1. Remove USB, reboot and enjoy! 
+1. Remove USB, reboot and enjoy! NOTE: You should probably use headless/remote reboot first thing to make sure it works (see remote LUKS section below) 
 
 ## Install: Darwin
 
@@ -139,6 +142,32 @@ Go to this repo and run `nix flake update`.
 
 This will update the flake inputs (e.g. nixpkgs, home-manager, etc).
 
+## Updating Filesystem with Disko
+
+Disko doesn't have great support for [in-place updates](https://github.com/nix-community/disko/issues/295), but can still be used to mount whatever you create imperitavely (i.e. as a replacement for `fileSystems` / fstab).
+
+Make any modifications needed to `system/machines/$HOST/disko.nix`, and then you could ask an LLM to create a starter bash script for the changes given the diff. Once applies, you should commit these to `system/machines/$HOST/fs-patches` just to keep track.
+
+Then, you might be able to mount without a rebuild (but you should probably just rebuild):
+```
+# Dry run first (it should only format new disks):
+sudo nix run github:nix-community/disko -- --dry-run --mode mount ~/infra/system/machines/$HOST/disko.nix
+# If it looks good:
+sudo nix run github:nix-community/disko -- --mode mount ~/infra/system/machines/$HOST/disko.nix
+```
+
+## Decrypting LUKS Drive Remotely via SSH on Reboot 
+
+Just ssh like normal, however, use a hostname of `${hostname}-init`. This way, tailscale doesn't interfere, and we don't have to deal with known_host issues due to changing key.
+
+```
+ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 -v root@maple-init
+# Wait for boot
+ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 -v root@maple
+# Note: Could also use `maple.localdomain` for non-tailscale 
+# Note: If you can't login after boot, it could be because tailscale didnt start up correctly
+```
+
 ## Headed vs Headed-Minimal vs Headless
 
 Each OS derivation only needs one (configured in `flake.nix`):
@@ -151,7 +180,7 @@ Headed-Minimal ⊃ Headless
 
 Since the headless module is always included, it contains most of the basic configuration.
 
-Headed-Minimal modules do actually include a display server (Wayland) and Sway window manager.
+Headed-Minimal modules include a display server (Wayland) and Sway window manager.
 They also include a terminal (Alacritty) and browser (Firefox).
 However, many other GUI tools are not included.
 
@@ -207,6 +236,14 @@ ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 localhost
 # [Optional] Test:
 pkcs11-tool --login --test
 
+# Debugging if that test fails (seems like using git signing breaks / resets something):
+# - ykman list (most reliable)
+# - Try existing current shell or reopening a new shell 
+# - The act of running the below commands with OPENSC_DEBUG
+# - Plug out / plug in
+# - yubi-switch
+OPENSC_DEBUG=3 pkcs11-tool --module ~/.nix-profile/lib/libykcs11.dylib -L
+OPENSC_DEBUG=3 pkcs11-tool --module ~/.nix-profile/lib/opensc-pkcs11.so -L
 ```
 
 Can quickly run a test server with:
