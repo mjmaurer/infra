@@ -1,0 +1,1 @@
+Good place to start: https://github.com/mmskv/dotfiles/blob/2fcd319b2c535ee869a71be0de64e7233883df2f/hosts/hosaka/k3s.nix#L46
