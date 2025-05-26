@@ -19,6 +19,7 @@ file:
 read:
   - ~/.config/aider/RULES.md
   - CLAUDE.md
+  - AI_README.md
 
 alias:
   - "oo:o1"
