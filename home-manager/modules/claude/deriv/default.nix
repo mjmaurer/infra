@@ -29,9 +29,7 @@ pkgs.buildNpmPackage rec {
   # https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview#environment-variables
   postInstall = ''
     wrapProgram $out/bin/claude \
-      --set DISABLE_AUTOUPDATER 1 \
-      --set DISABLE_ERROR_REPORTING 1 \
-      --set DISABLE_TELEMETRY 1
+      --set DISABLE_AUTOUPDATER 1
   '';
 
   passthru.updateScript = ./update.sh;

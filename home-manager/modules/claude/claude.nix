@@ -29,8 +29,11 @@ in
       ".claude/CLAUDE.md" = {
         source = ./GLOBAL_CLAUDE.md;
       };
-      ".claude/LOCAL_CLAUDE.md" = {
-        source = ./LOCAL_CLAUDE.md;
+      ".claude/LOCAL_CLAUDE_TMPL.md" = {
+        source = ./LOCAL_CLAUDE_TMPL.md;
+      };
+      ".claude/settings.json" = {
+        text = lib.generators.toJSON { } (import ./settings/global-settings.nix);
       };
     };
 
