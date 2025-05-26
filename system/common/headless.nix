@@ -10,6 +10,8 @@
   # ---------------------------------- NOTE ----------------------------------
   # Consider adding to Darwin when adding here
   imports = [
+    ../data
+
     ../modules/nix.nix
     ../modules/basic.nix
     ../modules/users.nix
