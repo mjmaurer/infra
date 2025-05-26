@@ -1,5 +1,6 @@
 if [ -d .git ]; then
     mkdir -p .devdata
+    mkdir -p .claude
 
     if [ ! -f ./PROJECT.md ]; then
         if [ -f $XDG_DATA_HOME/PROJECT_TMPL.md ]; then
@@ -20,3 +21,15 @@ if [ -d .git ]; then
             echo "~/.claude/LOCAL_CLAUDE_TMPL.md not found, skipping copy."
         fi
     fi
+
+    if [ ! -f ./.claude/settings.json ]; then
+        if [ -f ~/.claude/local-settings-tmpl.json ]; then
+            echo "Copying ~/.claude/local-settings-tmpl.json to .devdata/settings.json"
+            cp ~/.claude/local-settings-tmpl.json .devdata/settings.json
+            echo "Linking .devdata/settings.json to .claude/settings.json"
+            ln -s .devdata/settings.json .claude/settings.json
+        else
+            echo "~/.claude/local-settings-tmpl.json not found, skipping copy."
+        fi
+    fi
+fi

@@ -35,6 +35,9 @@ in
       ".claude/settings.json" = {
         text = lib.generators.toJSON { } (import ./settings/global-settings.nix);
       };
+      ".claude/local-settings-tmpl.json" = {
+        text = lib.generators.toJSON { } (import ./settings/local-settings-tmpl.nix);
+      };
     };
 
     modules.commonShell = {
