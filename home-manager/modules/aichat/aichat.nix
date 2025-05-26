@@ -1,7 +1,7 @@
 {
   lib,
   config,
-  pkgs,
+  pkgs-latest,
   ...
 }:
 let
@@ -13,7 +13,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    home.packages = [ pkgs.aichat ];
+    home.packages = [ pkgs-latest.aichat ];
 
     # TODO: Remove these when aichat .23 is released on nixpkgs
     home.file = {
