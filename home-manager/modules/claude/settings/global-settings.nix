@@ -3,6 +3,7 @@
 
 # "Bash(rm -rf:*)" - Matches all commands that start with "rm -rf"
 {
+  includeCoAuthoredBy = false;
   permissions = {
     allow = [
       "WebFetch(domain:github.com)"
