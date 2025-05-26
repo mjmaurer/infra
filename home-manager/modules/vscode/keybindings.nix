@@ -206,12 +206,12 @@ in
   {
     command = "workbench.action.chat.openModelPicker";
     key = "cmd+t";
-    when = "inChat";
+    when = "inChat || inlineChatFocused";
   }
   {
     command = "workbench.action.chat.toggleAgentMode";
     key = "cmd+m";
-    when = "inChat";
+    when = "inChat || inlineChatFocused";
   }
   {
     command = "list.scrollDown";
