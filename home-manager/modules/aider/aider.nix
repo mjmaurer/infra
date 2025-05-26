@@ -32,16 +32,16 @@ in
     ];
     home.file = {
       ".config/aider/.aiderinclude" = {
-        source = ./.aiderinclude;
+        text = "";
       };
       ".config/aider/RULES.md" = {
-        source = ./rules/RULES.md;
+        source = ./GLOBAL_AIDER.md;
       };
       ".aider.conf.yml" = {
-        source = ./aider.conf.yml;
+        source = ./settings/aider.conf.yml;
       };
       ".aider.model.settings.yml" = {
-        source = ./aider-models.conf.yml;
+        source = ./settings/aider-models.conf.yml;
       };
       # ".aider.model.metadata.json" = { source = ./aider-registry.json; };
     };

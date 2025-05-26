@@ -1,7 +1,7 @@
 if [ -d .git ]; then
     mkdir -p .devdata/.aider
-    touch .devdata/PROJECT.md
-    touch .devdata/CONVENTIONS.md
+    # Just call claude for PROJECT.md / CLAUDE.md
+    claude-setup
 
     if [ -f ~/.config/aider/.aiderinclude ] && [ ! -f .devdata/.aiderinclude ]; then
         cp ~/.config/aider/.aiderinclude .devdata/.aiderinclude
