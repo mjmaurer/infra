@@ -14,11 +14,11 @@ reasoning-effort: "high"
 thinking-tokens: "8k"
 
 file:
+  - PROJECT.md
 
 read:
   - ~/.config/aider/RULES.md
-  - .devdata/CONVENTIONS.md
-  - .devdata/PROJECT.md
+  - CLAUDE.md
 
 alias:
   - "oo:o1"
