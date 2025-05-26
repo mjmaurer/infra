@@ -167,6 +167,7 @@ in
     key = "alt+shift+t";
   }
   # Chat / AI Misc
+
   {
     command = "chatEditing.acceptAllFiles";
     key = "alt+enter";
@@ -181,6 +182,11 @@ in
     command = "chatEditor.action.accept";
     key = "alt+shift+enter";
     when = "editorFocus";
+  }
+  {
+    command = "inlineChat.acceptChanges";
+    key = "alt+enter";
+    when = "inlineChatHasProvider && inlineChatVisible";
   }
   {
     command = "chatEditor.action.toggleDiff";
@@ -198,7 +204,7 @@ in
     when = "inChat";
   }
   {
-    command = "workbench.action.chat.switchToNextModel";
+    command = "workbench.action.chat.openModelPicker";
     key = "cmd+t";
     when = "inChat";
   }
