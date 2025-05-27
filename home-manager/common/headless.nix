@@ -130,7 +130,8 @@
     # zathura.enable = true;
     lsd = {
       enable = true;
-      enableAliases = false;
+      enableZshIntegration = false;
+      enableBashIntegration = false;
     };
     fzf = {
       enable = true;

@@ -89,7 +89,7 @@ in
             maxCacheTtl = maxCacheTtl;
             maxCacheTtlSsh = maxCacheTtl;
             enableZshIntegration = true;
-            pinentryPackage = pkgs.pinentry-curses;
+            pinentry.package = pkgs.pinentry-curses;
             # Prefer gpg-agent over ssh-agent
             enableSshSupport = true;
             # Smartcard support. This talks to pcscd (enabled in system crypt modules):

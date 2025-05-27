@@ -37,6 +37,8 @@ in
     # Never change this here. Only in flake.nix
     system.stateVersion = lib.mkDefault 5;
 
+    system.primaryUser = username;
+
     environment = {
       systemPath = [ "/opt/homebrew/bin" ];
       # To make this consistent with nixos
@@ -51,11 +53,9 @@ in
     modules.darwin.enable = lib.mkDefault true;
     modules.homebrew.enable = lib.mkDefault true;
     modules.smbClient.enable = lib.mkDefault true;
-
-    services.nix-daemon.enable = true;
   
     # Add ability to used TouchID for sudo authentication
-    security.pam.enableSudoTouchIdAuth = true;
+    security.pam.services.sudo_local.touchIdAuth = true;
   
     system.defaults = lib.mkIf cfg.enable {
       finder = {
@@ -219,7 +219,7 @@ in
       };
     };
   
-    system.activationScripts.postUserActivation.text = ''
+    system.activationScripts."copyApps".text = ''
       #!/usr/bin/env bash
       mkdir -p ${screenshotDir}
   

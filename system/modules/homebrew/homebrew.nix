@@ -58,7 +58,7 @@ in
       autoMigrate = true;
     };
 
-    system.activationScripts.postUserActivation.text = ''
+    system.activationScripts."settingsImport".text = ''
       #!${pkgs.zsh}/bin/zsh
       DOCKER_CONFIG="$HOME/Library/Group Containers/group.com.docker/settings-store.json"
       DOCKER_SETTINGS_TEMPLATE="${pkgs.copyPathToStore ./docker-settings.json}"

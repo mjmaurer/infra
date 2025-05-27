@@ -97,7 +97,7 @@ in
       '';
     };
 
-    home.activation.cloneInfra = pkgs.lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    home.activation.cloneInfra = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if [ ! -d "$HOME/infra/.git" ]; then
         echo "Cloning infra..."
         ${pkgs.git}/bin/git clone https://github.com/mjmaurer/infra.git "$HOME/infra"

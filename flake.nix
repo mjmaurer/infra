@@ -25,9 +25,6 @@
     };
     nix-homebrew = {
       url = "github:zhaofengli-wip/nix-homebrew";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.nix-darwin.follows = "darwin";
-      inputs.flake-utils.follows = "flake-utils";
     };
     nix-vscode-extensions = {
       # https://github.com/nix-community/nix-vscode-extensions/issues/99
