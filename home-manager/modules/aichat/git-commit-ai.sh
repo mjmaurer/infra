@@ -18,6 +18,6 @@ $DIFF
 
 Format the response as a conventional commit message, without quotes or explanations."
 
-COMMIT_MSG=$(echo "$PROMPT" | ai --no-stream)
+COMMIT_MSG=$(echo "$PROMPT" | aichat --model gemini:gemini-2.5-flash-preview-04-17 --no-stream)
 
 git commit -e -m "$COMMIT_MSG" "$@"
