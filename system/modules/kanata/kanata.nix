@@ -27,6 +27,16 @@ in
 
   config = lib.mkIf cfg.enable (
     lib.mkMerge [
+      {
+        environment.systemPackages = [
+          (pkgs.writeShellScriptBin "kanrun" ''
+            sudo kanata --debug -c ~/infra/system/modules/kanata/kanata.kdb
+          '')
+          (pkgs.writeShellScriptBin "kankill" ''
+            sudo kill -9 $(sudo pgrep -f "^sudo kanata") 
+          '')
+        ];
+      }
       (
         if isDarwin then
           {
@@ -37,12 +47,6 @@ in
               '')
               (pkgs.writeShellScriptBin "kanunload" ''
                 sudo launchctl unload /Library/LaunchDaemons/org.nixos.kanata_daemons.plist
-              '')
-              (pkgs.writeShellScriptBin "kanrun" ''
-                sudo kanata --debug -c ~/infra/system/modules/kanata/kanata.kdb
-              '')
-              (pkgs.writeShellScriptBin "kankill" ''
-                sudo kill -9 $(sudo pgrep -f "^sudo kanata") 
               '')
             ];
 
@@ -122,6 +126,15 @@ in
         else
           # NixOS
           {
+            environment.systemPackages = with pkgs; [
+              kanata
+              (pkgs.writeShellScriptBin "kanload" ''
+                sudo systemctl start kanata-default.service
+              '')
+              (pkgs.writeShellScriptBin "kanunload" ''
+                sudo systemctl stop kanata-default.service
+              '')
+            ];
             # Might need https://dev.to/shanu-kumawat/how-to-set-up-kanata-on-nixos-a-step-by-step-guide-1jkc
             services.kanata = {
               enable = true;
