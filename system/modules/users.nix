@@ -38,6 +38,7 @@ lib.mkMerge [
                 "wheel"
                 "audio"
                 "video"
+                "render"
                 "sway"
                 "plugdev"
                 "networkmanager"
