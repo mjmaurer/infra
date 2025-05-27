@@ -208,11 +208,11 @@ in
         };
         window.border = 2;
         # Sway can only have one main modifier, so we have to manually set most bindings
-        modifier = "Mod4"; # Super
+        modifier = "Super_L";
         keybindings =
           let
-            hypmods = "Ctrl+Mod4"; # Ctrl+Super
-            sysmods = "Ctrl+Mod4+Mod1"; # Ctrl+Super+Alt
+            hypmods = "Control_L+Super_L";
+            sysmods = "Control_L+Super_L+Alt_L";
           in
           {
             "${sysmods}+x" = "kill";
