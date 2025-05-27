@@ -21,10 +21,10 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
    - Change `Boot Mode` to `UEFI only`
    - [Optional] Move the USB up in the boot order
 1. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
-1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@isoboot`
+1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso` 
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
-   - **Debugging:**  isoboot should resolve via router DNS, but if not you have to use IP
+   - **Debugging:**  `live-iso` (previosly `nixos`) should resolve via router DNS, but if not you have to use IP
 
 1. Get the disk device IDs using `ls -l /dev/disk/by-id`. You will use this to write the the disko config.
 1. Get the kernel module for your network card for initrd: `lspci -v | grep -iA8 'network\|ethernet'`
@@ -42,12 +42,10 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ```sh
 cd ~/infra
 NEW_HOST=<machine_name>
-IP=isoboot
+IP=live-iso
 PKPATH=<my_liveiso_ssh_key_path>
-# Can remove the shell step after this is resolved: https://github.com/nix-community/nixos-anywhere/issues/510
-nix shell nixpkgs#nixos-anywhere
-nixos-anywhere -i "$PKPATH" \
-   --flake ".#$NEW_HOST" --target-host root@$IP \
+nix run github:nix-community/nixos-anywhere -- \
+    -i "$PKPATH" --flake ".#$NEW_HOST" --target-host root@$IP \
    --extra-files "$NEW_HOST_DATA/ssh_host_keys" \
    --disk-encryption-keys /tmp/disk.key "$NEW_HOST_DATA/luks_keys/disk.key" \
    --generate-hardware-config nixos-generate-config "./system/machines/$NEW_HOST/hardware-configuration.nix" \
