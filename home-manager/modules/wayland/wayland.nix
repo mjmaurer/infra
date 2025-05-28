@@ -195,7 +195,6 @@ in
         input = {
           "*" = {
             xkb_layout = "us";
-            xkb_options = "caps:swapescape";
           };
         };
         output = {

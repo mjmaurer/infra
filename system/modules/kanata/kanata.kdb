@@ -28,6 +28,8 @@
     rmid  ralt
     rout  rctl ;; Doesn't actually exist on mac, but does on UHK
     rfar  apps ;; Doesn't actually exist on mac, but does on UHK
+
+    slash-mod rmet ;; Make '/' Command on Mac
   )
 )
 
@@ -46,6 +48,8 @@
     rmid  rmet
     rout  apps
     rfar  rctl
+
+    slash-mod rctl ;; Make '/' Ctrl on NixOS
   )
 )
 
@@ -219,7 +223,7 @@
   ;; Semicolon (paren and left S-num) Layer
   d       (tap-hold-release $tap-timeout $hold-time d (layer-while-held semicolon))
   ;       (tap-hold-release $tap-timeout $hold-time ; (layer-while-held semicolon))
-  /       (tap-hold-release $tap-timeout $hold-time / rmet)
+  /       (tap-hold-release $tap-timeout $hold-time / $slash-mod)
   ;; semitap (tap-hold 0 300 (one-shot-press 1000 (layer-while-held semicolon)) rmet)
   ;; ;       (fork @semitap ; (lsft lctl lmet lalt ralt))
 )
