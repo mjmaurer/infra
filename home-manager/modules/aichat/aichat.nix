@@ -36,12 +36,15 @@ in
       "aichat/light.tmTheme" = {
         source = ./light.tmTheme;
       };
+      "aichat/roles" = {
+        source = ./roles;
+      };
     };
 
     modules.commonShell = {
       shellAliases = {
         "a" = "aichat --model gemini:gemini-2.5-flash-preview-04-17 -e";
-        "ai" = "aichat --model gemini:gemini-2.5-flash-preview-04-17";
+        "ai" = "aichat --role quick";
         "gcai" = "git-commit-ai.sh";
       };
     };

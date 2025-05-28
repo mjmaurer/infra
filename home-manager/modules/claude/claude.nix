@@ -11,8 +11,6 @@ let
     inherit lib;
     pkgs = pkgs;
   };
-
-  commandFiles = builtins.readDir ./commands;
 in
 {
   options.modules.claude = {
