@@ -146,13 +146,15 @@ in
       # Notification daemon
       mako = {
         enable = true;
-        anchor = "top-right";
-        backgroundColor = colors.hex colors.dark;
-        textColor = colors.hex colors.light;
-        borderColor = colors.hex colors.primary;
-        borderRadius = 5;
-        borderSize = 2;
-        font = "MesloLGS NF 14";
+        settings = {
+          anchor = "top-right";
+          background-color = colors.hex colors.dark;
+          text-color = colors.hex colors.light;
+          border-color = colors.hex colors.primary;
+          border-radius = 5;
+          border-size = 2;
+          font = "MesloLGS NF 14";
+        };
       };
 
       swayidle = {
@@ -213,8 +215,8 @@ in
         modifier = Super;
         keybindings =
           let
-            hypmods = "Control+${Super}";
-            sysmods = "Control+${Super}+${Alt}";
+            hypmods = "Control_L+Super_L";
+            sysmods = "Control_L+Super_L+Alt_L";
           in
           {
             "${sysmods}+x" = "kill";
@@ -276,7 +278,7 @@ in
             { class = "(?i)pdfpc"; }
           ];
           "5:llm" = [
-            { class = "(?i)chat-gpt"; } 
+            { class = "(?i)chat-gpt"; }
           ];
           "6:notes" = [
             { class = "(?i)obsidian"; }
