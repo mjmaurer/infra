@@ -228,6 +228,12 @@ in
             # Flattening workspace
             "${hypmods}+Shift+f" = "layout stacking";
 
+            # Focus directional
+            "${hypmods}+h" = "focus left";
+            "${hypmods}+j" = "focus down";
+            "${hypmods}+k" = "focus up";
+            "${hypmods}+l" = "focus right";
+
             "${hypmods}+Shift+h" = "move left";
             "${hypmods}+Shift+j" = "move down";
             "${hypmods}+Shift+k" = "move up";
