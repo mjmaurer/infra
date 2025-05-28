@@ -262,28 +262,28 @@ in
         # For 'class', (?i) makes the match case-insensitive.
         assigns = {
           "1:web" = [
-            { class = "(?i)firefox"; }
-            { class = "(?i)brave-browser"; }
-            { class = "(?i)chromium"; }
+            { app_id = "(?i)firefox"; }
+            { app_id = "(?i)brave-browser"; }
+            { app_id = "(?i)chromium"; }
           ];
           "2:terminal" = [
-            { class = "(?i)alacritty"; }
+            { app_id = "(?i)alacritty"; }
           ];
           "3:code" = [
-            { class = "(?i)code"; }
+            { app_id = "(?i)code"; }
           ];
           "4:files" = [
-            { class = "(?i)imv"; }
-            { class = "(?i)pdfpc"; }
+            { app_id = "(?i)imv"; }
+            { app_id = "(?i)pdfpc"; }
           ];
           "5:llm" = [
-            { class = "(?i)chat-gpt"; }
+            { app_id = "(?i)chat-gpt"; }
           ];
           "6:notes" = [
-            { class = "(?i)obsidian"; }
+            { app_id = "(?i)obsidian"; }
           ];
           "7:music" = [
-            { class = "(?i)spotify"; }
+            { app_id = "(?i)spotify"; }
           ];
         };
 
