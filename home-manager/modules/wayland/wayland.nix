@@ -210,7 +210,7 @@ in
         };
         window.border = 2;
         # Sway can only have one main modifier, so we have to manually set most bindings
-        modifier = "Super_L";
+        modifier = "Mod4";
         # Super = "Mod4";
         # Alt = "Mod1";
         keybindings =
