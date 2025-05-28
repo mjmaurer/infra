@@ -1,8 +1,8 @@
 { editor }:
 # https://code.visualstudio.com/api/references/when-clause-contexts
 # To inspect
-# 1. Help -> Toggle Developer Tools (Opens Console) 
-# 2. Run `Developer: Inspect Context Keys` 
+# 1. Help -> Toggle Developer Tools (Opens Console)
+# 2. Run `Developer: Inspect Context Keys`
 let
   editorConf = {
     cursor = {
@@ -20,34 +20,26 @@ let
     };
   };
   cfg = editorConf.${editor};
-  conditionDebugArrows = "inDebugMode && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible";
-  conditionDiffArrows = "textCompareEditorActive && editorTextFocus && !listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible";
-  conditionInlineSuggestArrows = "editorTextFocus && inlineSuggestionVisible";
+  # Useful for when binding arrows (esp up / down arrows)
+  arrowAvoidCond = "!listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible && !inlineEditsVisible";
+  textEditor = "editorTextFocus";
+
+  conditionInlineSuggestArrows = "inlineSuggestionVisible || inlineEditIsVisible";
+  conditionDiffArrows = "textCompareEditorActive && ${textEditor} && ${arrowAvoidCond}";
+  conditionDebugArrows = "inDebugMode && ${textEditor} && ${arrowAvoidCond}";
 in
 [
-  # Vim Ext Fixes (https://github.com/VSCodeVim/Vim/issues/9459#issuecomment-2648156285)
+  # {
+  #   key = "tab";
+  #   command = "list.expand";
+  #   when = "listFocus && treeElementCanExpand && !inputFocus && !treestickyScrollFocused || listFocus && treeElementHasChild && !inputFocus && !treestickyScrollFocused";
+  # }
   {
-    key = "escape";
-    command = "-extension.vim_escape";
-    when = "vim.active && vim.mode == 'Normal'";
+    command = "editor.action.triggerSuggest";
+    key = "alt+d";
+    when = "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly";
   }
-  {
-    # Remove VSCodeVim's handling of tab to enable default handling of tab
-    # e.g. for inline suggestions.
-    key = "tab";
-    command = "-extension.vim_tab";
-  }
-  {
-    key = "right";
-    command = "editor.action.inlineSuggest.commit";
-    when = conditionInlineSuggestArrows;
-  }
-  {
-    key = "shift+right";
-    command = "editor.action.inlineSuggest.acceptNextWord";
-    when = conditionInlineSuggestArrows;
-  }
-  # Diff Editor
+  # ------------------------------- Diff Editor ------------------------------
   {
     command = "workbench.action.compareEditor.nextChange";
     key = "down";
@@ -64,13 +56,7 @@ in
     key = "right";
     when = conditionDiffArrows;
   }
-  # Debug
-  {
-    # This is to unset the comment divider command
-    command = "";
-    key = "alt+x";
-    when = "!inDebugMode";
-  }
+  # ---------------------------------- Debug ---------------------------------
   {
     command = "testing.debugAtCursor";
     key = "alt+e";
@@ -89,15 +75,6 @@ in
     key = "alt+shift+e";
     when = "resourceFilename =~ /.*test\\.(js|jsx|ts|tsx)$/";
   }
-  # Now used for tmux:
-  # {
-  #   command = "workbench.action.debug.start";
-  #   key = "alt+s";
-  # }
-  # {
-  #   command = "editor.debug.action.selectionToWatch";
-  #   key = "alt+shift+s";
-  # }
   {
     command = "workbench.action.debug.stepOver";
     key = "down";
@@ -138,11 +115,7 @@ in
     key = "alt+c";
     when = "inDebugMode";
   }
-  {
-    command = "editor.action.triggerSuggest";
-    key = "alt+d";
-    when = "editorHasCompletionItemProvider && editorTextFocus && !editorReadonly";
-  }
+  # ------------------------------- Misc Layout ------------------------------
   {
     command = "workbench.action.increaseViewSize";
     key = "alt+.";
@@ -166,8 +139,24 @@ in
     command = "workbench.action.togglePanel";
     key = "alt+shift+t";
   }
-  # Chat / AI Misc
-
+  # ----------------------------- Copilot Chat / AI -----------------------------
+  {
+    key = "right";
+    command = "editor.action.inlineSuggest.commit";
+    # Copied except removed "!suggestWidgetVisible"
+    when = "inlineEditIsVisible && tabShouldAcceptInlineEdit && !editorHoverFocused && !editorTabMovesFocus || inlineSuggestionHasIndentationLessThanTabSize && inlineSuggestionVisible && !editorHoverFocused && !editorTabMovesFocus || inlineEditIsVisible && inlineSuggestionHasIndentationLessThanTabSize && inlineSuggestionVisible && !editorHoverFocused && !editorTabMovesFocus || inlineEditIsVisible && inlineSuggestionVisible && tabShouldAcceptInlineEdit && !editorHoverFocused && !editorTabMovesFocus";
+  }
+  {
+    key = "shift+right";
+    command = "editor.action.inlineSuggest.acceptNextWord";
+    when = "inlineSuggestionVisible && ${textEditor}";
+  }
+  {
+    key = "right";
+    command = "editor.action.inlineSuggest.jump";
+    # Copied except removed "!suggestWidgetVisible"
+    when = "inlineEditIsVisible && tabShouldJumpToInlineEdit && !editorHoverFocused && !editorTabMovesFocus";
+  }
   {
     command = "chatEditing.acceptAllFiles";
     key = "alt+enter";
@@ -250,7 +239,7 @@ in
     command = "workbench.panel.chatEditing";
     key = "alt+shift+a";
   }
-  # Terminal (Main) focus
+  # -------------------------- Terminal (Main) focus -------------------------
   {
     args = {
       commands = cfg.closeChat ++ [ "workbench.action.terminal.focusAtIndex2" ];
@@ -275,7 +264,7 @@ in
     key = "alt+t";
     when = "terminalFocus";
   }
-  # Terminal (Aider) focus
+  # ------------------------- Terminal (Aider) focus -------------------------
   {
     args = {
       commands =
@@ -329,7 +318,7 @@ in
     key = "alt+o";
     when = "terminalFocus";
   }
-  # Primary sidebar focus
+  # -------------------------- Primary sidebar focus -------------------------
   {
     command = "workbench.files.action.collapseExplorerFolders";
     key = "alt+shift+i";
@@ -367,5 +356,60 @@ in
     command = "-editor.action.dirtydiff.next";
     key = "alt+f3";
     when = "editorTextFocus && !textCompareEditorActive";
+  }
+  # --------------------------------- Unbind ---------------------------------
+  # Vim Ext Fixes (https://github.com/VSCodeVim/Vim/issues/9459#issuecomment-2648156285)
+  {
+    key = "escape";
+    command = "-extension.vim_escape";
+    when = "vim.active && vim.mode == 'Normal'";
+  }
+  {
+    # Remove VSCodeVim's handling of tab to enable default handling of tab
+    # e.g. for inline suggestions.
+    key = "tab";
+    command = "-extension.vim_tab";
+  }
+  {
+    # Remove tab to complete intellisense
+    key = "tab";
+    command = "-acceptSelectedSuggestion";
+  }
+  {
+    key = "tab";
+    command = "-editor.action.inlineSuggest.jump";
+  }
+  {
+    key = "tab";
+    command = "-editor.action.inlineSuggest.commit";
+  }
+  {
+    # Not sure what this one does
+    key = "tab";
+    command = "-insertNextSuggestion";
+  }
+  {
+    key = "right";
+    command = "-cursorRight";
+  }
+  {
+    key = "left";
+    command = "-cursorLeft";
+  }
+  {
+    key = "up";
+    command = "-cursorUp";
+  }
+  {
+    key = "down";
+    command = "-cursorDown";
+  }
+  {
+    key = "alt+x";
+    command = "-comment-divider.makeSubHeader";
+  }
+  {
+    key = "alt+y";
+    command = "-comment-divider.insertSolidLine";
   }
 ]
