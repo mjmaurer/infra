@@ -8,8 +8,6 @@
 let
   cfg = config.modules.wayland;
   swayfont = "MesloLGS NF 14";
-  Super = "Mod4";
-  Alt = "Mod1";
 in
 {
   options.modules.wayland = {
@@ -212,7 +210,9 @@ in
         };
         window.border = 2;
         # Sway can only have one main modifier, so we have to manually set most bindings
-        modifier = Super;
+        modifier = "Super_L";
+        # Super = "Mod4";
+        # Alt = "Mod1";
         keybindings =
           let
             hypmods = "Control_L+Super_L";
