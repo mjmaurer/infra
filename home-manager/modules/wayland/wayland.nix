@@ -8,6 +8,8 @@
 let
   cfg = config.modules.wayland;
   swayfont = "MesloLGS NF 14";
+  Super = "Mod4";
+  Alt = "Mod1";
 in
 {
   options.modules.wayland = {
@@ -210,18 +212,16 @@ in
         };
         window.border = 2;
         # Sway can only have one main modifier, so we have to manually set most bindings
-        modifier = "Mod4";
-        # Super = "Mod4";
-        # Alt = "Mod1";
+        modifier = Super;
         keybindings =
           let
-            hypmods = "Control_L+Super_L";
-            sysmods = "Control_L+Super_L+Alt_L";
+            hypmods = "Control+${Super}";
+            sysmods = "Control+${Super}+${Alt}";
           in
           {
             "${sysmods}+x" = "kill";
 
-            "${hypmods}+p" = "exec rofi -show run | xargs swaymsg exec --";
+            "${Alt}+p" = "exec rofi -show run | xargs swaymsg exec --";
             "${hypmods}+c" = "reload";
             "${hypmods}+f" = "fullscreen";
             "${hypmods}+Return" = "mode power";
