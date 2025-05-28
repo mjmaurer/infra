@@ -68,29 +68,31 @@ in
       };
 
       defaultKeymap = "viins";
-      initExtraFirst = ''
-        # Show hidden files without needing to type .
-        setopt globdots
+      initContent = lib.mkMerge [
+        (lib.mkBefore ''
+          # Show hidden files without needing to type .
+          setopt globdots
 
-        VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
-        VI_MODE_SET_CURSOR=true
-        ZSH_AUTOSUGGEST_STRATEGY=(history)
-        # https://github.com/NixOS/nix/issues/1577
-        if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
-          . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
-        elif [ "$(uname)" = "Darwin" ]; then
-          echo "WARNING: nix-daemon.sh not found"
-        fi
+          VI_MODE_RESET_PROMPT_ON_MODE_CHANGE=true
+          VI_MODE_SET_CURSOR=true
+          ZSH_AUTOSUGGEST_STRATEGY=(history)
+          # https://github.com/NixOS/nix/issues/1577
+          if [ -e '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh' ]; then
+            . '/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh'
+          elif [ "$(uname)" = "Darwin" ]; then
+            echo "WARNING: nix-daemon.sh not found"
+          fi
 
-        source ${./aichat.zsh}
-        bindkey '^G^G' _aichat_zsh
+          source ${./aichat.zsh}
+          bindkey '^G^G' _aichat_zsh
 
-        # Load theme
-        # fpath+=(${pkgs.zsh-powerlevel10k}/share/zsh/site-functions)
-        # autoload -U promptinit; promptinit
-        # prompt powerlevel10k
-      '';
-      initExtra = commonShell.assembleInitExtra ./.zshrc;
+          # Load theme
+          # fpath+=(${pkgs.zsh-powerlevel10k}/share/zsh/site-functions)
+          # autoload -U promptinit; promptinit
+          # prompt powerlevel10k
+        '')
+        (commonShell.assembleInitExtra ./.zshrc)
+      ];
       # profileExtra = builtins.readFile ./.zprofile;
       history = {
         size = 10000;
