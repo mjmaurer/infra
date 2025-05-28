@@ -20,4 +20,20 @@ Format the response as a conventional commit message, without quotes or explanat
 
 COMMIT_MSG=$(echo "$PROMPT" | aichat --model gemini:gemini-2.5-flash-preview-04-17 --no-stream)
 
-git commit -e -m "$COMMIT_MSG" "$@"
+ykman_output_and_error=$(ykman list -s 2>&1)
+ykman_exit_status=$?
+
+# Check for error conditions
+if [[ $ykman_exit_status -ne 0 ]] || \
+   [[ -z "$ykman_output_and_error" ]] || \
+   echo "$ykman_output_and_error" | grep -q "ERROR"; then
+  no_yk_or_error=true
+else
+  no_yk_or_error=false
+fi
+
+if [[ "$no_yk_or_error" == "true" ]]; then
+  git commit --no-gpg-sign -e -m "$COMMIT_MSG" "$@"
+else
+  git commit -e -m "$COMMIT_MSG" "$@"
+fi
