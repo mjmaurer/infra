@@ -391,19 +391,20 @@ in
   {
     key = "right";
     command = "-cursorRight";
+    when = "!${textEditor}";
   }
-  {
-    key = "left";
-    command = "-cursorLeft";
-  }
-  {
-    key = "up";
-    command = "-cursorUp";
-  }
-  {
-    key = "down";
-    command = "-cursorDown";
-  }
+  # {
+  #   key = "left";
+  #   command = "-cursorLeft";
+  # }
+  # {
+  #   key = "up";
+  #   command = "-cursorUp";
+  # }
+  # {
+  #   key = "down";
+  #   command = "-cursorDown";
+  # }
   {
     key = "alt+x";
     command = "-comment-divider.makeSubHeader";
