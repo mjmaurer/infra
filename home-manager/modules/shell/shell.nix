@@ -122,6 +122,10 @@ in
         # Toggle expanded display on startup
         text = "\\x";
       };
+      ".local/bin/ai-split.sh" = {
+        source = ./scripts/ai-split.sh;
+        executable = true;
+      };
     };
     modules.commonShell = {
       initExtraFirst = ''
@@ -218,6 +222,8 @@ in
         "gpf" = "git pull --ff-only";
         "gpm" = "git pull";
         "gpr" = "git pull --rebase";
+        "gr" = "git restore";
+        "grs" = "git restore --staged";
         "gc" = "git commit -v";
         "gsh" = "_fzf_git_show";
         "gd" = "_fzf_git_diff";
