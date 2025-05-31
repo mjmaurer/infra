@@ -19,13 +19,20 @@ creation_rules:
           - *smac
           - *maple
   # Daily Drivers
-  - path_regex: system/modules/sops/secrets/common-pc.yaml$
+  - path_regex: system/modules/sops/secrets/full.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
         age:
           - *aspen
           - *smac
+  # Servers I occasionally code on
+  - path_regex: system/modules/sops/secrets/minimal.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age:
+          - *maple
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:

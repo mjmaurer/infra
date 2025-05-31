@@ -7,14 +7,21 @@
 }:
 let
   cfg = config.modules.sops;
+  minimalSopsFile = ./secrets/minimal.yaml;
+  fullSopsFile = ./secrets/full.yaml;
 in
 {
 
   options.modules.sops = {
-    includePcSecrets = lib.mkOption {
+    enableFullSecrets = lib.mkOption {
       type = lib.types.bool;
       default = pkgs.stdenv.isDarwin;
       description = "Include personal computer secrets.";
+    };
+    enableMinimalSecrets = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Include minimal secrets.";
     };
   };
 
@@ -37,45 +44,65 @@ in
             neededForUsers = true;
           };
         };
-      }
-
-      (lib.optionalAttrs cfg.includePcSecrets {
-        secrets =
-          let
-            pcSopsFile = ./secrets/common-pc.yaml;
-          in
-          {
-            smbHost = {
-              sopsFile = pcSopsFile;
-            };
-            smbUrl = {
-              sopsFile = pcSopsFile;
-            };
-
-            # TODO: probably want this via sops home-manager module,
-            # but it does create issues with (permissions? I tried but can't remember the error)
-            apiKeyAnthropic = {
-              sopsFile = pcSopsFile;
-            };
-            apiKeyGemini = {
-              sopsFile = pcSopsFile;
-            };
-            apiKeyCodestral = {
-              sopsFile = pcSopsFile;
-            };
-            apiKeyVoyage = {
-              sopsFile = pcSopsFile;
-            };
-            apiKeyOpenai = {
-              sopsFile = pcSopsFile;
-            };
-            apiKeyDeepseek = {
-              sopsFile = pcSopsFile;
-            };
-            apiKeyOpenrouter = {
-              sopsFile = pcSopsFile;
+        templates = {
+          "llm-keys-common" = {
+            owner = config.users.users.${username}.name;
+            content = builtins.toJSON {
+              gemini = config.sops.placeholder.apiKeyGemini;
             };
           };
+        };
+      }
+
+      (lib.optionalAttrs cfg.enableMinimalSecrets {
+        secrets = {
+          apiKeyGemini = {
+            sopsFile = minimalSopsFile;
+          };
+        };
+        templates = {
+          "llm-keys-minimal" = {
+            owner = config.users.users.${username}.name;
+            content = builtins.toJSON {
+              gemini = config.sops.placeholder.apiKeyGemini;
+            };
+          };
+        };
+      })
+
+      (lib.optionalAttrs cfg.enableFullSecrets {
+        secrets = {
+          smbHost = {
+            sopsFile = fullSopsFile;
+          };
+          smbUrl = {
+            sopsFile = fullSopsFile;
+          };
+
+          # TODO: probably want this via sops home-manager module,
+          # but it does create issues with (permissions? I tried but can't remember the error)
+          apiKeyAnthropic = {
+            sopsFile = fullSopsFile;
+          };
+          apiKeyCodestral = {
+            sopsFile = fullSopsFile;
+          };
+          apiKeyGemini = {
+            sopsFile = fullSopsFile;
+          };
+          apiKeyVoyage = {
+            sopsFile = fullSopsFile;
+          };
+          apiKeyOpenai = {
+            sopsFile = fullSopsFile;
+          };
+          apiKeyDeepseek = {
+            sopsFile = fullSopsFile;
+          };
+          apiKeyOpenrouter = {
+            sopsFile = fullSopsFile;
+          };
+        };
         templates = {
           "pro-25-preview.yaml" = {
             owner = config.users.users.${username}.name;
@@ -143,6 +170,14 @@ in
               apiKey: ${config.sops.placeholder.apiKeyOpenrouter}
               url: https://openrouter.ai/api/v1
             '';
+          };
+          "llm-keys-full" = {
+            owner = config.users.users.${username}.name;
+            content = builtins.toJSON {
+              gemini = config.sops.placeholder.apiKeyGemini;
+              openai = config.sops.placeholder.apiKeyOpenai;
+              anthropic = config.sops.placeholder.apiKeyAnthropic;
+            };
           };
           "shell.env" = {
             # mode = "0400";
