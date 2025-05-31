@@ -8,6 +8,12 @@ This AI_README.md file provides project information specifically for use in LLM 
 
 This section documents select project dependencies. Each dependency below lists where you can find relevant documentation / information. When authoring a change that involves a given dependency, you should use the links below to look up additional context if needed.
 
+## Kanata
+
+This is a keystroke remapping tool.
+
+Documentation: https://raw.githubusercontent.com/jtroo/kanata/refs/heads/main/docs/config.adoc
+
 ## Impermanence
 
 This is a Nix module that let's you define which file system directories should be persisted (assuming you have a root partition that is wiped every reboot)
