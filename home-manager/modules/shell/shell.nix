@@ -7,7 +7,6 @@
   ...
 }:
 let
-  inherit (config.home) packages;
   templateFile = "${config.xdg.dataHome}/nix-templates/flake-template.nix";
   cfg = config.modules.commonShell;
 in
@@ -235,7 +234,7 @@ in
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "s" = "rgt";
-        "as" = "print -z $(_fzf_search_alias)";
+        "als" = "print -z $(_fzf_search_alias)";
         "fdd" = "fd -td";
         "fdf" = "fd -tf";
         "nix-shell" = "nix-shell --command 'zsh'";

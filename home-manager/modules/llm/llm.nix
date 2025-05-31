@@ -54,6 +54,7 @@ in
     '';
 
     home.packages = [
+
       (pkgs.writeShellScriptBin "llm" ''
         export LLM_USER_PATH="${cfgHome}"
         exec "${llmPyEnv}/bin/llm" "$@"
@@ -84,6 +85,13 @@ in
         }"
       '')
     ];
+
+    home.file = {
+      ".local/bin/git-commit-ai.sh" = {
+        source = ./git-commit-ai.sh;
+        executable = true;
+      };
+    };
 
     xdg.configFile = {
       "llm/keys.json" = lib.mkIf (keysPath != null) {

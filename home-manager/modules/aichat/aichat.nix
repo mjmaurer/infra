@@ -23,10 +23,6 @@ in
       "Library/Application Support/aichat/config.yaml" = {
         source = ./config.yaml;
       };
-      ".local/bin/git-commit-ai.sh" = {
-        source = ./git-commit-ai.sh;
-        executable = true;
-      };
     };
 
     xdg.configFile = {

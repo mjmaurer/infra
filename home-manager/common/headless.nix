@@ -31,6 +31,7 @@
     ../modules/claude/claude.nix
     ../modules/intellibar/intellibar.nix
     ../modules/aichat/aichat.nix
+    ../modules/llm/llm.nix
     ../modules/neovim/neovim.nix
   ];
 
@@ -40,6 +41,7 @@
     aider.enable = lib.mkDefault true;
     claude.enable = lib.mkDefault true;
     aichat.enable = lib.mkDefault true;
+    llm.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;
     git.enable = lib.mkDefault true;
   };
