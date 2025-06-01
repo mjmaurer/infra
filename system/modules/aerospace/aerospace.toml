@@ -65,6 +65,7 @@ cmd-ctrl-g = 'workspace files --auto-back-and-forth'
 cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
+cmd-ctrl-i = 'workspace chat --auto-back-and-forth'
 cmd-ctrl-semicolon = 'workspace other --auto-back-and-forth'
 cmd-ctrl-quote = 'workspace creds --auto-back-and-forth'
 
@@ -102,6 +103,12 @@ cmd-ctrl-shift-z = [
 cmd-ctrl-shift-v = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window games',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-i = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window chat',
     'layout tiling',
     'join-with up',
 ]
@@ -301,6 +308,14 @@ check-further-callbacks = false
 run = 'move-node-to-workspace games'
 
 [[on-window-detected]]
+# if.app-id = 'org.alacritty'
+if.app-name-regex-substring = '(?i)alacritty'
+if.window-title-regex-substring = '(?i)AI'
+check-further-callbacks = false
+run = ['move-node-to-workspace chat']
+# run = ['layout floating', 'move-node-to-workspace chat']
+
+[[on-window-detected]]
 if.app-id = 'org.alacritty'
 check-further-callbacks = false
 run = 'move-node-to-workspace terminal'
@@ -362,11 +377,10 @@ check-further-callbacks = false
 run = ['layout floating']
 
 # Catch-all for 'other'
-# [[on-window-detected]]
-# if.app-name-regex-substring = '^(?!.*system).*$'
-# if.app-name-regex-substring = ''
-# check-further-callbacks = false
-# run = ['layout floating']
+[[on-window-detected]]
+if.app-name-regex-substring = '^(?!.*com\.apple).*$'
+check-further-callbacks = false
+run = 'move-node-to-workspace other'
 
 
 # [[on-window-detected]]
