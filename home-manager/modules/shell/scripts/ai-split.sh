@@ -23,6 +23,6 @@ tmux kill-session -t ai 2>/dev/null || true
 export AI_CMD="$@"
 alacritty \
   --working-directory ~/.local/state/llm \
-  -o font.size=15 \
+  -o font.size=13 \
   --title "$WINDOW_TITLE" \
   --command ~/.nix-profile/bin/zsh -lc "tmuxp load ai"

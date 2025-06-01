@@ -9,6 +9,42 @@ let
   # Define all packages in a recursive attribute set
   pythonPackages = rec {
 
+    streamdown = pythonPkg.pkgs.buildPythonPackage rec {
+      pname = "streamdown";
+      version = "0.30.0";
+      format = "pyproject";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/day50-dev/Streamdown/archive/refs/tags/v0.30.0.tar.gz";
+        sha256 = "sha256-Uox8kJHPRjeQ2S1TUO3aBWnGQRDMvFWhFd/HMs4T87c=";
+      };
+
+      nativeBuildInputs = with pythonPkg.pkgs; [
+        setuptools
+        wheel
+        hatchling
+      ];
+      # Dependencies
+      propagatedBuildInputs = with pythonPkg.pkgs; [
+        pygments
+        appdirs
+        toml
+        wcwidth
+        pylatexenc
+        term-image
+      ];
+
+      doCheck = false;
+
+      pythonImportsCheck = [ "streamdown" ];
+
+      meta = with lib; {
+        description = "Stream markdown from llm";
+        homepage = "https://github.com/day50-dev/Streamdown";
+        license = licenses.mit;
+      };
+    };
+
     llm-cmd-comp = pythonPkg.pkgs.buildPythonPackage rec {
       pname = "llm-cmd-comp";
       version = "1.1.1";

@@ -30,8 +30,11 @@ let
       customPackages.llm-fragments-github
       customPackages.llm-fragments-site-text
       customPackages.llm-cmd-comp
+      customPackages.streamdown
     ]
   );
+  mdFragPath = "$XDG_CONFIG_HOME/llm/fragments/markdown-output.md";
+  conciseFragPath = "$XDG_CONFIG_HOME/llm/fragments/concise.md";
   keysPath =
     if osConfig != null then
       if builtins.hasAttr "llm-keys-full" osConfig.sops.templates then
@@ -59,11 +62,17 @@ in
         export LLM_USER_PATH="${cfgHome}"
         exec "${llmPyEnv}/bin/llm" "$@"
       '')
+      (pkgs.writeShellScriptBin "sd" ''
+        exec "${llmPyEnv}/bin/sd" "$@"
+      '')
+      (pkgs.writeShellScriptBin "llmmd" ''
+        llm -f ${mdFragPath} "$@" | sd
+      '')
       (pkgs.writeShellScriptBin "llmweb" ''
-        llm -f site:$1 "$${@:2}"
+        llm -f site:$1 -f ${mdFragPath} "$${@:2}" | sd
       '')
       (pkgs.writeShellScriptBin "llmwebsummarize" ''
-        llm -f site:$1 "${
+        llm -f site:$1 -f ${mdFragPath} "${
           builtins.concatStringsSep " " [
             "Summarize this web page"
             "by providing the most interesting details."
@@ -71,10 +80,10 @@ in
         }"
       '')
       (pkgs.writeShellScriptBin "llmgithub" ''
-        llm -f github:$1 "$${@:2}"
+        llm -f github:$1 -f ${mdFragPath} "$${@:2}" | sd
       '')
       (pkgs.writeShellScriptBin "llmgithubsummarize" ''
-        llm -f github:$1 "${
+        llm -f github:$1 -f ${mdFragPath} "${
           builtins.concatStringsSep " " [
             "Summarize this GitHub repository."
             "Give a brief overview of its purpose,"
@@ -82,7 +91,13 @@ in
             "any listed comparison to other tools,"
             "and any notable aspects."
           ]
-        }"
+        }" | sd
+      '')
+      (pkgs.writeShellScriptBin "llmfollowup" ''
+        llm -f ${conciseFragPath} -f ${mdFragPath} -c "$@" | sd
+      '')
+      (pkgs.writeShellScriptBin "llmbar" ''
+        llm -f ${conciseFragPath} -f ${mdFragPath} -c "$@" | sd
       '')
     ];
 
@@ -103,6 +118,9 @@ in
       "llm/templates" = {
         source = ./templates;
       };
+      "llm/fragments" = {
+        source = ./fragments;
+      };
       "llm/default_model.txt" = {
         text = defaultModel;
       };
@@ -110,11 +128,10 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        a = "llm -t quick";
-        ai = "llm chat -t quick";
-        ac = "llmcmd";
-        aic = "llmcmd";
-        ais = "llm -o google_search 1";
+        a = "llmcmd";
+        ac = "sd --exec \"llm chat -t quick\"";
+        ai = "llm -t quick";
+        af = "llmfollowup";
         aiw = "llmweb";
         aiws = "llmwebsummarize";
         aig = "llmgithub";
