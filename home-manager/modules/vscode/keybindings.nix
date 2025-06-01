@@ -21,7 +21,7 @@ let
   };
   cfg = editorConf.${editor};
   # Useful for when binding arrows (esp up / down arrows)
-  arrowAvoidCond = "!listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible && !inlineEditsVisible";
+  arrowAvoidCond = "!listHasSelectionOrFocus && !suggestWidgetVisible && !inlineSuggestionVisible && !inlineEditsVisible && !inlineChatFocused && !inlineChatFocused && !inChat";
   textEditor = "editorTextFocus";
 
   conditionInlineSuggestArrows = "inlineSuggestionVisible || inlineEditIsVisible";
@@ -214,12 +214,12 @@ in
   }
   {
     command = "workbench.action.chat.nextCodeBlock";
-    key = "down";
+    key = "shift+down";
     when = "inChat";
   }
   {
     command = "workbench.action.chat.previousCodeBlock";
-    key = "up";
+    key = "shift+up";
     when = "inChat";
   }
   {
