@@ -9,9 +9,10 @@
 {
 
   imports = [
+    ../../modules/graphics/intel-skylake.nix
+
     ./hardware-configuration.nix
     ./disko.nix
-    ../../modules/intel-skylake.nix
   ];
 
   config = {
