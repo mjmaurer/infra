@@ -1,8 +1,14 @@
 export PATH="$PATH:/opt/homebrew/bin:~/.nix-profile/bin"
 
 export WINDOW_TITLE="AI"
-export WINDOW_ID=$(aerospace list-windows --all --json | jq -r '.[] | select(."app-name" == "alacritty" and ."window-title" == $WINDOW_TITLE) | ."window-id"' | xargs)
-echo "Window Title: $WINDOW_TITLE"
+export WINDOW_ID=$(
+  aerospace list-windows --all --json \
+    | jq -r --arg title "$WINDOW_TITLE" \
+      '.[] | select(."app-name" == "alacritty" and ."window-title" == $title) | ."window-id"' \
+    | xargs
+)
+
+echo "Query: '$@'"
 echo "Window ID: $WINDOW_ID"
 
 if [[ -z "${WINDOW_ID// /}" ]]; then
@@ -14,4 +20,9 @@ fi
 # Kill existing tmux session named 'ai' if it exists
 tmux kill-session -t ai 2>/dev/null || true
 
-alacritty --title $WINDOW_TITLE --command ~/.nix-profile/bin/zsh -lc 'AI_CMD="$1" tmuxp load ai'
+export AI_CMD="$@"
+alacritty \
+  --working-directory ~/.local/state/llm \
+  -o font.size=15 \
+  --title "$WINDOW_TITLE" \
+  --command ~/.nix-profile/bin/zsh -lc "tmuxp load ai"
