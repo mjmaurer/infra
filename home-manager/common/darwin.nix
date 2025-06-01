@@ -6,7 +6,10 @@
 }:
 
 {
-  imports = [ ../modules/karabiner/karabiner.nix ];
+  imports = [
+    ../modules/karabiner/karabiner.nix
+    ../modules/alfred/alfred.nix
+  ];
 
   # This might be set by the home-manager module for Darwin
   # This is kept for HM-only systems
@@ -16,6 +19,7 @@
     # TODO Could enable after: https://github.com/NixOS/nixpkgs/issues/366581
     firefox.enable = false;
     wayland.enable = false;
+    alfred.enable = true;
     intellibar.enable = lib.mkDefault true;
     commonShell = {
       enableShellTmuxTimeout = true;
