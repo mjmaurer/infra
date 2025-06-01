@@ -155,7 +155,10 @@ rec {
             ../system/common/headed-minimal.nix
             inputs.sops-nix.nixosModules.sops
             inputs.disko.nixosModules.disko
-            # impermanence.nixosModules.impermanence
+            ../system/common/headed-minimal.nix
+
+            ../system/modules/impermanence.nix
+            inputs.impermanence.nixosModules.impermanence
           ],
           extraSystemModules ? [ ],
           defaultHomeModules ? [

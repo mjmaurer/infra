@@ -12,6 +12,8 @@
     zfs rollback -r ${zfsRootPool}/root@blank
   '';
 
+  fileSystems."/etc/ssh".neededForBoot = true;
+
   # Enable impermanence module
   services.impermanence = {
     enable = true;
