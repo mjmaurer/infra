@@ -60,10 +60,10 @@ in
         exec "${llmPyEnv}/bin/llm" "$@"
       '')
       (pkgs.writeShellScriptBin "llmweb" ''
-        llm chat -f site:$1 "$${@:2}"
+        llm -f site:$1 "$${@:2}"
       '')
       (pkgs.writeShellScriptBin "llmwebsummarize" ''
-        llm chat -f site:$1 "${
+        llm -f site:$1 "${
           builtins.concatStringsSep " " [
             "Summarize this web page"
             "by providing the most interesting details."
@@ -71,10 +71,10 @@ in
         }"
       '')
       (pkgs.writeShellScriptBin "llmgithub" ''
-        llm chat -f github:$1 "$${@:2}"
+        llm -f github:$1 "$${@:2}"
       '')
       (pkgs.writeShellScriptBin "llmgithubsummarize" ''
-        llm chat -f github:$1 "${
+        llm -f github:$1 "${
           builtins.concatStringsSep " " [
             "Summarize this GitHub repository."
             "Give a brief overview of its purpose,"
@@ -90,6 +90,9 @@ in
       ".local/bin/git-commit-ai.sh" = {
         source = ./git-commit-ai.sh;
         executable = true;
+      };
+      ".local/state/llm/keep" = {
+        text = "";
       };
     };
 
@@ -107,11 +110,11 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        # Only flash supports search
-        a = "llm chat -t quick";
-        ai = "llm -t quick";
+        a = "llm -t quick";
+        ai = "llm chat -t quick";
         ac = "llmcmd";
-        ais = "llm -m ${flash} -o google_search 1";
+        aic = "llmcmd";
+        ais = "llm -o google_search 1";
         aiw = "llmweb";
         aiws = "llmwebsummarize";
         aig = "llmgithub";
