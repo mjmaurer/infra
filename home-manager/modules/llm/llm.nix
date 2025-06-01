@@ -99,6 +99,12 @@ in
       (pkgs.writeShellScriptBin "llmbar" ''
         llm -f ${conciseFragPath} -f ${mdFragPath} -c "$@" | sd
       '')
+      (pkgs.writeShellScriptBin "llmhistory" ''
+        llm logs --json -n 20 \
+          | jq -r '.[].prompt | gsub("\n"; " ") | .[0:250]' \
+          | awk '!seen[$0]++ { print $0; print "" }'
+      '')
+      '')
     ];
 
     home.file = {
@@ -136,6 +142,7 @@ in
         aiws = "llmwebsummarize";
         aig = "llmgithub";
         aigs = "llmgithubsummarize";
+        ah = "llmhistory";
       };
     };
   };
