@@ -114,7 +114,7 @@ in
               type = "zfs_fs";
               mountpoint = "/";
               # Create a blank snapshot of root on creation (if it doesn't exist)
-              postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^${cfg.zfsRootPool}/root@blank$' || zfs snapshot ${zfsRootPool}/root@blank";
+              postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^${cfg.zfsRootPool}/root@blank$' || zfs snapshot ${cfg.zfsRootPool}/root@blank";
             };
             # ------------------- Everything below will be persisted -------------------
             "root/nix" = {
