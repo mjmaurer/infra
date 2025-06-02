@@ -104,7 +104,6 @@ in
           | jq -r '.[].prompt | gsub("\n"; " ") | .[0:250]' \
           | awk '!seen[$0]++ { print $0; print "" }'
       '')
-      '')
     ];
 
     home.file = {
@@ -147,3 +146,4 @@ in
     };
   };
 }
+ 

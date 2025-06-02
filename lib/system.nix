@@ -1,9 +1,6 @@
 { inputs, ... }:
 rec {
   defaultUsername = "mjmaurer";
-  defaultPersistMntPath = "/persist";
-  defaultBackupMntPath = "/backup";
-  defaultZfsRootPool = "zroot";
   forEachSystem =
     f:
     inputs.flake-utils.lib.eachDefaultSystem (
@@ -28,9 +25,6 @@ rec {
       derivationName,
       username ? defaultUsername,
       extraSpecialArgs ? { },
-      persistMntPath ? defaultPersistMntPath,
-      backupMntPath ? defaultBackupMntPath,
-      zfsRootPool ? defaultZfsRootPool,
     }:
     rec {
       mkSpecialArgs = rec {
@@ -48,9 +42,6 @@ rec {
           username
           derivationName
           system
-          persistMntPath
-          backupMntPath
-          zfsRootPool
           ;
 
         pkgs-latest = import inputs.nixpkgs-latest {
