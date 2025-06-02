@@ -90,7 +90,7 @@ in
                   content = {
                     type = "zfs";
                     # Can add this to multiple zfs partitions (for other machine config)
-                    pool = zfsRootPool;
+                    pool = cfg.zfsRootPool;
                   };
                 };
               };
@@ -100,7 +100,7 @@ in
       };
       # Might need activation script for second pool: https://github.com/nix-community/disko/issues/359
       zpool = {
-        ${zfsRootPool} = {
+        ${cfg.zfsRootPool} = {
           type = "zpool";
           # mode = "mirror";
           rootFsOptions = {
