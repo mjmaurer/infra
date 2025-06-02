@@ -1,7 +1,4 @@
 {
-  zfsRootPool,
-  persistMntPath,
-  backupMntPath,
   lib,
   config,
   ...
@@ -28,15 +25,10 @@ in
       type = lib.types.str;
       default = "/persist";
     };
-    backupMntPath = lib.mkOption {
-      type = lib.types.str;
-      default = "/backup";
-    };
   };
   config = {
     fileSystems = lib.mkIf config.modules.impermanence.enabled {
       "${cfg.persistMntPath}".neededForBoot = true;
-      "${cfg.backupMntPath}".neededForBoot = true;
     };
     disko.devices = {
       disk = {
@@ -122,7 +114,7 @@ in
               type = "zfs_fs";
               mountpoint = "/";
               # Create a blank snapshot of root on creation (if it doesn't exist)
-              postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^${zfsRootPool}/root@blank$' || zfs snapshot ${zfsRootPool}/root@blank";
+              postCreateHook = "zfs list -t snapshot -H -o name | grep -E '^${cfg.zfsRootPool}/root@blank$' || zfs snapshot ${zfsRootPool}/root@blank";
             };
             # ------------------- Everything below will be persisted -------------------
             "root/nix" = {
@@ -139,10 +131,6 @@ in
             "root/persist" = lib.mkIf config.modules.impermanence.enabled {
               type = "zfs_fs";
               mountpoint = cfg.persistMntPath;
-            };
-            "root/persist/backup" = lib.mkIf config.modules.impermanence.enabled {
-              type = "zfs_fs";
-              mountpoint = cfg.backupMntPath;
             };
             # Home directory is permanent by default
             "root/persist/home" = {

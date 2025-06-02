@@ -29,25 +29,13 @@
         "/etc/duplicacy"
         "/etc/ssh"
         "/etc/udev"
+        "/etc/wpa_supplicant.conf"
         "/var/log"
         "/etc/NetworkManager/system-connections"
-        "/var/lib/NetworkManager"
-        "/var/lib/systemd"
-        "/var/lib/nixos" # Crucial for machine-id, UIDs/GIDs
-        "/var/lib/bluetooth"
+        "/var/lib"
       ];
       files = [
         "/etc/machine-id"
-      ];
-    };
-
-    environment.persistence.${config.modules.disko-common.backupMntPath} = {
-      # Hide these mounts from the sidebar of file managers
-      # hideMounts = true;
-
-      directories = [
-        "/var/lib/docker"
-        "/etc/wpa_supplicant.conf"
       ];
     };
 
