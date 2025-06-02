@@ -21,14 +21,14 @@ in
       type = lib.types.str;
       default = "zroot";
     };
-    persistMntPath = lib.mkOption {
+    impermanenceMntPath = lib.mkOption {
       type = lib.types.str;
-      default = "/persist";
+      default = "/impermanence";
     };
   };
   config = {
     fileSystems = lib.mkIf config.modules.impermanence.enabled {
-      "${cfg.persistMntPath}".neededForBoot = true;
+      "${cfg.impermanenceMntPath}".neededForBoot = true;
     };
     disko.devices = {
       disk = {
@@ -125,17 +125,17 @@ in
                 atime = "off";
               };
             };
+            # Home directory is permanent by default
+            "root/home" = {
+              type = "zfs_fs";
+              mountpoint = "/home";
+            };
             # Files not otherwise included in a dataset are impermanent.
             # impermanence.nix will persist marked files / directories to one
             # of these two datasets.
-            "root/persist" = lib.mkIf config.modules.impermanence.enabled {
+            "root/impermanence" = lib.mkIf config.modules.impermanence.enabled {
               type = "zfs_fs";
-              mountpoint = cfg.persistMntPath;
-            };
-            # Home directory is permanent by default
-            "root/persist/home" = {
-              type = "zfs_fs";
-              mountpoint = "/home";
+              mountpoint = cfg.impermanenceMntPath;
             };
           };
         };

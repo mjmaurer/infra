@@ -19,7 +19,7 @@
     '';
 
     # Enable impermanence module
-    environment.persistence.${config.modules.disko-common.persistMntPath} = {
+    environment.persistence.${config.modules.disko-common.impermanenceMntPath} = {
       # Hide these mounts from the sidebar of file managers
       # hideMounts = true;
 
