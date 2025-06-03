@@ -113,6 +113,8 @@ rec {
             ../system/common/darwin.nix
             inputs.sops-nix.darwinModules.sops
             # impermanence.nixosModules.impermanence
+
+            ./common.nix
           ],
           extraSystemModules ? [ ],
           defaultHomeModules ? [
@@ -148,8 +150,14 @@ rec {
             inputs.disko.nixosModules.disko
             ../system/common/headed-minimal.nix
 
-            ../system/modules/impermanence.nix
-            inputs.impermanence.nixosModules.impermanence
+            # The ordering of impermanence, sops (for user password) and ssh was making it very
+            # hard to get this working. Especially considering I need to support
+            # initial install and future rebuilds.
+            # See: https://github.com/Mic92/sops-nix/issues/149
+            # ../system/modules/impermanence.nix
+            # inputs.impermanence.nixosModules.impermanence
+
+            ./common.nix
           ],
           extraSystemModules ? [ ],
           defaultHomeModules ? [

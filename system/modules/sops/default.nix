@@ -9,11 +9,6 @@ let
   cfg = config.modules.sops;
   minimalSopsFile = ./secrets/minimal.yaml;
   fullSopsFile = ./secrets/full.yaml;
-  maybeImpermPrefix =
-    if (builtins.hasAttr "impermanence" config.modules) && config.modules.impermanence.enabled then
-      "${config.modules.impermanence.impermanenceMntPath}"
-    else
-      "";
 in
 {
 
@@ -34,9 +29,9 @@ in
     sops = lib.mkMerge [
 
       {
-        # Generate age key based on SSH key to this path
-        age.sshKeyPaths = [ "${maybeImpermPrefix}/etc/ssh/ssh_host_ed25519_key" ];
-        age.keyFile = "${maybeImpermPrefix}/var/lib/sops-nix/key.txt";
+        age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
+        # Generate age key based on above SSH key to this path
+        age.keyFile = "/var/lib/sops-nix/key.txt";
         age.generateKey = true;
 
         # Not using host GPG keys, so unset default

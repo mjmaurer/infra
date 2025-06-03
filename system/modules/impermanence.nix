@@ -32,8 +32,8 @@ in
         "/etc/ssh"
         "/etc/udev"
         "/etc/wpa_supplicant.conf"
-        "/var/log"
         "/etc/NetworkManager/system-connections"
+        "/var/log"
         "/var/lib"
       ];
       files = [

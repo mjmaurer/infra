@@ -9,7 +9,7 @@
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
     nix-colors.url = "github:misterio77/nix-colors";
     nix-std.url = "github:chessai/nix-std";
-    impermanence.url = "github:nix-community/impermanence";
+    # impermanence.url = "github:nix-community/impermanence";
 
     darwin = {
       url = "github:lnl7/nix-darwin";
