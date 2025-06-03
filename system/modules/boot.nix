@@ -6,7 +6,8 @@
   ...
 }:
 {
-  fileSystems."/etc/ssh".neededForBoot = true;
+  # fileSystems."/etc/ssh".neededForBoot = true;
+  # fileSystems."/var/lib/sops-nix".neededForBoot = true; # Needed for sops key
 
   # This assumes boot parition is unencrypted, and root parititon is encrypted with luks.
   # https://wiki.archlinux.org/title/Dm-crypt/Encrypting_an_entire_system#LUKS_on_a_partition
