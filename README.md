@@ -42,6 +42,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 ```sh
 cd ~/infra
 NEW_HOST=<machine_name>
+# Or live-iso.localdomain
 IP=live-iso
 PKPATH=<my_liveiso_ssh_key_path>
 nix run github:nix-community/nixos-anywhere -- \
@@ -52,7 +53,7 @@ nix run github:nix-community/nixos-anywhere -- \
    --build-on remote --print-build-logs
 ```
 
-1. Remove USB, reboot and enjoy! NOTE: You should probably use headless/remote reboot first thing to make sure it works (see remote LUKS section below) 
+1. Remove USB, reboot and enjoy! NOTE: You should probably use headless/remote reboot first thing to make sure it works (`sshk root@maple-init`). See remote LUKS section below for more info
 
 ## Install: Darwin
 
@@ -159,9 +160,9 @@ sudo nix run github:nix-community/disko -- --mode mount ~/infra/system/machines/
 Just ssh like normal, however, use a hostname of `${hostname}-init`. This way, tailscale doesn't interfere, and we don't have to deal with known_host issues due to changing key.
 
 ```
-ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 -v root@maple-init
+sshk root@maple-init
 # Wait for boot
-ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222 -v root@maple
+sshk mjmaurer@maple
 # Note: Could also use `maple.localdomain` for non-tailscale 
 # Note: If you can't login after boot, it could be because tailscale didnt start up correctly
 ```
