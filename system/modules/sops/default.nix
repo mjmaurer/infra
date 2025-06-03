@@ -11,7 +11,7 @@ let
   fullSopsFile = ./secrets/full.yaml;
   maybeImpermPrefix =
     if (builtins.hasAttr "impermanence" config.modules) && config.modules.impermanence.enabled then
-      "${config.modules.impermanence.impermanenceMntPath}/"
+      "${config.modules.impermanence.impermanenceMntPath}"
     else
       "";
 in
