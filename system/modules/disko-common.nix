@@ -5,6 +5,7 @@
 }:
 let
   cfg = config.modules.disko-common;
+  impermCfg = config.modules.impermanence;
 in
 {
   options.modules.disko-common = {
@@ -21,15 +22,20 @@ in
       type = lib.types.str;
       default = "zroot";
     };
-    impermanenceMntPath = lib.mkOption {
-      type = lib.types.str;
-      default = "/impermanence";
-    };
   };
   config = {
-    fileSystems = lib.mkIf config.modules.impermanence.enabled {
-      "${cfg.impermanenceMntPath}".neededForBoot = true;
+
+    fileSystems = lib.mkIf impermCfg.enabled {
+      "${impermCfg.impermanenceMntPath}".neededForBoot = true;
     };
+
+    # Configure the ZFS rollback on boot
+    boot.initrd.postDeviceCommands = lib.mkIf impermCfg.enabled (
+      lib.mkAfter ''
+        zfs rollback -r ${impermCfg.zfsRootPool}/root@blank
+      ''
+    );
+
     disko.devices = {
       disk = {
         main = {
@@ -133,9 +139,9 @@ in
             # Files not otherwise included in a dataset are impermanent.
             # impermanence.nix will persist marked files / directories to one
             # of these two datasets.
-            "root/impermanence" = lib.mkIf config.modules.impermanence.enabled {
+            "root/impermanence" = lib.mkIf impermCfg.enabled {
               type = "zfs_fs";
-              mountpoint = cfg.impermanenceMntPath;
+              mountpoint = impermCfg.impermanenceMntPath;
             };
           };
         };

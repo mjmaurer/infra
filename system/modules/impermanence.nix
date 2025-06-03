@@ -4,22 +4,24 @@
   pkgs,
   ...
 }:
+let
+  cfg = config.modules.impermanence;
+in
 {
   options.modules.impermanence = {
     enabled = lib.mkOption {
       type = lib.types.bool;
       default = true;
     };
+    impermanenceMntPath = lib.mkOption {
+      type = lib.types.str;
+      default = "/impermanence";
+    };
   };
 
-  config = lib.mkIf config.modules.impermanence.enabled {
-    # Configure the ZFS rollback on boot
-    boot.initrd.postDeviceCommands = lib.mkAfter ''
-      zfs rollback -r ${config.modules.disko-common.zfsRootPool}/root@blank
-    '';
-
+  config = lib.mkIf cfg.enabled {
     # Enable impermanence module
-    environment.persistence.${config.modules.disko-common.impermanenceMntPath} = {
+    environment.persistence.${cfg.impermanenceMntPath} = {
       # Hide these mounts from the sidebar of file managers
       # hideMounts = true;
 
