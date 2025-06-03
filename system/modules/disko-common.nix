@@ -32,7 +32,7 @@ in
     # Configure the ZFS rollback on boot
     boot.initrd.postDeviceCommands = lib.mkIf impermCfg.enabled (
       lib.mkAfter ''
-        zfs rollback -r ${impermCfg.zfsRootPool}/root@blank
+        zfs rollback -r ${cfg.zfsRootPool}/root@blank
       ''
     );
 
