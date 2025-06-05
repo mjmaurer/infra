@@ -63,6 +63,17 @@
               extraSystemModules = [ ./system/machines/maple ];
             };
 
+        willow =
+          (sys.withConfig {
+            system = "x86_64-linux";
+            derivationName = "willow";
+          }).mkNixosSystem
+            {
+              homeStateVersion = "25.05";
+              systemStateVersion = "24.05";
+              extraSystemModules = [ ./system/machines/willow ];
+            };
+
         live-iso =
           (sys.withConfig {
             system = "x86_64-linux";
