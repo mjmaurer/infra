@@ -14,6 +14,8 @@
     }; # or 'i965'
   };
 
+  boot.kernelModules = [ "coretemp" ];
+
   hardware = {
     # Should be set in hardware-configuration.nix:
     # cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware; Should be set in hardware-configuration.nix

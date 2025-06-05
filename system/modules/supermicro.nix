@@ -1,0 +1,61 @@
+{
+  config,
+  lib,
+  pkgs,
+  derivationName,
+  username,
+  ...
+}:
+let
+  # Supermicro Fan Control
+  smfc = {
+    pname = "smfc";
+    version = "v3.8.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "petersulyok";
+      repo = "smfc";
+      tag = "v3.8.0";
+      hash = "sha256-huuibfcvY0Bua0g1desUyFaPyi1y4EyYPWRR+xt/iYA=";
+    };
+  };
+in
+{
+
+  config = {
+    environment = {
+      systemPackages = [
+        pkgs.ipmitool
+        smfc
+      ];
+    };
+
+    boot.kernelModules = [
+      "ipmi_si"
+      "ipmi_devintf"
+    ];
+
+    # environment.etc."smfc.yaml".text = ''
+    #   ipmi:
+    #     interface: kcs        # or lanplus + host/user/pass
+    #   zones:
+    #     CPU:
+    #       sensors:  [ "CPU Temp" ]
+    #       fans:     [ "FAN1", "FAN2", "FAN3" ]
+    #       curve:    { 30: 20, 45: 40, 55: 70, 65: 100 }
+    #     SYS:
+    #       sensors:  [ "System Temp" ]
+    #       fans:     [ "FAN4", "FAN5", "FAN6" ]
+    #       curve:    { 25: 20, 40: 50, 55: 80, 65: 100 }
+    # '';
+
+    # systemd.services.smfc = {
+    #   description = "Supermicro Fan Control daemon";
+    #   wantedBy = [ "multi-user.target" ];
+    #   after = [ "network-online.target" ];
+    #   serviceConfig = {
+    #     ExecStart = "${pkgs.nur.repos.xddxdd.smfc}/bin/smfc --config /etc/smfc.yaml";
+    #     Restart = "always";
+    #   };
+    # };
+  };
+}

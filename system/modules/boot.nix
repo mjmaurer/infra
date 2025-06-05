@@ -35,6 +35,7 @@
     };
     # Connect via dhcp in initrd with hostname ${derivationName}-init
     kernelParams = [ "ip=::::${derivationName}-init::dhcp" ];
+    kernelModules = [ "drivetemp" ]; # For disk temperature monitoring
     initrd = {
       # Run: lspci -k | grep -EA3 'VGA|3D|Display'
       # Early loading so the passphrase prompt appears on external displays

@@ -10,12 +10,14 @@
 
   imports = [
     ../../modules/graphics/intel.nix
+    ../../modules/supermicro.nix
 
     ./hardware-configuration.nix
     ./disko.nix
   ];
 
   config = {
+    # services.auto-cpufreq.enable = true;
 
     modules.sops.enableMinimalSecrets = true;
 

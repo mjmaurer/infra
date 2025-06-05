@@ -38,7 +38,6 @@
     };
 
     # Misc settings from: https://blog.ktz.me/how-to-enable-intel-quicksync-on-nixos-with-a-supermicro-x13sae-f-and-an-intel-i5-13600k-2/
-    # boot.kernelModules = [ "drivetemp" ];
     # boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
     # boot.kernelParams = [
     #   "i915.fastboot=1"
