@@ -7,6 +7,7 @@ keys:
     - &smac age19rf3p8aa4g4deyp3tpcujtf4hcd7x3aqdm3ppnnju45fx0wwupqqgvs45f
     - &aspen age17pf8qd9zefu470e8q2sa23w4ws8k7wgth5rdc2ejsn3462ae9fusuul83c
     - &maple age1vgdqnptd3zawh6yew778m0z36y7e7jllygc83wrezq6calsxqg0qhun5t3
+    - &willow age1mya8weyrutxpszdd992xtepfrt9zvz0dumzmxvtuja7gnrwwgglsqxwmdk
 
 creation_rules:
   # --------------------------------- Common --------------------------------- #
@@ -18,6 +19,7 @@ creation_rules:
           - *aspen
           - *smac
           - *maple
+          - *willow
   # Daily Drivers
   - path_regex: system/modules/sops/secrets/full.yaml$
     key_groups:
@@ -33,6 +35,7 @@ creation_rules:
           - *mjmaurer
         age:
           - *maple
+          - *willow
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:
@@ -40,3 +43,9 @@ creation_rules:
           - *mjmaurer
         age:
           - *maple
+  - path_regex: system/machines/willow/secrets.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age:
+          - *willow
