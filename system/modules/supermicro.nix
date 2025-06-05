@@ -11,6 +11,7 @@ let
   smfc = pkgs.python3.pkgs.buildPythonApplication {
     pname = "smfc";
     version = "v3.8.0";
+    format = "pyproject";
     src = pkgs.fetchFromGitHub {
       owner = "petersulyok";
       repo = "smfc";
