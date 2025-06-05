@@ -8,8 +8,8 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 ## Pre-Install
 
-- Clone this repo to `~/infra`
-- Run `nix develop "~/infra#new-host"` to enter a shell which walks through steps of creating keys / config for new host. The following assumes you have a NEW_HOST_DATA environment variable created by this.
+- Clone this repo to `~/infra` and cd into it
+- Run `nix develop ".#new-host"` to enter a shell which walks through steps of creating keys / config for new host. The following assumes you have a NEW_HOST_DATA environment variable created by this.
 - For Home Manager / Darwin:
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to run `export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations"` first. This can be removed once `--extra-experimental-features` on the commands below starts working again.
