@@ -71,13 +71,13 @@ in
       requires = ["openipmi.service"];
       after = ["syslog.target" "openipmi.service"];
       serviceConfig = {
-        ExecStart = "${smfc}/bin/smfc -l 4 -c /etc/smfc.conf";
+        ExecStart = "${smfc}/bin/smfc -l 4 -o 0 -c /etc/smfc.conf";
         Type = "simple";
         User = "smfc";
         Group = "ipmiusers";
         Restart = "always";
         PrivateTmp = true;
-        # ProtectSystem = "full";
+        ProtectSystem = "full";
         ProtectHome = "yes";
         NoNewPrivileges = true;
       };
