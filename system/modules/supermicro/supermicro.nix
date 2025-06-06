@@ -47,6 +47,8 @@ in
       "ipmi_devintf"
     ];
 
+    # May need to reset BMC if there are issues with fan control: `ipmitool bmc reset cold`
+    # I also set the fan control to "Standard" in impi webui, but not sure if that did anything
     # environment.etc."smfc.yaml".text = ''
     #   ipmi:
     #     interface: kcs        # or lanplus + host/user/pass

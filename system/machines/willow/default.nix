@@ -10,7 +10,7 @@
 
   imports = [
     ../../modules/graphics/intel.nix
-    ../../modules/supermicro.nix
+    ../../modules/supermicro/supermicro.nix
 
     ./hardware-configuration.nix
     ./disko.nix
