@@ -47,19 +47,17 @@ in
     ];
 
     users = {
-      groups.ipmi = { };
-      groups.hwmon = { };
-      users.hwmon = {
+      groups.ipmiusers = { };
+      users.smfc = {
         isSystemUser = true;
-        group = "hwmon"; # primary group
-        extraGroups = [ "ipmi" ]; # ← access to /dev/ipmi*
-        description = "hardware‑monitoring service account";
+        group = "ipmiusers";
+        description = "SMFC User";
       };
     };
 
     services.udev.extraRules = ''
-      # Allow the ipmi group to talk to /dev/ipmi*
-      SUBSYSTEM=="ipmi", KERNEL=="ipmi*", GROUP="ipmi", MODE="0660"
+      # Allow the ipmiusers group to talk to /dev/ipmi*
+      SUBSYSTEM=="ipmi", KERNEL=="ipmi*", GROUP="ipmiusers", MODE="0660"
     '';
 
     # May need to reset BMC if there are issues with fan control: `ipmitool bmc reset cold`
@@ -73,12 +71,11 @@ in
       serviceConfig = {
         ExecStart = "${smfc}/bin/smfc -c /etc/smfc.conf";
         Type = "simple";
-        User = "hwmon";
-        Group = "hwmon";
+        User = "smfc";
+        Group = "ipmiusers";
         Restart = "always";
-        SupplementaryGroups = [ "ipmi" ];
         PrivateTmp = true;
-        ProtectSystem = "strict";
+        ProtectSystem = "full";
         ProtectHome = "yes";
         NoNewPrivileges = true;
       };
