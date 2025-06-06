@@ -11,6 +11,7 @@ let
   smfc = pkgs.python3.pkgs.buildPythonApplication {
     pname = "smfc";
     version = "4.0.0b11";
+    format = "pyproject";
 
     src = pkgs.fetchPypi {
       pname = "smfc";
