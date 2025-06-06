@@ -46,20 +46,6 @@ in
       "ipmi_devintf"
     ];
 
-    users = {
-      groups.ipmiusers = { };
-      users.smfc = {
-        isSystemUser = true;
-        group = "ipmiusers";
-        description = "SMFC User";
-      };
-    };
-
-    services.udev.extraRules = ''
-      # Allow the ipmiusers group to talk to /dev/ipmi*
-      SUBSYSTEM=="ipmi", KERNEL=="ipmi*", GROUP="ipmiusers", MODE="0660"
-    '';
-
     # May need to reset BMC if there are issues with fan control: `ipmitool bmc reset cold`
     # I also set the fan control to "Standard" in impi webui, but not sure if that did anything
 
@@ -68,13 +54,9 @@ in
     systemd.services.smfc = {
       description = "Supermicro Fan Control daemon";
       wantedBy = [ "multi-user.target" ];
-      requires = ["openipmi.service"];
-      after = ["syslog.target" "openipmi.service"];
       serviceConfig = {
-        ExecStart = "${smfc}/bin/smfc -l 4 -o 0 -c /etc/smfc.conf";
+        ExecStart = "${smfc}/bin/smfc -c /etc/smfc.conf";
         Type = "simple";
-        User = "smfc";
-        Group = "ipmiusers";
         Restart = "always";
         PrivateTmp = true;
         ProtectSystem = "full";
