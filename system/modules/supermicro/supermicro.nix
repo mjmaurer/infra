@@ -21,10 +21,10 @@ let
     propagatedBuildInputs = with pkgs.python3.pkgs; [
       pyudev
     ];
-    # nativeBuildInputs = with pkgs.python3.pkgs; [
-    #   setuptools
-    #   wheel
-    # ];
+    nativeBuildInputs = with pkgs.python3.pkgs; [
+      setuptools
+      wheel
+    ];
     meta = with lib; {
       description = "Supermicro Fan Control utility";
       homepage = "https://github.com/petersulyok/smfc";
