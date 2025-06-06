@@ -2,8 +2,6 @@
   config,
   lib,
   pkgs,
-  derivationName,
-  username,
   ...
 }:
 let
@@ -40,6 +38,7 @@ in
         pkgs.ipmitool
         smfc
       ];
+      etc."smfc.conf".source = ./smfc.conf;
     };
 
     boot.kernelModules = [
@@ -47,30 +46,41 @@ in
       "ipmi_devintf"
     ];
 
+    users = {
+      groups.ipmi = { };
+      users.hwmon = {
+        isSystemUser = true;
+        group = "hwmon"; # primary group
+        extraGroups = [ "ipmi" ]; # ← access to /dev/ipmi*
+        description = "hardware‑monitoring service account";
+      };
+    };
+
+    services.udev.extraRules = ''
+      # Allow the ipmi group to talk to /dev/ipmi*
+      SUBSYSTEM=="ipmi", KERNEL=="ipmi*", GROUP="ipmi", MODE="0660"
+    '';
+
     # May need to reset BMC if there are issues with fan control: `ipmitool bmc reset cold`
     # I also set the fan control to "Standard" in impi webui, but not sure if that did anything
-    # environment.etc."smfc.yaml".text = ''
-    #   ipmi:
-    #     interface: kcs        # or lanplus + host/user/pass
-    #   zones:
-    #     CPU:
-    #       sensors:  [ "CPU Temp" ]
-    #       fans:     [ "FAN1", "FAN2", "FAN3" ]
-    #       curve:    { 30: 20, 45: 40, 55: 70, 65: 100 }
-    #     SYS:
-    #       sensors:  [ "System Temp" ]
-    #       fans:     [ "FAN4", "FAN5", "FAN6" ]
-    #       curve:    { 25: 20, 40: 50, 55: 80, 65: 100 }
-    # '';
 
-    # systemd.services.smfc = {
-    #   description = "Supermicro Fan Control daemon";
-    #   wantedBy = [ "multi-user.target" ];
-    #   after = [ "network-online.target" ];
-    #   serviceConfig = {
-    #     ExecStart = "${pkgs.nur.repos.xddxdd.smfc}/bin/smfc --config /etc/smfc.yaml";
-    #     Restart = "always";
-    #   };
-    # };
+    # Unfortunately, Supermicro limited the ability to set fan thresholds in the latest BMC
+    # See: https://github.com/petersulyok/smfc/issues/33
+    systemd.services.smfc = {
+      description = "Supermicro Fan Control daemon";
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        ExecStart = "${smfc}/bin/smfc -c /etc/smfc.conf";
+        Type = "simple";
+        User = "hwmon";
+        Group = "hwmon";
+        Restart = "always";
+        SupplementaryGroups = [ "ipmi" ];
+        PrivateTmp = true;
+        ProtectSystem = "strict";
+        ProtectHome = "yes";
+        NoNewPrivileges = true;
+      };
+    };
   };
 }
