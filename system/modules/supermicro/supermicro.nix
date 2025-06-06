@@ -10,21 +10,20 @@ let
   # Supermicro Fan Control
   smfc = pkgs.python3.pkgs.buildPythonApplication {
     pname = "smfc";
-    version = "v3.8.0";
-    format = "pyproject";
-    src = pkgs.fetchFromGitHub {
-      owner = "petersulyok";
-      repo = "smfc";
-      tag = "v3.8.0";
-      hash = "sha256-huuibfcvY0Bua0g1desUyFaPyi1y4EyYPWRR+xt/iYA=";
+    version = "4.0.0b11";
+
+    src = pkgs.fetchPypi {
+      pname = "smfc";
+      version = "4.0.0b11";
+      hash = "";
     };
     propagatedBuildInputs = with pkgs.python3.pkgs; [
       pyudev
     ];
-    nativeBuildInputs = with pkgs.python3.pkgs; [
-      setuptools
-      wheel
-    ];
+    # nativeBuildInputs = with pkgs.python3.pkgs; [
+    #   setuptools
+    #   wheel
+    # ];
     meta = with lib; {
       description = "Supermicro Fan Control utility";
       homepage = "https://github.com/petersulyok/smfc";
