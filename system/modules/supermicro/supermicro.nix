@@ -48,6 +48,7 @@ in
 
     users = {
       groups.ipmi = { };
+      groups.hwmon = { };
       users.hwmon = {
         isSystemUser = true;
         group = "hwmon"; # primary group
