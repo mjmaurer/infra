@@ -71,7 +71,7 @@ in
       requires = ["openipmi.service"];
       after = ["syslog.target" "openipmi.service"];
       serviceConfig = {
-        ExecStart = "${smfc}/bin/smfc -c /etc/smfc.conf";
+        ExecStart = "${smfc}/bin/smfc -l 4 -c /etc/smfc.conf";
         Type = "simple";
         User = "smfc";
         Group = "ipmiusers";
