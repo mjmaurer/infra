@@ -15,7 +15,7 @@ let
     src = pkgs.fetchPypi {
       pname = "smfc";
       version = "4.0.0b11";
-      hash = "";
+      hash = "sha256-RUGb2ETk+FLWfBL6e7FkdU525H+8al1jszZJoIh6WzA=";
     };
     propagatedBuildInputs = with pkgs.python3.pkgs; [
       pyudev
