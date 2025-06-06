@@ -68,6 +68,8 @@ in
     systemd.services.smfc = {
       description = "Supermicro Fan Control daemon";
       wantedBy = [ "multi-user.target" ];
+      requires = ["openipmi.service"];
+      after = ["syslog.target" "openipmi.service"];
       serviceConfig = {
         ExecStart = "${smfc}/bin/smfc -c /etc/smfc.conf";
         Type = "simple";
