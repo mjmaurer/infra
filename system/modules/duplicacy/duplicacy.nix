@@ -334,31 +334,7 @@ in
       # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
       # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
       systemd.services =
-        (lib.mkIf (reposWithAutoBackup != { }) {
-          "duplicacy" = {
-            Unit.Description = "Duplicacy backup service (runs backups for all autoBackup repos)";
-            wantedBy = [ "multi-user.target" ]; # Start at boot
-            after = [ "network-online.target" ];
-            requires = [ "network-online.target" ];
-            Service = {
-              Type = "oneshot";
-              Restart = "no";
-              Group = systemdGroupName;
-              ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
-                #!/bin/sh
-                set -e
-                echo "Starting Duplicacy auto-backups..."
-                ${lib.concatMapStringsSep "\n" (repoKey: ''
-                  echo "Backing up repository: ${escapeStringForShellDoubleQuotes repoKey}"
-                  ${dupBackupScript}/bin/dup-backup "${escapeStringForShellDoubleQuotes repoKey}"
-                '') (lib.attrNames reposWithAutoBackup)}
-                echo "Duplicacy auto-backups finished."
-              '';
-              EnvironmentFile = config.sops.templates.duplicacyConf.path;
-            };
-          };
-        })
-        // (lib.mapAttrs' (
+        (lib.mapAttrs' (
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacy-init-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
@@ -377,7 +353,7 @@ in
         ) reposWithAutoInit)
         // (lib.mapAttrs' (
           repoKey: repoCfgItem:
-          lib.nameValuePair "duplicacy-restore-${repoKey}" {
+          lib.nameValuePair "duplicacy-init-restore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = [ "multi-user.target" ];
             after = [ "duplicacy-init-${repoKey}.service" ];
@@ -390,7 +366,31 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
-        ) reposWithAutoInitRestore);
+        ) reposWithAutoInitRestore)
+        // (lib.mkIf (reposWithAutoBackup != { }) {
+          "duplicacy" = {
+            description = "Duplicacy backup service (runs backups for all autoBackup repos)";
+            wantedBy = [ "multi-user.target" ]; # Start at boot
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
+            serviceConfig = {
+              Type = "oneshot";
+              Restart = "no";
+              Group = systemdGroupName;
+              ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
+                #!/bin/sh
+                set -e
+                echo "Starting Duplicacy auto-backups..."
+                ${lib.concatMapStringsSep "\n" (repoKey: ''
+                  echo "Backing up repository: ${escapeStringForShellDoubleQuotes repoKey}"
+                  ${dupBackupScript}/bin/dup-backup "${escapeStringForShellDoubleQuotes repoKey}"
+                '') (lib.attrNames reposWithAutoBackup)}
+                echo "Duplicacy auto-backups finished."
+              '';
+              EnvironmentFile = config.sops.templates.duplicacyConf.path;
+            };
+          };
+        });
 
       systemd.timers.duplicacy = lib.mkIf (reposWithAutoBackup != { }) {
         Unit.Description = "Timer for Duplicacy backup service";
