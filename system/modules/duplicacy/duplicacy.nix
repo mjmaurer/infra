@@ -377,6 +377,7 @@ in
             after = [ "network-online.target" ];
             requires = [ "network-online.target" ];
             restartIfChanged = false;
+            reloadIfChanged = false;
             serviceConfig = {
               Type = "simple"; # oneshot blocks nix-rebuild
               RemainAfterExit = true; # Needed for restartIfChanged
@@ -397,6 +398,7 @@ in
             after = [ "network-online.target" ];
             requires = [ "network-online.target" ];
             restartIfChanged = false;
+            reloadIfChanged = false;
             serviceConfig = {
               Type = "simple"; # oneshot blocks nix-rebuild
               RemainAfterExit = true; # Needed for restartIfChanged
