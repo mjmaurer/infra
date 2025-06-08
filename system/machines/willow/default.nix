@@ -26,7 +26,7 @@
         repoId = "nas";
         localRepoPath = "/mnt/nas-safety-tmp-sdd";
         autoInit = true;
-        autoRestore = true;
+        autoInitRestore = true;
       };
     };
 
