@@ -88,7 +88,8 @@ let
       fi
 
       echo "Running backup for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-      ${pkgs.duplicacy}/bin/duplicacy backup ${cfg.defaultBackupAndRestoreArgs} "$@"
+      echo "Args: ${cfg.defaultBackupArgs} ${lib.concatStringsSep " " "$@"}"
+      ${pkgs.duplicacy}/bin/duplicacy backup ${cfg.defaultBackupArgs} "$@"
     '';
 
   makeDupRestoreScript =
@@ -142,7 +143,8 @@ let
       fi
 
       echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-      ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultBackupAndRestoreArgs} "$@"
+      echo "Args: ${cfg.defaultRestoreArgs} ${lib.concatStringsSep " " "$@"}"
+      ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultRestoreArgs} "$@"
     '';
 
   makeDupInitScript =
@@ -302,9 +304,14 @@ in
       default = "Mon *-*-* 05:00:00 America/New_York";
       description = "The cron schedule for automatic backups. Only used if autoBackup is enabled.";
     };
-    defaultBackupAndRestoreArgs = lib.mkOption {
+    defaultBackupArgs = lib.mkOption {
       type = lib.types.str;
       default = "-limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
+      description = "Default arguments for backup and restore operations.";
+    };
+    defaultRestoreArgs = lib.mkOption {
+      type = lib.types.str;
+      default = "-limit-rate 100000 -threads 4 -stats";
       description = "Default arguments for backup and restore operations.";
     };
     # Adding any 'autoBackup' requires giving machine access to secrets.yaml in .sops.yaml.
@@ -374,8 +381,8 @@ in
           lib.nameValuePair "duplicacyInit-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
             wantedBy = [ "multi-user.target" ]; # Start at boot
-            after = [ "network-online.target" ];
-            requires = [ "network-online.target" ];
+            # after = [ "network-online.target" ];
+            # requires = [ "network-online.target" ];
             restartIfChanged = false;
             reloadIfChanged = false;
             serviceConfig = {
@@ -395,8 +402,8 @@ in
           lib.nameValuePair "duplicacyInitRestore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = [ "multi-user.target" ];
-            after = [ "network-online.target" ];
-            requires = [ "network-online.target" ];
+            # after = [ "network-online.target" ];
+            # requires = [ "network-online.target" ];
             restartIfChanged = false;
             reloadIfChanged = false;
             serviceConfig = {
