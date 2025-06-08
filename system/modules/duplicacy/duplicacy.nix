@@ -11,6 +11,8 @@ let
   backupCmdStr = "backup ${backupAndRestore}";
   restoreCmdStr = "restore ${backupAndRestore}";
 
+  systemdGroupName = "duplicacy-secrets";
+
   escapeStringForShellDoubleQuotes =
     str: lib.replaceChars [ "\\" "\"" "$" "`" ] [ "\\\\" "\\\"" "\\$" "\\\`" ] str;
 
@@ -341,6 +343,7 @@ in
             Service = {
               Type = "oneshot";
               Restart = "no";
+              Group = systemdGroupName;
               ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
                 #!/bin/sh
                 set -e
@@ -371,6 +374,7 @@ in
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true; # Important for dependencies
+              Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -392,6 +396,7 @@ in
             ];
             serviceConfig = {
               Type = "oneshot";
+              Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -426,8 +431,8 @@ in
         };
         templates = {
           "duplicacyConf" = {
-            mode = "0440";
-            group = "TODO"; # Keep as is, per instruction not to change unrelated parts
+            mode = "0040";
+            group = systemdGroupName;
             content = ''
               DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
               DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
@@ -439,6 +444,8 @@ in
           };
         };
       };
+
+      users.groups.${systemdGroupName} = { };
     }
   );
 }
