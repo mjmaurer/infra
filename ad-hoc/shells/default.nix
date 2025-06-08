@@ -80,7 +80,42 @@ in
           echo "Aborted."
           exit 1
         fi
+
+        # Prompt for luks keys 
+        read -p "Do you want to provide a luks disk ecryption key? (y/n): " LUKS_CHOICE
+        LUKS_GEN=""
+        if [[ "$LUKS_CHOICE" == "y" || "$LUKS_CHOICE" == "Y" ]]; then
+          mkdir -p "$NEW_HOST_LUKS"
+          LUKS_GEN="true"
+        fi
+
+        if [[ -n "$LUKS_GEN" ]]; then
+          echo -e "\n\n------------------ Creating a disk encryption key file: -----------------\n\n"
+
+          # Loop until passwords match
+          while true; do
+            echo "Please enter a passphrase for disk encryption (will not be echoed):"
+            read -s DISK_PASSPHRASE
+            echo "Please confirm the passphrase:"
+            read -s DISK_PASSPHRASE_CONFIRM
+
+            if [[ "$DISK_PASSPHRASE" == "$DISK_PASSPHRASE_CONFIRM" ]]; then
+              break
+            else
+              echo "Error: Passphrases do not match. Please try again."
+            fi
+          done
+
+          # Write the passphrase to the key file
+          echo "$DISK_PASSPHRASE" > "/tmp/disk.key"
+          echo "Disk encryption key created at /tmp/disk.key"
+        fi
         sudo nix run github:nix-community/disko/latest -- --mode destroy,format,mount "$@"
+        echo "Disko complete"
+        if [[ -n "$LUKS_GEN" ]]; then
+          echo "Removing disk encryption key file."
+          rm -f /tmp/disk.key
+        fi
       '')
       (pkgs.writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
