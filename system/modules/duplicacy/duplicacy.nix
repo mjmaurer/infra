@@ -376,8 +376,10 @@ in
             wantedBy = [ "multi-user.target" ]; # Start at boot
             after = [ "network-online.target" ];
             requires = [ "network-online.target" ];
+            restartIfChanged = false;
             serviceConfig = {
-              Type = "oneshot";
+              Type = "simple"; # oneshot blocks nix-rebuild
+              RemainAfterExit = true; # Needed for restartIfChanged
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
@@ -394,8 +396,10 @@ in
             wantedBy = [ "multi-user.target" ];
             after = [ "network-online.target" ];
             requires = [ "network-online.target" ];
+            restartIfChanged = false;
             serviceConfig = {
-              Type = "oneshot";
+              Type = "simple"; # oneshot blocks nix-rebuild
+              RemainAfterExit = true; # Needed for restartIfChanged
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
