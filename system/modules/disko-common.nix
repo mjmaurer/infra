@@ -101,7 +101,6 @@ in
       zpool = {
         ${cfg.zfsRootPool} = {
           type = "zpool";
-          # mode = "mirror";
           rootFsOptions = {
             # These are inherited to all child datasets as the default value
             canmount = "off";
