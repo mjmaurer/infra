@@ -388,7 +388,17 @@ in
       # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
       # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
       systemd.services =
-        (lib.mapAttrs' (
+        {
+          fakeDup = {
+            description = "Fake Duplicacy service for testing";
+            wantedBy = [ "multi-user.target" ];
+            serviceConfig = {
+              ExecStart = "echo 'This is a fake Duplicacy service for testing purposes.'";
+              Type = "simple";
+            };
+          };
+        }
+        // (lib.mapAttrs' (
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacy-init-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
