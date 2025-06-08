@@ -427,8 +427,8 @@ in
               DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
               BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
             '';
-            # Restart duplicacy.service if it exists when secrets change
-            restartUnits = [ "duplicacy.service" ];
+            # Reload duplicacy.service if it exists when secrets change
+            reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
           };
         };
       };
