@@ -25,7 +25,6 @@
     ../modules/shell/shell.nix
     ../modules/crypt/crypt.nix
     ../modules/git/git.nix
-    ../modules/duplicacy/duplicacy.nix
     ../modules/tmux/tmux.nix
     ../modules/aider/aider.nix
     ../modules/claude/claude.nix

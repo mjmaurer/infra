@@ -20,5 +20,11 @@
     ../modules/ssh.nix
 
     ../modules/sops
+    ../modules/duplicacy/duplicacy.nix
   ];
+
+  config = {
+    # Just installs the packages, not the services
+    modules.duplicacy.enable = true;
+  };
 }
