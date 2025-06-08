@@ -371,7 +371,7 @@ in
       initServices = (
         lib.mapAttrs' (
           repoKey: repoCfgItem:
-          lib.nameValuePair "duplicacy-init-${repoKey}" {
+          lib.nameValuePair "duplicacyInit-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
             wantedBy = [ "multi-user.target" ]; # Start at boot
             after = [ "network-online.target" ];
@@ -392,7 +392,7 @@ in
       initRestoreServices = (
         lib.mapAttrs' (
           repoKey: repoCfgItem:
-          lib.nameValuePair "duplicacy-init-restore-${repoKey}" {
+          lib.nameValuePair "duplicacyInitRestore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = [ "multi-user.target" ];
             after = [ "network-online.target" ];
