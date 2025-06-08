@@ -398,7 +398,7 @@ in
               Type = "oneshot";
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
-              ExecStart = "${dupInitScript}/bin/dup-init --restore ${escapeStringForShellDoubleQuotes repoKey}";
+              ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
