@@ -259,7 +259,7 @@ let
         fi
         
         # Filter for "Snapshot $REPO_ID_VAL revision ...", get last line, extract 4th field (revision number)
-        LATEST_REV_ID=$(echo "$LIST_OUTPUT_ERR" | grep "Snapshot $REPO_ID_VAL revision" | tail -n 1 | awk '{print $4}')
+        LATEST_REV_ID=$(echo "$LIST_OUTPUT_ERR" | grep "Snapshot $REPO_ID_VAL revision" | tail -n 1 | ${pkgs.gawk}/bin/awk '{print $4}')
 
         if [ -z "$LATEST_REV_ID" ]; then
           echo "Info: No snapshot revisions found for repository ID '$REPO_ID_VAL' matching 'Snapshot $REPO_ID_VAL revision ...'."
