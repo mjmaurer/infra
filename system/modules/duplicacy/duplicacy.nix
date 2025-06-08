@@ -88,7 +88,7 @@ let
       fi
 
       echo "Running backup for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-      echo "Args: ${cfg.defaultBackupArgs} ${lib.concatStringsSep " " "$@"}"
+      echo 'Args: ${cfg.defaultBackupArgs} "$@"'
       ${pkgs.duplicacy}/bin/duplicacy backup ${cfg.defaultBackupArgs} "$@"
     '';
 
@@ -143,7 +143,7 @@ let
       fi
 
       echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-      echo "Args: ${cfg.defaultRestoreArgs} ${lib.concatStringsSep " " "$@"}"
+      echo 'Args: ${cfg.defaultRestoreArgs} "$@"'
       ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultRestoreArgs} "$@"
     '';
 
