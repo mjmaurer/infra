@@ -1,14 +1,14 @@
 {
   lib,
   config,
-  pkgs,
+  pkgs-latest,
   ...
 }:
 let
-  # aerospace = pkgs.aerospace;
-  aerospace = import ./deriv.nix {
-    inherit pkgs lib;
-  };
+  aerospace = pkgs-latest.aerospace;
+  # aerospace = import ./deriv.nix {
+  #   inherit pkgs lib;
+  # };
 in
 {
   environment.systemPackages = [ aerospace ];
