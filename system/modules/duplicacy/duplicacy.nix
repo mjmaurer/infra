@@ -402,7 +402,7 @@ in
         Install.WantedBy = [ "timers.target" ];
       };
 
-      sops = lib.mkIf (reposWithAutoBackup != { }) {
+      sops = lib.mkIf (reposWithAutoBackup != { } || reposWithAutoInit != { }) {
         secrets = {
           duplicacyB2Id = {
             sopsFile = ./secrets.yaml;
@@ -428,7 +428,7 @@ in
               BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
             '';
             # Restart duplicacy.service if it exists when secrets change
-            restartUnits = "duplicacy.service";
+            restartUnits = [ "duplicacy.service" ];
           };
         };
       };
