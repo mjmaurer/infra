@@ -350,6 +350,7 @@ in
 
   config = lib.mkIf cfg.enable (
     let
+      # Will return a subset of cfg.repos
       filterRepos = pred: lib.filterAttrs (name: repoCfg: pred repoCfg) cfg.repos;
       reposWithAutoBackup = filterRepos (repoCfg: repoCfg.autoBackup);
       reposWithAutoInit = filterRepos (repoCfg: repoCfg.autoInit);
@@ -396,7 +397,6 @@ in
             requires = [ "network-online.target" ];
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true; # Important for dependencies
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
@@ -409,8 +409,8 @@ in
           lib.nameValuePair "duplicacy-init-restore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = [ "multi-user.target" ];
-            after = [ "duplicacy-init-${repoKey}.service" ];
-            requires = [ "duplicacy-init-${repoKey}.service" ];
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             serviceConfig = {
               Type = "oneshot";
               Group = systemdGroupName;
