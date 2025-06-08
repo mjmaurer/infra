@@ -68,10 +68,19 @@ in
       (pkgs.writeShellScriptBin "updatenode" ''
         (cd ./home-manager/modules/node && node2nix - -i ./node-packages.json -c node-import.nix)
       '')
-
       (pkgs.writeShellScriptBin "sopsnew" ''
         # Just a reminder. Use this for new hosts.
         sops "$@"
+      '')
+      (pkgs.writeShellScriptBin "disko-run" ''
+        echo "This takes a path to a disko.nix patch file."
+        echo "WARNING: This will destroy, format, and mount disks. Are you sure? [y/N]"
+        read -r confirm
+        if [ "$confirm" != "y" ]; then
+          echo "Aborted."
+          exit 1
+        fi
+        sudo nix run github:nix-community/disko/latest -- --mode destroy,format,mount "$@"
       '')
       (pkgs.writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
