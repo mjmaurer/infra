@@ -36,6 +36,13 @@ creation_rules:
         age:
           - *maple
           - *willow
+  # --------------------------- Specific Services ----------------------------- #
+  - path_regex: system/modules/duplicacy/secrets.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age:
+          - *willow
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:
