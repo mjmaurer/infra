@@ -7,9 +7,6 @@
 let
   cfg = config.modules.duplicacy;
   repoIds = [ "nas" ];
-  backupAndRestore = " -limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
-  backupCmdStr = "backup ${backupAndRestore}";
-  restoreCmdStr = "restore ${backupAndRestore}";
 
   systemdGroupName = "duplicacy-secrets";
 
@@ -39,10 +36,6 @@ let
     echo "Status of Duplicacy timer (system-wide):"
     systemctl list-timers duplicacy.timer
   '';
-
-  # The usageHint generation needs cfg.repos, which is not fully available here.
-  # Scripts will generate their own hints based on the evaluated config.
-  # We pass cfg as an argument to a function that generates the script string.
 
   makeDupBackupScript =
     pkgs: cfg':
@@ -95,7 +88,7 @@ let
       fi
 
       echo "Running backup for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-      ${pkgs.duplicacy}/bin/duplicacy ${backupCmdStr} "$@"
+      ${pkgs.duplicacy}/bin/duplicacy backup ${cfg.defaultBackupAndRestoreArgs} "$@"
     '';
 
   makeDupRestoreScript =
@@ -149,7 +142,7 @@ let
       fi
 
       echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-      ${pkgs.duplicacy}/bin/duplicacy ${restoreCmdStr} "$@"
+      ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultBackupAndRestoreArgs} "$@"
     '';
 
   makeDupInitScript =
@@ -251,6 +244,16 @@ in
   options.modules.duplicacy = {
     # Just installs duplicacy and basic scripts
     enable = lib.mkEnableOption "duplicacy";
+    autoBackupCron = lib.mkOption {
+      type = lib.types.str;
+      default = "Mon *-*-* 05:00:00 America/New_York";
+      description = "The cron schedule for automatic backups. Only used if autoBackup is enabled.";
+    };
+    defaultBackupAndRestoreArgs = lib.mkOption {
+      type = lib.types.str;
+      default = "-limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
+      description = "Default arguments for backup and restore operations.";
+    };
     # Adding any 'autoBackup' requires giving machine access to secrets.yaml in .sops.yaml.
     repos = lib.mkOption {
       type = lib.types.attrsOf (
@@ -408,13 +411,13 @@ in
         Unit.Description = "Timer for Duplicacy backup service";
         Timer = {
           Unit = "duplicacy.service";
-          OnCalendar = "Mon *-*-* 05:00:00 America/New_York";
+          OnCalendar = cfg.autoBackupCron;
           Persistent = true; # Catch up on missed runs
         };
         Install.WantedBy = [ "timers.target" ];
       };
 
-      sops = {
+      sops = lib.mkIf (reposWithAutoBackup != { }) {
         secrets = {
           duplicacyB2Id = {
             sopsFile = ./secrets.yaml;
@@ -431,7 +434,7 @@ in
         };
         templates = {
           "duplicacyConf" = {
-            mode = "0040";
+            mode = "0440"; # Readable by owner/group
             group = systemdGroupName;
             content = ''
               DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
@@ -440,7 +443,7 @@ in
               BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
             '';
             # Restart duplicacy.service if it exists when secrets change
-            restartUnits = lib.optional (reposWithAutoBackup != { }) "duplicacy.service";
+            restartUnits = "duplicacy.service";
           };
         };
       };
