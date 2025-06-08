@@ -367,38 +367,9 @@ in
         else
           null
       );
-    in
-    {
-      environment.systemPackages = with pkgs; [
-        duplicacy
 
-        dupLogScript
-        dupActivateScript
-        dupStatusScript
-        dupBackupScript
-        dupRestoreScript
-        dupInitScript
-        dupBackupInitScript
-      ];
-
-      # modules.nix = {
-      #   unfreePackages = [ "duplicacy" ];
-      # };
-
-      # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
-      # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
-      systemd.services =
-        {
-          fakeDup = {
-            description = "Fake Duplicacy service for testing";
-            wantedBy = [ "multi-user.target" ];
-            serviceConfig = {
-              ExecStart = "echo 'This is a fake Duplicacy service for testing purposes.'";
-              Type = "simple";
-            };
-          };
-        }
-        // (lib.mapAttrs' (
+      initServices = (
+        lib.mapAttrs' (
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacy-init-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
@@ -413,8 +384,10 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
-        ) reposWithAutoInit)
-        // (lib.mapAttrs' (
+        ) reposWithAutoInit
+      );
+      initRestoreServices = (
+        lib.mapAttrs' (
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacy-init-restore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
@@ -429,8 +402,11 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
-        ) reposWithAutoInitRestore)
-        // (lib.mkIf (reposWithAutoBackup != { }) {
+        ) reposWithAutoInitRestore
+      );
+
+      backupServices = (
+        lib.mkIf (reposWithAutoBackup != { }) {
           "duplicacy" = {
             description = "Duplicacy backup service (runs backups for all autoBackup repos)";
             wantedBy = [ "multi-user.target" ]; # Start at boot
@@ -453,7 +429,33 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           };
-        });
+        }
+      );
+    in
+    {
+      environment.systemPackages = with pkgs; [
+        duplicacy
+
+        dupLogScript
+        dupActivateScript
+        dupStatusScript
+        dupBackupScript
+        dupRestoreScript
+        dupInitScript
+        dupBackupInitScript
+      ];
+
+      # modules.nix = {
+      #   unfreePackages = [ "duplicacy" ];
+      # };
+
+      # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
+      # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
+      systemd.services = lib.attrsets.mergeAttrsList [
+        initServices
+        initRestoreServices
+        backupServices
+      ];
 
       systemd.timers.duplicacy = lib.mkIf (reposWithAutoBackup != { }) {
         Unit.Description = "Timer for Duplicacy backup service";
