@@ -337,12 +337,9 @@ in
         (lib.mkIf (reposWithAutoBackup != { }) {
           "duplicacy" = {
             Unit.Description = "Duplicacy backup service (runs backups for all autoBackup repos)";
-            After = [
-              "network-online.target"
-              "sops.service"
-            ];
-            Requires = [ "sops.service" ];
             wantedBy = [ "multi-user.target" ]; # Start at boot
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             Service = {
               Type = "oneshot";
               Restart = "no";
@@ -366,14 +363,8 @@ in
           lib.nameValuePair "duplicacy-init-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
             wantedBy = [ "multi-user.target" ]; # Start at boot
-            after = [
-              "network-online.target"
-              "sops.service"
-            ];
-            requires = [
-              "network-online.target"
-              "sops.service"
-            ];
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true; # Important for dependencies
@@ -389,14 +380,8 @@ in
           lib.nameValuePair "duplicacy-restore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = [ "multi-user.target" ];
-            after = [
-              "duplicacy-init-${repoKey}.service"
-              "sops.service"
-            ];
-            requires = [
-              "duplicacy-init-${repoKey}.service"
-              "sops.service"
-            ];
+            after = [ "duplicacy-init-${repoKey}.service" ];
+            requires = [ "duplicacy-init-${repoKey}.service" ];
             serviceConfig = {
               Type = "oneshot";
               Group = systemdGroupName;
