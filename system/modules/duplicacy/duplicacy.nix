@@ -405,32 +405,34 @@ in
         ) reposWithAutoInitRestore
       );
 
-      backupServices = (
-        lib.mkIf (reposWithAutoBackup != { }) {
-          "duplicacy" = {
-            description = "Duplicacy backup service (runs backups for all autoBackup repos)";
-            wantedBy = [ "multi-user.target" ]; # Start at boot
-            after = [ "network-online.target" ];
-            requires = [ "network-online.target" ];
-            serviceConfig = {
-              Type = "oneshot";
-              Restart = "no";
-              Group = systemdGroupName;
-              ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
-                #!/bin/sh
-                set -e
-                echo "Starting Duplicacy auto-backups..."
-                ${lib.concatMapStringsSep "\n" (repoKey: ''
-                  echo "Backing up repository: ${escapeStringForShellDoubleQuotes repoKey}"
-                  ${dupBackupScript}/bin/dup-backup "${escapeStringForShellDoubleQuotes repoKey}"
-                '') (lib.attrNames reposWithAutoBackup)}
-                echo "Duplicacy auto-backups finished."
-              '';
-              EnvironmentFile = config.sops.templates.duplicacyConf.path;
+      backupServices =
+        if reposWithAutoBackup != { } then
+          {
+            "duplicacy" = {
+              description = "Duplicacy backup service (runs backups for all autoBackup repos)";
+              wantedBy = [ "multi-user.target" ]; # Start at boot
+              after = [ "network-online.target" ];
+              requires = [ "network-online.target" ];
+              serviceConfig = {
+                Type = "oneshot";
+                Restart = "no";
+                Group = systemdGroupName;
+                ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
+                  #!/bin/sh
+                  set -e
+                  echo "Starting Duplicacy auto-backups..."
+                  ${lib.concatMapStringsSep "\n" (repoKey: ''
+                    echo "Backing up repository: ${escapeStringForShellDoubleQuotes repoKey}"
+                    ${dupBackupScript}/bin/dup-backup "${escapeStringForShellDoubleQuotes repoKey}"
+                  '') (lib.attrNames reposWithAutoBackup)}
+                  echo "Duplicacy auto-backups finished."
+                '';
+                EnvironmentFile = config.sops.templates.duplicacyConf.path;
+              };
             };
-          };
-        }
-      );
+          }
+        else
+          { };
     in
     {
       environment.systemPackages = with pkgs; [
