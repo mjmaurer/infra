@@ -6,10 +6,20 @@
 }:
 let
   cfg = config.modules.duplicacy;
-  repoIds = [ "nas" ];
+  repoIds = [ "nas" ]; # Still used for options.modules.duplicacy.repos.*.repoId type
   backupAndRestore = " -limit-rate 25000 -max-in-memory-entries 1024 -threads 4 -stats";
   backup = "backup ${backupAndRestore}";
   restore = "restore ${backupAndRestore}";
+
+  escapeStringForShellDoubleQuotes = str: lib.replaceChars ["\\" "\"" "$" "`"] ["\\\\" "\\\"" "\\$" "\\\`"] str;
+
+  repoKeysList = lib.attrNames cfg.repos;
+  allowedRepoKeysStr = lib.concatStringsSep ", " repoKeysList;
+  usageHint =
+    if repoKeysList == [] then
+      "No repositories configured in system.modules.duplicacy.repos."
+    else
+      "Allowed REPO_KEYs are: ${allowedRepoKeysStr}";
 in
 {
   options.modules.duplicacy = {
@@ -28,6 +38,11 @@ in
               localRepoPath = lib.mkOption {
                 type = lib.types.str;
                 description = "The local path to the repository.";
+              };
+              storagePath = lib.mkOption {
+                type = lib.types.str;
+                description = "The local path to the storage.";
+                default = "b2://$BUCKET_NAME";
               };
               autoBackup = lib.mkOption {
                 type = lib.types.bool;
@@ -58,10 +73,6 @@ in
       (pkgs.writeShellScriptBin "dup-log" ''
         journalctl --user -fu duplicacy.service
       '')
-      (pkgs.writeShellScriptBin "dup-backup" ''
-        # Run a backup immediately
-        ${pkgs.duplicacy}/bin/duplicacy ${backup} 
-      '')
       (pkgs.writeShellScriptBin "dup-activate" ''
         # Start the duplicacy timer to run backups
         systemctl --user start duplicacy.timer
@@ -70,6 +81,92 @@ in
         # Show the status of the duplicacy timer
         systemctl --user list-timers duplicacy.timer
       '')
+      (pkgs.writeShellScriptBin "dup-backup" ''
+        #!/bin/sh
+        set -e
+
+        if [ -z "$1" ]; then
+          echo "Usage: $0 REPO_KEY [duplicacy_options]"
+          echo "Error: REPO_KEY is required."
+          echo "${escapeStringForShellDoubleQuotes usageHint}"
+          exit 1
+        fi
+
+        REPO_KEY="$1"
+        shift # Allow passing additional arguments to duplicacy
+        LOCAL_REPO_PATH=""
+
+        case "$REPO_KEY" in
+        ${lib.concatMapStringsSep "\n" (key: ''
+          "${key}")
+            LOCAL_REPO_PATH="${escapeStringForShellDoubleQuotes cfg.repos."${key}".localRepoPath}"
+            ;;
+        '') repoKeysList}
+          *)
+            echo "Error: Invalid REPO_KEY '$REPO_KEY'."
+            echo "${escapeStringForShellDoubleQuotes usageHint}"
+            exit 1
+            ;;
+        esac
+
+        if [ ! -d "$LOCAL_REPO_PATH" ]; then
+          echo "Error: Target directory '$LOCAL_REPO_PATH' for backup (derived from REPO_KEY '$REPO_KEY') does not exist or is not a directory. Run dup-init first."
+          exit 1
+        fi
+
+        cd "$LOCAL_REPO_PATH" || { echo "Error: Failed to cd into '$LOCAL_REPO_PATH'"; exit 1; }
+        
+        if [ ! -d ".duplicacy" ]; then
+          echo "Error: .duplicacy folder not found in '$LOCAL_REPO_PATH'. Please initialize the repository first (e.g. using dup-init '$REPO_KEY')."
+          exit 1
+        fi
+
+        echo "Running backup for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
+        ${pkgs.duplicacy}/bin/duplicacy ${backup} "$@"
+      '')
+      (pkgs.writeShellScriptBin "dup-restore" ''
+        #!/bin/sh
+        set -e
+
+        if [ -z "$1" ]; then
+          echo "Usage: $0 REPO_KEY [duplicacy_options]"
+          echo "Error: REPO_KEY is required."
+          echo "${escapeStringForShellDoubleQuotes usageHint}"
+          exit 1
+        fi
+
+        REPO_KEY="$1"
+        shift # Allow passing additional arguments to duplicacy
+        LOCAL_REPO_PATH=""
+
+        case "$REPO_KEY" in
+        ${lib.concatMapStringsSep "\n" (key: ''
+          "${key}")
+            LOCAL_REPO_PATH="${escapeStringForShellDoubleQuotes cfg.repos."${key}".localRepoPath}"
+            ;;
+        '') repoKeysList}
+          *)
+            echo "Error: Invalid REPO_KEY '$REPO_KEY'."
+            echo "${escapeStringForShellDoubleQuotes usageHint}"
+            exit 1
+            ;;
+        esac
+
+        if [ ! -d "$LOCAL_REPO_PATH" ]; then
+          echo "Error: Target directory '$LOCAL_REPO_PATH' for restore (derived from REPO_KEY '$REPO_KEY') does not exist or is not a directory."
+          exit 1
+        fi
+
+        cd "$LOCAL_REPO_PATH" || { echo "Error: Failed to cd into '$LOCAL_REPO_PATH'"; exit 1; }
+        
+        if [ ! -d ".duplicacy" ]; then
+          echo "Error: .duplicacy folder not found in '$LOCAL_REPO_PATH'. Please initialize the repository first (e.g. using dup-init '$REPO_KEY')."
+          exit 1
+        fi
+
+        echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
+        ${pkgs.duplicacy}/bin/duplicacy ${restore} "$@"
+      '')
       # `nas` is the 'repository id' for the backup
       # The b2 bucket will be the 'storage', which can contain multiple repos (ID is also `nas` for legacy reasons).
       # Multiple repos in the same storage will still have file deduplication.
@@ -77,65 +174,68 @@ in
         #!/bin/sh
         set -e
 
-        if [ -z "$1" ] || [ -z "$2" ]; then
-          echo "Usage: $0 REPO_ID REPO_DIR [STORAGE_URL]"
-          echo "Error: REPO_ID and REPO_DIR are required."
-          echo "Allowed REPO_IDs are: ${lib.concatStringsSep " " repoIds}"
+        if [ -z "$1" ]; then
+          echo "Usage: $0 REPO_KEY [duplicacy_options]"
+          echo "Error: REPO_KEY is required."
+          echo "${escapeStringForShellDoubleQuotes usageHint}"
           exit 1
         fi
 
-        REPO_ID="$1"
-        REPO_DIR="$2"
+        REPO_KEY="$1"
+        shift # Allow passing additional arguments to duplicacy
+        REPO_ID_VAL=""
+        LOCAL_REPO_PATH=""
+        STORAGE_PATH_VAL=""
 
-        if [ -z "$3" ] && [ -z "$BUCKET_NAME" ]; then
-          echo "Error: BUCKET_NAME is not set and no STORAGE_URL was provided."
-          exit 1
+        case "$REPO_KEY" in
+        ${lib.concatMapStringsSep "\n" (key: ''
+          "${key}")
+            REPO_ID_VAL="${escapeStringForShellDoubleQuotes cfg.repos."${key}".repoId}"
+            LOCAL_REPO_PATH="${escapeStringForShellDoubleQuotes cfg.repos."${key}".localRepoPath}"
+            STORAGE_PATH_VAL="${escapeStringForShellDoubleQuotes cfg.repos."${key}".storagePath}"
+            ;;
+        '') repoKeysList}
+          *)
+            echo "Error: Invalid REPO_KEY '$REPO_KEY'."
+            echo "${escapeStringForShellDoubleQuotes usageHint}"
+            exit 1
+            ;;
+        esac
+
+        case "$STORAGE_PATH_VAL" in
+          *\\$BUCKET_NAME*)
+            if [ -z "$BUCKET_NAME" ]; then
+              echo "Error: BUCKET_NAME is not set in the environment, but it is required by the storage path '$STORAGE_PATH_VAL'."
+              exit 1
+            fi
+            ;;
+        esac
+        
+        ACTUAL_STORAGE_URL=$(eval echo "$STORAGE_PATH_VAL")
+
+        if [ ! -d "$LOCAL_REPO_PATH" ]; then
+          echo "Info: Target directory '$LOCAL_REPO_PATH' for initialization (derived from REPO_KEY '$REPO_KEY') does not exist. Creating it."
+          mkdir -p "$LOCAL_REPO_PATH" || { echo "Error: Failed to create directory '$LOCAL_REPO_PATH'"; exit 1; }
         fi
+        
+        cd "$LOCAL_REPO_PATH" || { echo "Error: Failed to cd into '$LOCAL_REPO_PATH'"; exit 1; }
 
-        STORAGE_URL="$${3:-"b2://$BUCKET_NAME"}"
+        echo "Initializing Duplicacy repository '$REPO_ID_VAL' in '$PWD' (REPO_KEY: '$REPO_KEY')..."
+        echo "Storage URL: '$ACTUAL_STORAGE_URL'"
 
-        is_valid_repo_id=false
-        ${lib.concatMapStringsSep "\n" (val: ''
-          if [ "$REPO_ID" = "${lib.escapeShellArg val}" ]; then
-            is_valid_repo_id=true
-          fi
-        '') repoIds}
-
-        if [ "$is_valid_repo_id" = false ]; then
-          echo "Error: Invalid REPO_ID '$REPO_ID'."
-          echo "Allowed REPO_IDs are: ${lib.concatStringsSep ", " repoIds}"
-          exit 1
-        fi
-
-        if [ ! -d "$REPO_DIR" ]; then
-          echo "Error: Target directory '$REPO_DIR' for initialization does not exist or is not a directory."
-          exit 1
-        fi
-
-        mkdir -p "$REPO_DIR"
-        cd "$REPO_DIR" || { echo "Error: Failed to cd into '$REPO_DIR'"; exit 1; }
-
-        echo "Initializing Duplicacy repository '$REPO_ID' in '$PWD'..."
-        echo "Storage URL: '$STORAGE_URL'"
-
-        # Warn if DUPLICACY_PASSWORD is not set, as 'duplicacy init' might need it.
         if [ -z "$DUPLICACY_PASSWORD" ]; then
             echo "Warning: DUPLICACY_PASSWORD is not set in the environment."
             echo "Duplicacy may prompt for it, or you can set it (e.g., via sops)."
         fi
 
-        ${pkgs.duplicacy}/bin/duplicacy init -encrypt -zstd "$REPO_ID" "$STORAGE_URL"
-        echo "Repository '$REPO_ID' initialized in '$PWD'."
+        ${pkgs.duplicacy}/bin/duplicacy init -encrypt -zstd "$REPO_ID_VAL" "$ACTUAL_STORAGE_URL" "$@"
+        echo "Repository '$REPO_ID_VAL' initialized in '$PWD'."
         echo "You may want to run an initial backup using a command like: dup-backup-init"
       '')
       (pkgs.writeShellScriptBin "dup-backup-init" ''
         #!/bin/sh
         set -e
-        if [ ! -d ".duplicacy" ]; then
-          echo "Error: .duplicacy folder not found in current directory. Please initialize the repository first."
-          exit 1
-        fi
-        ${pkgs.duplicacy}/bin/duplicacy ${backup} -t initial
+        dup-backup "$@" -t initial
       '')
     ];
 
