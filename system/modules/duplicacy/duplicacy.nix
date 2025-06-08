@@ -455,36 +455,38 @@ in
         Install.WantedBy = [ "timers.target" ];
       };
 
-      sops = lib.mkIf (reposWithAutoBackup != { } || reposWithAutoInit != { }) {
-        secrets = {
-          duplicacyB2Id = {
-            sopsFile = ./secrets.yaml;
+      sops =
+        lib.mkIf (reposWithAutoBackup != { } || reposWithAutoInit != { } || reposWithAutoInitRestore != { })
+          {
+            secrets = {
+              duplicacyB2Id = {
+                sopsFile = ./secrets.yaml;
+              };
+              duplicacyB2Key = {
+                sopsFile = ./secrets.yaml;
+              };
+              duplicacyB2Bucket = {
+                sopsFile = ./secrets.yaml;
+              };
+              duplicacyPassword = {
+                sopsFile = ./secrets.yaml;
+              };
+            };
+            templates = {
+              "duplicacyConf" = {
+                mode = "0440"; # Readable by owner/group
+                group = systemdGroupName;
+                content = ''
+                  DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
+                  DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
+                  DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
+                  BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
+                '';
+                # Reload duplicacy.service if it exists when secrets change
+                reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
+              };
+            };
           };
-          duplicacyB2Key = {
-            sopsFile = ./secrets.yaml;
-          };
-          duplicacyB2Bucket = {
-            sopsFile = ./secrets.yaml;
-          };
-          duplicacyPassword = {
-            sopsFile = ./secrets.yaml;
-          };
-        };
-        templates = {
-          "duplicacyConf" = {
-            mode = "0440"; # Readable by owner/group
-            group = systemdGroupName;
-            content = ''
-              DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
-              DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
-              DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
-              BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
-            '';
-            # Reload duplicacy.service if it exists when secrets change
-            reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
-          };
-        };
-      };
 
       users.groups.${systemdGroupName} = { };
     }
