@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  username,
   pkgs,
   ...
 }:
@@ -459,6 +460,8 @@ in
         dupInitScript
         dupBackupInitScript
       ];
+
+      users.users.${username}.extraGroups = [ systemdGroupName ];
 
       # modules.nix = {
       #   unfreePackages = [ "duplicacy" ];
