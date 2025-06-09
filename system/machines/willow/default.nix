@@ -38,7 +38,7 @@
     # Intel NIC (retrieve via lspci -k)
     boot.initrd.availableKernelModules = [ "e1000e" ];
 
-    config.modules.networking = {
+    modules.networking = {
       wiredInterfaces = [
         "eno1"
         "enp0s20f0u4u2c2"

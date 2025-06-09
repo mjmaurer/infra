@@ -31,7 +31,7 @@
     boot.initrd.availableKernelModules = [ "e1000e" ];
 
     # TODO: should be exact with these
-    config.modules.networking = {
+    modules.networking = {
       wiredInterfaces = [
         "en*"
         "eth*"
