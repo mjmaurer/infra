@@ -98,6 +98,8 @@ in
       ];
     };
 
+    # Can debug with:
+    # SYSTEMD_LOG_LEVEL=debug systemd-tmpfiles --create
     systemd.tmpfiles.settings = lib.mkIf (cfg.ensurePaths != null) {
       "mergerfs-ensure-paths" = lib.listToAttrs (
         lib.concatMap (

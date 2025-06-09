@@ -26,6 +26,7 @@
     ensurePaths = [
       {
         paths = [
+          "content"
           "content/movies"
           "content/tv"
           "content/metadata"
@@ -35,6 +36,7 @@
       }
       {
         paths = [
+          "torrents"
           "torrents/movies"
           "torrents/tv"
         ];
@@ -42,8 +44,11 @@
       }
       {
         paths = [
+          "usenet"
+          "usenet/complete"
           "usenet/complete/movies"
           "usenet/complete/tv"
+          "usenet/incomplete"
           "usenet/incomplete/movies"
           "usenet/incomplete/tv"
           "usenet/history"
