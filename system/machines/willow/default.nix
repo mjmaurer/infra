@@ -13,8 +13,10 @@
     ../../modules/supermicro/supermicro.nix
 
     ./hardware-configuration.nix
-    ./disko.nix
     ./media.nix
+
+    ./disko.nix
+    ./disko-patches/media1.nix
   ];
 
   config = {
