@@ -6,7 +6,7 @@
 }:
 let
   cfg = config.modules.duplicacy;
-  repoIds = [ "nas" ];
+  repoIds = [ "nas" "media-config" ];
 
   systemdGroupName = "duplicacy-secrets";
 
