@@ -28,6 +28,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 1. Get the disk device IDs using `ls -l /dev/disk/by-id`. You will use this to write the the disko config.
 1. Get the kernel module for your network card for initrd: `lspci -v | grep -iA8 'network\|ethernet'`
+1. Get the interface names: `networkctl list` or `ip link`
 1. Continue to `NixOS (Remote Machine)` section below
 
 ## Install: NixOS (Remote Machine)

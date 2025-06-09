@@ -7,6 +7,7 @@
   ...
 }:
 let
+  cfg = config.modules.networking;
   hostname = derivationName;
   isNixOS = !isDarwin;
   tailscaleInterface = "tailscale0"; # Default
@@ -17,6 +18,23 @@ let
   ];
 in
 {
+  options.modules.networking = {
+    wiredInterfaces = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      description = "networkctl list / ip link. A list of names for the primary wired network interfaces (e.g., eno1, eth0).";
+      example = [
+        "eth0"
+        "eno1"
+      ];
+    };
+    wirelessInterfaces = lib.mkOption {
+      type = lib.types.nullOr (lib.types.listOf lib.types.str);
+      default = null;
+      description = "A list of names for the wireless network interfaces (e.g., wlan0, wlp2s0). Set to null if no wireless interfaces are present or should be managed by systemd-networkd.";
+      example = [ "wlan0" ];
+    };
+  };
+
   config = lib.mkMerge [
     {
       # In all systems, the flake depends on hostname already being set.
@@ -42,31 +60,32 @@ in
           systemd.network = {
             enable = true;
 
-            networks = {
-              "10-wired" = {
-                matchConfig.Name = [
-                  "en*"
-                  "eth*"
-                ];
-                networkConfig = {
-                  DHCP = "ipv4";
+            wait-online.timeout = 10;
+
+            networks = lib.mkMerge [
+              {
+                "10-wired" = {
+                  matchConfig.Name = cfg.wiredInterfaces;
+                  networkConfig = {
+                    DHCP = "ipv4";
+                  };
+                  dhcpV4Config = {
+                    SendHostname = true;
+                  };
                 };
-                dhcpV4Config = {
-                  SendHostname = true;
+              }
+              (lib.mkIf (cfg.wirelessInterfaces != null) {
+                "20-wireless" = {
+                  matchConfig.Name = cfg.wirelessInterfaces;
+                  networkConfig = {
+                    DHCP = "ipv4";
+                  };
+                  dhcpV4Config = {
+                    SendHostname = true;
+                  };
                 };
-              };
-              "20-wireless" = {
-                matchConfig.Name = [
-                  "wl*"
-                ];
-                networkConfig = {
-                  DHCP = "ipv4";
-                };
-                dhcpV4Config = {
-                  SendHostname = true;
-                };
-              };
-            };
+              })
+            ];
           };
 
           # Chose systemd-networkd over dhcpcd (viable) and NetworkManager (imperative POS)

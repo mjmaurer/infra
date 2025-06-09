@@ -30,6 +30,17 @@
     # Intel NIC (retrieve via lspci -k)
     boot.initrd.availableKernelModules = [ "e1000e" ];
 
+    # TODO: should be exact with these
+    config.modules.networking = {
+      wiredInterfaces = [
+        "en*"
+        "eth*"
+      ];
+      wirelessInterfaces = [
+        "wl*"
+      ];
+    };
+
     networking = {
       # Unique host ID for ZFS.
       # Can generate with:
