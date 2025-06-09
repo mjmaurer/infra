@@ -7,6 +7,12 @@
   ...
 }:
 {
+  users.groups = {
+    content = { };
+    torrents = { };
+    usenet = { };
+  };
+
   modules.mergerfs = {
     enable = true;
     fsName = "media";
