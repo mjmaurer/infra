@@ -21,6 +21,7 @@
 
     ../modules/sops
     ../modules/duplicacy/duplicacy.nix
+    ../modules/mergerfs.nix
   ];
 
   config = {
