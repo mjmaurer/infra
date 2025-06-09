@@ -36,35 +36,42 @@ in
     };
     ensurePaths = lib.mkOption {
       type = lib.types.nullOr (
-        lib.types.submodule (
-          { config, ... }:
-          {
-            paths = lib.mkOption {
-              type = lib.types.listOf lib.types.str;
-              description = "List of paths to ensure exist on each disk defined in diskMnts";
-              example = [
-                "media/movies"
-                "media/tv"
-              ];
-            };
-            owner = lib.mkOption {
-              type = lib.types.str;
-              default = config.users.users.${username}.name;
-              description = "Owner of the paths to ensure";
-            };
-            group = lib.mkOption {
-              type = lib.types.str;
-              default = config.users.groups.${username}.name;
-              description = "Group of the paths to ensure";
-            };
-            mode = lib.mkOption {
-              type = lib.types.str;
-              default = "0755";
-              description = "Permissions mode for the ensured paths (e.g., 0755)";
+        lib.types.listOf (
+          lib.types.submodule {
+            options = {
+              path = lib.mkOption {
+                type = lib.types.str;
+                description = "Relative path to ensure on each disk";
+                example = "media/movies";
+              };
+              owner = lib.mkOption {
+                type = lib.types.str;
+                default = config.users.users.${username}.name;
+                description = "Owner of the path";
+              };
+              group = lib.mkOption {
+                type = lib.types.str;
+                default = config.users.groups.${username}.name;
+                description = "Group of the path";
+              };
+              mode = lib.mkOption {
+                type = lib.types.str;
+                # User (rwx), Group (rwx), Others (r-x)
+                default = "0775";
+                description = "Permissions mode for the path (e.g., 0775)";
+              };
             };
           }
         )
       );
+      default = null;
+      description = "List of path configurations to ensure exist on each disk defined in diskMnts. Each configuration specifies a path and its owner, group, and mode.";
+      example = lib.literalExpression ''
+        [
+          { path = "media/movies"; owner = "mediauser"; group = "mediagroup"; mode = "0775"; }
+          { path = "media/tv"; mode = "0770"; } # owner/group will use defaults if not specified
+        ]
+      '';
     };
     options = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -102,18 +109,18 @@ in
         lib.concatMap (
           diskMnt:
           lib.map (
-            relativePath:
+            pathConfig:
             let
-              fullPath = "${diskMnt}/${relativePath}";
+              fullPath = "${diskMnt}/${pathConfig.path}";
             in
             lib.nameValuePair fullPath {
               d = {
-                user = cfg.ensurePaths.owner;
-                group = cfg.ensurePaths.group;
-                mode = cfg.ensurePaths.mode;
+                user = pathConfig.owner;
+                group = pathConfig.group;
+                mode = pathConfig.mode;
               };
             }
-          ) cfg.ensurePaths.paths
+          ) cfg.ensurePaths
         ) cfg.diskMnts
       );
     };
