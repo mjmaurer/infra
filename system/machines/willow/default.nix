@@ -14,6 +14,7 @@
 
     ./hardware-configuration.nix
     ./disko.nix
+    ./media.nix
   ];
 
   config = {
