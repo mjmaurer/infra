@@ -39,10 +39,10 @@ in
         lib.types.listOf (
           lib.types.submodule {
             options = {
-              path = lib.mkOption {
-                type = lib.types.str;
-                description = "Relative path to ensure on each disk";
-                example = "media/movies";
+              paths = lib.mkOption {
+                type = lib.types.listOf lib.types.str;
+                description = "Relative paths to ensure on each disk";
+                example = lib.literalExpression ''[ "media/movies", "media/tv_shows" ]'';
               };
               owner = lib.mkOption {
                 type = lib.types.str;
@@ -65,13 +65,7 @@ in
         )
       );
       default = null;
-      description = "List of path configurations to ensure exist on each disk defined in diskMnts. Each configuration specifies a path and its owner, group, and mode.";
-      example = lib.literalExpression ''
-        [
-          { path = "media/movies"; owner = "mediauser"; group = "mediagroup"; mode = "0775"; }
-          { path = "media/tv"; mode = "0770"; } # owner/group will use defaults if not specified
-        ]
-      '';
+      description = "List of path configurations to ensure exist on each disk defined in diskMnts. Each configuration specifies a list of paths and their shared owner, group, and mode.";
     };
     options = lib.mkOption {
       type = lib.types.listOf lib.types.str;
@@ -108,18 +102,21 @@ in
       "mergerfs-ensure-paths" = lib.listToAttrs (
         lib.concatMap (
           diskMnt:
-          lib.map (
+          lib.concatMap (
             pathConfig:
-            let
-              fullPath = "${diskMnt}/${pathConfig.path}";
-            in
-            lib.nameValuePair fullPath {
-              d = {
-                user = pathConfig.owner;
-                group = pathConfig.group;
-                mode = pathConfig.mode;
-              };
-            }
+            lib.map (
+              relativePath:
+              let
+                fullPath = "${diskMnt}/${relativePath}";
+              in
+              lib.nameValuePair fullPath {
+                d = {
+                  user = pathConfig.owner;
+                  group = pathConfig.group;
+                  mode = pathConfig.mode;
+                };
+              }
+            ) pathConfig.paths
           ) cfg.ensurePaths
         ) cfg.diskMnts
       );
