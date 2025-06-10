@@ -4,6 +4,7 @@
 # "Bash(rm -rf:*)" - Matches all commands that start with "rm -rf"
 {
   includeCoAuthoredBy = false;
+  preferredNotifChannel = "terminal_bell";
   permissions = {
     allow = [
       "WebFetch(domain:github.com)"

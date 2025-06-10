@@ -2,15 +2,16 @@
   lib,
   config,
   pkgs,
+  pkgs-latest,
   ...
 }:
 let
   cfg = config.modules.claude;
 
-  claude-package = import ./deriv {
-    inherit lib;
-    pkgs = pkgs;
-  };
+  # claude-package = import ./deriv {
+  #   inherit lib;
+  #   pkgs = pkgs;
+  # };
 in
 {
   options.modules.claude = {
@@ -19,7 +20,8 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [
-      claude-package
+      # claude-package
+      pkgs-latest.claude-code
 
       (pkgs.writeShellScriptBin "claude-setup" ''
         ${builtins.readFile ./setup.sh}
