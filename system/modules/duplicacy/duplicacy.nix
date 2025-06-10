@@ -186,8 +186,8 @@ in
       backupServices = (
         lib.mapAttrs' (
           repoKey: repoCfgItem:
-          lib.nameValuePair "duplicacyRestoreLatest-${repoKey}" {
-            description = "Restore Duplicacy repository ${repoKey} after initialization";
+          lib.nameValuePair "duplicacyBackup-${repoKey}" {
+            description = "Backup Duplicacy repository ${repoKey}";
             wantedBy = lib.mkForce [ ]; # Should be run manually
             requires = [ "network-online.target" ];
             restartIfChanged = false;
@@ -196,7 +196,7 @@ in
               RemainAfterExit = true; # Needed for restartIfChanged
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
-              ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest";
+              ExecStart = "${dupBackupScript}/bin/dup-backup ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
@@ -235,6 +235,9 @@ in
       {
         environment.systemPackages = with pkgs; [
           duplicacy
+          dupInitScript
+          dupBackupScript
+          dupRestoreScript
         ];
 
         # modules.nix = {
@@ -250,11 +253,76 @@ in
           (pkgs.writeShellScriptBin "dup-run" ''
             #!/bin/sh
             set -e
-            # Starts the service for the given repo-key and service.
+
+            if [ $# -ne 2 ]; then
+              echo "Usage: dup-run <repo_key> <service>"
+              echo "  repo_key: The repository key"
+              echo "  service: One of init, initRestore, restoreLatest, or backup"
+              exit 1
+            fi
+
+            repo_key="$1"
+            service="$2"
+
+            case "$service" in
+              init)
+                service_name="duplicacyInit-$repo_key"
+                ;;
+              initRestore)
+                service_name="duplicacyInitRestore-$repo_key"
+                ;;
+              restoreLatest)
+                service_name="duplicacyRestoreLatest-$repo_key"
+                ;;
+              backup)
+                service_name="duplicacyBackup-$repo_key"
+                ;;
+              *)
+                echo "Error: Invalid service '$service'"
+                echo "Service must be one of: init, initRestore, restoreLatest, backup"
+                exit 1
+                ;;
+            esac
+
+            echo "Starting $service_name..."
+            sudo systemctl start "$service_name"
           '')
           (pkgs.writeShellScriptBin "dup-log" ''
             #!/bin/sh
-            # Lists logs for the given repo-key and service.
+            set -e
+
+            if [ $# -ne 2 ]; then
+              echo "Usage: dup-log <repo_key> <service>"
+              echo "  repo_key: The repository key"
+              echo "  service: One of init, initRestore, restoreLatest, or backup"
+              exit 1
+            fi
+
+            repo_key="$1"
+            service="$2"
+
+            case "$service" in
+              init)
+                service_name="duplicacyInit-$repo_key"
+                ;;
+              initRestore)
+                service_name="duplicacyInitRestore-$repo_key"
+                ;;
+              restoreLatest)
+                service_name="duplicacyRestoreLatest-$repo_key"
+                ;;
+              backup)
+                service_name="duplicacyBackup-$repo_key"
+                ;;
+              *)
+                echo "Error: Invalid service '$service'"
+                echo "Service must be one of: init, initRestore, restoreLatest, backup"
+                exit 1
+                ;;
+            esac
+
+            echo "Logs for $service_name:"
+            sudo journalctl -u "$service_name" --no-pager
           '')
         ];
 
