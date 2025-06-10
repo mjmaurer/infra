@@ -49,6 +49,7 @@ in
   options.modules.duplicacy = {
     # Just installs duplicacy and basic scripts
     enable = lib.mkEnableOption "duplicacy";
+    enableServices = lib.mkEnableOption "duplicacy systemd services";
     autoBackupCron = lib.mkOption {
       type = lib.types.str;
       default = "Mon *-*-* 05:00:00 America/New_York";
@@ -182,11 +183,30 @@ in
           }
         ) cfg.repos
       );
+      backupServices = (
+        lib.mapAttrs' (
+          repoKey: repoCfgItem:
+          lib.nameValuePair "duplicacyRestoreLatest-${repoKey}" {
+            description = "Restore Duplicacy repository ${repoKey} after initialization";
+            wantedBy = lib.mkForce [ ]; # Should be run manually
+            requires = [ "network-online.target" ];
+            restartIfChanged = false;
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true; # Needed for restartIfChanged
+              Group = systemdGroupName;
+              WorkingDirectory = repoCfgItem.localRepoPath;
+              ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest";
+              EnvironmentFile = config.sops.templates.duplicacyConf.path;
+            };
+          }
+        ) cfg.repos
+      );
 
-      backupServices =
+      backupAllServices =
         if cfg.repos != { } then
           {
-            "duplicacy" = {
+            "duplicacyBackupAll" = {
               description = "Duplicacy backup service (runs backups for all autoBackup repos)";
               after = [ "network-online.target" ];
               requires = [ "network-online.target" ];
@@ -211,82 +231,84 @@ in
         else
           { };
     in
-    {
-      environment.systemPackages = with pkgs; [
-        duplicacy
+    lib.mkMerge [
+      {
+        environment.systemPackages = with pkgs; [
+          duplicacy
+        ];
 
-        dupBackupScript
-        dupRestoreScript
-        dupInitScript
+        # modules.nix = {
+        #   unfreePackages = [ "duplicacy" ];
+        # };
 
-        (pkgs.writeShellScriptBin "dup-run" ''
-          #!/bin/sh
-          set -e
-          # 
-        '')
-        (pkgs.writeShellScriptBin "dup-log" ''
-          #!/bin/sh
-          # Lists logs for the main duplicacy backup service.
-          # For init/restore logs, use: journalctl -fu duplicacy-init-REPO_KEY.service or duplicacy-restore-REPO_KEY.service
-          journalctl -fu duplicacy.service
-        '')
-      ];
+        # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
+        # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
+      }
+      (lib.mkIf cfg.enableServices {
 
-      # modules.nix = {
-      #   unfreePackages = [ "duplicacy" ];
-      # };
+        environment.systemPackages = with pkgs; [
+          (pkgs.writeShellScriptBin "dup-run" ''
+            #!/bin/sh
+            set -e
+            # Starts the service for the given repo-key and service.
+          '')
+          (pkgs.writeShellScriptBin "dup-log" ''
+            #!/bin/sh
+            # Lists logs for the given repo-key and service.
+          '')
+        ];
 
-      # https://forum.duplicacy.com/t/duplicacy-quick-start-cli/1101
-      # https://forum.duplicacy.com/t/encryption-of-the-storage/1085
-      systemd.services = lib.attrsets.mergeAttrsList [
-        initServices
-        initRestoreServices
-        restoreLatestServices
-        backupServices
-      ];
+        systemd.services = lib.attrsets.mergeAttrsList [
+          initServices
+          initRestoreServices
+          restoreLatestServices
+          backupServices
+          backupAllServices
+        ];
 
-      systemd.timers.duplicacy = lib.mkIf (reposWithAutoBackup != { }) {
-        Unit.Description = "Timer for Duplicacy backup service";
-        Timer = {
-          Unit = "duplicacy.service";
-          OnCalendar = cfg.autoBackupCron;
-          Persistent = true; # Catch up on missed runs
+        systemd.timers.duplicacyBackupAll = lib.mkIf (reposWithAutoBackup != { }) {
+          Unit.Description = "Timer for Duplicacy backup service";
+          Timer = {
+            Unit = "duplicacyBackupAll.service";
+            OnCalendar = cfg.autoBackupCron;
+            Persistent = true; # Catch up on missed runs
+          };
+          Install.WantedBy = [ "timers.target" ];
         };
-        Install.WantedBy = [ "timers.target" ];
-      };
 
-      sops = lib.mkIf (cfg.repos != { }) {
-        secrets = {
-          duplicacyB2Id = {
-            sopsFile = ./secrets.yaml;
+        sops = lib.mkIf (cfg.repos != { }) {
+          secrets = {
+            duplicacyB2Id = {
+              sopsFile = ./secrets.yaml;
+            };
+            duplicacyB2Key = {
+              sopsFile = ./secrets.yaml;
+            };
+            duplicacyB2Bucket = {
+              sopsFile = ./secrets.yaml;
+            };
+            duplicacyPassword = {
+              sopsFile = ./secrets.yaml;
+            };
           };
-          duplicacyB2Key = {
-            sopsFile = ./secrets.yaml;
-          };
-          duplicacyB2Bucket = {
-            sopsFile = ./secrets.yaml;
-          };
-          duplicacyPassword = {
-            sopsFile = ./secrets.yaml;
+          templates = {
+            "duplicacyConf" = {
+              mode = "0440"; # Readable by owner/group
+              group = systemdGroupName;
+              content = ''
+                DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
+                DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
+                DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
+                BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
+              '';
+              # Reload duplicacy.service if it exists when secrets change
+              reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
+            };
           };
         };
-        templates = {
-          "duplicacyConf" = {
-            mode = "0440"; # Readable by owner/group
-            group = systemdGroupName;
-            content = ''
-              DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
-              DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
-              DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
-              BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
-            '';
-            # Reload duplicacy.service if it exists when secrets change
-            reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
-          };
-        };
-      };
 
-      users.groups.${systemdGroupName} = { };
-    }
+        users.groups.${systemdGroupName} = { };
+      })
+    ]
   );
 }
