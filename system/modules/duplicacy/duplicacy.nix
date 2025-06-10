@@ -171,6 +171,25 @@ in
           }
         ) reposWithAutoInitRestore
       );
+      restoreLatestServices = (
+        lib.mapAttrs' (
+          repoKey: repoCfgItem:
+          lib.nameValuePair "duplicacyRestoreLatest-${repoKey}" {
+            description = "Restore Duplicacy repository ${repoKey} after initialization";
+            wantedBy = lib.mkForce [ ];
+            requires = [ "network-online.target" ];
+            restartIfChanged = false;
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true;
+              Group = systemdGroupName;
+              WorkingDirectory = repoCfgItem.localRepoPath;
+              ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest";
+              EnvironmentFile = config.sops.templates.duplicacyConf.path;
+            };
+          }
+        ) reposWithAutoInitRestore
+      );
 
       backupServices =
         if reposWithAutoBackup != { } then
@@ -222,6 +241,7 @@ in
       systemd.services = lib.attrsets.mergeAttrsList [
         initServices
         initRestoreServices
+        restoreLatestServices
         backupServices
       ];
 

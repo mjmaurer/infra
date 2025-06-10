@@ -17,20 +17,33 @@ pkgs.writeShellScriptBin "dup-restore" ''
   fi)
 
   if [ -z "$1" ]; then
-    echo "Usage: $0 REPO_KEY [duplicacy_options]"
+    echo "Usage: $0 REPO_KEY [--latest] [duplicacy_options]"
     echo "Error: REPO_KEY is required."
     echo "$USAGE_HINT"
+    echo ""
+    echo "Options:"
+    echo "  --latest    Automatically retrieve and restore the latest revision"
     exit 1
   fi
 
   REPO_KEY="$1"
-  shift # Allow passing additional arguments to duplicacy
+  shift # Remove REPO_KEY from arguments
+
+  # Check for --latest flag
+  USE_LATEST=false
+  if [ "$1" = "--latest" ]; then
+    USE_LATEST=true
+    shift # Remove --latest from arguments
+  fi
+
   LOCAL_REPO_PATH=""
+  REPO_ID_VAL=""
 
   case "$REPO_KEY" in
   ${lib.concatMapStringsSep "\n" (key: ''
     "${key}")
       LOCAL_REPO_PATH="${escapeStringForShellDoubleQuotes cfg.repos."${key}".localRepoPath}"
+      REPO_ID_VAL="${cfg.repos."${key}".repoId}"
       ;;
   '') (lib.attrNames cfg.repos)}
     *)
@@ -52,7 +65,37 @@ pkgs.writeShellScriptBin "dup-restore" ''
     exit 1
   fi
 
-  echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
-  echo 'Args: ${cfg.defaultRestoreArgs} "$@"'
-  ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultRestoreArgs} "$@"
+  # If --latest flag is used, retrieve the latest revision
+  if [ "$USE_LATEST" = true ]; then
+    echo "Fetching list of snapshots for repository ID '$REPO_ID_VAL'..."
+    
+    # Run duplicacy list in the repository directory. Credentials must be in environment.
+    LIST_OUTPUT_ERR=$(${pkgs.duplicacy}/bin/duplicacy list 2>&1)
+    LIST_STATUS=$?
+
+    if [ $LIST_STATUS -ne 0 ]; then
+        echo "Error: 'duplicacy list' command failed with status $LIST_STATUS."
+        echo "Output:"
+        echo "$LIST_OUTPUT_ERR"
+        exit 1 
+    fi
+    
+    # Filter for "Snapshot $REPO_ID_VAL revision ...", get last line, extract 4th field (revision number)
+    LATEST_REV_ID=$(echo "$LIST_OUTPUT_ERR" | grep "Snapshot $REPO_ID_VAL revision" | tail -n 1 | ${pkgs.gawk}/bin/awk '{print $4}')
+
+    if [ -z "$LATEST_REV_ID" ]; then
+      echo "Error: No snapshot revisions found for repository ID '$REPO_ID_VAL'."
+      echo "Cannot restore without any available snapshots."
+      exit 1
+    fi
+    
+    echo "Latest revision ID for '$REPO_ID_VAL' is '$LATEST_REV_ID'."
+    echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY') with revision '$LATEST_REV_ID'..."
+    echo 'Args: ${cfg.defaultRestoreArgs} -r "$LATEST_REV_ID" "$@"'
+    ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultRestoreArgs} -r "$LATEST_REV_ID" "$@"
+  else
+    echo "Running restore for repository in '$PWD' (REPO_KEY: '$REPO_KEY')..."
+    echo 'Args: ${cfg.defaultRestoreArgs} "$@"'
+    ${pkgs.duplicacy}/bin/duplicacy restore ${cfg.defaultRestoreArgs} "$@"
+  fi
 ''
