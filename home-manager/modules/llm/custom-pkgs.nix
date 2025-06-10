@@ -2,7 +2,7 @@
   pkgs,
   lib,
   pythonPkg,
-  llmPkg,
+  # llmPkg,
   ...
 }:
 let
@@ -61,7 +61,7 @@ let
       ];
       # Dependencies
       propagatedBuildInputs = with pythonPkg.pkgs; [
-        llmPkg
+        llm
         prompt-toolkit
       ];
 
@@ -94,7 +94,7 @@ let
       ];
       # Dependencies
       propagatedBuildInputs = with pythonPkg.pkgs; [
-        llmPkg
+        llm
         trafilatura
       ];
 
@@ -127,7 +127,7 @@ let
       ];
       # Dependencies
       propagatedBuildInputs = with pythonPkg.pkgs; [
-        llmPkg
+        llm
       ];
 
       # Disable tests - enable if you have specific test dependencies

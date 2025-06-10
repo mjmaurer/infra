@@ -18,7 +18,7 @@ let
       pkgs
       lib
       pythonPkg
-      llmPkg
+      # llmPkg
       ;
   };
   llmPyEnv = pythonPkg.withPackages (
