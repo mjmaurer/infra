@@ -135,12 +135,11 @@ in
           lib.nameValuePair "duplicacyInit-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
             wantedBy = [ "multi-user.target" ]; # Start at boot
-            # after = [ "network-online.target" ];
-            # requires = [ "network-online.target" ];
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             restartIfChanged = false;
-            reloadIfChanged = false;
             serviceConfig = {
-              Type = "simple"; # oneshot blocks nix-rebuild
+              Type = "oneshot";
               RemainAfterExit = true; # Needed for restartIfChanged
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
@@ -156,12 +155,11 @@ in
           lib.nameValuePair "duplicacyInitRestore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = [ "multi-user.target" ];
-            # after = [ "network-online.target" ];
-            # requires = [ "network-online.target" ];
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             restartIfChanged = false;
-            reloadIfChanged = false;
             serviceConfig = {
-              Type = "simple"; # oneshot blocks nix-rebuild
+              Type = "oneshot";
               RemainAfterExit = true; # Needed for restartIfChanged
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
@@ -176,12 +174,12 @@ in
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacyRestoreLatest-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
-            wantedBy = lib.mkForce [ ];
+            wantedBy = lib.mkForce [ ]; # Should be run manually
             requires = [ "network-online.target" ];
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true;
+              RemainAfterExit = true; # Needed for restartIfChanged
               Group = systemdGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest";
@@ -230,6 +228,18 @@ in
         dupRestoreScript
         dupInitScript
         dupBackupInitScript
+
+        (pkgs.writeShellScriptBin "dup-run" ''
+          #!/bin/sh
+          set -e
+          # 
+        '')
+        (pkgs.writeShellScriptBin "dup-log" ''
+          #!/bin/sh
+          # Lists logs for the main duplicacy backup service.
+          # For init/restore logs, use: journalctl -fu duplicacy-init-REPO_KEY.service or duplicacy-restore-REPO_KEY.service
+          journalctl -fu duplicacy.service
+        '')
       ];
 
       # modules.nix = {
