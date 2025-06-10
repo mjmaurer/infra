@@ -110,8 +110,6 @@ in
       # Will return a subset of cfg.repos
       filterRepos = pred: lib.filterAttrs (name: repoCfg: pred repoCfg) cfg.repos;
       reposWithAutoBackup = filterRepos (repoCfg: repoCfg.autoBackup);
-      reposWithAutoInit = filterRepos (repoCfg: repoCfg.autoInit);
-      reposWithAutoInitRestore = filterRepos (repoCfg: repoCfg.autoInitRestore);
 
       # Assertion: autoInit and autoInitRestore must not both be enabled for the same repo
       _ = lib.forEach (lib.attrNames cfg.repos) (
@@ -130,7 +128,7 @@ in
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacyInit-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
-            wantedBy = [ "multi-user.target" ]; # Start at boot
+            wantedBy = if repoCfgItem.autoInit then [ "multi-user.target" ] else lib.mkForce [ ];
             after = [ "network-online.target" ];
             requires = [ "network-online.target" ];
             restartIfChanged = false;
@@ -143,14 +141,14 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
-        ) reposWithAutoInit
+        ) cfg.repos
       );
       initRestoreServices = (
         lib.mapAttrs' (
           repoKey: repoCfgItem:
           lib.nameValuePair "duplicacyInitRestore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
-            wantedBy = [ "multi-user.target" ];
+            wantedBy = if repoCfgItem.autoInitRestore then [ "multi-user.target" ] else lib.mkForce [ ];
             after = [ "network-online.target" ];
             requires = [ "network-online.target" ];
             restartIfChanged = false;
@@ -163,7 +161,7 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
-        ) reposWithAutoInitRestore
+        ) cfg.repos
       );
       restoreLatestServices = (
         lib.mapAttrs' (
@@ -182,11 +180,11 @@ in
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
-        ) reposWithAutoInitRestore
+        ) cfg.repos
       );
 
       backupServices =
-        if reposWithAutoBackup != { } then
+        if cfg.repos != { } then
           {
             "duplicacy" = {
               description = "Duplicacy backup service (runs backups for all autoBackup repos)";
@@ -257,38 +255,36 @@ in
         Install.WantedBy = [ "timers.target" ];
       };
 
-      sops =
-        lib.mkIf (reposWithAutoBackup != { } || reposWithAutoInit != { } || reposWithAutoInitRestore != { })
-          {
-            secrets = {
-              duplicacyB2Id = {
-                sopsFile = ./secrets.yaml;
-              };
-              duplicacyB2Key = {
-                sopsFile = ./secrets.yaml;
-              };
-              duplicacyB2Bucket = {
-                sopsFile = ./secrets.yaml;
-              };
-              duplicacyPassword = {
-                sopsFile = ./secrets.yaml;
-              };
-            };
-            templates = {
-              "duplicacyConf" = {
-                mode = "0440"; # Readable by owner/group
-                group = systemdGroupName;
-                content = ''
-                  DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
-                  DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
-                  DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
-                  BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
-                '';
-                # Reload duplicacy.service if it exists when secrets change
-                reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
-              };
-            };
+      sops = lib.mkIf (cfg.repos != { }) {
+        secrets = {
+          duplicacyB2Id = {
+            sopsFile = ./secrets.yaml;
           };
+          duplicacyB2Key = {
+            sopsFile = ./secrets.yaml;
+          };
+          duplicacyB2Bucket = {
+            sopsFile = ./secrets.yaml;
+          };
+          duplicacyPassword = {
+            sopsFile = ./secrets.yaml;
+          };
+        };
+        templates = {
+          "duplicacyConf" = {
+            mode = "0440"; # Readable by owner/group
+            group = systemdGroupName;
+            content = ''
+              DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
+              DUPLICACY_B2_KEY=${config.sops.placeholder.duplicacyB2Key}
+              DUPLICACY_PASSWORD=${config.sops.placeholder.duplicacyPassword}
+              BUCKET_NAME=${config.sops.placeholder.duplicacyB2Bucket}
+            '';
+            # Reload duplicacy.service if it exists when secrets change
+            reloadUnits = lib.mkIf (reposWithAutoBackup != { }) [ "duplicacy.service" ];
+          };
+        };
+      };
 
       users.groups.${systemdGroupName} = { };
     }
