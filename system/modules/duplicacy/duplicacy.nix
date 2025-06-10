@@ -18,9 +18,6 @@ let
     str: lib.replaceChars [ "\\" "\"" "$" "`" ] [ "\\\\" "\\\"" "\\$" "\\\`" ] str;
 
   # Import scripts from separate files
-  dupLogScript = import ./scripts/dup-log.nix { inherit pkgs; };
-  dupActivateScript = import ./scripts/dup-activate.nix { inherit pkgs; };
-  dupStatusScript = import ./scripts/dup-status.nix { inherit pkgs; };
   dupBackupScript = import ./scripts/dup-backup.nix {
     inherit
       pkgs
@@ -46,7 +43,6 @@ let
       dupRestoreScript
       ;
   };
-  dupBackupInitScript = import ./scripts/dup-backup-init.nix { inherit pkgs; };
 
 in
 {
@@ -221,13 +217,9 @@ in
       environment.systemPackages = with pkgs; [
         duplicacy
 
-        dupLogScript
-        dupActivateScript
-        dupStatusScript
         dupBackupScript
         dupRestoreScript
         dupInitScript
-        dupBackupInitScript
 
         (pkgs.writeShellScriptBin "dup-run" ''
           #!/bin/sh
