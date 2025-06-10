@@ -35,5 +35,6 @@ This section documents a list of commands that you should be prepared to run if 
 
 ### Linting
 
+- `nix-instantiate --parse <file_path> > /dev/null`: It should be run following any edits to check validity of a file
 - `nix flake check -L`: This command is used to check the validity of a nix flake. It should be run on request to check the validity of a project with a `flake.nix` file. 
 - `nixfmt <file>`: This command formats a file. It should be run following any edits

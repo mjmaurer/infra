@@ -10,6 +10,7 @@
       "WebFetch(domain:github.com)"
       "WebFetch(domain:raw.githubusercontent.com)"
       "Bash(nix flake check:*)"
+      "Bash(nix-instantiate --parse:*)"
       "Bash(nixfmt:*)"
       "Edit(AI_README.md)"
       "Edit(README.md)"
