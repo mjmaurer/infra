@@ -60,7 +60,10 @@
             {
               homeStateVersion = "25.05";
               systemStateVersion = "24.05";
-              extraSystemModules = [ ./system/machines/maple ];
+              extraSystemModules = [
+                ./system/machines/maple
+                ./system/common/headed-minimal.nix
+              ];
             };
 
         willow =
@@ -71,7 +74,24 @@
             {
               homeStateVersion = "25.05";
               systemStateVersion = "24.05";
-              extraSystemModules = [ ./system/machines/willow ];
+              extraSystemModules = [
+                ./system/machines/willow
+                ./system/common/headed-minimal.nix
+              ];
+            };
+        dove =
+          (sys.withConfig {
+            system = "x86_64-linux";
+            derivationName = "dove";
+          }).mkNixosSystem
+            {
+              homeStateVersion = "25.05";
+              systemStateVersion = "24.05";
+              extraSystemModules = [
+                ./system/machines/dove
+                ./system/common/cloud.nix
+              ];
+
             };
 
         live-iso =

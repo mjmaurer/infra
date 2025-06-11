@@ -145,10 +145,8 @@ rec {
           homeStateVersion ? null,
           defaultSystemModules ? [
             ../system/common/nixos.nix
-            ../system/common/headed-minimal.nix
             inputs.sops-nix.nixosModules.sops
             inputs.disko.nixosModules.disko
-            ../system/common/headed-minimal.nix
 
             # The ordering of impermanence, sops (for user password) and ssh was making it very
             # hard to get this working. Especially considering I need to support
