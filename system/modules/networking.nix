@@ -128,9 +128,6 @@ in
             # extraUpFlags = [ "--login-server" ];
 
             authKeyFile = config.sops.secrets.oneTimeTailscaleAuthKey.path;
-            authKeyParameters = {
-              preauthorized = true;
-            };
           };
           services.fail2ban = {
             enable = true;
