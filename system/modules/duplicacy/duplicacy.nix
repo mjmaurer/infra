@@ -13,6 +13,7 @@ let
   ];
 
   systemdGroupName = "duplicacy-secrets";
+  nasGroupName = "nas";
 
   escapeStringForShellDoubleQuotes =
     str: lib.replaceChars [ "\\" "\"" "$" "`" ] [ "\\\\" "\\\"" "\\$" "\\\`" ] str;
@@ -136,7 +137,7 @@ in
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true; # Needed for restartIfChanged
-              Group = systemdGroupName;
+              Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -156,7 +157,7 @@ in
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true; # Needed for restartIfChanged
-              Group = systemdGroupName;
+              Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -175,7 +176,7 @@ in
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true; # Needed for restartIfChanged
-              Group = systemdGroupName;
+              Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -194,7 +195,7 @@ in
             serviceConfig = {
               Type = "oneshot";
               RemainAfterExit = true; # Needed for restartIfChanged
-              Group = systemdGroupName;
+              Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupBackupScript}/bin/dup-backup ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -213,7 +214,7 @@ in
               serviceConfig = {
                 Type = "oneshot";
                 Restart = "no";
-                Group = systemdGroupName;
+                Group = nasGroupName;
                 ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
                   #!/bin/sh
                   set -e
@@ -361,7 +362,7 @@ in
           };
           templates = {
             "duplicacyConf" = {
-              mode = "0440"; # Readable by owner/group
+              mode = "0440"; # Readable by owner(root)/group
               group = systemdGroupName;
               content = ''
                 DUPLICACY_B2_ID=${config.sops.placeholder.duplicacyB2Id}
@@ -376,6 +377,7 @@ in
         };
 
         users.groups.${systemdGroupName} = { };
+        users.groups.${nasGroupName} = { };
       })
     ]
   );
