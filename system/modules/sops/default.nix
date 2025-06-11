@@ -42,14 +42,8 @@ in
           gpgAuthKeygrip = { };
           mjmaurerHashedPassword = {
             neededForUsers = true;
-          };
-        };
-        templates = {
-          "llm-keys-common" = {
-            owner = config.users.users.${username}.name;
-            content = builtins.toJSON {
-              gemini = config.sops.placeholder.apiKeyGemini;
-            };
+            # Allow for this to be overridden by the user
+            sopsFile = lib.mkDefault ./secrets/common.yaml;
           };
         };
       }
