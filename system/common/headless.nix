@@ -8,7 +8,7 @@
 {
 
   # ---------------------------------- NOTE ----------------------------------
-  # Consider adding to Darwin when adding here
+  # Consider adding to cloud.nix / darwin.nix when adding here
   imports = [
     ../modules/nix.nix
     ../modules/basic.nix
