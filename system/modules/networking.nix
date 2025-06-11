@@ -96,7 +96,7 @@ in
             networkmanager.enable = lib.mkForce false;
 
             # Enable wpa_supplicant
-            wireless.enable = true;
+            wireless.enable = (cfg.wirelessInterfaces != null);
             # Used by systemd-resolved
             nameservers = nameservers;
 
