@@ -13,6 +13,10 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 - For Home Manager / Darwin:
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to run `export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations"` first. This can be removed once `--extra-experimental-features` on the commands below starts working again.
+- For Cloud / VPS
+  - Install Nix: `sh <(curl -L https://nixos.org/nix/install) --daemon`
+  - Add keypair for root ssh (sshPubLiveIso): `sudo vim /root/.ssh/authorized_keys; sudo systemctl restart ssh`
+  - Make sure this is not honored after
 
 ## Install: NixOS (Local Machine)
 
