@@ -28,6 +28,7 @@
       "nas-backup" = {
         repoId = "nas";
         localRepoPath = "/mnt/nas-safety-tmp-sdd";
+        enableServices = true;
         # autoInitRestore = true;
       };
     };
