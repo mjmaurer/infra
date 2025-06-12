@@ -345,7 +345,7 @@ in
           Install.WantedBy = [ "timers.target" ];
         };
 
-        sops = lib.mkIf (cfg.repos != { }) {
+        sops = {
           secrets = {
             duplicacyB2Id = {
               sopsFile = ./secrets.yaml;
