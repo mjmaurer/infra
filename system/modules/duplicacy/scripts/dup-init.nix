@@ -68,8 +68,9 @@ pkgs.writeShellScriptBin "dup-init" ''
   ACTUAL_STORAGE_URL=$(eval echo "$STORAGE_PATH_VAL")
 
   if [ ! -d "$LOCAL_REPO_PATH" ]; then
-    echo "Info: Target directory '$LOCAL_REPO_PATH' for initialization (derived from REPO_KEY '$REPO_KEY') does not exist. Creating it."
-    mkdir -p "$LOCAL_REPO_PATH" || { echo "Error: Failed to create directory '$LOCAL_REPO_PATH'"; exit 1; }
+    echo "Error: Target directory '$LOCAL_REPO_PATH' for initialization (derived from REPO_KEY '$REPO_KEY') does not exist."
+    echo "Please create it manually or ensure the path is correct."
+    exit 1
   fi
 
   cd "$LOCAL_REPO_PATH" || { echo "Error: Failed to cd into '$LOCAL_REPO_PATH'"; exit 1; }

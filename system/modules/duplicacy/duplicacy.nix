@@ -376,6 +376,7 @@ in
           };
         };
 
+        users.users.${username}.extraGroups = [ nasGroupName ];
         users.groups.${systemdGroupName} = { };
         users.groups.${nasGroupName} = { };
       })
