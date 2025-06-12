@@ -24,12 +24,14 @@
 
     modules.sops.enableMinimalSecrets = true;
 
-    modules.duplicacy.repos = {
-      "nas-backup" = {
-        repoId = "nas";
-        localRepoPath = "/mnt/nas-safety-tmp-sdd";
-        enableServices = true;
-        # autoInitRestore = true;
+    modules.duplicacy = {
+      enableServices = true;
+      repos = {
+        "nas-backup" = {
+          repoId = "nas";
+          localRepoPath = "/mnt/nas-safety-tmp-sdd";
+          # autoInitRestore = true;
+        };
       };
     };
 
