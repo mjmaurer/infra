@@ -48,18 +48,22 @@ in
 
     zpool.${nasPool} = {
       type = "zpool";
-
-      vdevs = [
-        {
-          type = "mirror";
-          devices = [
-            nasDisk1Label
-            nasDisk2Label
+      mode = {
+        topology = {
+          type = "topology";
+          vdev = [
+            {
+              mode = "mirror";
+              members = [
+                nasDisk1Label
+                nasDisk2Label
+              ];
+            }
+            # later:
+            # { mode = "mirror";  members = [ "nas3-luks" "nas4-luks" ]; }
           ];
-        }
-        # later:
-        # { type = "mirror";  devices = [ "nas3-luks" "nas4-luks" ]; }
-      ];
+        };
+      };
 
       rootFsOptions = {
         canmount = "off";

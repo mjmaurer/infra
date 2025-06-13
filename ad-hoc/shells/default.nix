@@ -85,7 +85,6 @@ in
         read -p "Do you want to provide a luks disk ecryption key? (y/n): " LUKS_CHOICE
         LUKS_GEN=""
         if [[ "$LUKS_CHOICE" == "y" || "$LUKS_CHOICE" == "Y" ]]; then
-          mkdir -p "$NEW_HOST_LUKS"
           LUKS_GEN="true"
         fi
 
