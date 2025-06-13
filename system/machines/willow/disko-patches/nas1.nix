@@ -55,8 +55,9 @@ in
             {
               mode = "mirror";
               members = [
-                nasDisk1Label
-                nasDisk2Label
+                # This is the format zpool.nix wants
+                "/dev/disk/by-partlabel/${nasDisk1Label}"
+                "/dev/disk/by-partlabel/${nasDisk2Label}"
               ];
             }
             # later:
