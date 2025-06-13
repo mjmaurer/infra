@@ -33,6 +33,11 @@
           localRepoPath = "/mnt/nas-safety-tmp-sdd";
           # autoInitRestore = true;
         };
+        "nas" = {
+          repoId = "nas";
+          localRepoPath = "/nas";
+          # autoInitRestore = true;
+        };
       };
     };
 
