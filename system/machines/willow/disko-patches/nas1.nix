@@ -64,7 +64,10 @@ in
           ];
         };
       };
-
+      mountOptions = [
+        # Don't fail boot if zfs pool is not available
+        "nofail"
+      ];
       rootFsOptions = {
         canmount = "off";
         mountpoint = "none";
