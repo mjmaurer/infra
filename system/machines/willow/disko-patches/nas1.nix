@@ -56,8 +56,8 @@ in
               mode = "mirror";
               members = [
                 # This is the format zpool.nix wants
-                "/dev/disk/by-partlabel/${nasDisk1Label}"
-                "/dev/disk/by-partlabel/${nasDisk2Label}"
+                "/dev/mapper/${nasDisk1Label}"
+                "/dev/mapper/${nasDisk2Label}"
               ];
             }
             # later:
