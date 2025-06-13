@@ -17,7 +17,7 @@
 
     ./disko.nix
     ./disko-patches/media1.nix
-    # ./disko-patches/nas1.nix
+    ./disko-patches/nas1.nix
   ];
 
   config = {
