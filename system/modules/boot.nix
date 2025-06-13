@@ -20,6 +20,7 @@
         canTouchEfiVariables = true;
         # efiSysMountPoint = "/boot"; This was set in original repo
       };
+      # Grub should come up before initrd / passphrase prompt
       grub = {
         enable = true;
         efiSupport = true;
@@ -27,6 +28,9 @@
         # Keep up to 10 previous generations in GRUB boot menu
         # They will get garbage collected after
         configurationLimit = lib.mkDefault 10;
+        enableCryptodisk = false;
+        # Copy the same GRUB image to the removable-media path, too
+        efiInstallAsRemovable = true;
 
         # For BIOS w/ GPT (EF02) disko would add EF02 devices automatically
         # I use EFI here so not needed
