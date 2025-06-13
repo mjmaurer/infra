@@ -16,8 +16,13 @@
 
     i18n.defaultLocale = "en_US.UTF-8";
     console = {
-      font = "${pkgs.nerd-fonts.meslo-lg}/share/consolefonts/ter-132n.psf.gz";
-      packages = [ pkgs.nerd-fonts.meslo-lg ];
+      font = "ter-124b";
+      console.packages = with pkgs; [
+        terminus_font
+      ];
+      keyMap = "us";
+      # font = "${pkgs.nerd-fonts.meslo-lg}/share/consolefonts/ter-132n.psf.gz";
+      # packages = [ pkgs.nerd-fonts.meslo-lg ];
     };
 
     environment = {
