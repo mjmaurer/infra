@@ -50,6 +50,7 @@ NEW_HOST=<machine_name>
 # Or live-iso.localdomain
 IP=live-iso
 PKPATH=<my_liveiso_ssh_key_path>
+# Note for cloud: Remove --disk-encryption-keys
 nix run github:nix-community/nixos-anywhere -- \
     -i "$PKPATH" --flake ".#$NEW_HOST" --target-host root@$IP \
    --extra-files "$NEW_HOST_DATA/ssh_host_keys" \
