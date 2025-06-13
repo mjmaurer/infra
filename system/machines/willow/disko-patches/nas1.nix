@@ -1,37 +1,35 @@
-
-# See: https://github.com/nix-community/disko/blob/master/example/zfs-with-vdevs.nix
-# To setup vdevs
 let
-  # [0, 0] 
+  # [0, 0]
   nasDisk1 = "/dev/disk/by-id/wwn-0x50014ee2c13633f8";
-  # [0, 2] 
+  nasDisk1Label = "nas1-luks";
+  # [0, 2]
   nasDisk2 = "/dev/disk/by-id/wwn-0x50014ee26a4a1377";
-  nasPoolName = "znas";
+  nasDisk2Label = "nas2-luks";
+  nasPool = "znas";
+  nasMnt = "nas";
 
-  mkNasDisk = devicePath: nameSuffix: {
+  mkNasDisk = devicePath: name: {
     device = devicePath;
     type = "disk";
     content = {
       type = "gpt";
-      partitions = {
-        luks = {
-          name = "${nameSuffix}-luks";
-          label = "${nameSuffix}-luks";
-          size = "100%";
+      partitions.luks = {
+        name = name;
+        label = name;
+        size = "100%";
+        content = {
+          type = "luks";
+          name = name;
+          extraFormatArgs = [
+            "--pbkdf argon2i"
+            "--use-random"
+          ];
+          extraOpenArgs = [ "--allow-discards" ];
+          initrdUnlock = true;
+          passwordFile = "/tmp/disk.key";
           content = {
-            type = "luks";
-            name = "${nameSuffix}-luks";
-            extraFormatArgs = [
-              "--pbkdf argon2i"
-              "--use-random"
-            ];
-            initrdUnlock = true;
-            extraOpenArgs = [ "--allow-discards" ];
-            passwordFile = "/tmp/disk.key";
-            content = {
-              type = "zfs";
-              pool = nasPoolName;
-            };
+            type = "zfs";
+            pool = nasPool;
           };
         };
       };
@@ -41,32 +39,45 @@ in
 {
   disko.devices = {
     disk = {
-      nas1 = mkNasDisk nasDisk1 "nas1";
-      nas2 = mkNasDisk nasDisk2 "nas2";
+      nas1 = mkNasDisk nasDisk1 nasDisk1Label;
+      nas2 = mkNasDisk nasDisk2 nasDisk2Label;
+      # In the future just add:
+      # nas3 = mkNasDisk "/dev/disk/by-id/…" "nas3";
+      # nas4 = mkNasDisk "/dev/disk/by-id/…" "nas4";
     };
-    zpool = {
-      "${nasPoolName}" = {
-        type = "zpool";
-        mode = "mirror";
-        rootFsOptions = {
-          canmount = "off";
-          mountpoint = "none";
-          compression = "lz4";
-          "com.sun:auto-snapshot" = "false";
-        };
+
+    zpool.${nasPool} = {
+      type = "zpool";
+
+      vdevs = [
+        {
+          type = "mirror";
+          devices = [
+            nasDisk1Label
+            nasDisk2Label
+          ];
+        }
+        # later:
+        # { type = "mirror";  devices = [ "nas3-luks" "nas4-luks" ]; }
+      ];
+
+      rootFsOptions = {
+        canmount = "off";
+        mountpoint = "none";
+        compression = "lz4";
+        "com.sun:auto-snapshot" = "false";
+      };
+      options = {
+        ashift = "12";
+        autoexpand = "on";
+      };
+
+      datasets.nas = {
+        type = "zfs_fs";
+        mountpoint = "/${nasMnt}";
         options = {
-          ashift = "12";
-          autoexpand = "on";
-        };
-        datasets = {
-          "nas" = {
-            type = "zfs_fs";
-            mountpoint = "/${nasPoolName}";
-            options = {
-              xattr = "sa";
-              atime = "off";
-            };
-          };
+          xattr = "sa";
+          atime = "off";
         };
       };
     };
