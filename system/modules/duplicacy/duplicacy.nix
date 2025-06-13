@@ -323,7 +323,8 @@ in
             esac
 
             echo "Logs for $service_name:"
-            sudo journalctl -u "$service_name" --no-pager
+            sudo systemctl status "$service_name"
+            sudo journalctl -f -u "$service_name" --no-pager
           '')
         ];
 
