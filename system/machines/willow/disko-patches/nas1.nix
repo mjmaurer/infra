@@ -39,8 +39,8 @@ in
 {
   disko.devices = {
     disk = {
-      nas1 = mkNasDisk nasDisk1 nasDisk1Label;
-      nas2 = mkNasDisk nasDisk2 nasDisk2Label;
+      "${nasDisk1Label}" = mkNasDisk nasDisk1 nasDisk1Label;
+      "${nasDisk2Label}" = mkNasDisk nasDisk2 nasDisk2Label;
       # In the future just add:
       # nas3 = mkNasDisk "/dev/disk/by-id/…" "nas3";
       # nas4 = mkNasDisk "/dev/disk/by-id/…" "nas4";
