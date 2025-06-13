@@ -17,7 +17,7 @@
     i18n.defaultLocale = "en_US.UTF-8";
     console = {
       font = "ter-124b";
-      console.packages = with pkgs; [
+      packages = with pkgs; [
         terminus_font
       ];
       keyMap = "us";
