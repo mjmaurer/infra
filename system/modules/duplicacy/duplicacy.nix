@@ -178,7 +178,26 @@ in
               RemainAfterExit = true; # Needed for restartIfChanged
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
-              ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest";
+              ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest -hash";
+              EnvironmentFile = config.sops.templates.duplicacyConf.path;
+            };
+          }
+        ) cfg.repos
+      );
+      restoreLatestOverwriteServices = (
+        lib.mapAttrs' (
+          repoKey: repoCfgItem:
+          lib.nameValuePair "duplicacyRestoreLatestOverwrite-${repoKey}" {
+            description = "Restore Duplicacy repository ${repoKey} after initialization";
+            wantedBy = lib.mkForce [ ]; # Should be run manually
+            requires = [ "network-online.target" ];
+            restartIfChanged = false;
+            serviceConfig = {
+              Type = "oneshot";
+              RemainAfterExit = true; # Needed for restartIfChanged
+              Group = nasGroupName;
+              WorkingDirectory = repoCfgItem.localRepoPath;
+              ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest -hash -overwrite";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
             };
           }
@@ -258,7 +277,7 @@ in
             if [ $# -ne 2 ]; then
               echo "Usage: dup-run <repo_key> <service>"
               echo "  repo_key: The repository key"
-              echo "  service: One of init, initRestore, restoreLatest, or backup"
+              echo "  service: One of init, initRestore, restoreLatest, restoreLatestOverwrite, or backup"
               exit 1
             fi
 
@@ -275,12 +294,15 @@ in
               restoreLatest)
                 service_name="duplicacyRestoreLatest-$repo_key"
                 ;;
+              restoreLatestOverwrite)
+                service_name="duplicacyRestoreLatestOverwrite-$repo_key"
+                ;;
               backup)
                 service_name="duplicacyBackup-$repo_key"
                 ;;
               *)
                 echo "Error: Invalid service '$service'"
-                echo "Service must be one of: init, initRestore, restoreLatest, backup"
+                echo "Service must be one of: init, initRestore, restoreLatest, restoreLatestOverwrite, backup"
                 exit 1
                 ;;
             esac
@@ -295,7 +317,7 @@ in
             if [ $# -ne 2 ]; then
               echo "Usage: dup-log <repo_key> <service>"
               echo "  repo_key: The repository key"
-              echo "  service: One of init, initRestore, restoreLatest, or backup"
+              echo "  service: One of init, initRestore, restoreLatest, restoreLatestOverwrite or backup"
               exit 1
             fi
 
@@ -312,12 +334,15 @@ in
               restoreLatest)
                 service_name="duplicacyRestoreLatest-$repo_key"
                 ;;
+              restoreLatestOverwrite)
+                service_name="duplicacyRestoreLatestOverwrite-$repo_key"
+                ;;
               backup)
                 service_name="duplicacyBackup-$repo_key"
                 ;;
               *)
                 echo "Error: Invalid service '$service'"
-                echo "Service must be one of: init, initRestore, restoreLatest, backup"
+                echo "Service must be one of: init, initRestore, restoreLatest, restoreLatestOverwrite, backup"
                 exit 1
                 ;;
             esac
@@ -332,6 +357,7 @@ in
           initServices
           initRestoreServices
           restoreLatestServices
+          restoreLatestOverwriteServices
           backupServices
           backupAllServices
         ];
