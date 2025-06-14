@@ -23,6 +23,8 @@ lib.mkMerge [
 
         # Smartcard communication daemon. Includes PKCS#11 support.
         services.pcscd.enable = true;
+        # Required by pcsc-lite:
+        security.polkit.enable = true;
       }
   )
 ]
