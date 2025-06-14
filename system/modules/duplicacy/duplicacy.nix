@@ -136,7 +136,6 @@ in
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true; # Needed for restartIfChanged
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
@@ -156,7 +155,6 @@ in
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true; # Needed for restartIfChanged
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
@@ -175,7 +173,6 @@ in
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true; # Needed for restartIfChanged
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest -hash";
@@ -194,7 +191,6 @@ in
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true; # Needed for restartIfChanged
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest -hash -overwrite";
@@ -213,7 +209,6 @@ in
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              RemainAfterExit = true; # Needed for restartIfChanged
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupBackupScript}/bin/dup-backup ${escapeStringForShellDoubleQuotes repoKey}";
