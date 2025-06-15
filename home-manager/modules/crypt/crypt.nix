@@ -10,7 +10,7 @@
 }:
 let
   cfg = config.modules.crypt;
-  gnupgDir = "${config.xdg.dataHome}/gnupg";
+  gnupgDir = config.programs.gpg.homedir;
   gpgForwardedSocket = "/tmp/S.gpg-agent.forwarded";
 in
 {
@@ -66,18 +66,20 @@ in
       programs = {
         gpg = {
           enable = true;
-          homedir = gnupgDir;
-          # publicKeys = [ { source = ./pubkeys.txt; } ];
+          publicKeys = lib.mkIf (osConfig ? sops && builtins.hasAttr "gpgPublicKey" osConfig.sops.secrets) [
+            { source = osConfig.sops.secrets.gpgPublicKey.path; }
+          ];
           # TODO: consider mutableKeys = false;
           settings = import ./gpg.conf.nix { remoteHost = cfg.remoteHost; };
           scdaemonSettings = {
-            # Avoids the problem where GnuPG will repeatedly prompt
-            # for the insertion of an already-inserted YubiKey
-            # like: "gpg: OpenPGP card not available: Operation not supported by device"
-            # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
-            # disable-ccid = true;
             # reader-port = "Yubico Yubikey";
             # log-file = "/tmp/gpg-scdaemon.log";
+
+            # The following get scdaemon and pcscd to play nicely together.
+            # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
+            disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
+            # pcsc-shared = true; # DANGER. Allow other processes to use the smartcard
+            # card-timeout = 10; # DEPRECATED. Release the card after 10 seconds
           };
         };
         ssh = {
@@ -117,6 +119,7 @@ in
             maxCacheTtl = maxCacheTtl;
             maxCacheTtlSsh = maxCacheTtl;
             enableZshIntegration = true;
+            # pinentry-curses has trouble with ssh for some reason
             pinentry.package = pkgs.pinentry-curses;
             # Prefer gpg-agent over ssh-agent
             enableSshSupport = true;
@@ -144,7 +147,7 @@ in
             export GPG_AGENT_SOCK="${gpgForwardedSocket}"
           fi
         '');
-      home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+      home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "activateServices" ] ''
         run mkdir -p "$HOME/.ssh"
         # Ensure gpg-agent is aware of the smartcard BEFORE exporting
         if ! ${config.programs.gpg.package}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye >/dev/null 2>&1; then
@@ -152,7 +155,7 @@ in
         fi
 
         # Export SSH public key from GPG
-        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --homedir ${gnupgDir} --export-ssh-key mjmaurer777@gmail.com 2>/tmp/gpg_export_error.log)"
+        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --export-ssh-key mjmaurer777@gmail.com 2>/tmp/gpg_export_error.log)"
         if [ -n "$_YBPK" ]; then
           # Can test with 'ssh git@github.com'
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"
