@@ -132,12 +132,12 @@ in
             source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
           };
       home.sessionVariablesExtra =
-        (lib.mkIf (config.services.gpg-agent.enableSshSupport) ''
+        (lib.optionalString (config.services.gpg-agent.enableSshSupport) ''
           if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
             export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
           fi
         '')
-        + (lib.mkIf cfg.remoteHost ''
+        + (lib.optionalString cfg.remoteHost ''
           # Only override forwarded socket exists.
           # Otherwise, use the default gpg-agent socket.
           if [ -S "${gpgForwardedSocket}" ]; then
