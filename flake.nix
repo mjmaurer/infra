@@ -47,7 +47,8 @@
   outputs =
     { self, ... }@inputs:
     let
-      sys = import ./lib/system.nix { inherit inputs; };
+      nixosHostnames = builtins.attrNames self.nixosConfigurations;
+      sys = import ./lib/system.nix { inherit inputs nixosHostnames; };
     in
     {
       nixosConfigurations = {

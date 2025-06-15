@@ -1,4 +1,4 @@
-{ inputs, ... }:
+{ inputs, nixosHostnames, ... }:
 rec {
   defaultUsername = "mjmaurer";
   forEachSystem =
@@ -42,6 +42,7 @@ rec {
           username
           derivationName
           system
+          nixosHostnames
           ;
 
         pkgs-latest = import inputs.nixpkgs-latest {

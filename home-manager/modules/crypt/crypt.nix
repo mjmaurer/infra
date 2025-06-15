@@ -4,15 +4,29 @@
   lib,
   config,
   isDarwin,
+  nixosHostnames,
   pkgs,
   ...
 }:
 let
   cfg = config.modules.crypt;
   gnupgDir = "${config.xdg.dataHome}/gnupg";
+  gpgForwardedSocket = "/tmp/S.gpg-agent.forwarded";
 in
 {
-  options.modules.crypt = { };
+  options.modules.crypt = {
+    remoteHost = lib.mkOption {
+      type = lib.types.bool;
+      default = !isDarwin;
+      description = ''
+        If true, the host is primarily accessed remotely,
+        and so gpg-agent won't create a local socket and 
+        gpg-agent won't start automatically.
+
+        Also, SSH will not be configured with the nixos hosts.
+      '';
+    };
+  };
 
   config = lib.mkMerge [
     {
@@ -55,12 +69,13 @@ in
           homedir = gnupgDir;
           # publicKeys = [ { source = ./pubkeys.txt; } ];
           # TODO: consider mutableKeys = false;
-          settings = import ./gpg.conf.nix;
+          settings = import ./gpg.conf.nix { remoteHost = cfg.remoteHost; };
           scdaemonSettings = {
             # Avoids the problem where GnuPG will repeatedly prompt
             # for the insertion of an already-inserted YubiKey
             # like: "gpg: OpenPGP card not available: Operation not supported by device"
-            # "disable-ccid" = true;
+            # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
+            # disable-ccid = true;
             # reader-port = "Yubico Yubikey";
             # log-file = "/tmp/gpg-scdaemon.log";
           };
@@ -71,6 +86,14 @@ in
             # For manual/local configurations
             "~/.ssh/config.local"
           ];
+          matchBlocks = import ./ssh-match.conf.nix {
+            inherit
+              nixosHostnames
+              pkgs
+              gnupgDir
+              gpgForwardedSocket
+              ;
+          };
           # Needed for mac?
           # addKeysToAgent = "yes";
         };
@@ -83,7 +106,12 @@ in
             maxCacheTtl = 60 * 60 * 48;
           in
           {
+            # enable = !cfg.remoteHost;
             enable = true;
+
+            # make S.gpg-agent.extra for forwarding
+            enableExtraSocket = !cfg.remoteHost;
+
             defaultCacheTtl = cacheTtl;
             defaultCacheTtlSsh = cacheTtl;
             maxCacheTtl = maxCacheTtl;
@@ -103,11 +131,19 @@ in
           {
             source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
           };
-      home.sessionVariablesExtra = lib.mkIf config.services.gpg-agent.enableSshSupport ''
-        if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
-          export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
-        fi
-      '';
+      home.sessionVariablesExtra =
+        (lib.mkIf (config.services.gpg-agent.enableSshSupport) ''
+          if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
+            export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
+          fi
+        '')
+        + (lib.mkIf cfg.remoteHost ''
+          # Only override forwarded socket exists.
+          # Otherwise, use the default gpg-agent socket.
+          if [ -S "${gpgForwardedSocket}" ]; then
+            export GPG_AGENT_SOCK="${gpgForwardedSocket}"
+          fi
+        '');
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         run mkdir -p "$HOME/.ssh"
         # Ensure gpg-agent is aware of the smartcard BEFORE exporting

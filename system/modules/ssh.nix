@@ -30,6 +30,8 @@
     settings = {
       PermitRootLogin = "prohibit-password";
       PasswordAuthentication = false;
+      # Cleanup forwarded sockets (e.g. for remote yubikey) 
+      StreamLocalBindUnlink = true;
     };
   };
 }
