@@ -78,7 +78,7 @@ in
             # The following get scdaemon and pcscd to play nicely together.
             # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
             disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
-            # pcsc-shared = true; # DANGER. Allow other processes to use the smartcard
+            pcsc-shared = true; # Allow other processes to use the smartcard
             # card-timeout = 10; # DEPRECATED. Release the card after 10 seconds
           };
         };
