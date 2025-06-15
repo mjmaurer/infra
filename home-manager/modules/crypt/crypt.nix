@@ -119,7 +119,6 @@ in
             maxCacheTtl = maxCacheTtl;
             maxCacheTtlSsh = maxCacheTtl;
             enableZshIntegration = true;
-            # pinentry-curses has trouble with ssh for some reason
             pinentry.package = pkgs.pinentry-curses;
             # Prefer gpg-agent over ssh-agent
             enableSshSupport = true;
