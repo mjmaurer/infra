@@ -21,8 +21,6 @@ in
     ];
     extraOptions = {
       PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
-      # For running `ykman list` first.
-      ProxyCommand = "${pkgs.zsh}/bin/zsh -c '${pkgs.yubikey-manager}/bin/ykman list >&2 || { echo \"ykman list failed or no YubiKey detected, aborting SSH.\" >&2; exit 1; }; exec ${pkgs.netcat}/bin/nc %h %p'";
       # Clean up stale sockets automatically:
       StreamLocalBindUnlink = "yes";
     };
