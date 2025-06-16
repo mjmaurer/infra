@@ -25,7 +25,7 @@ let
   # GPG has no way to configure the socket path, so we have to use the default.
   # This would probably cause issues if we ever wanted to use a Yubikey locally on a remote host,
   # but it might be as easy as starting gpg-agent manually (although its disabled in nix by default)
-  gpgForwardedSocket = "/run/user//${config.users.users.mjmaurer.uid}/gnupg/S.gpg-agent";
+  gpgForwardedSocket = "/run/user/1000/gnupg/S.gpg-agent";
 in
 {
   options.modules.crypt = {
