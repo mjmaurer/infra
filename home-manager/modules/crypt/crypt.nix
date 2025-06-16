@@ -1,4 +1,12 @@
 # Includes SSH, GPG, and Yubikey
+
+/* ------------------------- THERE BE DRAGONS HERE ------------------------ */
+# Whether due to GPG or some config buried in home-manager,
+# this module is extremely flakey.
+# To avoid pain and suffering:
+# - NEVER change the GPG homedir away from the default
+# - Run `gpgrestart` after any changes to this module
+# - Run `gpg --card-status` and try to ssh into a NixOS host after any changes to confirm things work
 {
   osConfig ? null,
   lib,
@@ -10,7 +18,8 @@
 }:
 let
   cfg = config.modules.crypt;
-  gpgHomedir = "${config.xdg.dataHome}/gnupg";
+  gpgHomedir = "${config.home.homeDirectory}/.gnupg"; # Default
+  # gpgHomedir = "${config.xdg.dataHome}/gnupg";
   gpgRemoteHomedir = "${config.xdg.dataHome}/gnupg-remote";
   # GPG has no way to configure the socket path, so we have to use the default.
   # This would probably cause issues if we ever wanted to use a Yubikey locally on a remote host,
@@ -63,9 +72,6 @@ in
         "ybs" = "yubi-switch";
         "gpgr" = "gpg-connect-agent reloadagent /bye";
         "gpgrestart" = "gpgconf --kill gpg-agent && gpg-connect-agent /bye";
-        # Uses resident PIV on yubikey for SSH
-        # dylib is only for Mac
-        "sshyk" = lib.mkIf isDarwin "ssh -I ~/.nix-profile/lib/libykcs11.dylib";
       };
 
       programs = {
@@ -80,7 +86,6 @@ in
             remoteHost = cfg.remoteHost;
           };
           scdaemonSettings = {
-            homedir = gpgHomedir;
             # reader-port = "Yubico Yubikey";
             # log-file = "/tmp/gpg-scdaemon.log";
 
