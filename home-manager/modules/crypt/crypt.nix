@@ -8,6 +8,7 @@
 # - After any changes:
 #   - Run `gpgrestart`
 #   - Run `gpg --card-status` then try to ssh into a NixOS host
+# - You can't get gpg to listen to a custom socket path, don't even try.
 {
   osConfig ? null,
   lib,
@@ -19,14 +20,12 @@
 }:
 let
   cfg = config.modules.crypt;
-  gpgHomedir = "${config.home.homeDirectory}/.gnupg"; # Default
-  # gpgHomedir = "${config.xdg.dataHome}/gnupg";
-  gpgRemoteHomedir = "${config.xdg.dataHome}/gnupg-remote";
+  gpgHomedir = "${config.home.homeDirectory}/.gnupg"; # Default. DONT CHANGE THIS.
+
   # GPG has no way to configure the socket path, so we have to use the default.
   # This would probably cause issues if we ever wanted to use a Yubikey locally on a remote host,
-  # but it might be as easy as starting gpg-agent manually.
-  gpgForwardedSocket = "${gpgRemoteHomedir}/S.gpg-agent";
-  # gpgForwardedSocket = "/run/user/${config.users.users.mjmaurer.uid}/gnupg/S.gpg-agent";
+  # but it might be as easy as starting gpg-agent manually (although its disabled in nix by default)
+  gpgForwardedSocket = "/run/user//${config.users.users.mjmaurer.uid}/gnupg/S.gpg-agent";
 in
 {
   options.modules.crypt = {
@@ -108,7 +107,6 @@ in
               nixosHostnames
               pkgs
               gpgHomedir
-              gpgRemoteHomedir
               gpgForwardedSocket
               ;
           };
@@ -124,10 +122,10 @@ in
             maxCacheTtl = 60 * 60 * 48;
           in
           {
-            enable = true;
+            enable = !cfg.remoteHost;
 
             # make S.gpg-agent.extra for forwarding
-            enableExtraSocket = !cfg.remoteHost;
+            enableExtraSocket = true;
 
             defaultCacheTtl = cacheTtl;
             defaultCacheTtlSsh = cacheTtl;
@@ -153,11 +151,6 @@ in
           if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
             export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
           fi
-        ''
-      );
-      home.activation.ensureGpgRemoteHomedir = lib.mkIf cfg.remoteHost (
-        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
-          run mkdir -p "${gpgRemoteHomedir}"
         ''
       );
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "activateServices" ] ''

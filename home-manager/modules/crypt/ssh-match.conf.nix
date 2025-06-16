@@ -2,7 +2,6 @@
   pkgs,
   nixosHostnames,
   gpgHomedir,
-  gpgRemoteHomedir,
   gpgForwardedSocket,
 }:
 let
@@ -14,13 +13,10 @@ in
     match = "host ${hostListString}";
     user = "mjmaurer";
     port = 2222;
-    setEnv = {
-      GNUPGHOME = gpgRemoteHomedir;
-    };
     remoteForwards = [
       # bind = path on *remote* ;  host = path on *local*
       {
-        bind.address = gpgForwardedSocket; # Path under gpgRemoteHomedir
+        bind.address = gpgForwardedSocket;
         host.address = "${gpgHomedir}/S.gpg-agent.extra";
       }
     ];
