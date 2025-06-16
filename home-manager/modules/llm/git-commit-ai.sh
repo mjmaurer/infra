@@ -20,19 +20,13 @@ Format the response as a conventional commit message, without quotes or explanat
 
 COMMIT_MSG=$(echo "$PROMPT" | llm --no-log -o thinking_budget 0)
 
-gpg_output_and_error=$(gpg --card-status 2>&1)
-gpg_exit_status=$?
-
-# # Check for error conditions
-if [[ $gpg_exit_status -ne 0 ]] || \
-   [[ -z "$gpg_output_and_error" ]] || \
-   echo "$gpg_output_and_error" | grep -q "ERROR"; then
-  echo "GPG signing is not available. adding --no-gpg-sign." >&2
-  no_gpg_or_error=true
-else
+if gpg_output_and_error=$(gpg --card-status 2>&1); then
   no_gpg_or_error=false
+else
+  echo "'gpg --card-status' failed with output: $gpg_output_and_error" >&2
+  echo "Adding --no-gpg-sign." >&2
+  no_gpg_or_error=true
 fi
-no_gpg_or_error=false
 
 if [[ "$no_gpg_or_error" == "true" ]]; then
   git commit --no-gpg-sign -e -m "$COMMIT_MSG" "$@"
