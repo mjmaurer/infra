@@ -13,11 +13,12 @@ in
     match = "host ${hostListString}";
     user = "mjmaurer";
     port = 2222;
+    sendEnv = [ "GPG_TTY" ];
     remoteForwards = [
       # bind = path on *remote* ;  host = path on *local*
       {
         bind.address = gpgForwardedSocket;
-        host.address = "${gpgHomedir}/S.gpg-agent.extra";
+        host.address = "${gpgHomedir}/S.gpg-agent";
       }
     ];
     extraOptions = {

@@ -4,6 +4,11 @@
 
 set -euo pipefail
 
+if ! gpg_output_and_error=$(gpg --card-status 2>&1); then
+  # Try to warm up the GPG agent
+  echo "First 'gpg --card-status' failed" >&2
+fi
+
 # Get the diff of staged changes
 DIFF=$(git diff --cached)
 
