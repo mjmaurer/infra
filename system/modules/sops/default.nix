@@ -40,6 +40,9 @@ in
         defaultSopsFile = ./secrets/common.yaml;
         secrets = {
           gpgAuthKeygrip = { };
+          gpgPublicKey = {
+            owner = config.users.users.${username}.name;
+          };
           mjmaurerHashedPassword = {
             neededForUsers = true;
             # Allow for this to be overridden by the user
@@ -70,10 +73,6 @@ in
             sopsFile = fullSopsFile;
           };
           smbUrl = {
-            sopsFile = fullSopsFile;
-          };
-          gpgPublicKey = {
-            owner = config.users.users.${username}.name;
             sopsFile = fullSopsFile;
           };
 

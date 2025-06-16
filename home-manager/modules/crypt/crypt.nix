@@ -78,7 +78,8 @@ in
         gpg = {
           enable = true;
           homedir = gpgHomedir;
-          publicKeys = lib.mkIf (osConfig ? sops && builtins.hasAttr "gpgPublicKey" osConfig.sops.secrets) [
+          publicKeys = lib.mkIf (osConfig ? sops) [
+            # Enabled / available for all
             { source = osConfig.sops.secrets.gpgPublicKey.path; }
           ];
           # TODO: consider mutableKeys = false;
