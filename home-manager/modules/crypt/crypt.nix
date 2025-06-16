@@ -10,8 +10,13 @@
 }:
 let
   cfg = config.modules.crypt;
-  gnupgDir = config.programs.gpg.homedir;
-  gpgForwardedSocket = "/tmp/S.gpg-agent.forwarded";
+  gpgHomedir = "${config.xdg.dataHome}/gnupg";
+  gpgRemoteHomedir = "${config.xdg.dataHome}/gnupg-remote";
+  # GPG has no way to configure the socket path, so we have to use the default.
+  # This would probably cause issues if we ever wanted to use a Yubikey locally on a remote host,
+  # but it might be as easy as starting gpg-agent manually.
+  gpgForwardedSocket = "${gpgRemoteHomedir}/S.gpg-agent";
+  # gpgForwardedSocket = "/run/user/${config.users.users.mjmaurer.uid}/gnupg/S.gpg-agent";
 in
 {
   options.modules.crypt = {
@@ -66,12 +71,16 @@ in
       programs = {
         gpg = {
           enable = true;
+          homedir = gpgHomedir;
           publicKeys = lib.mkIf (osConfig ? sops && builtins.hasAttr "gpgPublicKey" osConfig.sops.secrets) [
             { source = osConfig.sops.secrets.gpgPublicKey.path; }
           ];
           # TODO: consider mutableKeys = false;
-          settings = import ./gpg.conf.nix { remoteHost = cfg.remoteHost; };
+          settings = import ./gpg.conf.nix {
+            remoteHost = cfg.remoteHost;
+          };
           scdaemonSettings = {
+            homedir = gpgHomedir;
             # reader-port = "Yubico Yubikey";
             # log-file = "/tmp/gpg-scdaemon.log";
 
@@ -92,7 +101,8 @@ in
             inherit
               nixosHostnames
               pkgs
-              gnupgDir
+              gpgHomedir
+              gpgRemoteHomedir
               gpgForwardedSocket
               ;
           };
@@ -108,7 +118,6 @@ in
             maxCacheTtl = 60 * 60 * 48;
           in
           {
-            # enable = !cfg.remoteHost;
             enable = true;
 
             # make S.gpg-agent.extra for forwarding
@@ -128,33 +137,28 @@ in
       };
       # GPG keys (by keygrip ID) to expose via SSH
       # Replaces gpg-agent's `sshKeys` option
-      home.file."${gnupgDir}/sshcontrol" =
+      home.file."${gpgHomedir}/sshcontrol" =
         lib.mkIf (osConfig ? sops && builtins.hasAttr "gpg_sshcontrol" osConfig.sops.templates)
           {
             source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
           };
-      home.sessionVariablesExtra =
-        (lib.optionalString (config.services.gpg-agent.enableSshSupport) ''
+      home.sessionVariablesExtra = (
+        lib.optionalString (config.services.gpg-agent.enableSshSupport) ''
           if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
             export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
           fi
-        '')
-        + (lib.optionalString cfg.remoteHost ''
-          # Only override forwarded socket exists.
-          # Otherwise, use the default gpg-agent socket.
-          if [ -S "${gpgForwardedSocket}" ]; then
-            export GPG_AGENT_SOCK="${gpgForwardedSocket}"
-          fi
-        '');
+        ''
+      );
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "activateServices" ] ''
         run mkdir -p "$HOME/.ssh"
+        # DISABLED: This was bringing up an extra gpg-agent
         # Ensure gpg-agent is aware of the smartcard BEFORE exporting
-        if ! ${config.programs.gpg.package}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye >/dev/null 2>&1; then
-           echo "Warning: gpg-connect-agent learn command failed. Export might fail."
-        fi
+        # if ! ${config.programs.gpg.package}/bin/gpg-connect-agent "scd serialno" "learn --force" /bye >/dev/null 2>&1; then
+        #    echo "Warning: gpg-connect-agent learn command failed. Export might fail."
+        # fi
 
         # Export SSH public key from GPG
-        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --export-ssh-key mjmaurer777@gmail.com 2>/tmp/gpg_export_error.log)"
+        run export _YBPK="$(${config.programs.gpg.package}/bin/gpg --homedir ${gpgHomedir} --export-ssh-key mjmaurer777@gmail.com 2>/tmp/gpg_export_error.log)"
         if [ -n "$_YBPK" ]; then
           # Can test with 'ssh git@github.com'
           run echo "$_YBPK" > "$HOME/.ssh/id_rsa_yubikey.pub"

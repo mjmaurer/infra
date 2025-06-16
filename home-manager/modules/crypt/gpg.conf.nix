@@ -2,7 +2,7 @@
 {
   # Stop gpg-agent from starting automatically
   # when the host is accessed remotely, e.g. via SSH.
-  # no-autostart = remoteHost;
+  no-autostart = remoteHost;
 
   # https://github.com/drduh/config/blob/master/gpg.conf
   # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Options.html

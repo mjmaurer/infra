@@ -1,22 +1,27 @@
 {
   pkgs,
   nixosHostnames,
-  gnupgDir,
+  gpgHomedir,
+  gpgRemoteHomedir,
   gpgForwardedSocket,
 }:
 let
   hostListString = builtins.concatStringsSep "," nixosHostnames;
+  hostListInitString = builtins.concatStringsSep "," (map (h: "${h}-init") nixosHostnames);
 in
 {
   "nixos-yubikey-match" = {
     match = "host ${hostListString}";
     user = "mjmaurer";
     port = 2222;
+    setEnv = {
+      GNUPGHOME = gpgRemoteHomedir;
+    };
     remoteForwards = [
       # bind = path on *remote* ;  host = path on *local*
       {
-        bind.address = gpgForwardedSocket;
-        host.address = "${gnupgDir}/S.gpg-agent.extra";
+        bind.address = gpgForwardedSocket; # Path under gpgRemoteHomedir
+        host.address = "${gpgHomedir}/S.gpg-agent.extra";
       }
     ];
     extraOptions = {
