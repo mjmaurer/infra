@@ -1,12 +1,13 @@
 # Includes SSH, GPG, and Yubikey
 
-/* ------------------------- THERE BE DRAGONS HERE ------------------------ */
+# ------------------------- THERE BE DRAGONS HERE ------------------------
 # Whether due to GPG or some config buried in home-manager,
 # this module is extremely flakey.
 # To avoid pain and suffering:
 # - NEVER change the GPG homedir away from the default
-# - Run `gpgrestart` after any changes to this module
-# - Run `gpg --card-status` and try to ssh into a NixOS host after any changes to confirm things work
+# - After any changes:
+#   - Run `gpgrestart`
+#   - Run `gpg --card-status` then try to ssh into a NixOS host
 {
   osConfig ? null,
   lib,
@@ -152,6 +153,11 @@ in
           if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then
             export SSH_AUTH_SOCK="$(${config.programs.gpg.package}/bin/gpgconf --list-dirs agent-ssh-socket)"
           fi
+        ''
+      );
+      home.activation.ensureGpgRemoteHomedir = lib.mkIf cfg.remoteHost (
+        lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+          run mkdir -p "${gpgRemoteHomedir}"
         ''
       );
       home.activation.addGpgSshIdentity = lib.hm.dag.entryAfter [ "activateServices" ] ''
