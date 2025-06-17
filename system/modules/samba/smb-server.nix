@@ -132,22 +132,23 @@ in
               "create mask" = shareConfig.createMask;
               "directory mask" = shareConfig.directoryMask;
 
-              "vfs objects" = [
-                "catia"
-                "fruit"
-                "streams_xattr"
-                "recycle"
-              ];
-
             }
           ) cfg.shares;
         in
         {
+          # NOTE: Could consider adding spotlight indexing setup
           global = {
             workgroup = "WORKGROUP"; # Standard default
             "server string" = "%h Samba Server (version: %v, protocol: %R)";
             "netbios name" = config.networking.hostName;
             "server min protocol" = "SMB3";
+            "min protocol" = "SMB2";
+            "vfs objects" = [
+              "catia"
+              "fruit"
+              "streams_xattr"
+              "recycle"
+            ];
 
             # ------------------------------- Performance ------------------------------
             "ea support" = "yes"; # required for xattrs/ADS
@@ -158,13 +159,17 @@ in
             # --------------------------- macOS compatibility --------------------------
             "fruit:aapl" = "yes";
             # Store everything in an ADS so Windows never sees ._ files
+
+            "fruit:nfs_aces" = "no"; # https://stackoverflow.com/questions/58496277/samba-4-10-server-config-using-module-vfs-fruit-changes-file-creation-mask-fo
             "fruit:metadata" = "stream";
+            "fruit:encoding" = "native"; # Use native encoding for filenames
             "fruit:resource" = "xattr"; # use ADS but avoid the older stream bug
             "fruit:posix_rename" = "yes"; # fixes “replace” operations from Finder
             "fruit:zero_file_id" = "yes"; # avoids duplicate-inode confusion
             "fruit:delete_empty_adfiles" = "yes"; # housekeeping
-            # optional tweaks
-            "readdir_attr:aapl_max_access" = "no"; # lighter directory listings
+            "readdir_attr:aapl_max_access" = "no";
+            "readdir_attr:aapl_finder_info" = "no";
+            "readdir_attr:aapl_rsize" = "no";
 
             # -------------------------- Recycle bin settings --------------------------
             "recycle:repository" = "${cfg.recyclePath}/%U";
