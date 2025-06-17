@@ -11,6 +11,7 @@
   imports = [
     ../../modules/graphics/intel.nix
     ../../modules/supermicro/supermicro.nix
+    ../../modules/smb-server.nix
 
     ./hardware-configuration.nix
     ./media.nix
@@ -37,6 +38,30 @@
           repoId = "nas";
           localRepoPath = "/nas";
           # autoInitRestore = true;
+        };
+      };
+    };
+
+    modules.smbServer = {
+      recyclePath = "/nas/recycle";
+      shares = {
+        "full" = {
+          path = "/nas";
+          comment = "Full Share";
+          browseable = true;
+          readOnly = true;
+          guestOk = false;
+          validUsers = [ "mjmaurer" ];
+          forceGroup = "nas";
+        };
+        "content" = {
+          path = "/nas/main";
+          comment = "Content Share";
+          browseable = true;
+          readOnly = false;
+          guestOk = false;
+          validUsers = [ "@nas" ];
+          forceGroup = "nas";
         };
       };
     };
