@@ -82,6 +82,22 @@ in
 
   config = {
 
+    # Assert that guestOk and validUsers are not both set for any share
+    assertions = lib.flatten (
+      lib.mapAttrsToList (
+        shareName: shareConfig:
+        if shareConfig.guestOk && shareConfig.validUsers != [ ] then
+          [
+            {
+              assertion = false;
+              message = "guestOk and validUsers cannot both be set for share ${shareName}";
+            }
+          ]
+        else
+          [ ]
+      ) cfg.shares
+    );
+
     # Enable Avahi for mDNS (don't need since we're confiuring clients with nixos)
     # might be useful for non-NixOS clients, though.
     # services.avahi = {
@@ -101,12 +117,6 @@ in
           sambaShareDefinitions = lib.mapAttrs (
             shareName: shareConfig:
             lib.filterAttrs (name: value: value != null) {
-              assertions = [
-                {
-                  assertion = !(shareConfig.guestOk && shareConfig.validUsers != [ ]);
-                  message = "guestOk and validUsers cannot both be set for share ${shareName}";
-                }
-              ];
               comment = shareConfig.comment;
               path = shareConfig.path;
               browseable = boolToString shareConfig.browseable;
