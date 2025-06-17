@@ -200,7 +200,7 @@ in
         // sambaShareDefinitions;
     };
 
-    sops.secrets.smbPassword.restartUnits = [ "samba-pass" ];
+    sops.secrets.smbPassword.restartUnits = [ "samba-pass.service" ];
 
     # Ensure user's password is set in Samba
     systemd.services."samba-pass" = {
