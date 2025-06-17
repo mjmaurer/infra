@@ -142,12 +142,12 @@ in
             "server string" = "%h Samba Server (version: %v, protocol: %R)";
             "netbios name" = config.networking.hostName;
             "server min protocol" = "SMB3";
-            "min protocol" = "SMB2";
+            # "min protocol" = "SMB2";
             "vfs objects" = [
               "catia"
               "fruit"
               "streams_xattr"
-              "recycle"
+              # "recycle"
             ];
 
             # ------------------------------- Performance ------------------------------
@@ -172,8 +172,8 @@ in
             "readdir_attr:aapl_rsize" = "no";
 
             # -------------------------- Recycle bin settings --------------------------
-            "recycle:repository" = "${cfg.recyclePath}/%U";
-            "recycle:keeptree" = "yes";
+            # "recycle:repository" = "${cfg.recyclePath}/%U";
+            # "recycle:keeptree" = "yes";
 
             # ----------------------------- Security / Auth ----------------------------
             # "smb encrypt" = "required";

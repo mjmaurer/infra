@@ -8,9 +8,8 @@
 }:
 let
   cfg = config.modules.smbClient;
-  localVolume = "/Volumes/nas";
-  localShareName = "main";
-  remoteShareName = "personal-main";
+  localShareName = "content";
+  remoteShareName = "content";
 in
 {
   options.modules.smbClient = {
@@ -20,10 +19,10 @@ in
       description = "Enable SMB client module.";
     };
 
-    smbMountPath = lib.mkOption {
+    nasMountPath = lib.mkOption {
       type = lib.types.str;
-      default = if pkgs.stdenv.isDarwin then "/Volumes/nas/personal" else "/nas/personal";
-      description = "Absolute mount path for personal SMB share.";
+      default = if pkgs.stdenv.isDarwin then "/Volumes/nas" else "/nas";
+      description = "Absolute mount path for shares to be mounted under on the local filesystem.";
     };
   };
 
@@ -35,8 +34,8 @@ in
           # also: https://support.7fivefive.com/kb/latest/mac-os-smb-client-configuration
           {
             # Can run `smbutil statshares -a` to see current shares (and confirm status like SIGNING)
-            sops.templates."nsmb.conf" = {
-              owner = "root";
+            sops.templates."nsmb_conf" = {
+              path = "/etc/nsmb.conf";
               content = ''
                 [default]
                 # https://support.apple.com/en-gb/101442
@@ -47,7 +46,7 @@ in
                 dir_cache_max_cnt=0
                 # port445=np_netbios
                 notify_off=yes
-                protocol_vers_map=4 # Hopefully use SMB 3.0 by default. Might cause issues
+                # protocol_vers_map=4 # Hopefully use SMB 3.0 by default. Might cause issues
 
                 # Disable multi-channel support (users reported speed issues) 
                 mc_on=no
@@ -56,32 +55,33 @@ in
                 aapl_off=false
 
                 [${config.sops.placeholder.smbHost}:mjmaurer]
-                password="${config.sops.placeholder.smbPassword}
+                password="${config.sops.placeholder.smbPassword}"
+              '';
+            };
+            sops.templates.${localShareName} = {
+              path = "/etc/auto_${localShareName}";
+              content = ''
+                ${localShareName} \
+                  -fstype=smbfs,soft,noatime,nosuid,rw \
+                  ://mjmaurer@${config.sops.placeholder.smbHost}/${remoteShareName}
               '';
             };
 
-            environment.etc.${localShareName}.text = ''
-              ${localShareName} \
-                  -fstype=smbfs,soft,noatime,nosuid,rw ://mjmaurer@${builtins.readFile config.sops.secrets.smbHost.path}/${remoteShareName}
+            system.activationScripts.postActivation.text = lib.mkOrder 1600 ''
+              # /etc/auto_master already exists, so we append to it
+              if ! grep -q "^${cfg.nasMountPath} " /etc/auto_master; then
+                echo "${cfg.nasMountPath} ${
+                  config.sops.templates.${localShareName}.path
+                } -nosuid" >> /etc/auto_master
+                echo "Added auto master entry for ${cfg.nasMountPath}." >&2
+              fi
+              # Ensure autofs is aware of any changes to maps or master config
+              if command -v automount >/dev/null 2>&1; then
+                automount -vc
+              else
+                echo "automount command not found, skipping autofs reload." >&2
+              fi
             '';
-            environment.etc.auto_master.text = ''
-              +auto_master
-              ${localVolume} /etc/${localShareName} -nosuid
-            '';
-
-            launchd.daemons.autofs-reload = {
-              serviceConfig.Label = "dev.autofs-reload";
-              serviceConfig.ProgramArguments = [
-                "/usr/sbin/automount"
-                "-cv"
-              ];
-              serviceConfig.RunAtLoad = true;
-              requires = [
-                "etc-${localShareName}"
-                "etc-auto_master"
-                "template-nsmb_conf"
-              ];
-            };
           }
         else
           # NixOS
