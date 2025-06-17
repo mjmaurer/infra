@@ -11,7 +11,7 @@
   imports = [
     ../../modules/graphics/intel.nix
     ../../modules/supermicro/supermicro.nix
-    ../../modules/smb-server.nix
+    ../../modules/samba/smb-server.nix
 
     ./hardware-configuration.nix
     ./media.nix

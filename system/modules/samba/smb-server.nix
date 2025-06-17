@@ -1,6 +1,8 @@
 {
   lib,
   config,
+  username,
+  pkgs,
   ...
 }:
 let
@@ -196,6 +198,30 @@ in
           };
         }
         // sambaShareDefinitions;
+    };
+
+    sops.secrets.smbPassword.restartUnits = [ "samba-pass" ];
+
+    # Ensure user's password is set in Samba
+    systemd.services."samba-pass" = {
+      description = "Ensure Samba password for ${username}";
+      wantedBy = [ "multi-user.target" ];
+      after = [ "samba.service" ];
+      serviceConfig.Type = "oneshot";
+      script = ''
+        set -euo pipefail
+        pw=$(cat ${config.sops.secrets.smbPassword.path})
+
+        # add user the first time, afterwards just reset the password
+        if ${pkgs.samba}/bin/pdbedit -L -u ${username} >/dev/null 2>&1; then
+          printf '%s\n%s\n' "$pw" "$pw" \
+            | ${pkgs.samba}/bin/smbpasswd -s ${username}
+        else
+          printf '%s\n%s\n' "$pw" "$pw" \
+            | ${pkgs.samba}/bin/smbpasswd -s -a ${username}
+        fi
+      '';
+      restartIfChanged = true;
     };
   };
 }

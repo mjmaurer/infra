@@ -21,7 +21,7 @@ in
     ../modules/basic.nix
     ../modules/users.nix
     ../modules/networking.nix
-    ../modules/smb-client.nix
+    ../modules/samba/smb-client.nix
 
     ../modules/sops
 

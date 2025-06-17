@@ -39,6 +39,8 @@ in
 
         defaultSopsFile = ./secrets/common.yaml;
         secrets = {
+          smbHost = { };
+          smbPassword = { };
           gpgAuthKeygrip = { };
           gpgPublicKey = {
             owner = config.users.users.${username}.name;
@@ -69,13 +71,6 @@ in
 
       (lib.optionalAttrs cfg.enableFullSecrets {
         secrets = {
-          smbHost = {
-            sopsFile = fullSopsFile;
-          };
-          smbUrl = {
-            sopsFile = fullSopsFile;
-          };
-
           # TODO: probably want this via sops home-manager module,
           # but it does create issues with (permissions? I tried but can't remember the error)
           apiKeyAnthropic = {
