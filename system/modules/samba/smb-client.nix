@@ -8,49 +8,9 @@
 }:
 let
   cfg = config.modules.smbClient;
-  userHomeCfg = config.users.users.${username};
-  darwinMountScript =
-    if isDarwin then
-      ''
-        # Return early if already mounted
-        if mount | grep -q "${cfg.smbMountPath}"; then
-          exit 0
-        fi
-
-        mkdir -p ${cfg.smbMountPath}
-        chown ${username}:staff ${cfg.smbMountPath}
-        # Only allow user to access the mount point
-        chmod 700 ${cfg.smbMountPath}
-
-        # mkdir -p "${cfg.smbMountPath}-ro"
-
-        SMB_HOST=$(cat ${config.sops.secrets.smbHost.path})
-        SMB_URL=$(cat ${config.sops.secrets.smbUrl.path})
-
-        # Everyday share 
-        SMB_MAIN_SHARE="$SMB_URL/personal-main"
-        # Read-only / top-level share
-        # SMB_SHARE_URI="$SMB_URL/personal"
-
-        # Only wait on ping for max .5 second
-        if ping -c 1 -t 500 "$SMB_HOST" >/dev/null 2>&1; then
-          # Check if mount path exists and is empty, remove if so
-          if [ -d "${cfg.smbMountPath}" ] && [ -z "$(ls -A ${cfg.smbMountPath})" ]; then
-            echo "empty mount path may cause mount_smbfs error"
-            # rmdir "${cfg.smbMountPath}"
-            # mkdir -p ${cfg.smbMountPath}
-          fi
-          # Run as user to avoid permission issues
-          if ! su ${username} -c "mount_smbfs $SMB_MAIN_SHARE ${cfg.smbMountPath}"; then
-            echo "Failed to mount SMB share"
-            exit 1
-          fi
-        else
-          echo "Could not reach SMB host. Are you connected to tailscale?"
-        fi
-      ''
-    else
-      '''';
+  localVolume = "/Volumes/nas";
+  localShareName = "main";
+  remoteShareName = "personal-main";
 in
 {
   options.modules.smbClient = {
@@ -71,35 +31,63 @@ in
     lib.mkMerge [
 
       (
-        if (isDarwin) then
-          # consider multichannel: https://support.apple.com/en-us/102010
+        if isDarwin then
           # also: https://support.7fivefive.com/kb/latest/mac-os-smb-client-configuration
           {
-            environment.etc."nsmb.conf".text = ''
-              [default]
-              # https://support.apple.com/en-gb/101442
-              signing_required=no
-              # Use NTFS streams if supported
-              streams=yes
+            # Can run `smbutil statshares -a` to see current shares (and confirm status like SIGNING)
+            sops.templates."nsmb.conf" = {
+              owner = "root";
+              content = ''
+                [default]
+                # https://support.apple.com/en-gb/101442
+                signing_required=no
+                # Use NTFS streams if supported
+                streams=yes
+                dir_cache_off=yes
+                dir_cache_max_cnt=0
+                # port445=np_netbios
+                notify_off=yes
+                protocol_vers_map=4 # Hopefully use SMB 3.0 by default. Might cause issues
 
-              # https://gist.github.com/jbfriedrich/49b186473486ac72c4fe194af01288be
-              aapl_off=false
+                # Disable multi-channel support (users reported speed issues) 
+                mc_on=no
+
+                # https://gist.github.com/jbfriedrich/49b186473486ac72c4fe194af01288be
+                aapl_off=false
+
+                [${config.sops.placeholder.smbHost}:mjmaurer]
+                password="${config.sops.placeholder.smbPassword}
+              '';
+            };
+
+            environment.etc.${localShareName}.text = ''
+              ${localShareName} \
+                  -fstype=smbfs,soft,noatime,nosuid,rw ://mjmaurer@${builtins.readFile config.sops.secrets.smbHost.path}/${remoteShareName}
             '';
-            # Need mkOrder because sops-nix installs secrets using mkAfter (1500 priority)
-            system.activationScripts.postActivation.text = lib.mkOrder 1600 darwinMountScript;
-            launchd.daemons = lib.mkOrder 1600 {
-              smb-mount = {
-                command = "sh -c ${lib.escapeShellArg darwinMountScript}";
-                serviceConfig = {
-                  RunAtLoad = true;
-                  KeepAlive = false;
-                };
-              };
+            environment.etc.auto_master.text = ''
+              +auto_master
+              ${localVolume} /etc/${localShareName} -nosuid
+            '';
+
+            launchd.daemons.autofs-reload = {
+              serviceConfig.Label = "dev.autofs-reload";
+              serviceConfig.ProgramArguments = [
+                "/usr/sbin/automount"
+                "-cv"
+              ];
+              serviceConfig.RunAtLoad = true;
+              requires = [
+                "etc-${localShareName}"
+                "etc-auto_master"
+                "template-nsmb_conf"
+              ];
             };
           }
         else
           # NixOS
-          { }
+          {
+            # Placeholder for NixOS specific SMB client config if ever needed
+          }
       )
     ]
   );
