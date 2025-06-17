@@ -160,7 +160,7 @@ in
 
             # ----------------------------- Security / Auth ----------------------------
             # "smb encrypt" = "required";
-            "hosts allow" = "${config.networking.tailscaleIPRange} 127.0.0.1 localhost";
+            "hosts allow" = "${config.modules.networking.tailscaleIPRange} 127.0.0.1 localhost";
             # Could also consider limiting interface to tailscale0
             security = "user";
             "guest account" = "nobody";
