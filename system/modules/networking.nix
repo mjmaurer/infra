@@ -33,6 +33,11 @@ in
       description = "A list of names for the wireless network interfaces (e.g., wlan0, wlp2s0). Set to null if no wireless interfaces are present or should be managed by systemd-networkd.";
       example = [ "wlan0" ];
     };
+    tailscaleIPRange = lib.mkOption {
+      type = lib.types.str;
+      default = "100.64.0.0/10";
+      description = "The IP range used by Tailscale.";
+    };
   };
 
   config = lib.mkMerge [
@@ -133,7 +138,7 @@ in
             enable = true;
             maxretry = 5;
             # Tailscale Range
-            ignoreIP = [ "100.64.0.0/10" ];
+            ignoreIP = [ cfg.tailscaleIPRange ];
             bantime = "15m";
             # jails = {
             #   nginx-nohome-iptables.settings = {
