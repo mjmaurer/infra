@@ -25,6 +25,8 @@ in
       PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
       # Clean up stale sockets automatically:
       StreamLocalBindUnlink = "yes";
+      # Change to infra directory upon login
+      RemoteCommand = "cd ~/infra";
     };
   };
 }

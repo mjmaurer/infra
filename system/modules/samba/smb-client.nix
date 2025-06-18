@@ -21,7 +21,7 @@ in
 
     nasMountPath = lib.mkOption {
       type = lib.types.str;
-      default = if pkgs.stdenv.isDarwin then "/Volumes/nas" else "/nas";
+      default = if pkgs.stdenv.isDarwin then "/nas" else "/nas";
       description = "Absolute mount path for shares to be mounted under on the local filesystem.";
     };
   };
@@ -36,6 +36,7 @@ in
             # Can run `smbutil statshares -a` to see current shares (and confirm status like SIGNING)
             sops.templates."nsmb_conf" = {
               path = "/etc/nsmb.conf";
+              mode = "0400";
               content = ''
                 [default]
                 # https://support.apple.com/en-gb/101442
@@ -46,24 +47,21 @@ in
                 dir_cache_max_cnt=0
                 # port445=np_netbios
                 notify_off=yes
-                # protocol_vers_map=4 # Hopefully use SMB 3.0 by default. Might cause issues
+                protocol_vers_map=4 # Hopefully use SMB 3.0 by default. Might cause issues
 
                 # Disable multi-channel support (users reported speed issues) 
                 mc_on=no
 
                 # https://gist.github.com/jbfriedrich/49b186473486ac72c4fe194af01288be
                 aapl_off=false
-
-                [${config.sops.placeholder.smbHost}:mjmaurer]
-                password="${config.sops.placeholder.smbPassword}"
               '';
             };
             sops.templates.${localShareName} = {
               path = "/etc/auto_${localShareName}";
+              mode = "0400";
+              # Could add noatime for performance, but not needed for now
               content = ''
-                ${localShareName} \
-                  -fstype=smbfs,soft,noatime,nosuid,rw \
-                  ://mjmaurer@${config.sops.placeholder.smbHost}/${remoteShareName}
+                ${localShareName} -fstype=smbfs,soft,rw,nosuid ://mjmaurer:${config.sops.placeholder.smbPassword}@${config.sops.placeholder.smbHost}/${remoteShareName}
               '';
             };
 
@@ -74,6 +72,7 @@ in
                   config.sops.templates.${localShareName}.path
                 } -nosuid" >> /etc/auto_master
                 echo "Added auto master entry for ${cfg.nasMountPath}." >&2
+                echo "Can add to finder with Cmd+Shift+G and type ${cfg.nasMountPath}" >&2
               fi
               # Ensure autofs is aware of any changes to maps or master config
               if command -v automount >/dev/null 2>&1; then
