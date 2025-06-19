@@ -183,7 +183,7 @@ in
             "guest account" = "nobody";
             "map to guest" = "bad user"; # Users who fail to authenticate are not guests
             "passdb backend" = "tdbsam";
-            "obey pam restrictions" = "yes";
+            # "obey pam restrictions" = "yes"; # I think causing issues with multiple sessions
             # if yes, keep the password in sync with the user's password
             # "unix password sync" = "yes";
             # "pam password change" = "yes";
