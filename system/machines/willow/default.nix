@@ -55,7 +55,7 @@
           forceGroup = "nas";
         };
         "content" = {
-          path = "/nas/main";
+          path = "/nas/content";
           comment = "Content Share";
           browseable = true;
           readOnly = false;
