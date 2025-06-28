@@ -1,3 +1,5 @@
+/* ----------------------------- TROUBLESHOOTING ---------------------------- */
+# First, check if tailscale is up for any error
 {
   username,
   lib,

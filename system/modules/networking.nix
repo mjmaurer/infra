@@ -3,7 +3,7 @@
   config,
   isDarwin,
   derivationName,
-  pkgs-latest,
+  pkgs,
   ...
 }:
 let
@@ -55,7 +55,7 @@ in
           };
           services.tailscale = {
             enable = true;
-            package = pkgs-latest.tailscale;
+            package = pkgs.tailscale;
             # overrideLocalDNS = true;
           };
         }
@@ -125,7 +125,7 @@ in
 
           services.tailscale = {
             enable = true;
-            package = pkgs-latest.tailscale;
+            package = pkgs.tailscale;
             openFirewall = true;
             interfaceName = tailscaleInterface;
             useRoutingFeatures = lib.mkDefault "none";
