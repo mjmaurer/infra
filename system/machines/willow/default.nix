@@ -42,29 +42,29 @@
       };
     };
 
-    modules.smbServer = {
-      recyclePath = "/nas/recycle";
-      shares = {
-        "full" = {
-          path = "/nas";
-          comment = "Full Share";
-          browseable = true;
-          readOnly = true;
-          guestOk = false;
-          validUsers = [ "mjmaurer" ];
-          forceGroup = "nas";
-        };
-        "content" = {
-          path = "/nas/content";
-          comment = "Content Share";
-          browseable = true;
-          readOnly = false;
-          guestOk = false;
-          validUsers = [ "@nas" ];
-          forceGroup = "nas";
-        };
-      };
-    };
+    # modules.smbServer = {
+    #   recyclePath = "/nas/recycle";
+    #   shares = {
+    #     "full" = {
+    #       path = "/nas";
+    #       comment = "Full Share";
+    #       browseable = true;
+    #       readOnly = true;
+    #       guestOk = false;
+    #       validUsers = [ "mjmaurer" ];
+    #       forceGroup = "nas";
+    #     };
+    #     "content" = {
+    #       path = "/nas/content";
+    #       comment = "Content Share";
+    #       browseable = true;
+    #       readOnly = false;
+    #       guestOk = false;
+    #       validUsers = [ "@nas" ];
+    #       forceGroup = "nas";
+    #     };
+    #   };
+    # };
 
     # ------------------------- Initial Install Config -------------------------
 
