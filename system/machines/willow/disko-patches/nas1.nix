@@ -80,9 +80,10 @@ in
       datasets.nas = {
         type = "zfs_fs";
         mountpoint = "/${nasMnt}";
-        # mountOptions = [
-        #   "nofail" # Don't fail boot if the pool is not available
-        # ];
+        mountOptions = [
+          "nofail" # Don't fail boot if the pool is not available
+          "noauto"
+        ];
         options = {
           # Don't use zfs mount, use systemd mount instead
           # (configured above via mountOptions / mountpoint)
