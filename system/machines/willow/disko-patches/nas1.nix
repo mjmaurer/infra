@@ -82,7 +82,7 @@ in
         mountpoint = "/${nasMnt}";
         mountOptions = [
           "nofail" # Don't fail boot if the pool is not available
-          "zfsutil"
+          # "zfsutil"
           # "noauto"
         ];
         options = {
