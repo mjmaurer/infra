@@ -24,7 +24,6 @@
   config = {
     # services.auto-cpufreq.enable = true;
 
-    fileSystems."/nas".options = [ "noauto" ];
 
     modules.sops.enableMinimalSecrets = true;
 
