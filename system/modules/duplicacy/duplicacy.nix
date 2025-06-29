@@ -68,6 +68,7 @@ in
     };
     # Adding any 'autoBackup' requires giving machine access to secrets.yaml in .sops.yaml.
     repos = lib.mkOption {
+      default = { };
       type = lib.types.attrsOf (
         lib.types.submodule (
           { config, ... }:
