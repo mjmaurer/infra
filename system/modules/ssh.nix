@@ -32,7 +32,6 @@
       PasswordAuthentication = false;
       # Cleanup forwarded sockets (e.g. for remote yubikey) 
       StreamLocalBindUnlink = true;
-      AcceptEnv = "GPG_TTY";
     };
   };
 }
