@@ -9,8 +9,8 @@
 {
   users.groups = {
     content = { };
-    torrents = { };
-    usenet = { };
+    rents = { };
+    usen = { };
   };
 
   modules.mergerfs = {
@@ -19,7 +19,7 @@
     mntPath = "/media";
     diskMnts = [
       "/mnt/media/disk1"
-      # "/mnt/media/disk2"
+      "/mnt/media/disk2"
       # "/mnt/media/disk3"
     ];
     diskMntGlob = "/mnt/media/disk*";
@@ -36,24 +36,24 @@
       }
       {
         paths = [
-          "torrents"
-          "torrents/movies"
-          "torrents/tv"
+          "rents"
+          "rents/movies"
+          "rents/tv"
         ];
-        group = "torrents";
+        group = "rents";
       }
       {
         paths = [
-          "usenet"
-          "usenet/complete"
-          "usenet/complete/movies"
-          "usenet/complete/tv"
-          "usenet/incomplete"
-          "usenet/incomplete/movies"
-          "usenet/incomplete/tv"
-          "usenet/history"
+          "usen"
+          "usen/complete"
+          "usen/complete/movies"
+          "usen/complete/tv"
+          "usen/incomplete"
+          "usen/incomplete/movies"
+          "usen/incomplete/tv"
+          "usen/history"
         ];
-        group = "usenet";
+        group = "usen";
       }
     ];
   };
