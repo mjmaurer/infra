@@ -24,7 +24,7 @@
   config = {
     # services.auto-cpufreq.enable = true;
 
-    systemd.services.zfs-mount.enable = false;
+    # systemd.services.zfs-mount.enable = false;
 
     modules.sops.enableMinimalSecrets = true;
 
