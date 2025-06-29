@@ -376,6 +376,11 @@ if.app-id = 'com.apple.SystemProfiler'
 check-further-callbacks = false
 run = ['layout floating']
 
+[[on-window-detected]]
+if.app-id = 'org.gpgtools.pinentry-mac'
+check-further-callbacks = false
+run = ['layout floating']
+
 # Catch-all for 'other'
 [[on-window-detected]]
 if.app-name-regex-substring = '^(?!.*com\.apple).*$'
