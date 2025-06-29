@@ -11,7 +11,7 @@
   imports = [
     ../../modules/graphics/intel.nix
     ../../modules/supermicro/supermicro.nix
-    ../../modules/samba/smb-server.nix
+    # ../../modules/samba/smb-server.nix
 
     ./hardware-configuration.nix
     ./media.nix
@@ -28,45 +28,45 @@
 
     modules.sops.enableMinimalSecrets = true;
 
-    modules.duplicacy = {
-      enableServices = true;
-      repos = {
-        "nas-backup" = {
-          repoId = "nas";
-          localRepoPath = "/mnt/nas-safety-tmp-sdd";
-          # autoInitRestore = true;
-        };
-        "nas" = {
-          repoId = "nas";
-          localRepoPath = "/nas";
-          # autoInitRestore = true;
-        };
-      };
-    };
+    # modules.duplicacy = {
+    #   enableServices = true;
+    #   repos = {
+    #     "nas-backup" = {
+    #       repoId = "nas";
+    #       localRepoPath = "/mnt/nas-safety-tmp-sdd";
+    #       # autoInitRestore = true;
+    #     };
+    #     "nas" = {
+    #       repoId = "nas";
+    #       localRepoPath = "/nas";
+    #       # autoInitRestore = true;
+    #     };
+    #   };
+    # };
 
-    modules.smbServer = {
-      recyclePath = "/nas/recycle";
-      shares = {
-        "full" = {
-          path = "/nas";
-          comment = "Full Share";
-          browseable = true;
-          readOnly = true;
-          guestOk = false;
-          validUsers = [ "mjmaurer" ];
-          forceGroup = "nas";
-        };
-        "content" = {
-          path = "/nas/content";
-          comment = "Content Share";
-          browseable = true;
-          readOnly = false;
-          guestOk = false;
-          validUsers = [ "@nas" ];
-          forceGroup = "nas";
-        };
-      };
-    };
+    # modules.smbServer = {
+    #   recyclePath = "/nas/recycle";
+    #   shares = {
+    #     "full" = {
+    #       path = "/nas";
+    #       comment = "Full Share";
+    #       browseable = true;
+    #       readOnly = true;
+    #       guestOk = false;
+    #       validUsers = [ "mjmaurer" ];
+    #       forceGroup = "nas";
+    #     };
+    #     "content" = {
+    #       path = "/nas/content";
+    #       comment = "Content Share";
+    #       browseable = true;
+    #       readOnly = false;
+    #       guestOk = false;
+    #       validUsers = [ "@nas" ];
+    #       forceGroup = "nas";
+    #     };
+    #   };
+    # };
 
     # ------------------------- Initial Install Config -------------------------
 
