@@ -51,15 +51,15 @@
       # };
       network = {
         enable = true;
-        postCommands = ''
-          cat > $out/etc/ssh/issue.net <<'EOF'
-          ************************************************************
-          ❶  NixOS early-boot environment
-          ❷  Type ‘cryptsetup-askpass’ to unlock the root filesystem.
-          ❸  All activity is logged.
-          ************************************************************
-          EOF
-        '';
+        # postCommands = ''
+        #   cat > $out/etc/ssh/issue.net <<'EOF'
+        #   ************************************************************
+        #   ❶  NixOS early-boot environment
+        #   ❷  Type ‘cryptsetup-askpass’ to unlock the root filesystem.
+        #   ❸  All activity is logged.
+        #   ************************************************************
+        #   EOF
+        # '';
         # SSH server for remote boot with encrypted drives. See:
         # https://discourse.nixos.org/t/disk-encryption-on-nixos-servers-how-when-to-unlock/5030/13
         # https://wiki.archlinux.org/title/Dm-crypt/Specialties#Remote_unlocking_of_the_root_(or_other)_partition
@@ -68,11 +68,11 @@
           port = 2222;
           # Prompt for the LUKS encryption password during early boot
           # Prefer full shell so we have the option for debugging boot errors without a live-iso usb
-          # shell = "/bin/cryptsetup-askpass";
+          shell = "/bin/cryptsetup-askpass";
           # add the Banner line to sshd_config
-          extraConfig = ''
-            Banner /etc/ssh/issue.net
-          '';
+          # extraConfig = ''
+          #   Banner /etc/ssh/issue.net
+          # '';
           hostKeys = [ "/nix/secret/initrd/ssh_host_ed25519_key" ];
           authorizedKeys = config.users.users.${username}.openssh.authorizedKeys.keys;
         };
