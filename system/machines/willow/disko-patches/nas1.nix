@@ -68,7 +68,7 @@ in
       # See disko-common.nix for explanation of root dataset
       rootFsOptions = {
         canmount = "off";
-        mountpoint = "none";
+        # mountpoint = "none";
         compression = "lz4";
         "com.sun:auto-snapshot" = "false";
       };
@@ -82,7 +82,7 @@ in
         mountpoint = "/${nasMnt}";
         mountOptions = [
           "nofail" # Don't fail boot if the pool is not available
-          "noauto"
+          # "noauto"
         ];
         options = {
           # Don't use zfs mount, use systemd mount instead
