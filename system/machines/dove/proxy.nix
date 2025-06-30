@@ -54,7 +54,7 @@ let
     proxy_read_timeout    120s;
 
     auth_request_set $auth_cookie $upstream_http_set_cookie;
-    add_header Set-Cookie $auth_cookie;
+    add_header Set-Cookie $auth_cookie; # need 'always'?
 
     location @error403 {
         return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
@@ -64,6 +64,7 @@ let
         proxy_pass http://bobby:${toString bobbyPort}/api/user/;
         proxy_pass_request_body off;
         proxy_set_header Content-Length "";
+        # Might need to be X-Original-URI:
         proxy_set_header X-Original-URL $request_uri;
         proxy_next_upstream error http_503 non_idempotent;
 
@@ -204,12 +205,15 @@ in
       # --------------------------------------------------------------------------
 
       # ------------------------------- Apex domain ------------------------------
-      # "${host}" = {
-      #   useACMEHost = host;
-      #   forceSSL = true;
-      #   extraConfig = domainExtra;
-      #   locations."/".proxyPass = "http://bobby-api";
-      # };
+      "${host}" = {
+        useACMEHost = host;
+        forceSSL = true;
+        extraConfig = domainExtra;
+        # locations."/".proxyPass = "http://bobby-api";
+        locations."/".extraConfig = ''
+          return 301 https://google.com;
+        '';
+      };
 
       "plex.${host}" = {
         useACMEHost = host;
