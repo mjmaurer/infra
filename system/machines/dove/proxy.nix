@@ -14,7 +14,6 @@ let
   automaticPort = 7860;
   rvcPort = 13337;
   plexWebPort = 32400;
-  jellyfinWebPort = 8096;
   authextraPort = 3000;
 
   acmeDir = "/var/www/acme";
@@ -205,11 +204,38 @@ in
       # --------------------------------------------------------------------------
 
       # ------------------------------- Apex domain ------------------------------
-      "${host}" = {
+      # "${host}" = {
+      #   useACMEHost = host;
+      #   forceSSL = true;
+      #   extraConfig = domainExtra;
+      #   locations."/".proxyPass = "http://bobby-api";
+      # };
+
+      "plex.${host}" = {
         useACMEHost = host;
         forceSSL = true;
-        extraConfig = domainExtra;
-        locations."/".proxyPass = "http://bobby-api";
+        extraConfig = ''
+          ${domainExtra}
+          ${subdomainExtra}
+        '';
+
+        locations."/".extraConfig = ''
+          proxy_pass   http://earth:${toString plexWebPort}/;
+          error_page   403 = @error403;
+
+          proxy_set_header X-Plex-Client-Identifier $http_x_plex_client_identifier;
+          proxy_set_header X-Plex-Device          $http_x_plex_device;
+          proxy_set_header X-Plex-Device-Name     $http_x_plex_device_name;
+          proxy_set_header X-Plex-Platform        $http_x_plex_platform;
+          proxy_set_header X-Plex-Platform-Version $http_x_plex_platform_version;
+          proxy_set_header X-Plex-Product         $http_x_plex_product;
+          proxy_set_header X-Plex-Token           $http_x_plex_token;
+          proxy_set_header X-Plex-Version         $http_x_plex_version;
+          proxy_set_header X-Plex-Nocache         $http_x_plex_nocache;
+          proxy_set_header X-Plex-Provides        $http_x_plex_provides;
+          proxy_set_header X-Plex-Device-Vendor   $http_x_plex_device_vendor;
+          proxy_set_header X-Plex-Model           $http_x_plex_model;
+        '';
       };
 
       "automatic1111.${host}" = {
@@ -242,89 +268,6 @@ in
           proxyPass = "http://bobby:${toString rvcPort}/";
           extraConfig = ''error_page 403 = @error403;'';
         };
-      };
-
-      "plex.${host}" = {
-        useACMEHost = host;
-        forceSSL = true;
-        extraConfig = ''
-          ${domainExtra}
-          ${subdomainExtra}
-        '';
-
-        locations."/".extraConfig = ''
-          proxy_pass   http://earth:${toString plexWebPort}/;
-          error_page   403 = @error403;
-
-          proxy_set_header X-Plex-Client-Identifier $http_x_plex_client_identifier;
-          proxy_set_header X-Plex-Device          $http_x_plex_device;
-          proxy_set_header X-Plex-Device-Name     $http_x_plex_device_name;
-          proxy_set_header X-Plex-Platform        $http_x_plex_platform;
-          proxy_set_header X-Plex-Platform-Version $http_x_plex_platform_version;
-          proxy_set_header X-Plex-Product         $http_x_plex_product;
-          proxy_set_header X-Plex-Token           $http_x_plex_token;
-          proxy_set_header X-Plex-Version         $http_x_plex_version;
-          proxy_set_header X-Plex-Nocache         $http_x_plex_nocache;
-          proxy_set_header X-Plex-Provides        $http_x_plex_provides;
-          proxy_set_header X-Plex-Device-Vendor   $http_x_plex_device_vendor;
-          proxy_set_header X-Plex-Model           $http_x_plex_model;
-        '';
-      };
-
-      "invites.${host}" = {
-        useACMEHost = host;
-        forceSSL = true;
-        extraConfig = ''
-          # Require upstream auth
-          auth_request /auth;
-          ${domainExtra}
-          ${subdomainExtra}
-        '';
-
-        locations."/" = {
-          proxyPass = "http://earth:5690/";
-          extraConfig = ''error_page 403 = @error403;'';
-        };
-      };
-
-      "jellyfin.${host}" = {
-        useACMEHost = host;
-        forceSSL = true;
-        extraConfig = ''
-          # Security / XSS Mitigation Headers
-          # NOTE: X-Frame-Options may cause issues with the webOS app
-          add_header X-Frame-Options "SAMEORIGIN";
-          add_header X-XSS-Protection "0";
-          add_header X-Content-Type-Options "nosniff";
-          add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), battery=(), bluetooth=(), camera=(), clipboard-read=(), display-capture=(), document-domain=(), encrypted-media=(), gamepad=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), keyboard-map=(), local-fonts=(), magnetometer=(), microphone=(), payment=(), publickey-credentials-get=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()" always;
-
-          # Require upstream auth
-          auth_request /auth;
-          ${domainExtra}
-          ${subdomainExtra}
-
-          # https://github.com/jellyfin/jellyfin/issues/3712#issuecomment-690772495
-          # proxy_set_header X-Real-IP 8.8.8.8;
-          # proxy_set_header X-Forwarded-For 8.8.8.8;
-        '';
-
-        locations."/" = {
-          proxyPass = "http://earth:${toString jellyfinWebPort}/";
-          extraConfig = ''proxy_buffering off;'';
-        };
-
-        locations."/Users".proxyPass = "http://earth:${toString jellyfinWebPort}";
-
-        # location block for /web - This is purely for aesthetics so
-        # /web/#!/ works instead of having to go to /web/index.html/#!/
-        locations."= /web/".proxyPass = "http://earth:${toString jellyfinWebPort}/web/index.html";
-
-        locations."/jellyauth".extraConfig = ''
-          internal;
-          proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
-          proxy_pass_request_body off;
-          proxy_set_header Content-Length "";
-        '';
       };
     };
   };
