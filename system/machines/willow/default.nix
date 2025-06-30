@@ -14,7 +14,7 @@
     ../../modules/samba/smb-server.nix
 
     ./hardware-configuration.nix
-    ./media/media-filesystem.nix
+    ./media/filesystem.nix
 
     ./disko.nix
     ./disko-patches/media1.nix
