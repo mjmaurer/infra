@@ -32,14 +32,10 @@
     modules.duplicacy = {
       enableServices = true;
       repos = {
-        # "nas-backup" = {
-        #   repoId = "nas";
-        #   localRepoPath = "/mnt/nas-safety-tmp-sdd";
-        # autoInitRestore = true;
-        # };
         "nas" = {
           repoId = "nas";
           localRepoPath = "/nas";
+          autoBackup = true;
           # autoInitRestore = true;
         };
       };
