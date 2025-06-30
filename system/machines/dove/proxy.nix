@@ -6,235 +6,252 @@
 }:
 
 let
-  # Hardcoded values from docker-compose and .env
-  host = "bobby.place";
-  bobbyPort = "8000";
-  automaticPort = "7860";
-  rvcPort = "7865";
-  plexWebPort = "32400";
-  jellyfinWebPort = "8096";
-  authExtraPort = "3000";
-  invitesPort = "5690";
+  # ──────────────── Hard-coded parameters ────────────────
+  host = "example.com"; # ← change to your apex domain
 
-  bobbyHost = "bobby";
-  earthHost = "earth";
-  authExtraHost = "authextra";
+  # Upstream service ports (adjust to match your previous docker-compose .env)
+  bobbyPort = 5000;
+  automaticPort = 7860;
+  rvcPort = 13337;
+  plexWebPort = 32400;
+  jellyfinWebPort = 8096;
+  authextraPort = 3000;
 
-  # Common locations for subdomains requiring auth
-  authLocations = {
-    # The main auth endpoint that checks the user's session
-    "/auth" = {
-      proxyPass = "http://${bobbyHost}:${bobbyPort}/api/user/";
-      proxyPassRequestBody = false;
-      proxyHeaders."Content-Length" = "";
-      proxyHeaders."X-Original-URL" = "$request_uri";
-      extraConfig = "proxy_next_upstream error http_503 non_idempotent;";
-    };
-    # Redirect to login page on auth failure
-    "@error403" = {
-      extraConfig = "return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;";
-    };
-  };
-
-  # Common settings for subdomains from subdomain.include.template
-  subdomainSettings = {
-    # Websocket support
-    proxyWebsockets = true;
-    # Timeouts
-    proxyConnectTimeout = "120s";
-    proxySendTimeout = "120s";
-    proxyReadTimeout = "120s";
-    # Buffers
-    proxyBuffers = "4 256k";
-    proxyBufferSize = "128k";
-    proxyBusyBuffersSize = "256k";
-    # Body size
-    clientMaxBodySize = "100M";
-    # Auth cookie handling
-    extraConfig = ''
-      auth_request_set $auth_cookie $upstream_http_set_cookie;
-      add_header Set-Cookie $auth_cookie;
-    '';
-    # Override some proxy headers
-    proxyHeaders = {
-      "X-Forwarded-Port" = "";
-      "X-Scheme" = "$scheme";
-    };
-  };
+  # Convenience to avoid repetition in virtualHosts that share the same SSL cert
+  acmeCertName = host;
 
 in
 {
-  # ACME (Let's Encrypt) configuration
+  # ------------------------------ Firewall ------------------------------
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
+
+  # ------------------------------  ACME  -------------------------------
   security.acme = {
     acceptTerms = true;
     defaults.email = "mjmaurer777@gmail.com";
+
+    certs."${acmeCertName}" = {
+      webroot = "/var/www/acme"; # matches the /.well-known location used below
+      extraDomainNames = [
+        "jellyfin.${host}"
+        "invites.${host}"
+        "plex.${host}"
+        "automatic1111.${host}"
+        "rvc.${host}"
+      ];
+    };
   };
 
+  # Ensure the ACME web-root directory exists at boot
+  systemd.tmpfiles.rules = [
+    "d /var/www/acme 0755 nginx nginx - -"
+  ];
+
+  # ------------------------------  NGINX  ------------------------------
   services.nginx = {
     enable = true;
+    package = pkgs.nginxMainline;
 
-    # Could protect admin sites with this
-    # tailscaleAuth = {
-    #   enable = true;
-    #   virtualHosts = [ "rvc.${host}" "invites.${host}" ];
-    # };
+    # Pull in sensible defaults from the upstream NixOS module
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
+    recommendedGzipSettings = true;
 
-    # TODO: use sendfile to serve protected media:
-    # https://stackoverflow.com/questions/39744587/serve-protected-media-files-with-django
+    # Global http-context directives copied from the original templates
+    commonHttpConfig = ''
+      client_max_body_size 80M;
 
-    # Global settings from nginx.conf.template and domain.include.template
-    clientMaxBodySize = "80M";
-    recommendedProxySettings = true; # Sets Host, X-Real-IP, X-Forwarded-For, X-Forwarded-Proto
-
-    # From domain.include.template
-    sslProtocols = "TLSv1.2 TLSv1.3";
-    sslCiphers = "TLS_AES_128_GCM_SHA256:TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384";
-    proxyHeaders = {
-      "X-Forwarded-Host" = "$host";
-      "X-Forwarded-Port" = "$server_port";
-    };
-
-    # Upstreams from nginx.conf.template
-    upstreams = {
-      "bobby-api".servers = {
-        "${bobbyHost}:${bobbyPort}" = { };
-      };
-      "multiauth".servers = {
-        "127.0.2.1:8000" = {
-          weight = 5;
-          max_fails = 0;
-        };
-        "127.0.2.1:8001" = {
-          max_fails = 0;
-        };
-      };
-    };
-
-    # Internal servers listening on loopback addresses 
-    appendHttpConfig = ''
-      server {
-          listen 127.0.2.1:8000;
-          location / {
-              proxy_pass http://${authExtraHost}:${authExtraPort}/jellyauth/;
-              proxy_pass_request_body off;
-              proxy_set_header        Content-Length "";
-              proxy_set_header        X-Original-URI $request_uri;
-          }
+      upstream bobby-api {
+        server bobby:${toString bobbyPort};
       }
-      server {
-          listen 127.0.2.1:8001;
-          location / {
-              proxy_pass http://${bobbyHost}:${bobbyPort}/api/user/;
-              proxy_pass_request_body off;
-              proxy_set_header Content-Length "";
-              proxy_set_header        X-Original-URI $request_uri;
-          }
+
+      upstream multiauth {
+        server 127.0.2.1:8000 max_fails=0 weight=5;
+        server 127.0.2.1:8001 max_fails=0;
       }
     '';
 
-    # Virtual hosts
+    # -------------------------- Virtual hosts --------------------------
     virtualHosts = {
-      # Main domain: bobby.place
+      # ── 1) HTTP → HTTPS redirects (root + wildcard) ──────────────────
+      "redirect-root" = {
+        serverName = host;
+        listen = [
+          {
+            addr = "0.0.0.0";
+            port = 80;
+          }
+        ];
+        locations."/.well-known/acme-challenge/".root = "/var/www/acme";
+        extraConfig = ''return 301 https://$host$request_uri;'';
+      };
+
+      "redirect-wildcard" = {
+        serverName = "*.${host}";
+        listen = [
+          {
+            addr = "0.0.0.0";
+            port = 80;
+          }
+        ];
+        locations."/.well-known/acme-challenge/".root = "/var/www/acme";
+        extraConfig = ''return 301 https://$host$request_uri;'';
+      };
+
+      # ── 2) Internal helper listeners used by multiauth ───────────────
+      "auth-extra-8000" = {
+        serverName = "_";
+        listen = [
+          {
+            addr = "127.0.2.1";
+            port = 8000;
+          }
+        ];
+        locations."/".extraConfig = ''
+          proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
+          proxy_pass_request_body off;
+          proxy_set_header        Content-Length "";
+          proxy_set_header        X-Original-URI $request_uri;
+        '';
+      };
+
+      "auth-extra-8001" = {
+        inherit (config.services.nginx.virtualHosts."auth-extra-8000") serverName;
+        listen = [
+          {
+            addr = "127.0.0.1";
+            port = 8001;
+          }
+        ];
+      };
+
+      # ── 3) Apex domain → Bobby API ───────────────────────────────────
       "${host}" = {
+        useACMEHost = acmeCertName;
         forceSSL = true;
-        enableACME = true;
         locations."/".proxyPass = "http://bobby-api";
       };
 
-      # automatic1111.bobby.place
+      # ── 4) automatic1111.${host} ─────────────────────────────────────
       "automatic1111.${host}" = {
+        useACMEHost = acmeCertName;
         forceSSL = true;
-        enableACME = true;
-        locations = lib.recursiveUpdate {
-          "/" = subdomainSettings // {
-            proxyPass = "http://${bobbyHost}:${automaticPort}/";
-            authRequest = "/auth";
-            extraConfig = subdomainSettings.extraConfig + "\nerror_page 403 = @error403;";
-          };
-        } authLocations;
+
+        extraConfig = ''auth_request /auth;'';
+
+        locations."/" = {
+          proxyPass = "http://bobby:${toString automaticPort}/";
+          extraConfig = ''error_page 403 = @error403;'';
+        };
+
+        # Forward auth probe to Bobby
+        locations."/auth".extraConfig = ''
+          proxy_pass http://bobby:${toString bobbyPort}/api/user/;
+          proxy_pass_request_body off;
+          proxy_set_header Content-Length "";
+          proxy_set_header X-Original-URL $request_uri;
+          proxy_next_upstream error http_503 non_idempotent;
+        '';
+
+        # 302 redirect on 403s
+        extraConfig = ''
+          location @error403 {
+            return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
+          }
+        '';
       };
 
-      # rvc.bobby.place
+      # ── 5) rvc.${host} ───────────────────────────────────────────────
       "rvc.${host}" = {
+        useACMEHost = acmeCertName;
         forceSSL = true;
-        enableACME = true;
-        locations = lib.recursiveUpdate {
-          "/" = subdomainSettings // {
-            proxyPass = "http://${bobbyHost}:${rvcPort}/";
-            authRequest = "/auth";
-            extraConfig = subdomainSettings.extraConfig + "\nerror_page 403 = @error403;";
-          };
-        } authLocations;
+        extraConfig = ''auth_request /auth;'';
+        locations."/" = {
+          proxyPass = "http://bobby:${toString rvcPort}/";
+          extraConfig = ''error_page 403 = @error403;'';
+        };
+        extraConfig = ''
+          location @error403 {
+            return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
+          }
+        '';
       };
 
-      # plex.bobby.place
+      # ── 6) plex.${host} (adds special Plex headers) ──────────────────
       "plex.${host}" = {
+        useACMEHost = acmeCertName;
         forceSSL = true;
-        enableACME = true;
-        locations."/" = subdomainSettings // {
-          proxyPass = "http://${earthHost}:${plexWebPort}/";
-          extraConfig = subdomainSettings.extraConfig + "\nerror_page 403 = @error403;";
-          proxyHeaders = lib.recursiveUpdate subdomainSettings.proxyHeaders {
-            "X-Plex-Client-Identifier" = "$http_x_plex_client_identifier";
-            "X-Plex-Device" = "$http_x_plex_device";
-            "X-Plex-Device-Name" = "$http_x_plex_device_name";
-            "X-Plex-Platform" = "$http_x_plex_platform";
-            "X-Plex-Platform-Version" = "$http_x_plex_platform_version";
-            "X-Plex-Product" = "$http_x_plex_product";
-            "X-Plex-Token" = "$http_x_plex_token";
-            "X-Plex-Version" = "$http_x_plex_version";
-            "X-Plex-Nocache" = "$http_x_plex_nocache";
-            "X-Plex-Provides" = "$http_x_plex_provides";
-            "X-Plex-Device-Vendor" = "$http_x_plex_device_vendor";
-            "X-Plex-Model" = "$http_x_plex_model";
-          };
+
+        # Web-socket helpers (was in subdomain.include)
+        extraConfig = ''
+          proxy_http_version 1.1;
+          proxy_set_header Upgrade $http_upgrade;
+          proxy_set_header Connection "upgrade";
+        '';
+
+        locations."/".extraConfig = ''
+          proxy_pass   http://earth:${toString plexWebPort}/;
+          error_page   403 = @error403;
+
+          proxy_set_header X-Plex-Client-Identifier $http_x_plex_client_identifier;
+          proxy_set_header X-Plex-Device          $http_x_plex_device;
+          proxy_set_header X-Plex-Device-Name     $http_x_plex_device_name;
+          proxy_set_header X-Plex-Platform        $http_x_plex_platform;
+          proxy_set_header X-Plex-Platform-Version $http_x_plex_platform_version;
+          proxy_set_header X-Plex-Product         $http_x_plex_product;
+          proxy_set_header X-Plex-Token           $http_x_plex_token;
+          proxy_set_header X-Plex-Version         $http_x_plex_version;
+          proxy_set_header X-Plex-Nocache         $http_x_plex_nocache;
+          proxy_set_header X-Plex-Provides        $http_x_plex_provides;
+          proxy_set_header X-Plex-Device-Vendor   $http_x_plex_device_vendor;
+          proxy_set_header X-Plex-Model           $http_x_plex_model;
+        '';
+      };
+
+      # ── 7) invites.${host} ───────────────────────────────────────────
+      "invites.${host}" = {
+        useACMEHost = acmeCertName;
+        forceSSL = true;
+        extraConfig = ''auth_request /auth;'';
+        locations."/" = {
+          proxyPass = "http://earth:5690/";
+          extraConfig = ''error_page 403 = @error403;'';
         };
       };
 
-      # invites.bobby.place
-      "invites.${host}" = {
-        forceSSL = true;
-        enableACME = true;
-        locations = lib.recursiveUpdate {
-          "/" = subdomainSettings // {
-            proxyPass = "http://${earthHost}:${invitesPort}/";
-            authRequest = "/auth";
-            extraConfig = subdomainSettings.extraConfig + "\nerror_page 403 = @error403;";
-          };
-        } authLocations;
-      };
-
-      # jellyfin.bobby.place
+      # ── 8) jellyfin.${host} ──────────────────────────────────────────
       "jellyfin.${host}" = {
+        useACMEHost = acmeCertName;
         forceSSL = true;
-        enableACME = true;
-        authRequest = "/auth";
+
         extraConfig = ''
-          # Security / XSS Mitigation Headers
+          auth_request /auth;
           add_header X-Frame-Options "SAMEORIGIN";
           add_header X-XSS-Protection "0";
           add_header X-Content-Type-Options "nosniff";
-          # Permissions policy
           add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), battery=(), bluetooth=(), camera=(), clipboard-read=(), display-capture=(), document-domain=(), encrypted-media=(), gamepad=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), keyboard-map=(), local-fonts=(), magnetometer=(), microphone=(), payment=(), publickey-credentials-get=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()" always;
         '';
-        locations = lib.recursiveUpdate {
-          "/" = subdomainSettings // {
-            proxyPass = "http://${earthHost}:${jellyfinWebPort}/";
-            proxyBuffering = false;
-          };
-          "/Users" = {
-            proxyPass = "http://${earthHost}:${jellyfinWebPort}";
-          };
-          "= /web/" = {
-            proxyPass = "http://${earthHost}:${jellyfinWebPort}/web/index.html";
-          };
-          "/jellyauth" = {
-            internal = true;
-            proxyPass = "http://${authExtraHost}:${authExtraPort}/jellyauth/";
-            proxyPassRequestBody = false;
-            proxyHeaders."Content-Length" = "";
-          };
-        } authLocations;
+
+        locations."/" = {
+          proxyPass = "http://earth:${toString jellyfinWebPort}/";
+          extraConfig = ''proxy_buffering off;'';
+        };
+
+        locations."/Users".proxyPass = "http://earth:${toString jellyfinWebPort}";
+
+        # Pretty URL for /web ↔ /web/index.html
+        locations."= /web/".proxyPass = "http://earth:${toString jellyfinWebPort}/web/index.html";
+
+        # Internal jellyauth stub
+        locations."/jellyauth".extraConfig = ''
+          internal;
+          proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
+          proxy_pass_request_body off;
+          proxy_set_header Content-Length "";
+        '';
       };
     };
   };
