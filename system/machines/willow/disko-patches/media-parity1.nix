@@ -1,5 +1,5 @@
 let
-  # [1,1]
+  # [1,0]
   mediaParityDisk1 = "/dev/disk/by-id/wwn-0x5000cca260ed767d";
   mediaParityMnt1 = "/mnt/media/parity1";
 in

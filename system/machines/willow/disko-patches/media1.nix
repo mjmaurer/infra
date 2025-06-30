@@ -1,12 +1,12 @@
 let
-  # [1,3]
+  # [1,2]
   mediaDisk1 = "/dev/disk/by-id/wwn-0x5000c500869bbf27";
   # TODO: So because disko sets rootMountPoint to /mnt during `disko run`,
   # this is mounted to /mnt/mnt/media1 instead of /mnt/media1 (I think to resolve issues during installation)
   # This is rectified during boot, but the directories aren't cleaned up.
   # Could override
   mediaMnt1 = "/mnt/media/disk1";
-  # [1,4]
+  # [1,3]
   mediaDisk2 = "/dev/disk/by-id/wwn-0x5000c50085565ddb";
   mediaMnt2 = "/mnt/media/disk2";
 in
