@@ -359,13 +359,13 @@ in
         ];
 
         systemd.timers.duplicacyBackupAll = lib.mkIf (reposWithAutoBackup != { }) {
-          Unit.Description = "Timer for Duplicacy backup service";
-          Timer = {
+          description = "Timer for Duplicacy backup service";
+          wantedBy = [ "timers.target" ];
+          timerConfig = {
             Unit = "duplicacyBackupAll.service";
             OnCalendar = cfg.autoBackupCron;
             Persistent = true; # Catch up on missed runs
           };
-          Install.WantedBy = [ "timers.target" ];
         };
 
         sops = {
