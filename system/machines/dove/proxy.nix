@@ -7,7 +7,7 @@
 
 let
   # ──────────────── Hard-coded parameters ────────────────
-  host = "example.com"; # ← change to your apex domain
+  host = "bobby.place";
 
   # Upstream service ports (adjust to match your previous docker-compose .env)
   bobbyPort = 5000;
@@ -17,8 +17,61 @@ let
   jellyfinWebPort = 8096;
   authextraPort = 3000;
 
-  # Convenience to avoid repetition in virtualHosts that share the same SSL cert
-  acmeCertName = host;
+  acmeDir = "/var/www/acme";
+
+  # ─────────────── Domain / Sub-domain snippets for reuse ──────────────
+
+  domainExtra = ''
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-Host  $host;
+    proxy_set_header X-Forwarded-Port  $server_port;
+
+    # TODO: use sendfile to serve protected media:
+    # https://stackoverflow.com/questions/39744587/serve-protected-media-files-with-django
+  '';
+
+  subdomainExtra = ''
+    # Websocket support
+    proxy_http_version 1.1;
+    proxy_cache_bypass         $http_upgrade;
+    proxy_set_header Upgrade   $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header X-Scheme  $scheme;
+
+    # Overrides
+    proxy_set_header X-Forwarded-Port  "";
+
+    proxy_buffers             4 256k;
+    proxy_buffer_size         128k;
+    proxy_busy_buffers_size   256k;
+
+    client_max_body_size 100M;
+
+    proxy_connect_timeout 120s;
+    proxy_send_timeout    120s;
+    proxy_read_timeout    120s;
+
+    auth_request_set $auth_cookie $upstream_http_set_cookie;
+    add_header Set-Cookie $auth_cookie;
+
+    location @error403 {
+        return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
+    }
+
+    location /auth {
+        proxy_pass http://bobby:${toString bobbyPort}/api/user/;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_set_header X-Original-URL $request_uri;
+        proxy_next_upstream error http_503 non_idempotent;
+
+        #proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
+        #proxy_pass http://multiauth/;
+    }
+  '';
 
 in
 {
@@ -32,9 +85,8 @@ in
   security.acme = {
     acceptTerms = true;
     defaults.email = "mjmaurer777@gmail.com";
-
-    certs."${acmeCertName}" = {
-      webroot = "/var/www/acme"; # matches the /.well-known location used below
+    certs."${host}" = {
+      webroot = acmeDir;
       extraDomainNames = [
         "jellyfin.${host}"
         "invites.${host}"
@@ -46,21 +98,23 @@ in
   };
 
   # Ensure the ACME web-root directory exists at boot
-  systemd.tmpfiles.rules = [
-    "d /var/www/acme 0755 nginx nginx - -"
-  ];
+  systemd.tmpfiles.rules = [ "d ${acmeDir} 0755 nginx nginx - -" ];
 
   # ------------------------------  NGINX  ------------------------------
   services.nginx = {
     enable = true;
-    package = pkgs.nginxMainline;
 
-    # Pull in sensible defaults from the upstream NixOS module
+    # Could protect admin sites with this
+    # tailscaleAuth = {
+    #   enable = true;
+    #   virtualHosts = [ "rvc.${host}" "invites.${host}" ];
+    # };
+
+    # package = pkgs.nginxMainline;
     recommendedProxySettings = true;
     recommendedTlsSettings = true;
     recommendedGzipSettings = true;
 
-    # Global http-context directives copied from the original templates
     commonHttpConfig = ''
       client_max_body_size 80M;
 
@@ -71,12 +125,14 @@ in
       upstream multiauth {
         server 127.0.2.1:8000 max_fails=0 weight=5;
         server 127.0.2.1:8001 max_fails=0;
+        # Commenting out the 8001 actually makes it work for some reason
       }
     '';
 
-    # -------------------------- Virtual hosts --------------------------
     virtualHosts = {
-      # ── 1) HTTP → HTTPS redirects (root + wildcard) ──────────────────
+      # --------------------------------------------------------------------------
+      # Redirects
+      # --------------------------------------------------------------------------
       "redirect-root" = {
         serverName = host;
         listen = [
@@ -85,8 +141,12 @@ in
             port = 80;
           }
         ];
-        locations."/.well-known/acme-challenge/".root = "/var/www/acme";
-        extraConfig = ''return 301 https://$host$request_uri;'';
+        locations = {
+          "/.well-known/acme-challenge/".root = acmeDir;
+          "/".extraConfig = ''
+            return 301 https://$host$request_uri;
+          '';
+        };
       };
 
       "redirect-wildcard" = {
@@ -97,11 +157,17 @@ in
             port = 80;
           }
         ];
-        locations."/.well-known/acme-challenge/".root = "/var/www/acme";
-        extraConfig = ''return 301 https://$host$request_uri;'';
+        locations = {
+          "/.well-known/acme-challenge/".root = acmeDir;
+          "/".extraConfig = ''
+            return 301 https://$host$request_uri;
+          '';
+        };
       };
 
-      # ── 2) Internal helper listeners used by multiauth ───────────────
+      # --------------------------------------------------------------------------
+      # Internal
+      # --------------------------------------------------------------------------
       "auth-extra-8000" = {
         serverName = "_";
         listen = [
@@ -113,83 +179,77 @@ in
         locations."/".extraConfig = ''
           proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
           proxy_pass_request_body off;
-          proxy_set_header        Content-Length "";
-          proxy_set_header        X-Original-URI $request_uri;
+          proxy_set_header Content-Length "";
+          proxy_set_header X-Original-URI $request_uri;
         '';
       };
 
       "auth-extra-8001" = {
-        inherit (config.services.nginx.virtualHosts."auth-extra-8000") serverName;
+        serverName = "_";
         listen = [
           {
-            addr = "127.0.0.1";
+            addr = "127.0.2.1";
             port = 8001;
           }
         ];
+        locations."/".extraConfig = ''
+          proxy_pass http://bobby:${toString bobbyPort}/api/user/;
+          proxy_pass_request_body off;
+          proxy_set_header Content-Length "";
+          proxy_set_header X-Original-URI $request_uri;
+        '';
       };
 
-      # ── 3) Apex domain → Bobby API ───────────────────────────────────
+      # --------------------------------------------------------------------------
+      # Services
+      # --------------------------------------------------------------------------
+
+      # ------------------------------- Apex domain ------------------------------
       "${host}" = {
-        useACMEHost = acmeCertName;
+        useACMEHost = host;
         forceSSL = true;
+        extraConfig = domainExtra;
         locations."/".proxyPass = "http://bobby-api";
       };
 
-      # ── 4) automatic1111.${host} ─────────────────────────────────────
       "automatic1111.${host}" = {
-        useACMEHost = acmeCertName;
+        useACMEHost = host;
         forceSSL = true;
-
-        extraConfig = ''auth_request /auth;'';
+        extraConfig = ''
+          # Require upstream auth
+          auth_request /auth;
+          ${domainExtra}
+          ${subdomainExtra}
+        '';
 
         locations."/" = {
           proxyPass = "http://bobby:${toString automaticPort}/";
           extraConfig = ''error_page 403 = @error403;'';
         };
-
-        # Forward auth probe to Bobby
-        locations."/auth".extraConfig = ''
-          proxy_pass http://bobby:${toString bobbyPort}/api/user/;
-          proxy_pass_request_body off;
-          proxy_set_header Content-Length "";
-          proxy_set_header X-Original-URL $request_uri;
-          proxy_next_upstream error http_503 non_idempotent;
-        '';
-
-        # 302 redirect on 403s
-        extraConfig = ''
-          location @error403 {
-            return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
-          }
-        '';
       };
 
-      # ── 5) rvc.${host} ───────────────────────────────────────────────
       "rvc.${host}" = {
-        useACMEHost = acmeCertName;
+        useACMEHost = host;
         forceSSL = true;
-        extraConfig = ''auth_request /auth;'';
+        extraConfig = ''
+          # Require upstream auth
+          auth_request /auth;
+          ${domainExtra}
+          ${subdomainExtra}
+        '';
+
         locations."/" = {
           proxyPass = "http://bobby:${toString rvcPort}/";
           extraConfig = ''error_page 403 = @error403;'';
         };
-        extraConfig = ''
-          location @error403 {
-            return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
-          }
-        '';
       };
 
-      # ── 6) plex.${host} (adds special Plex headers) ──────────────────
       "plex.${host}" = {
-        useACMEHost = acmeCertName;
+        useACMEHost = host;
         forceSSL = true;
-
-        # Web-socket helpers (was in subdomain.include)
         extraConfig = ''
-          proxy_http_version 1.1;
-          proxy_set_header Upgrade $http_upgrade;
-          proxy_set_header Connection "upgrade";
+          ${domainExtra}
+          ${subdomainExtra}
         '';
 
         locations."/".extraConfig = ''
@@ -211,28 +271,41 @@ in
         '';
       };
 
-      # ── 7) invites.${host} ───────────────────────────────────────────
       "invites.${host}" = {
-        useACMEHost = acmeCertName;
+        useACMEHost = host;
         forceSSL = true;
-        extraConfig = ''auth_request /auth;'';
+        extraConfig = ''
+          # Require upstream auth
+          auth_request /auth;
+          ${domainExtra}
+          ${subdomainExtra}
+        '';
+
         locations."/" = {
           proxyPass = "http://earth:5690/";
           extraConfig = ''error_page 403 = @error403;'';
         };
       };
 
-      # ── 8) jellyfin.${host} ──────────────────────────────────────────
       "jellyfin.${host}" = {
-        useACMEHost = acmeCertName;
+        useACMEHost = host;
         forceSSL = true;
-
         extraConfig = ''
-          auth_request /auth;
+          # Security / XSS Mitigation Headers
+          # NOTE: X-Frame-Options may cause issues with the webOS app
           add_header X-Frame-Options "SAMEORIGIN";
           add_header X-XSS-Protection "0";
           add_header X-Content-Type-Options "nosniff";
           add_header Permissions-Policy "accelerometer=(), ambient-light-sensor=(), battery=(), bluetooth=(), camera=(), clipboard-read=(), display-capture=(), document-domain=(), encrypted-media=(), gamepad=(), geolocation=(), gyroscope=(), hid=(), idle-detection=(), interest-cohort=(), keyboard-map=(), local-fonts=(), magnetometer=(), microphone=(), payment=(), publickey-credentials-get=(), serial=(), sync-xhr=(), usb=(), xr-spatial-tracking=()" always;
+
+          # Require upstream auth
+          auth_request /auth;
+          ${domainExtra}
+          ${subdomainExtra}
+
+          # https://github.com/jellyfin/jellyfin/issues/3712#issuecomment-690772495
+          # proxy_set_header X-Real-IP 8.8.8.8;
+          # proxy_set_header X-Forwarded-For 8.8.8.8;
         '';
 
         locations."/" = {
@@ -242,10 +315,10 @@ in
 
         locations."/Users".proxyPass = "http://earth:${toString jellyfinWebPort}";
 
-        # Pretty URL for /web ↔ /web/index.html
+        # location block for /web - This is purely for aesthetics so
+        # /web/#!/ works instead of having to go to /web/index.html/#!/
         locations."= /web/".proxyPass = "http://earth:${toString jellyfinWebPort}/web/index.html";
 
-        # Internal jellyauth stub
         locations."/jellyauth".extraConfig = ''
           internal;
           proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
