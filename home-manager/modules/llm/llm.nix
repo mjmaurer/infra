@@ -97,7 +97,7 @@ in
         llm -f ${conciseFragPath} -f ${mdFragPath} -c "$@" | sd
       '')
       (pkgs.writeShellScriptBin "llmbar" ''
-        llm -f ${conciseFragPath} -f ${mdFragPath} -c "$@" | sd
+        llm -f ${conciseFragPath} -f ${mdFragPath} "$@" | sd
       '')
       (pkgs.writeShellScriptBin "llmhistory" ''
         llm logs --json -n 20 \
