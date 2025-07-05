@@ -296,6 +296,9 @@ in
               backup)
                 service_name="duplicacyBackup-$repo_key"
                 ;;
+              backupAll)
+                service_name="duplicacyBackupAll"
+                ;;
               *)
                 echo "Error: Invalid service '$service'"
                 echo "Service must be one of: init, initRestore, restoreLatest, restoreLatestOverwrite, backup"
@@ -313,7 +316,7 @@ in
             if [ $# -ne 2 ]; then
               echo "Usage: dup-log <repo_key> <service>"
               echo "  repo_key: The repository key"
-              echo "  service: One of init, initRestore, restoreLatest, restoreLatestOverwrite or backup"
+              echo "  service: One of init, initRestore, restoreLatest, restoreLatestOverwrite, backup, or backupAll"
               exit 1
             fi
 
@@ -336,9 +339,12 @@ in
               backup)
                 service_name="duplicacyBackup-$repo_key"
                 ;;
+              backupAll)
+                service_name="duplicacyBackupAll"
+                ;;
               *)
                 echo "Error: Invalid service '$service'"
-                echo "Service must be one of: init, initRestore, restoreLatest, restoreLatestOverwrite, backup"
+                echo "Service must be one of: init, initRestore, restoreLatest, restoreLatestOverwrite, backup, or backupAll"
                 exit 1
                 ;;
             esac
