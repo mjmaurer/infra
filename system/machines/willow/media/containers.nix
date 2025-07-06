@@ -77,7 +77,7 @@ in
 {
 
   # === Users =================================================================
-  users = lib.attrsets.mergeAttrsList [
+  users = lib.foldl lib.recursiveUpdate { } [
     (mkUser 0 "nginx-media" [ ])
     (mkUser 1 "prowlarr" [ ])
     (mkUser 2 "overseerr" [ ])
