@@ -139,11 +139,13 @@ in
       filterRepos = pred: lib.filterAttrs (name: repoCfg: pred repoCfg) cfg.repos;
       reposWithAutoBackup = filterRepos (repoCfg: repoCfg.autoBackup);
       reposWithEnsureLocal = filterRepos (repoCfg: repoCfg.ensureLocalPath != null);
-      ensureLocalPre = repoCfg: [
-        "${pkgs.coreutils}/bin/mkdir -p ${repoCfg.localRepoPath}"
-        "${pkgs.coreutils}/bin/chown ${repoCfg.ensureLocalPath.owner}:${repoCfg.ensureLocalPath.group} ${repoCfg.localRepoPath}"
-        "${pkgs.coreutils}/bin/chmod ${repoCfg.ensureLocalPath.mode} ${repoCfg.localRepoPath}"
-      ];
+      ensureLocalPre =
+        repoCfg:
+        lib.concatStringsSep "\n" [
+          "${pkgs.coreutils}/bin/mkdir -p ${repoCfg.localRepoPath}"
+          "${pkgs.coreutils}/bin/chown ${repoCfg.ensureLocalPath.owner}:${repoCfg.ensureLocalPath.group} ${repoCfg.localRepoPath}"
+          "${pkgs.coreutils}/bin/chmod ${repoCfg.ensureLocalPath.mode} ${repoCfg.localRepoPath}"
+        ];
 
       # Assertion: autoInit and autoInitRestore must not both be enabled for the same repo
       _ = lib.forEach (lib.attrNames cfg.repos) (
@@ -170,9 +172,7 @@ in
               "network-online.target"
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
-            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (
-              ensureLocalPre repoCfgItem
-            );
+            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
@@ -197,9 +197,7 @@ in
               "network-online.target"
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
-            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (
-              ensureLocalPre repoCfgItem
-            );
+            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
