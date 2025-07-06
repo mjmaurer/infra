@@ -44,7 +44,7 @@
           localRepoPath = "/var/lib/media-config";
           ensureLocalPath = {
             owner = "root";
-            group = "media";
+            group = config.modules.mediaStack.groups.general;
           };
           # autoBackup = true;
           autoInitRestore = true;

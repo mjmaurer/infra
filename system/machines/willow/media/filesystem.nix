@@ -6,23 +6,28 @@
   username,
   ...
 }:
+let
+  cfg = config.modules.mediaStack;
+in
 {
   users.groups = {
     # Generic group that all media services belong to
-    media.gid = 426; # Arbitrary. Needs ID for Docker
+    ${cfg.groups.general}.gid = 426; # Arbitrary. Needs ID for Docker
     # Probably need to add plex to 'render' group
-    content = { };
-    rents = { };
-    usen = { };
+    ${cfg.groups.content} = { };
+    ${cfg.groups.rents} = { };
+    ${cfg.groups.usen} = { };
   };
 
   users.users.${username}.extraGroups = [
-    "content"
-    "rents"
-    "usen"
-    "media"
+    cfg.groups.content
+    cfg.groups.rents
+    cfg.groups.usen
+    cfg.groups.general
   ];
 
+  # NOTE: For some reason, have to run `snapraid sync` outside
+  # of systemd for it to create the parity file
   services.snapraid = {
     enable = true;
     sync.interval = "Tue,Fri *-*-* 03:00:00 America/New_York";
@@ -69,7 +74,7 @@
       {
         paths = [ "." ];
         owner = "root";
-        group = "media";
+        group = cfg.groups.general;
       }
       {
         paths = [
@@ -79,7 +84,7 @@
           "content/metadata"
           "content/transcode"
         ];
-        group = "content";
+        group = cfg.groups.content;
       }
       {
         paths = [
@@ -87,7 +92,7 @@
           "rents/movies"
           "rents/tv"
         ];
-        group = "rents";
+        group = cfg.groups.rents;
       }
       {
         paths = [
@@ -100,7 +105,7 @@
           "usen/incomplete/tv"
           "usen/history"
         ];
-        group = "usen";
+        group = cfg.groups.usen;
       }
     ];
   };
