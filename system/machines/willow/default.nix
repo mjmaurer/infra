@@ -42,6 +42,10 @@
         "media-config" = {
           repoId = "nas";
           localRepoPath = "/var/lib/media-config";
+          ensureLocalPath = {
+            owner = "root";
+            group = "media";
+          };
           # autoBackup = true;
           autoInitRestore = true;
         };

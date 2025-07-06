@@ -86,6 +86,31 @@ in
                 description = "The local path to the storage.";
                 default = "b2://$BUCKET_NAME";
               };
+              ensureLocalPath = lib.mkOption {
+                type = lib.types.nullOr (
+                  lib.types.submodule {
+                    options = {
+                      owner = lib.mkOption {
+                        type = lib.types.str;
+                        default = username;
+                        description = "Owner for the created directory.";
+                      };
+                      group = lib.mkOption {
+                        type = lib.types.str;
+                        default = nasGroupName;
+                        description = "Group for the created directory.";
+                      };
+                      mode = lib.mkOption {
+                        type = lib.types.str;
+                        default = "0750";
+                        description = "Permissions mode for the created directory.";
+                      };
+                    };
+                  }
+                );
+                default = null;
+                description = "Configuration for ensuring the local repository path exists.";
+              };
               autoBackup = lib.mkOption {
                 type = lib.types.bool;
                 default = false;
@@ -113,6 +138,7 @@ in
       # Will return a subset of cfg.repos
       filterRepos = pred: lib.filterAttrs (name: repoCfg: pred repoCfg) cfg.repos;
       reposWithAutoBackup = filterRepos (repoCfg: repoCfg.autoBackup);
+      reposWithEnsureLocal = filterRepos (repoCfg: repoCfg.ensureLocalPath != null);
 
       # Assertion: autoInit and autoInitRestore must not both be enabled for the same repo
       _ = lib.forEach (lib.attrNames cfg.repos) (
@@ -132,8 +158,12 @@ in
           lib.nameValuePair "duplicacyInit-${repoKey}" {
             description = "Initialize Duplicacy repository ${repoKey}";
             wantedBy = if repoCfgItem.autoInit then [ "multi-user.target" ] else lib.mkForce [ ];
-            after = [ "network-online.target" ];
-            requires = [ "network-online.target" ];
+            after = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            requires = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
@@ -151,8 +181,12 @@ in
           lib.nameValuePair "duplicacyInitRestore-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = if repoCfgItem.autoInitRestore then [ "multi-user.target" ] else lib.mkForce [ ];
-            after = [ "network-online.target" ];
-            requires = [ "network-online.target" ];
+            after = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            requires = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
@@ -170,7 +204,12 @@ in
           lib.nameValuePair "duplicacyRestoreLatest-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = lib.mkForce [ ]; # Should be run manually
-            requires = [ "network-online.target" ];
+            after = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            requires = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
@@ -188,7 +227,12 @@ in
           lib.nameValuePair "duplicacyRestoreLatestOverwrite-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = lib.mkForce [ ]; # Should be run manually
-            requires = [ "network-online.target" ];
+            after = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            requires = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
@@ -206,7 +250,12 @@ in
           lib.nameValuePair "duplicacyBackup-${repoKey}" {
             description = "Backup Duplicacy repository ${repoKey}";
             wantedBy = lib.mkForce [ ]; # Should be run manually
-            requires = [ "network-online.target" ];
+            after = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            requires = [
+              "network-online.target"
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
@@ -372,6 +421,21 @@ in
             OnCalendar = cfg.autoBackupCron;
             Persistent = true; # Catch up on missed runs
           };
+        };
+
+        systemd.tmpfiles.settings = lib.mkIf (cfg.reposWithEnsureLocal != null) {
+          "duplicacy-ensure-paths" = (
+            lib.mapAttrs' (
+              repoKey: repoCfgItem:
+              lib.nameValuePair repoCfgItem.localRepoPath {
+                d = {
+                  user = repoCfgItem.ensureLocalPath.owner;
+                  group = repoCfgItem.ensureLocalPath.group;
+                  mode = repoCfgItem.ensureLocalPath.mode;
+                };
+              }
+            ) cfg.reposWithEnsureLocal
+          );
         };
 
         sops = {
