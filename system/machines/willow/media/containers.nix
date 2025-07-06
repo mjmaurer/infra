@@ -105,9 +105,6 @@ in
   #   };
   # };
 
-  # === Network shared by the media‑stack ====================================
-  virtualisation.oci-containers.networks.media = { };
-
   # === Container definitions ===============================================
   virtualisation.oci-containers.containers = lib.mkIf cfg.enableContainers {
 
