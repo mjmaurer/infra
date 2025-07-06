@@ -170,6 +170,9 @@ in
               "network-online.target"
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
+            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (
+              ensureLocalPre repoCfgItem
+            );
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
@@ -177,9 +180,6 @@ in
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
-              ExecStartPre = lib.optionalString (repoCfgItem.ensureLocalPath != null) (
-                ensureLocalPre repoCfgItem
-              );
             };
           }
         ) cfg.repos
@@ -197,6 +197,9 @@ in
               "network-online.target"
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
+            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (
+              ensureLocalPre repoCfgItem
+            );
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
@@ -204,9 +207,6 @@ in
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
-              ExecStartPre = lib.optionalString (repoCfgItem.ensureLocalPath != null) (
-                ensureLocalPre repoCfgItem
-              );
             };
           }
         ) cfg.repos
