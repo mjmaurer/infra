@@ -56,6 +56,9 @@
     enable = true;
     fsName = "media";
     mntPath = "/media";
+    extraOptions = [
+      "umask=0007"
+    ];
     diskMnts = [
       "/mnt/media/disk1"
       "/mnt/media/disk2"

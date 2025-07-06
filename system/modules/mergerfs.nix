@@ -71,6 +71,8 @@ in
       type = lib.types.listOf lib.types.str;
       default = [
         "defaults"
+        "allow_other"
+        "default_permissions"
         "cache.files=off"
         "minfreespace=100G"
         # Existing path, most free space
@@ -81,6 +83,11 @@ in
         "moveonenospc=true"
       ];
       description = "Mount options for MergerFS";
+    };
+    extraOptions = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = [ ];
+      description = "Extra mount options for MergerFS";
     };
   };
 
@@ -93,9 +100,12 @@ in
       device = cfg.diskMntGlob;
       fsType = "mergerfs";
       depends = cfg.diskMnts;
-      options = cfg.options ++ [
-        "fsname=${cfg.fsName}"
-      ];
+      options =
+        cfg.options
+        ++ cfg.extraOptions
+        ++ [
+          "fsname=${cfg.fsName}"
+        ];
     };
 
     # Can debug with:
