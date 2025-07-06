@@ -36,6 +36,9 @@ let
       extraGroups = extraGroups ++ [ cfg.groups.general ];
       uid = 105 + idx;
       isSystemUser = true; # Does nothing since uid is set above
+      home = "/var/lib/service-users/${name}";
+      createHome = true;
+      homeMode = "0750";
     };
     groups.${name}.gid = 105 + idx;
   };
