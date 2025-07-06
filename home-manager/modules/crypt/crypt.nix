@@ -138,10 +138,11 @@ in
             # Smartcard support. This talks to pcscd (enabled in system crypt modules):
             enableScDaemon = true;
 
-            pinentry.package = lib.mkIf (!isDarwin) pkgs.pinentry-curses;
-            extraConfig = lib.mkIf (isDarwin) ''
-              pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
-            '';
+            pinentry.package = pkgs.pinentry-curses;
+            # pinentry.package = lib.mkIf (!isDarwin) pkgs.pinentry-curses;
+            # extraConfig = lib.mkIf (isDarwin) ''
+            #   pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+            # '';
           };
       };
       # GPG keys (by keygrip ID) to expose via SSH
