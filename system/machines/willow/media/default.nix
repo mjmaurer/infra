@@ -5,5 +5,5 @@
     ./containers.nix
   ];
 
-  config.modules.mediaStack.enableContainers = false;
+  config.modules.mediaStack.enableContainers = true;
 }
