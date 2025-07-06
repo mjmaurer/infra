@@ -466,11 +466,10 @@ in
         };
 
         users.users.${username}.extraGroups = [
-          mkGroupName
-          repoCfgItem.repoId
+          "nas"
         ];
         users.groups.${systemdGroupName} = { };
-        users.groups.${mkGroupName repoCfgItem.repoId} = { };
+        users.groups.nas = { };
       })
     ]
   );
