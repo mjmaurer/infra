@@ -330,11 +330,11 @@ in
     in
     {
       secrets = {
-        vpnClient.sopsFile = mkSecret "qbit";
-        vpnProv.sopsFile = mkSecret "qbit";
-        vpnUser.sopsFile = mkSecret "qbit";
-        vpnPass.sopsFile = mkSecret "qbit";
-        vpnOptions.sopsFile = mkSecret "qbit";
+        vpnClient = mkSecret "qbit";
+        vpnProv = mkSecret "qbit";
+        vpnUser = mkSecret "qbit";
+        vpnPass = mkSecret "qbit";
+        vpnOptions = mkSecret "qbit";
       };
 
       templates = {
