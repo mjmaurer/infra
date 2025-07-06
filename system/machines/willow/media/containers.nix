@@ -58,8 +58,8 @@ let
         ];
         environment = {
           # Set the container user to the same as the host user
-          PUID = "${config.users.users.${user}.uid}";
-          PGID = "${config.users.groups.${user}.gid}";
+          PUID = "${toString config.users.users.${user}.uid}";
+          PGID = "${toString config.users.groups.${user}.gid}";
           TZ = "America/New_York";
         };
         volumes = [
