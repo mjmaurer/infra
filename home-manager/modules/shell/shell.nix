@@ -240,6 +240,9 @@ in
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
         "s" = "rgt";
+        "scs" = "sudo systemctl status";
+        "scls" = "sudo systemctl list-units";
+        "scl" = "sudo journalctl --no-pager -u";
         "als" = "print -z $(_fzf_search_alias)";
         "fdd" = "fd -td";
         "fdf" = "fd -tf";
