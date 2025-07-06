@@ -31,12 +31,13 @@ let
 
   # Convenience helper that turns the attr‑set above into `users.users` entries
   mkUser = idx: name: extraGroups: {
-    ${name} = {
+    users.${name} = {
       group = name;
       extraGroups = extraGroups ++ [ cfg.groups.general ];
       uid = 105 + idx;
       isSystemUser = true; # Does nothing since uid is set above
     };
+    groups.${name}.gid = 105 + idx;
   };
 
   mkContainer =
@@ -76,7 +77,7 @@ in
 {
 
   # === Users =================================================================
-  users.users = lib.attrsets.mergeAttrsList [
+  users = lib.attrsets.mergeAttrsList [
     (mkUser 0 "nginx-media" [ ])
     (mkUser 1 "prowlarr" [ ])
     (mkUser 2 "overseerr" [ ])
