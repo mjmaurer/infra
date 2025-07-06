@@ -67,6 +67,11 @@
     diskMntGlob = "/mnt/media/disk*";
     ensurePaths = [
       {
+        paths = [ "." ];
+        owner = "root";
+        group = "media";
+      }
+      {
         paths = [
           "content"
           "content/movies"
