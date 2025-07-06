@@ -166,7 +166,8 @@ in
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
-              Type = "oneshot";
+              Type = "simple";
+              RemainAfterExit = true;
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
@@ -189,7 +190,8 @@ in
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
             serviceConfig = {
-              Type = "oneshot";
+              Type = "simple";
+              RemainAfterExit = true;
               Group = nasGroupName;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
