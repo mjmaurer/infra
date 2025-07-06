@@ -92,9 +92,10 @@ in
 
             # The following get scdaemon and pcscd to play nicely together.
             # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
-            disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
-            pcsc-shared = true; # Allow other processes to use the smartcard
-            # card-timeout = 10; # DEPRECATED. Release the card after 10 seconds
+            # Also possibly needed for forwarding yubikey over ssh (see ssh-match.conf.nix)
+            # Unforutnately, these break PIN caching: https://dev.gnupg.org/T5436
+            # disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
+            # pcsc-shared = true; # Allow other processes to use the smartcard
           };
         };
         ssh = {
@@ -138,11 +139,12 @@ in
             # Smartcard support. This talks to pcscd (enabled in system crypt modules):
             enableScDaemon = true;
 
-            pinentry.package = pkgs.pinentry-curses;
-            # pinentry.package = lib.mkIf (!isDarwin) pkgs.pinentry-curses;
-            # extraConfig = lib.mkIf (isDarwin) ''
-            #   pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
-            # '';
+            # Shared card for ssh forwarding breaks pin caching: https://dev.gnupg.org/T5436
+            # pinentry.package = pkgs.pinentry-curses;
+            pinentry.package = lib.mkIf (!isDarwin) pkgs.pinentry-curses;
+            extraConfig = lib.mkIf (isDarwin) ''
+              pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+            '';
           };
       };
       # GPG keys (by keygrip ID) to expose via SSH

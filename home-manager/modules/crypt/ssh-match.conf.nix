@@ -13,13 +13,13 @@ in
     match = "host ${hostListString}";
     user = "mjmaurer";
     port = 2222;
-    remoteForwards = [
-      # bind = path on *remote* ;  host = path on *local*
-      {
-        bind.address = gpgForwardedSocket;
-        host.address = "${gpgHomedir}/S.gpg-agent";
-      }
-    ];
+    # remoteForwards = [
+    #   # bind = path on *remote* ;  host = path on *local*
+    #   {
+    #     bind.address = gpgForwardedSocket;
+    #     host.address = "${gpgHomedir}/S.gpg-agent";
+    #   }
+    # ];
     extraOptions = {
       PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
       ExitOnForwardFailure = "no";
