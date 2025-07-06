@@ -425,7 +425,7 @@ in
           };
         };
 
-        systemd.tmpfiles.settings = lib.mkIf (reposWithEnsureLocal != null) {
+        systemd.tmpfiles.settings = lib.mkIf (reposWithEnsureLocal != { }) {
           "duplicacy-ensure-paths" = (
             lib.mapAttrs' (
               repoKey: repoCfgItem:
