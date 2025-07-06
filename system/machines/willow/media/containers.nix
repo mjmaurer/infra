@@ -49,11 +49,12 @@ let
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = "${user}:${user}";
         podman.user = user;
-        restartPolicy = "unless-stopped";
+        # autoRemoveOnStop = false;
         networks = [ "media" ];
         extraOptions = [
           "--log-opt=max-file=10"
           "--log-opt=max-size=400k"
+          "--restart=unless-stopped"
         ];
         environment = {
           # Set the container user to the same as the host user
