@@ -8,10 +8,20 @@
 }:
 {
   users.groups = {
+    # Generic group that all media services belong to
+    media.gid = 426; # Arbitrary. Needs ID for Docker
+    # Probably need to add plex to 'render' group
     content = { };
     rents = { };
     usen = { };
   };
+
+  users.users.${username}.extraGroups = [
+    "content"
+    "rents"
+    "usen"
+    "media"
+  ];
 
   services.snapraid = {
     enable = true;

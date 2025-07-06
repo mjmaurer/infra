@@ -56,9 +56,9 @@ in
               };
               mode = lib.mkOption {
                 type = lib.types.str;
-                # User (rwx), Group (rwx), Others (r-x)
-                default = "0775";
-                description = "Permissions mode for the path (e.g., 0775)";
+                # SetGID (inherit group), User (rwx), Group (rwx), Others (---)
+                default = "2770";
+                description = "Permissions mode for the path (e.g., '2770' for rwxrwx---)";
               };
             };
           }
