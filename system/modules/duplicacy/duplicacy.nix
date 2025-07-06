@@ -13,7 +13,6 @@ let
   ];
 
   systemdGroupName = "duplicacy-secrets";
-  nasGroupName = "nas";
 
   escapeStringForShellDoubleQuotes =
     str: lib.replaceChars [ "\\" "\"" "$" "`" ] [ "\\\\" "\\\"" "\\$" "\\\`" ] str;
@@ -97,7 +96,7 @@ in
                       };
                       group = lib.mkOption {
                         type = lib.types.str;
-                        default = nasGroupName;
+                        default = "root";
                         description = "Group for the created directory.";
                       };
                       mode = lib.mkOption {
@@ -139,13 +138,14 @@ in
       filterRepos = pred: lib.filterAttrs (name: repoCfg: pred repoCfg) cfg.repos;
       reposWithAutoBackup = filterRepos (repoCfg: repoCfg.autoBackup);
       reposWithEnsureLocal = filterRepos (repoCfg: repoCfg.ensureLocalPath != null);
-      ensureLocalPre =
-        repoCfg:
-        lib.concatStringsSep "\n" [
-          "${pkgs.coreutils}/bin/mkdir -p ${repoCfg.localRepoPath}"
-          "${pkgs.coreutils}/bin/chown ${repoCfg.ensureLocalPath.owner}:${repoCfg.ensureLocalPath.group} ${repoCfg.localRepoPath}"
-          "${pkgs.coreutils}/bin/chmod ${repoCfg.ensureLocalPath.mode} ${repoCfg.localRepoPath}"
-        ];
+      mkGroupName =
+        repoId:
+        if repoId == "nas" then
+          "nas"
+        else if repoId == "media-config" then
+          "media"
+        else
+          throw "Unknown repository ID: ${repoId}";
 
       # Assertion: autoInit and autoInitRestore must not both be enabled for the same repo
       _ = lib.forEach (lib.attrNames cfg.repos) (
@@ -167,16 +167,15 @@ in
             wantedBy = if repoCfgItem.autoInit then [ "multi-user.target" ] else lib.mkForce [ ];
             after = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             requires = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             restartIfChanged = false;
-            preStart = lib.optionalString (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
-              Group = nasGroupName;
+              Group = mkGroupName repoCfgItem.repoId;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -192,16 +191,15 @@ in
             wantedBy = if repoCfgItem.autoInitRestore then [ "multi-user.target" ] else lib.mkForce [ ];
             after = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             requires = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             restartIfChanged = false;
-            preStart = lib.optionalString (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
-              Group = nasGroupName;
+              Group = mkGroupName repoCfgItem.repoId;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupInitScript}/bin/dup-init ${escapeStringForShellDoubleQuotes repoKey} --restore";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -215,16 +213,12 @@ in
           lib.nameValuePair "duplicacyRestoreLatest-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = lib.mkForce [ ]; # Should be run manually
-            after = [
-              "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
-            requires = [
-              "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              Group = nasGroupName;
+              Group = mkGroupName repoCfgItem.repoId;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest -hash";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -238,16 +232,12 @@ in
           lib.nameValuePair "duplicacyRestoreLatestOverwrite-${repoKey}" {
             description = "Restore Duplicacy repository ${repoKey} after initialization";
             wantedBy = lib.mkForce [ ]; # Should be run manually
-            after = [
-              "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
-            requires = [
-              "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              Group = nasGroupName;
+              Group = mkGroupName repoCfgItem.repoId;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupRestoreScript}/bin/dup-restore ${escapeStringForShellDoubleQuotes repoKey} --latest -hash -overwrite";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -261,16 +251,12 @@ in
           lib.nameValuePair "duplicacyBackup-${repoKey}" {
             description = "Backup Duplicacy repository ${repoKey}";
             wantedBy = lib.mkForce [ ]; # Should be run manually
-            after = [
-              "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
-            requires = [
-              "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
+            after = [ "network-online.target" ];
+            requires = [ "network-online.target" ];
             restartIfChanged = false;
             serviceConfig = {
               Type = "oneshot";
-              Group = nasGroupName;
+              Group = mkGroupName repoCfgItem.repoId;
               WorkingDirectory = repoCfgItem.localRepoPath;
               ExecStart = "${dupBackupScript}/bin/dup-backup ${escapeStringForShellDoubleQuotes repoKey}";
               EnvironmentFile = config.sops.templates.duplicacyConf.path;
@@ -289,7 +275,6 @@ in
               serviceConfig = {
                 Type = "oneshot";
                 Restart = "no";
-                Group = nasGroupName;
                 ExecStart = pkgs.writeShellScript "run-duplicacy-auto-backups" ''
                   #!/bin/sh
                   set -e
@@ -434,6 +419,21 @@ in
           };
         };
 
+        systemd.tmpfiles.settings = lib.mkIf (reposWithEnsureLocal != { }) {
+          "duplicacy-ensure-paths" = (
+            lib.mapAttrs' (
+              repoKey: repoCfgItem:
+              lib.nameValuePair repoCfgItem.localRepoPath {
+                d = {
+                  user = repoCfgItem.ensureLocalPath.owner;
+                  group = repoCfgItem.ensureLocalPath.group;
+                  mode = repoCfgItem.ensureLocalPath.mode;
+                };
+              }
+            ) reposWithEnsureLocal
+          );
+        };
+
         sops = {
           secrets = {
             duplicacyB2Id = {
@@ -465,9 +465,12 @@ in
           };
         };
 
-        users.users.${username}.extraGroups = [ nasGroupName ];
+        users.users.${username}.extraGroups = [
+          mkGroupName
+          repoCfgItem.repoId
+        ];
         users.groups.${systemdGroupName} = { };
-        users.groups.${nasGroupName} = { };
+        users.groups.${mkGroupName repoCfgItem.repoId} = { };
       })
     ]
   );
