@@ -38,8 +38,8 @@
       "/mnt/media/disk2/d2-snapraid.content"
     ];
     dataDisks = {
-      d1 = "/mnt/media/disk1";
-      d2 = "/mnt/media/disk2";
+      d1 = "/mnt/media/disk1/";
+      d2 = "/mnt/media/disk2/";
     };
     exclude = [
       "*.unrecoverable"
