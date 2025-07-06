@@ -47,7 +47,7 @@ let
         hostname = config.networking.hostName;
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
-        user = "${user}:${cfg.groups.general}";
+        user = "${user}:${user}";
         podman.user = user;
         restartPolicy = "unless-stopped";
         networks = [ "media" ];
@@ -57,9 +57,8 @@ let
         ];
         environment = {
           # Set the container user to the same as the host user
-          PUID = "${lib.getAttr "uid" (config.users.users.${user})}";
-          # This might not work:
-          PGID = "${config.users.groups.${cfg.groups.general}.gid}";
+          PUID = "${config.users.users.${user}.uid}";
+          PGID = "${config.users.groups.${user}.gid}";
           TZ = "America/New_York";
         };
         volumes = [
@@ -290,13 +289,13 @@ in
     };
 
     # -- Requestrr ----------------------------------------------------------
-    requestrr = mkContainer "requestrr" {
-      image = "docker.io/thomst08/requestrr:latest";
-      ports = [ "4545:4545" ];
-      volumes = [
-        "${hostConfigDir}/requestrr:/root/config"
-      ];
-    };
+    # requestrr = mkContainer "requestrr" {
+    #   image = "docker.io/thomst08/requestrr:latest";
+    #   ports = [ "4545:4545" ];
+    #   volumes = [
+    #     "${hostConfigDir}/requestrr:/root/config"
+    #   ];
+    # };
 
     # -- Wizarr -------------------------------------------------------------
     # wizarr = mkContainer "wizarr" {
