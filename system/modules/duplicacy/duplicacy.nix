@@ -172,7 +172,7 @@ in
               "network-online.target"
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
-            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
+            preStart = lib.optionalString (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
@@ -197,7 +197,7 @@ in
               "network-online.target"
             ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-setup.service";
             restartIfChanged = false;
-            preStart = lib.optional (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
+            preStart = lib.optionalString (repoCfgItem.ensureLocalPath != null) (ensureLocalPre repoCfgItem);
             serviceConfig = {
               Type = "simple";
               RemainAfterExit = true;
