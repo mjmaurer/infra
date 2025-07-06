@@ -20,7 +20,7 @@ in
   };
 
   config = {
-    systemPackages = lib.mkIf cfg.withPodman [
+    environment.systemPackages = lib.mkIf cfg.withPodman [
       pkgs.podman-tui
     ];
 
