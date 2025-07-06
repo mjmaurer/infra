@@ -30,10 +30,13 @@ let
   ];
 
   # Convenience helper that turns the attr‑set above into `users.users` entries
-  mkUser = idx: extraGroups: {
-    extraGroups = extraGroups ++ [ cfg.groups.general ];
-    uid = 105 + idx;
-    isSystemUser = true; # Does nothing since uid is set above
+  mkUser = idx: name: extraGroups: {
+    ${name} = {
+      group = name;
+      extraGroups = extraGroups ++ [ cfg.groups.general ];
+      uid = 105 + idx;
+      isSystemUser = true; # Does nothing since uid is set above
+    };
   };
 
   mkContainer =
@@ -73,21 +76,21 @@ in
 {
 
   # === Users =================================================================
-  users.users = {
-    nginx-media = mkUser 0 [ ];
-    prowlarr = mkUser 1 [ ];
-    overseerr = mkUser 2 [ ];
-    requestrr = mkUser 3 [ ];
-    radarr = mkUser 4 allMediaGroups;
-    sonarr = mkUser 5 allMediaGroups;
-    readarr = mkUser 6 allMediaGroups;
-    bazarr = mkUser 7 [ cfg.groups.content ];
-    qbit = mkUser 8 [ cfg.groups.rents ];
-    sab = mkUser 9 [ cfg.groups.usen ];
-    plex = mkUser 10 [ cfg.groups.content ];
-    wizarr = mkUser 11 [ ];
-    flaresolverr = mkUser 12 [ ];
-  };
+  users.users = lib.attrsets.mergeAttrsList [
+    (mkUser 0 "nginx-media" [ ])
+    (mkUser 1 "prowlarr" [ ])
+    (mkUser 2 "overseerr" [ ])
+    (mkUser 3 "requestrr" [ ])
+    (mkUser 4 "radarr" allMediaGroups)
+    (mkUser 5 "sonarr" allMediaGroups)
+    (mkUser 6 "readarr" allMediaGroups)
+    (mkUser 7 "bazarr" [ cfg.groups.content ])
+    (mkUser 8 "qbit" [ cfg.groups.rents ])
+    (mkUser 9 "sab" [ cfg.groups.usen ])
+    (mkUser 10 "plex" [ cfg.groups.content ])
+    (mkUser 11 "wizarr" [ ])
+    (mkUser 12 "flaresolverr" [ ])
+  ];
 
   # === Optional: nightly image refresh ======================================
   # systemd.timers.podmanAutoUpdate = {
