@@ -12,9 +12,10 @@
     ../../modules/graphics/intel.nix
     ../../modules/supermicro/supermicro.nix
     ../../modules/samba/smb-server.nix
+    ../../modules/virtualisation.nix
 
     ./hardware-configuration.nix
-    ./media/filesystem.nix
+    ./media
 
     ./disko.nix
     ./disko-patches/media1.nix
@@ -37,6 +38,12 @@
           localRepoPath = "/nas";
           autoBackup = true;
           # autoInitRestore = true;
+        };
+        "media-config" = {
+          repoId = "nas";
+          localRepoPath = "/var/lib/media-config";
+          # autoBackup = true;
+          autoInitRestore = true;
         };
       };
     };
