@@ -44,32 +44,32 @@ in
       type = lib.types.submodule {
         options = {
           qbitWeb = lib.mkOption {
-            type = lib.types.int;
+            type = lib.types.str;
           };
           qbitWebNginx = lib.mkOption {
-            type = lib.types.int;
+            type = lib.types.str;
           };
           sab8118 = lib.mkOption {
-            type = lib.types.int;
+            type = lib.types.str;
           };
           sabWeb = lib.mkOption {
-            type = lib.types.int;
+            type = lib.types.str;
           };
           sabWebNginx = lib.mkOption {
-            type = lib.types.int;
+            type = lib.types.str;
           };
           plexWeb = lib.mkOption {
-            type = lib.types.int;
+            type = lib.types.str;
           };
         };
       };
       default = {
-        qbitWeb = 50080;
-        qbitWebNginx = 50081;
-        sab8118 = 9118; # Otherwise conflicts with qbit
-        sabWeb = 8080;
-        sabWebNginx = 60081;
-        plexWeb = 32400;
+        qbitWeb = "50080";
+        qbitWebNginx = "50081";
+        sab8118 = "9118"; # Otherwise conflicts with qbit
+        sabWeb = "8080";
+        sabWebNginx = "60081";
+        plexWeb = "32400";
       };
     };
   };
