@@ -29,8 +29,6 @@ let
     cfg.groups.usen
   ];
 
-  subidRangeSize = 65536;
-
   # Convenience helper that turns the attr‑set above into `users.users` entries
   mkUser = idx: name: extraGroups: {
     users.${name} = {
@@ -40,20 +38,8 @@ let
         "podman"
       ];
       uid = 105 + idx;
-      subUidRanges = [
-        {
-          startUid = 1000000 + idx * subidRangeSize;
-          count = subidRangeSize;
-        }
-      ];
-      subGidRanges = [
-        {
-          startGid = 1000000 + idx * subidRangeSize;
-          count = subidRangeSize;
-        }
-      ];
       # gives the user a systemd user session
-      linger = true;
+      # linger = true;
       isSystemUser = true; # Does nothing since uid is set above
       home = "/var/lib/service-users/${name}";
       createHome = true;
@@ -74,12 +60,10 @@ let
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
-        podman.user = user;
-        # autoRemoveOnStop = false;
+        # podman.user = user;
+        autoRemoveOnStop = false;
         # networks = [ "media" ];
         extraOptions = [
-          "--log-opt=max-file=10"
-          "--log-opt=max-size=400k"
           # "--restart=unless-stopped" # Removed: Systemd handles this
         ];
         environment = {
