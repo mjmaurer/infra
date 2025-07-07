@@ -50,7 +50,7 @@ let
         }
       ];
       # gives the user a systemd user session
-      # linger = true;
+      linger = true;
       isSystemUser = true; # Does nothing since uid is set above
       home = "/var/lib/service-users/${name}";
       createHome = true;
@@ -72,6 +72,8 @@ let
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
         podman.user = user;
+        # Don't block rebuild (starts as systemd simple?):
+        podman.sdnotify = "ignore";
         # autoRemoveOnStop = false;
         # networks = [ "media" ];
         extraOptions = [
