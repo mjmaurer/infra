@@ -29,12 +29,28 @@ let
     cfg.groups.usen
   ];
 
+  subidRangeSize = 65536;
+
   # Convenience helper that turns the attr‑set above into `users.users` entries
   mkUser = idx: name: extraGroups: {
     users.${name} = {
       group = name;
       extraGroups = extraGroups ++ [ cfg.groups.general ];
       uid = 105 + idx;
+      subUidRanges = [
+        {
+          startUid = 1000000 + idx * subidRangeSize;
+          count = subidRangeSize;
+        }
+      ];
+      subGidRanges = [
+        {
+          startGid = 1000000 + idx * subidRangeSize;
+          count = subidRangeSize;
+        }
+      ];
+      # gives the user a systemd user session
+      linger = true;
       isSystemUser = true; # Does nothing since uid is set above
       home = "/var/lib/service-users/${name}";
       createHome = true;
@@ -44,13 +60,17 @@ let
   };
 
   mkContainer =
-    user: local:
+    {
+      user,
+      supportsUserEnv ? true,
+    }:
+    local:
     let
       template = {
         hostname = config.networking.hostName;
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
-        user = "${user}:${user}";
+        user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
         podman.user = user;
         # autoRemoveOnStop = false;
         networks = [ "media" ];
@@ -61,8 +81,8 @@ let
         ];
         environment = {
           # Set the container user to the same as the host user
-          PUID = "${toString config.users.users.${user}.uid}";
-          PGID = "${toString config.users.groups.${user}.gid}";
+          PUID = lib.mkIf supportsUserEnv "${toString config.users.users.${user}.uid}";
+          PGID = lib.mkIf supportsUserEnv "${toString config.users.groups.${user}.gid}";
           TZ = "America/New_York";
         };
         volumes = [
@@ -116,7 +136,7 @@ in
   virtualisation.oci-containers.containers = lib.mkIf cfg.enableContainers {
 
     # -- qBittorrent VPN -----------------------------------------------------
-    qbit = mkContainer "qbit" {
+    qbit = mkContainer { user = "qbit"; } {
       image = "ghcr.io/binhex/arch-qbittorrentvpn:latest";
       environmentFiles = [ config.sops.templates."qbit.env".path ];
       environment = {
@@ -156,7 +176,7 @@ in
       ];
     };
     # -- SABnzbd VPN ---------------------------------------------------------
-    sab = mkContainer "sab" {
+    sab = mkContainer { user = "sab"; } {
       image = "ghcr.io/binhex/arch-sabnzbdvpn:latest";
       environment = {
         STRICT_PORT_FORWARD = "yes";
@@ -193,7 +213,7 @@ in
 
     # -- Reverse‑proxy (nginx-media) ----------------------------------------
     # This is only needed because sab and bit had trouble over tailscale from the dove proxy.
-    # nginx-media = mkContainer "nginx-media" {
+    # nginx-media = mkContainer { user = "nginx-media"; supportsUserEnv = false; } {
     #   image = "docker.io/library/nginx:latest";
     #   environment = {
     #     QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWeb;
@@ -210,7 +230,7 @@ in
     # };
 
     # -- Plex ---------------------------------------------------------------
-    plex = mkContainer "plex" {
+    plex = mkContainer { user = "plex"; } {
       image = "lscr.io/linuxserver/plex:latest";
       environment = {
         PLEX_CLAIM = "https://plex.tv/claim";
@@ -236,7 +256,7 @@ in
     };
 
     # -- Radarr -------------------------------------------------------------
-    radarr = mkContainer "radarr" {
+    radarr = mkContainer { user = "radarr"; } {
       image = "lscr.io/linuxserver/radarr:latest";
       ports = [ "7878:7878" ];
       volumes = [
@@ -246,7 +266,7 @@ in
     };
 
     # -- Sonarr -------------------------------------------------------------
-    sonarr = mkContainer "sonarr" {
+    sonarr = mkContainer { user = "sonarr"; } {
       image = "lscr.io/linuxserver/sonarr:latest";
       ports = [ "8989:8989" ];
       volumes = [
@@ -256,7 +276,7 @@ in
     };
 
     # -- Prowlarr -----------------------------------------------------------
-    prowlarr = mkContainer "prowlarr" {
+    prowlarr = mkContainer { user = "prowlarr"; } {
       image = "lscr.io/linuxserver/prowlarr:latest";
       ports = [ "9696:9696" ];
       volumes = [
@@ -265,7 +285,7 @@ in
     };
 
     # -- Overseerr ----------------------------------------------------------
-    overseerr = mkContainer "overseerr" {
+    overseerr = mkContainer { user = "overseerr"; } {
       image = "lscr.io/linuxserver/overseerr:latest";
       ports = [ "5055:5055" ];
       volumes = [
@@ -274,7 +294,7 @@ in
     };
 
     # -- Readarr ------------------------------------------------------------
-    readarr = mkContainer "readarr" {
+    readarr = mkContainer { user = "readarr"; } {
       image = "lscr.io/linuxserver/readarr:develop";
       ports = [ "8787:8787" ];
       volumes = [
@@ -283,7 +303,7 @@ in
     };
 
     # -- Bazarr -------------------------------------------------------------
-    bazarr = mkContainer "bazarr" {
+    bazarr = mkContainer { user = "bazarr"; } {
       image = "lscr.io/linuxserver/bazarr:latest";
       ports = [ "6767:6767" ];
       volumes = [
@@ -293,7 +313,7 @@ in
     };
 
     # -- Requestrr ----------------------------------------------------------
-    # requestrr = mkContainer "requestrr" {
+    # requestrr = mkContainer { user = "requestrr"; supportsUserEnv = false; } {
     #   image = "docker.io/thomst08/requestrr:latest";
     #   ports = [ "4545:4545" ];
     #   volumes = [
@@ -302,7 +322,7 @@ in
     # };
 
     # -- Wizarr -------------------------------------------------------------
-    # wizarr = mkContainer "wizarr" {
+    # wizarr = mkContainer { user = "wizarr"; } {
     #   image = "ghcr.io/wizarrrr/wizarr:latest";
     #   ports = [ "5690:5690" ];
     #   volumes = [
@@ -312,13 +332,19 @@ in
 
     # -- FlareSolverr -------------------------------------------------------
     # NOTE: Currently nonfunctional: https://trash-guides.info/Prowlarr/prowlarr-setup-flaresolverr/
-    flaresolverr = mkContainer "flaresolverr" {
-      image = "ghcr.io/flaresolverr/flaresolverr:latest";
-      ports = [ "8191:8191" ];
-      environment = {
-        LOG_LEVEL = "info";
-      };
-    };
+    flaresolverr =
+      mkContainer
+        {
+          user = "flaresolverr";
+          supportsUserEnv = false;
+        }
+        {
+          image = "ghcr.io/flaresolverr/flaresolverr:latest";
+          ports = [ "8191:8191" ];
+          environment = {
+            LOG_LEVEL = "info";
+          };
+        };
   };
 
   sops =
