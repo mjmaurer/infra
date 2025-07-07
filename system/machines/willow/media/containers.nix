@@ -73,7 +73,7 @@ let
         user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
         podman.user = user;
         # autoRemoveOnStop = false;
-        networks = [ "media" ];
+        # networks = [ "media" ];
         extraOptions = [
           "--log-opt=max-file=10"
           "--log-opt=max-size=400k"
