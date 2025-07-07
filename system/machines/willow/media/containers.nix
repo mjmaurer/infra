@@ -35,7 +35,10 @@ let
   mkUser = idx: name: extraGroups: {
     users.${name} = {
       group = name;
-      extraGroups = extraGroups ++ [ cfg.groups.general ];
+      extraGroups = extraGroups ++ [
+        cfg.groups.general
+        "podman"
+      ];
       uid = 105 + idx;
       subUidRanges = [
         {
@@ -72,8 +75,6 @@ let
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
         podman.user = user;
-        # Don't block rebuild (starts as systemd simple?):
-        podman.sdnotify = "ignore";
         # autoRemoveOnStop = false;
         # networks = [ "media" ];
         extraOptions = [
