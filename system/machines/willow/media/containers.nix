@@ -68,6 +68,7 @@ let
         autoRemoveOnStop = true;
         # networks = [ "media" ];
         extraOptions = [
+          "--replace"
           # "--restart=unless-stopped" # Removed: Systemd handles this
         ];
         environment = {
@@ -133,7 +134,7 @@ in
       environment = {
         WEBUI_PORT = cfg.ports.qbitWeb;
         STRICT_PORT_FORWARD = "yes";
-        DEBUG = "true";
+        # DEBUG = "true";
         UMASK = cfg.umask;
         ENABLE_PRIVOXY = "yes";
         VPN_ENABLED = "yes";
@@ -173,7 +174,7 @@ in
         STRICT_PORT_FORWARD = "yes";
         VPN_INPUT_PORTS = "1234";
         VPN_OUTPUT_PORTS = "5678";
-        DEBUG = "true";
+        # DEBUG = "true";
         UMASK = cfg.umask;
         VPN_ENABLED = "no";
         ENABLE_PRIVOXY = "yes";
