@@ -50,7 +50,7 @@ let
         }
       ];
       # gives the user a systemd user session
-      linger = true;
+      # linger = true;
       isSystemUser = true; # Does nothing since uid is set above
       home = "/var/lib/service-users/${name}";
       createHome = true;
