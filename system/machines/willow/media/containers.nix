@@ -60,8 +60,12 @@ let
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
+        # NOTE: I gave up on rootless. See 9fd2c5c for closest attempt.
+        # Need linger and subgid on user, and might want to run as a single 'media' user
+        # and then use PUID/PGID to set the container user.
+        # If so, would need to figure out the uid/gid mapping for the sub ranges.
         # podman.user = user;
-        autoRemoveOnStop = false;
+        autoRemoveOnStop = true;
         # networks = [ "media" ];
         extraOptions = [
           # "--restart=unless-stopped" # Removed: Systemd handles this
