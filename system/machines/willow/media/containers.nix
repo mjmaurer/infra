@@ -77,7 +77,7 @@ let
         extraOptions = [
           "--log-opt=max-file=10"
           "--log-opt=max-size=400k"
-          "--restart=unless-stopped"
+          # "--restart=unless-stopped" # Removed: Systemd handles this
         ];
         environment = {
           # Set the container user to the same as the host user

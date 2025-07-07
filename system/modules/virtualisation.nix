@@ -9,6 +9,7 @@ let
 in
 {
   options.modules.virt = {
+    # Podman might have acl problems with zfs: https://blog.dest-unreach.be/2024/01/03/podman-on-zfs/
     withPodman = lib.mkOption {
       type = lib.types.bool;
       default = true;
