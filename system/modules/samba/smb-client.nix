@@ -63,16 +63,14 @@ in
               mode = "0400";
               # Could add noatime for performance, but not needed for now
               content = ''
-                ${localShareName} -fstype=smbfs,soft,rw,nosuid ://mjmaurer:${config.sops.placeholder.smbPassword}@${config.sops.placeholder.smbHost}/${remoteShareName}
+                ${cfg.nasMountPath}/${localShareName} -fstype=smbfs,soft,rw,nosuid ://mjmaurer:${config.sops.placeholder.smbPassword}@${config.sops.placeholder.smbHost}/${remoteShareName}
               '';
             };
 
             system.activationScripts.postActivation.text = lib.mkOrder 1600 ''
               # /etc/auto_master already exists, so we append to it
-              if ! grep -q "^${cfg.nasMountPath} " /etc/auto_master; then
-                echo "${cfg.nasMountPath} ${
-                  config.sops.templates.${localShareName}.path
-                } -nosuid" >> /etc/auto_master
+              if ! grep -q "auto_${localShareName}" /etc/auto_master; then
+                echo "/- auto_${localShareName} -nosuid" >> /etc/auto_master
                 echo "Added auto master entry for ${cfg.nasMountPath}." >&2
                 echo "Can add to finder with Cmd+Shift+G and type ${cfg.nasMountPath}" >&2
               fi
