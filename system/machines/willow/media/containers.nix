@@ -131,7 +131,7 @@ in
         WEBUI_PORT = cfg.ports.qbitWeb;
         STRICT_PORT_FORWARD = "yes";
         # DEBUG = "true";
-        UMASK = cfg.umask;
+        UMASK = "000"; # cfg.umask; https://github.com/binhex/arch-qbittorrentvpn/issues/260
         ENABLE_PRIVOXY = "yes";
         VPN_ENABLED = "yes";
         VPN_INPUT_PORTS = "1234";
