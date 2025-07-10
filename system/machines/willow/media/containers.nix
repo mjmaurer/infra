@@ -86,8 +86,9 @@ let
         ];
       };
     in
-    assert lib.assertMsg (builtins.hasAttr user config.users.users)
-      "Container user '${user}' must be defined in users.users";
+    assert
+      (user == null)
+      || lib.assertMsg (builtins.hasAttr user config.users.users) "Container user '${user}' must be defined in users.users";
     lib.mkMerge [
       template
       local
