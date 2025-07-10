@@ -20,23 +20,10 @@ in
             type = lib.types.str;
             description = "Group for all media service users.";
           };
-          content = lib.mkOption {
-            type = lib.types.str;
-            description = "Group for accessing media content.";
-          };
-          rents = lib.mkOption {
-            type = lib.types.str;
-          };
-          usen = lib.mkOption {
-            type = lib.types.str;
-          };
         };
       };
       default = {
         general = "media";
-        content = "content";
-        rents = "rents";
-        usen = "usen";
       };
     };
 

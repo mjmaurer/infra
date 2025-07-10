@@ -14,15 +14,9 @@ in
     # Generic group that all media services belong to
     ${cfg.groups.general}.gid = 426; # Arbitrary. Needs ID for Docker
     # Probably need to add plex to 'render' group
-    ${cfg.groups.content} = { };
-    ${cfg.groups.rents} = { };
-    ${cfg.groups.usen} = { };
   };
 
   users.users.${username}.extraGroups = [
-    cfg.groups.content
-    cfg.groups.rents
-    cfg.groups.usen
     cfg.groups.general
   ];
 
@@ -84,7 +78,7 @@ in
           "content/metadata"
           "content/transcode"
         ];
-        group = cfg.groups.content;
+        group = cfg.groups.general;
       }
       {
         paths = [
@@ -92,7 +86,7 @@ in
           "rents/movies"
           "rents/tv"
         ];
-        group = cfg.groups.rents;
+        group = cfg.groups.general;
       }
       {
         paths = [
@@ -105,7 +99,7 @@ in
           "usen/incomplete/tv"
           "usen/history"
         ];
-        group = cfg.groups.usen;
+        group = cfg.groups.general;
       }
     ];
   };

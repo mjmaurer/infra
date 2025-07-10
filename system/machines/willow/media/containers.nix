@@ -25,13 +25,6 @@ let
 
   cfg = config.modules.mediaStack;
 
-  # Default (shared) UID/GID layout — tweak if these collide on your system.
-  allMediaGroups = [
-    cfg.groups.content
-    cfg.groups.rents
-    cfg.groups.usen
-  ];
-
   # Convenience helper that turns the attr‑set above into `users.users` entries
   mkUser = idx: name: extraGroups: {
     users.${name} = {
@@ -54,6 +47,7 @@ let
   mkContainer =
     {
       user ? null,
+      group ? cfg.groups.general,
       runAsUser ? false,
     }:
     local:
@@ -62,7 +56,7 @@ let
         hostname = config.networking.hostName;
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
-        user = lib.mkIf (user != null && runAsUser) "${user}:${user}";
+        user = lib.mkIf (user != null && group != null && runAsUser) "${user}:${group}";
 
         # NOTE: I gave up on rootless. See 9fd2c5c for closest attempt.
         # Need linger and subgid on user, and might want to run as a single 'media' user
@@ -78,7 +72,7 @@ let
         environment = {
           # Set the container user to the same as the host user
           PUID = lib.mkIf (user != null) "${toString config.users.users.${user}.uid}";
-          PGID = lib.mkIf (user != null) "${toString config.users.groups.${user}.gid}";
+          PGID = lib.mkIf (user != null && group != null) "${toString config.users.groups.${group}.gid}";
           TZ = "America/New_York";
         };
         volumes = [
@@ -89,6 +83,9 @@ let
     assert
       (user == null)
       || lib.assertMsg (builtins.hasAttr user config.users.users) "Container user '${user}' must be defined in users.users";
+    assert
+      (group == null)
+      || lib.assertMsg (builtins.hasAttr group config.users.groups) "Container group '${group}' must be defined in users.groups";
     lib.mkMerge [
       template
       local
@@ -102,13 +99,13 @@ in
     (mkUser 1 "prowlarr" [ ])
     (mkUser 2 "overseerr" [ ])
     (mkUser 3 "requestrr" [ ])
-    (mkUser 4 "radarr" allMediaGroups)
-    (mkUser 5 "sonarr" allMediaGroups)
-    (mkUser 6 "readarr" allMediaGroups)
-    (mkUser 7 "bazarr" [ cfg.groups.content ])
-    (mkUser 8 "qbit" [ cfg.groups.rents ])
-    (mkUser 9 "sab" [ cfg.groups.usen ])
-    (mkUser 10 "plex" [ cfg.groups.content ])
+    (mkUser 4 "radarr" [ ])
+    (mkUser 5 "sonarr" [ ])
+    (mkUser 6 "readarr" [ ])
+    (mkUser 7 "bazarr" [ ])
+    (mkUser 8 "qbit" [ ])
+    (mkUser 9 "sab" [ ])
+    (mkUser 10 "plex" [ ])
     (mkUser 11 "wizarr" [ ])
     (mkUser 12 "flaresolverr" [ ])
   ];
