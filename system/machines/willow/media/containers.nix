@@ -213,8 +213,8 @@ in
     nginx-media = mkContainer { } {
       image = "docker.io/nginxinc/nginx-unprivileged:bookworm-perl";
       environment = {
-        QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWebNginx;
-        SAB_PORT_8080 = cfg.ports.sabWebNginx;
+        QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWeb;
+        SAB_PORT_8080 = cfg.ports.sabWeb;
         NGINX_ENVSUBST_TEMPLATE_SUFFIX = ".template";
       };
       ports = [
