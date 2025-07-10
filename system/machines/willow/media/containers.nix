@@ -20,6 +20,9 @@ let
 
   hostConfigDir = config.modules.duplicacy.repos."media-config".localRepoPath;
 
+  localProxyEtcPath = "media/local-proxy/local-media.nginx.conf.template";
+  localProxyPath = "/etc/${localProxyEtcPath}";
+
   cfg = config.modules.mediaStack;
 
   # Default (shared) UID/GID layout — tweak if these collide on your system.
@@ -90,6 +93,7 @@ let
     ];
 in
 {
+  environment.etc."${localProxyEtcPath}".source = ./local-media.nginx.conf.template;
 
   # === Users =================================================================
   users = lib.foldl lib.recursiveUpdate { } [
@@ -204,22 +208,28 @@ in
     };
 
     # -- Reverse‑proxy (nginx-media) ----------------------------------------
-    # This is only needed because sab and bit had trouble over tailscale from the dove proxy.
-    # nginx-media = mkContainer { user = "nginx-media"; supportsUserEnv = false; } {
-    #   image = "docker.io/library/nginx:latest";
-    #   environment = {
-    #     QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWeb;
-    #     SAB_PORT_8080 = cfg.ports.sabWeb;
-    #     NGINX_ENVSUBST_TEMPLATE_SUFFIX = ".template";
-    #   };
-    #   ports = [
-    #     "${cfg.ports.qbitWebNginx}:${cfg.ports.qbitWeb}"
-    #     "${cfg.ports.sabWebNginx}:${cfg.ports.sabWeb}"
-    #   ];
-    #   volumes = [
-    #     "${toString ./nginx}/nginx.conf.template:/etc/nginx/templates/nginx.conf.template"
-    #   ];
-    # };
+    # This is only needed because sab and bit had trouble accessing webui without it
+    nginx-media =
+      mkContainer
+        {
+          user = "nginx-media";
+          supportsUserEnv = false;
+        }
+        {
+          image = "docker.io/library/nginx:latest";
+          environment = {
+            QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWebNginx;
+            SAB_PORT_8080 = cfg.ports.sabWebNginx;
+            NGINX_ENVSUBST_TEMPLATE_SUFFIX = ".template";
+          };
+          ports = [
+            "${cfg.ports.qbitWebNginx}:${cfg.ports.qbitWeb}"
+            "${cfg.ports.sabWebNginx}:${cfg.ports.sabWeb}"
+          ];
+          volumes = [
+            "${localProxyPath}:/etc/nginx/templates/nginx.conf.template"
+          ];
+        };
 
     # -- Plex ---------------------------------------------------------------
     plex = mkContainer { user = "plex"; } {
