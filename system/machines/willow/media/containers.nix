@@ -80,12 +80,6 @@ let
         ];
       };
     in
-    assert
-      (user == null)
-      || lib.assertMsg (builtins.hasAttr user config.users.users) "Container user '${user}' must be defined in users.users";
-    assert
-      (group == null)
-      || lib.assertMsg (builtins.hasAttr group config.users.groups) "Container group '${group}' must be defined in users.groups";
     lib.mkMerge [
       template
       local
