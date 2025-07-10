@@ -53,8 +53,8 @@ let
 
   mkContainer =
     {
-      user,
-      supportsUserEnv ? true,
+      user ? null,
+      runAsUser ? false,
     }:
     local:
     let
@@ -62,7 +62,8 @@ let
         hostname = config.networking.hostName;
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
-        user = lib.mkIf (!supportsUserEnv) "${user}:${user}";
+        user = lib.mkIf (user != null && runAsUser) "${user}:${user}";
+
         # NOTE: I gave up on rootless. See 9fd2c5c for closest attempt.
         # Need linger and subgid on user, and might want to run as a single 'media' user
         # and then use PUID/PGID to set the container user.
@@ -76,8 +77,8 @@ let
         ];
         environment = {
           # Set the container user to the same as the host user
-          PUID = lib.mkIf supportsUserEnv "${toString config.users.users.${user}.uid}";
-          PGID = lib.mkIf supportsUserEnv "${toString config.users.groups.${user}.gid}";
+          PUID = lib.mkIf (user != null) "${toString config.users.users.${user}.uid}";
+          PGID = lib.mkIf (user != null) "${toString config.users.groups.${user}.gid}";
           TZ = "America/New_York";
         };
         volumes = [
@@ -97,7 +98,6 @@ in
 
   # === Users =================================================================
   users = lib.foldl lib.recursiveUpdate { } [
-    (mkUser 0 "nginx-media" [ ])
     (mkUser 1 "prowlarr" [ ])
     (mkUser 2 "overseerr" [ ])
     (mkUser 3 "requestrr" [ ])
@@ -209,27 +209,21 @@ in
 
     # -- Reverse‑proxy (nginx-media) ----------------------------------------
     # This is only needed because sab and bit had trouble accessing webui without it
-    nginx-media =
-      mkContainer
-        {
-          user = "nginx-media";
-          supportsUserEnv = false;
-        }
-        {
-          image = "docker.io/library/nginx:latest";
-          environment = {
-            QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWebNginx;
-            SAB_PORT_8080 = cfg.ports.sabWebNginx;
-            NGINX_ENVSUBST_TEMPLATE_SUFFIX = ".template";
-          };
-          ports = [
-            "${cfg.ports.qbitWebNginx}:${cfg.ports.qbitWeb}"
-            "${cfg.ports.sabWebNginx}:${cfg.ports.sabWeb}"
-          ];
-          volumes = [
-            "${localProxyPath}:/etc/nginx/templates/nginx.conf.template"
-          ];
-        };
+    nginx-media = mkContainer { } {
+      image = "docker.io/nginxinc/nginx-unprivileged:bookworm-perl";
+      environment = {
+        QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWebNginx;
+        SAB_PORT_8080 = cfg.ports.sabWebNginx;
+        NGINX_ENVSUBST_TEMPLATE_SUFFIX = ".template";
+      };
+      ports = [
+        "${cfg.ports.qbitWebNginx}:${cfg.ports.qbitWeb}"
+        "${cfg.ports.sabWebNginx}:${cfg.ports.sabWeb}"
+      ];
+      volumes = [
+        "${localProxyPath}:/etc/nginx/templates/nginx.conf.template"
+      ];
+    };
 
     # -- Plex ---------------------------------------------------------------
     plex = mkContainer { user = "plex"; } {
@@ -338,7 +332,7 @@ in
       mkContainer
         {
           user = "flaresolverr";
-          supportsUserEnv = false;
+          runAsUser = true;
         }
         {
           image = "ghcr.io/flaresolverr/flaresolverr:latest";
