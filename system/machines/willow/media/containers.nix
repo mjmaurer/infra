@@ -94,7 +94,7 @@ in
     (mkUser 7 "bazarr" [ ])
     (mkUser 8 "qbit" [ ])
     (mkUser 9 "sab" [ ])
-    (mkUser 10 "plex" [ ])
+    (mkUser 10 "plex" [ "video" "render" ])
     (mkUser 11 "wizarr" [ ])
     (mkUser 12 "byparr" [ ])
   ];
