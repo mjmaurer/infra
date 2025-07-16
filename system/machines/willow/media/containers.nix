@@ -259,13 +259,13 @@ in
     };
 
     # -- Readarr ------------------------------------------------------------
-    readarr = mkContainer { user = "readarr"; } {
-      image = "lscr.io/linuxserver/readarr:amd64-develop";
-      ports = [ "8787:8787" ];
-      volumes = [
-        "${hostConfigDir}/readarr:/config"
-      ];
-    };
+    # readarr = mkContainer { user = "readarr"; } {
+    #   image = "lscr.io/linuxserver/readarr:amd64-develop";
+    #   ports = [ "8787:8787" ];
+    #   volumes = [
+    #     "${hostConfigDir}/readarr:/config"
+    #   ];
+    # };
 
     # -- Bazarr -------------------------------------------------------------
     bazarr = mkContainer { user = "bazarr"; } {
