@@ -237,37 +237,37 @@ in
         '';
       };
 
-      "automatic1111.${hst}" = {
-        enableACME = true;
-        forceSSL = true;
-        extraConfig = ''
-          # Require upstream auth
-          auth_request /auth;
-          ${domainExtra}
-          ${subdomainExtra}
-        '';
+      # "automatic1111.${hst}" = {
+      #   enableACME = true;
+      #   forceSSL = true;
+      #   extraConfig = ''
+      #     # Require upstream auth
+      #     auth_request /auth;
+      #     ${domainExtra}
+      #     ${subdomainExtra}
+      #   '';
 
-        locations."/" = {
-          proxyPass = "http://bobby:${toString automaticPort}/";
-          extraConfig = ''error_page 403 = @error403;'';
-        };
-      };
+      #   locations."/" = {
+      #     proxyPass = "http://bobby:${toString automaticPort}/";
+      #     extraConfig = ''error_page 403 = @error403;'';
+      #   };
+      # };
 
-      "rvc.${hst}" = {
-        enableACME = true;
-        forceSSL = true;
-        extraConfig = ''
-          # Require upstream auth
-          auth_request /auth;
-          ${domainExtra}
-          ${subdomainExtra}
-        '';
+      # "rvc.${hst}" = {
+      #   enableACME = true;
+      #   forceSSL = true;
+      #   extraConfig = ''
+      #     # Require upstream auth
+      #     auth_request /auth;
+      #     ${domainExtra}
+      #     ${subdomainExtra}
+      #   '';
 
-        locations."/" = {
-          proxyPass = "http://bobby:${toString rvcPort}/";
-          extraConfig = ''error_page 403 = @error403;'';
-        };
-      };
+      #   locations."/" = {
+      #     proxyPass = "http://bobby:${toString rvcPort}/";
+      #     extraConfig = ''error_page 403 = @error403;'';
+      #   };
+      # };
     };
   };
 }
