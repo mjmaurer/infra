@@ -175,7 +175,7 @@ in
       };
       ports = [
         "8090:8090"
-        "8091:8080"
+        "${cfg.ports.sabWeb}:8080"
         "${cfg.ports.sab8118}:8118"
       ];
       volumes = [
