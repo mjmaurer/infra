@@ -47,6 +47,8 @@ let
     proxy_buffer_size         128k;
     proxy_busy_buffers_size   256k;
 
+    client_max_body_size 100M;
+
     proxy_connect_timeout 120s;
     proxy_send_timeout    120s;
     proxy_read_timeout    120s;
@@ -109,8 +111,6 @@ in
     recommendedGzipSettings = true;
 
     commonHttpConfig = ''
-      client_max_body_size 100M;
-
       upstream bobby-api {
         server bobby:${toString bobbyPort};
       }
