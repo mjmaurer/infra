@@ -100,7 +100,7 @@ in
   };
 
   # Ensure the ACME web-root directory exists at boot
-  systemd.tmpfiles.rules = [ "d ${acmeDir} 0755 nginx nginx - -" ];
+  systemd.tmpfiles.rules = [ "d ${acmeDir} 0755 acme nginx - -" ];
 
   # ------------------------------  NGINX  ------------------------------
   services.nginx = {
