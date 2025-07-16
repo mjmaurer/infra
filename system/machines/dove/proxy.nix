@@ -16,7 +16,7 @@ let
   plexWebPort = 32400;
   authextraPort = 3000;
 
-  acmeDir = "/var/lib/acme";
+  hstRoot = "/var/www/${hst}";
 
   # ─────────────── Domain / Sub-domain snippets for reuse ──────────────
 
@@ -88,12 +88,11 @@ in
     defaults = {
       email = "mjmaurer777@gmail.com";
       group = "nginx";
-      webroot = acmeDir;
     };
   };
 
   # Ensure the ACME web-root directory exists at boot
-  systemd.tmpfiles.rules = [ "d ${acmeDir} 0755 acme nginx - -" ];
+  systemd.tmpfiles.rules = [ "d ${hst} 0775 acme nginx - -" ];
 
   # ------------------------------  NGINX  ------------------------------
   services.nginx = {
@@ -201,6 +200,7 @@ in
       "${hst}" = {
         enableACME = true;
         forceSSL = true;
+        root = hstRoot;
         extraConfig = domainExtra;
         # locations."/".proxyPass = "http://bobby-api";
         locations."/".extraConfig = ''
