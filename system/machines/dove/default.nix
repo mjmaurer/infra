@@ -11,6 +11,7 @@
   imports = [
     ./hardware-configuration.nix
     ./disko.nix
+    ./proxy.nix
   ];
 
   config = {
