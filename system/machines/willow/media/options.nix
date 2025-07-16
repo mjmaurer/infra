@@ -52,10 +52,8 @@ in
       };
       default = {
         qbitWeb = "50080";
-        qbitWebNginx = "50081";
+        sabWeb = "60080";
         sab8118 = "9118"; # Otherwise conflicts with qbit
-        sabWeb = "8080";
-        sabWebNginx = "60081";
         plexWeb = "32400";
       };
     };

@@ -20,9 +20,6 @@ let
 
   hostConfigDir = config.modules.duplicacy.repos."media-config".localRepoPath;
 
-  localProxyEtcPath = "media/local-proxy/local-media.nginx.conf.template";
-  localProxyPath = "/etc/${localProxyEtcPath}";
-
   cfg = config.modules.mediaStack;
 
   # Convenience helper that turns the attr‑set above into `users.users` entries
@@ -86,8 +83,6 @@ let
     ];
 in
 {
-  environment.etc."${localProxyEtcPath}".source = ./local-media.nginx.conf.template;
-
   # === Users =================================================================
   users = lib.foldl lib.recursiveUpdate { } [
     (mkUser 1 "prowlarr" [ ])
@@ -196,24 +191,6 @@ in
       privileged = true;
       extraOptions = [
         "--sysctl=net.ipv4.conf.all.src_valid_mark=1"
-      ];
-    };
-
-    # -- Reverse‑proxy (nginx-media) ----------------------------------------
-    # This is only needed because sab and bit had trouble accessing webui without it
-    nginx-media = mkContainer { } {
-      image = "docker.io/nginxinc/nginx-unprivileged:bookworm-perl";
-      environment = {
-        QBITTORRENTVPN_PORT_8080 = cfg.ports.qbitWeb;
-        SAB_PORT_8080 = cfg.ports.sabWeb;
-        NGINX_ENVSUBST_TEMPLATE_SUFFIX = ".template";
-      };
-      ports = [
-        "${cfg.ports.qbitWebNginx}:${cfg.ports.qbitWeb}"
-        "${cfg.ports.sabWebNginx}:${cfg.ports.sabWeb}"
-      ];
-      volumes = [
-        "${localProxyPath}:/etc/nginx/templates/nginx.conf.template"
       ];
     };
 
