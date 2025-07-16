@@ -7,7 +7,7 @@
 
 let
   # ──────────────── Hard-coded parameters ────────────────
-  host = "bobby.place";
+  hst = "bobby.place";
 
   # Upstream service ports (adjust to match your previous docker-compose .env)
   bobbyPort = 5000;
@@ -57,7 +57,7 @@ let
     add_header Set-Cookie $auth_cookie; # need 'always'?
 
     location @error403 {
-        return 302 https://${host}/api/auth/redirect?next=$http_host$request_uri;
+        return 302 https://${hst}/api/auth/redirect?next=$http_host$request_uri;
     }
 
     location /auth {
@@ -84,15 +84,17 @@ in
   # ------------------------------  ACME  -------------------------------
   security.acme = {
     acceptTerms = true;
+    maxConcurrentRenewals = 10;
     defaults.email = "mjmaurer777@gmail.com";
-    certs."${host}" = {
+    certs."${hst}" = {
+      # group = "nginx";
       webroot = acmeDir;
       extraDomainNames = [
-        "jellyfin.${host}"
-        "invites.${host}"
-        "plex.${host}"
-        "automatic1111.${host}"
-        "rvc.${host}"
+        "jellyfin.${hst}"
+        "invites.${hst}"
+        "plex.${hst}"
+        "automatic1111.${hst}"
+        "rvc.${hst}"
       ];
     };
   };
@@ -134,7 +136,7 @@ in
       # Redirects
       # --------------------------------------------------------------------------
       "redirect-root" = {
-        serverName = host;
+        serverName = hst;
         listen = [
           {
             addr = "0.0.0.0";
@@ -150,7 +152,7 @@ in
       };
 
       "redirect-wildcard" = {
-        serverName = "*.${host}";
+        serverName = "*.${hst}";
         listen = [
           {
             addr = "0.0.0.0";
@@ -205,8 +207,8 @@ in
       # --------------------------------------------------------------------------
 
       # ------------------------------- Apex domain ------------------------------
-      "${host}" = {
-        useACMEHost = host;
+      "${hst}" = {
+        useACMEHost = hst;
         forceSSL = true;
         extraConfig = domainExtra;
         # locations."/".proxyPass = "http://bobby-api";
@@ -215,8 +217,8 @@ in
         '';
       };
 
-      "plex.${host}" = {
-        useACMEHost = host;
+      "plex.${hst}" = {
+        useACMEHost = hst;
         forceSSL = true;
         extraConfig = ''
           ${domainExtra}
@@ -242,8 +244,8 @@ in
         '';
       };
 
-      "automatic1111.${host}" = {
-        useACMEHost = host;
+      "automatic1111.${hst}" = {
+        useACMEHost = hst;
         forceSSL = true;
         extraConfig = ''
           # Require upstream auth
@@ -258,8 +260,8 @@ in
         };
       };
 
-      "rvc.${host}" = {
-        useACMEHost = host;
+      "rvc.${hst}" = {
+        useACMEHost = hst;
         forceSSL = true;
         extraConfig = ''
           # Require upstream auth
