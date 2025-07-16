@@ -46,8 +46,8 @@
             owner = "root";
             group = config.modules.mediaStack.groups.general;
           };
-          # autoBackup = true;
-          autoInitRestore = true;
+          autoBackup = true;
+          # autoInitRestore = true;
         };
       };
     };
