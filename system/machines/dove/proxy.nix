@@ -85,17 +85,10 @@ in
   security.acme = {
     acceptTerms = true;
     maxConcurrentRenewals = 10;
-    defaults.email = "mjmaurer777@gmail.com";
-    certs."${hst}" = {
+    defaults = {
+      email = "mjmaurer777@gmail.com";
       group = "nginx";
       webroot = acmeDir;
-      extraDomainNames = [
-        "jellyfin.${hst}"
-        "invites.${hst}"
-        "plex.${hst}"
-        "automatic1111.${hst}"
-        "rvc.${hst}"
-      ];
     };
   };
 
@@ -208,7 +201,7 @@ in
 
       # ------------------------------- Apex domain ------------------------------
       "${hst}" = {
-        useACMEHost = hst;
+        enableACME = true;
         forceSSL = true;
         extraConfig = domainExtra;
         # locations."/".proxyPass = "http://bobby-api";
@@ -218,7 +211,7 @@ in
       };
 
       "plex.${hst}" = {
-        useACMEHost = hst;
+        enableACME = true;
         forceSSL = true;
         extraConfig = ''
           ${domainExtra}
@@ -245,7 +238,7 @@ in
       };
 
       "automatic1111.${hst}" = {
-        useACMEHost = hst;
+        enableACME = true;
         forceSSL = true;
         extraConfig = ''
           # Require upstream auth
@@ -261,7 +254,7 @@ in
       };
 
       "rvc.${hst}" = {
-        useACMEHost = hst;
+        enableACME = true;
         forceSSL = true;
         extraConfig = ''
           # Require upstream auth
