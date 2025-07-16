@@ -161,37 +161,37 @@ in
       # --------------------------------------------------------------------------
       # Internal
       # --------------------------------------------------------------------------
-      "auth-extra-8000" = {
-        serverName = "_";
-        listen = [
-          {
-            addr = "127.0.2.1";
-            port = 8000;
-          }
-        ];
-        locations."/".extraConfig = ''
-          proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
-          proxy_pass_request_body off;
-          proxy_set_header Content-Length "";
-          proxy_set_header X-Original-URI $request_uri;
-        '';
-      };
+      # "auth-extra-8000" = {
+      #   serverName = "_";
+      #   listen = [
+      #     {
+      #       addr = "127.0.2.1";
+      #       port = 8000;
+      #     }
+      #   ];
+      #   locations."/".extraConfig = ''
+      #     proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
+      #     proxy_pass_request_body off;
+      #     proxy_set_header Content-Length "";
+      #     proxy_set_header X-Original-URI $request_uri;
+      #   '';
+      # };
 
-      "auth-extra-8001" = {
-        serverName = "_";
-        listen = [
-          {
-            addr = "127.0.2.1";
-            port = 8001;
-          }
-        ];
-        locations."/".extraConfig = ''
-          proxy_pass http://bobby:${toString bobbyPort}/api/user/;
-          proxy_pass_request_body off;
-          proxy_set_header Content-Length "";
-          proxy_set_header X-Original-URI $request_uri;
-        '';
-      };
+      # "auth-extra-8001" = {
+      #   serverName = "_";
+      #   listen = [
+      #     {
+      #       addr = "127.0.2.1";
+      #       port = 8001;
+      #     }
+      #   ];
+      #   locations."/".extraConfig = ''
+      #     proxy_pass http://bobby:${toString bobbyPort}/api/user/;
+      #     proxy_pass_request_body off;
+      #     proxy_set_header Content-Length "";
+      #     proxy_set_header X-Original-URI $request_uri;
+      #   '';
+      # };
 
       # --------------------------------------------------------------------------
       # Services
