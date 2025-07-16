@@ -217,7 +217,7 @@ in
         '';
 
         locations."/".extraConfig = ''
-          proxy_pass   http://earth:${toString plexWebPort}/;
+          proxy_pass   http://willow:${toString plexWebPort}/;
           error_page   403 = @error403;
 
           proxy_set_header X-Plex-Client-Identifier $http_x_plex_client_identifier;
