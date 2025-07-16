@@ -101,7 +101,7 @@ in
     (mkUser 9 "sab" [ ])
     (mkUser 10 "plex" [ ])
     (mkUser 11 "wizarr" [ ])
-    (mkUser 12 "flaresolverr" [ ])
+    (mkUser 12 "byparr" [ ])
   ];
 
   # === Optional: nightly image refresh ======================================
@@ -318,19 +318,20 @@ in
     #   ];
     # };
 
-    # -- FlareSolverr -------------------------------------------------------
+    # -- Byparr -------------------------------------------------------
     # NOTE: Currently nonfunctional: https://trash-guides.info/Prowlarr/prowlarr-setup-flaresolverr/
-    flaresolverr =
+    byparr =
       mkContainer
         {
-          user = "flaresolverr";
+          user = "byparr";
           runAsUser = true;
         }
         {
-          image = "ghcr.io/flaresolverr/flaresolverr:latest";
+          image = "ghcr.io/thephaseless/byparr:latest";
           ports = [ "8191:8191" ];
           environment = {
             LOG_LEVEL = "info";
+            USE_HEADLESS = "true";
           };
         };
   };
