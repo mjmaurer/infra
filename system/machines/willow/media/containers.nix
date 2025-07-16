@@ -97,6 +97,7 @@ in
     (mkUser 10 "plex" [ "video" "render" ])
     (mkUser 11 "wizarr" [ ])
     (mkUser 12 "byparr" [ ])
+    (mkUser 13 "unpackerr" [ ])
   ];
 
   # === Optional: nightly image refresh ======================================
@@ -307,6 +308,26 @@ in
     };
   };
 
+  systemd.tmpfiles.rules = [
+    # Create unpackerr config dir so it can write logs
+    "d ${hostConfigDir}/unpackerr 0755 unpackerr media - -"
+  ];
+
+  systemd.services.unpackerr = {
+    description = "Unpackerr";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "simple";
+      User = config.users.users.unpackerr.name;
+      Group = cfg.groups.general;
+      ExecStart = "${pkgs.unpackerr}/bin/unpackerr";
+      EnvironmentFile = config.sops.templates."unpackerr.env".path;
+      Restart = "on-failure";
+    };
+  };
+
   sops =
     let
       test = 1;
@@ -324,11 +345,13 @@ in
         vpnUser = mkSecret "qbit";
         vpnPass = mkSecret "qbit";
         vpnOptions = mkSecret "qbit";
+
+        sonarrApiKey = mkSecret "unpackerr";
+        radarrApiKey = mkSecret "unpackerr";
       };
 
       templates = {
         "qbit.env" = {
-          # Right user?
           owner = config.users.users.qbit.name;
           group = "root";
           mode = "0440";
@@ -338,6 +361,27 @@ in
             VPN_USER=${config.sops.placeholder.vpnUser}
             VPN_PASS=${config.sops.placeholder.vpnPass}
             VPN_OPTIONS=${config.sops.placeholder.vpnOptions}
+          '';
+        };
+        "unpackerr.env" = {
+          owner = config.users.users.unpackerr.name;
+          group = "root";
+          mode = "0440";
+          content = ''
+            UN_LOG_FILE=${hostConfigDir}/unpackerr/unpackerr.log
+            UN_SONARR_0_URL=http://localhost:8989
+            UN_SONARR_0_API_KEY=${config.sops.placeholder.sonarrApiKey}
+            UN_SONARR_0_PROTOCOLS=torrent,usenet
+            UN_SONARR_0_PATHS_0=${hostMediaRents}
+            UN_SONARR_0_PATHS_1=${hostMediaUsen}
+            UN_RADARR_0_URL=http://localhost:7878
+            UN_RADARR_0_API_KEY=${config.sops.placeholder.radarrApiKey}
+            UN_RADARR_0_PROTOCOLS=torrent,usenet
+            UN_RADARR_0_PATHS_0=${hostMediaRents}
+            UN_RADARR_0_PATHS_1=${hostMediaUsen}
+            # UN_FOLDERS_INTERVAL=2m
+            # UN_FOLDER_0_PATH=${hostMediaRents}
+            # UN_FOLDER_1_PATH=${hostMediaUsen}
           '';
         };
       };
