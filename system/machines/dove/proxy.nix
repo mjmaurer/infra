@@ -126,37 +126,37 @@ in
       # --------------------------------------------------------------------------
       # Redirects
       # --------------------------------------------------------------------------
-      "redirect-root" = {
-        serverName = hst;
-        listen = [
-          {
-            addr = "0.0.0.0";
-            port = 80;
-          }
-        ];
-        locations = {
-          # "/.well-known/acme-challenge/".root = acmeDir;
-          "/".extraConfig = ''
-            return 301 https://$host$request_uri;
-          '';
-        };
-      };
+      # "redirect-root" = {
+      #   serverName = hst;
+      #   listen = [
+      #     {
+      #       addr = "0.0.0.0";
+      #       port = 80;
+      #     }
+      #   ];
+      #   locations = {
+      #     # "/.well-known/acme-challenge/".root = acmeDir;
+      #     "/".extraConfig = ''
+      #       return 301 https://$host$request_uri;
+      #     '';
+      #   };
+      # };
 
-      "redirect-wildcard" = {
-        serverName = "*.${hst}";
-        listen = [
-          {
-            addr = "0.0.0.0";
-            port = 80;
-          }
-        ];
-        locations = {
-          # "/.well-known/acme-challenge/".root = acmeDir;
-          "/".extraConfig = ''
-            return 301 https://$host$request_uri;
-          '';
-        };
-      };
+      # "redirect-wildcard" = {
+      #   serverName = "*.${hst}";
+      #   listen = [
+      #     {
+      #       addr = "0.0.0.0";
+      #       port = 80;
+      #     }
+      #   ];
+      #   locations = {
+      #     # "/.well-known/acme-challenge/".root = acmeDir;
+      #     "/".extraConfig = ''
+      #       return 301 https://$host$request_uri;
+      #     '';
+      #   };
+      # };
 
       # --------------------------------------------------------------------------
       # Internal
