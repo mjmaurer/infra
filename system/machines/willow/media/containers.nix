@@ -278,13 +278,13 @@ in
     };
 
     # -- Requestrr ----------------------------------------------------------
-    # requestrr = mkContainer { user = "requestrr"; supportsUserEnv = false; } {
-    #   image = "docker.io/thomst08/requestrr:latest";
-    #   ports = [ "4545:4545" ];
-    #   volumes = [
-    #     "${hostConfigDir}/requestrr:/root/config"
-    #   ];
-    # };
+    requestrr = mkContainer { user = "requestrr"; } {
+      image = "docker.io/thomst08/requestrr:latest";
+      ports = [ "4545:4545" ];
+      volumes = [
+        "${hostConfigDir}/requestrr:/root/config"
+      ];
+    };
 
     # -- Wizarr -------------------------------------------------------------
     # wizarr = mkContainer { user = "wizarr"; } {
