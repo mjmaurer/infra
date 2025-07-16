@@ -87,7 +87,7 @@ in
     maxConcurrentRenewals = 10;
     defaults.email = "mjmaurer777@gmail.com";
     certs."${hst}" = {
-      # group = "nginx";
+      group = "nginx";
       webroot = acmeDir;
       extraDomainNames = [
         "jellyfin.${hst}"
