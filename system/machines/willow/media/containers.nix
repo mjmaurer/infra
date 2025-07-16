@@ -297,20 +297,14 @@ in
 
     # -- Byparr -------------------------------------------------------
     # NOTE: Currently nonfunctional: https://trash-guides.info/Prowlarr/prowlarr-setup-flaresolverr/
-    byparr =
-      mkContainer
-        {
-          user = "byparr";
-          runAsUser = true;
-        }
-        {
-          image = "ghcr.io/thephaseless/byparr:latest";
-          ports = [ "8191:8191" ];
-          environment = {
-            LOG_LEVEL = "info";
-            USE_HEADLESS = "true";
-          };
-        };
+    byparr = mkContainer { user = "byparr"; } {
+      image = "ghcr.io/thephaseless/byparr:latest";
+      ports = [ "8191:8191" ];
+      environment = {
+        LOG_LEVEL = "info";
+        USE_HEADLESS = "true";
+      };
+    };
   };
 
   sops =
