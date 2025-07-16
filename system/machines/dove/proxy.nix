@@ -16,7 +16,7 @@ let
   plexWebPort = 32400;
   authextraPort = 3000;
 
-  acmeDir = "/var/www/acme";
+  acmeDir = "/var/lib/acme";
 
   # ─────────────── Domain / Sub-domain snippets for reuse ──────────────
 
