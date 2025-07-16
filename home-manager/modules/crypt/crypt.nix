@@ -94,7 +94,7 @@ in
             # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
             # Also possibly needed for forwarding yubikey over ssh (see ssh-match.conf.nix)
             # Unforutnately, these break PIN caching: https://dev.gnupg.org/T5436
-            # disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
+            disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
             # pcsc-shared = true; # Allow other processes to use the smartcard
           };
         };
