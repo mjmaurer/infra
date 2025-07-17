@@ -215,7 +215,7 @@ in
         "da" = "direnv allow";
         "ssht" = "tailscale up && tailscale ssh";
         # ykman list resets some odd state after git signing
-        "sshk" = "ykman list && ssh -I ~/.nix-profile/lib/libykcs11.dylib -p 2222";
+        "sshk" = "ykman list && ssh";
         "gsha" = "get_archive_sha";
         "gp" = "git push";
         "gpul" = "git pull --ff-only";
