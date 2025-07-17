@@ -92,6 +92,10 @@ in
 
             # The following get scdaemon and pcscd to play nicely together.
             # https://ludovicrousseau.blogspot.com/2019/06/gnupg-and-pcsc-conflicts.html
+            # This can be removed probably
+            # scdaemon's piv implementation can conflict with pcke's when sshing
+            # But it doesn't matter because I couldn't get it to work without ykman list anway
+            disable-application = "piv";
             # Also possibly needed for forwarding yubikey over ssh (see ssh-match.conf.nix)
             # Unforutnately, these break PIN caching: https://dev.gnupg.org/T5436
             disable-ccid = true; # Tell scdaemon to not use the CCID driver (only pcscd)
@@ -140,11 +144,11 @@ in
             enableScDaemon = true;
 
             # Shared card for ssh forwarding breaks pin caching: https://dev.gnupg.org/T5436
-            # pinentry.package = pkgs.pinentry-curses;
-            pinentry.package = lib.mkIf (!isDarwin) pkgs.pinentry-curses;
-            extraConfig = lib.mkIf (isDarwin) ''
-              pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
-            '';
+            pinentry.package = pkgs.pinentry-curses;
+            # pinentry.package = lib.mkIf (!isDarwin) pkgs.pinentry-curses;
+            # extraConfig = lib.mkIf (isDarwin) ''
+            #  pinentry-program ${pkgs.pinentry_mac}/Applications/pinentry-mac.app/Contents/MacOS/pinentry-mac
+            # '';
           };
       };
       # GPG keys (by keygrip ID) to expose via SSH
