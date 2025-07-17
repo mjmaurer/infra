@@ -25,8 +25,8 @@ in
       ExitOnForwardFailure = "no";
       # Clean up stale sockets automatically:
       StreamLocalBindUnlink = "yes";
-      # Change to infra directory upon login
-      # RemoteCommand = "cd ~/infra && exec $SHELL -l";
+      RemoteCommand = "tmux new-session -A -s main";
+      RequestTTY = "yes";
     };
   };
   "nixos-init-yubikey-match" = {
