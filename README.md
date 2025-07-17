@@ -1,4 +1,4 @@
- # Personal Nix Infrastructure
+# Personal Nix Infrastructure
 
 Everything in this repo is fully declarative. You should be able to go from zero to OS in 15 minutes.
 
