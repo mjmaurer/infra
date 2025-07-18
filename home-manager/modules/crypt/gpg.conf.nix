@@ -5,7 +5,7 @@
   no-autostart = remoteHost;
 
   # Added. Was causing issues with import timing during activation
-  no-use-keyboxd = true;
+  use-keyboxd = false;
 
   # https://github.com/drduh/config/blob/master/gpg.conf
   # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Options.html
