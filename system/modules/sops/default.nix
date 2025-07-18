@@ -44,6 +44,7 @@ in
           gpgAuthKeygrip = { };
           gpgPublicKey = {
             owner = config.users.users.${username}.name;
+            mode = "0444";
           };
           mjmaurerHashedPassword = {
             neededForUsers = true;

@@ -31,7 +31,7 @@ in
   options.modules.crypt = {
     remoteHost = lib.mkOption {
       type = lib.types.bool;
-      default = !isDarwin;
+      default = false; # !isDarwin;
       description = ''
         If true, the host is primarily accessed remotely,
         and so gpg-agent won't create a local socket and 
