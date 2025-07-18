@@ -146,7 +146,7 @@ in
         else if repoId == "media-config" then
           "media"
         else
-          throw "Unknown repository ID: ${repoId}";
+          repoId;
 
       # Assertion: autoInit and autoInitRestore must not both be enabled for the same repo
       _ = lib.forEach (lib.attrNames cfg.repos) (
