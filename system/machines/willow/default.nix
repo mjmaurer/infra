@@ -49,6 +49,12 @@
           autoBackup = true;
           # autoInitRestore = true;
         };
+        "karaoke" = {
+          repoId = "karaoke";
+          localRepoPath = "/var/lib/karaoke";
+          autoInit = true;
+          autoBackup = true;
+        };
       };
     };
 

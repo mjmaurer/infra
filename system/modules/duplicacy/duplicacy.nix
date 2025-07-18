@@ -9,6 +9,7 @@ let
   cfg = config.modules.duplicacy;
   repoIds = [
     "nas"
+    "karaoke"
     "media-config"
   ];
 
