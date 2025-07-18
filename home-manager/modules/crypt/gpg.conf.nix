@@ -4,6 +4,9 @@
   # when the host is accessed remotely, e.g. via SSH.
   no-autostart = remoteHost;
 
+  # Added. Was causing issues with import timing during activation
+  no-use-keyboxd = true;
+
   # https://github.com/drduh/config/blob/master/gpg.conf
   # https://www.gnupg.org/documentation/manuals/gnupg/GPG-Options.html
   # 'gpg --version' to get capabilities
