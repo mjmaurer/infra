@@ -3,7 +3,7 @@
 # This file lists *all* the valid configuration entries.
 # Place in your home dir, or at the root of your git repo.
 ##########################################################
-model: "gemini/gemini-2.5-pro-preview-05-06"
+model: "gemini/gemini-2.5-pro"
 
 # editor-model: "claude-3-5-sonnet-latest" # Just used in architect. It's the best at diffs
 # editor-edit-format: "editor-diff"
@@ -36,8 +36,8 @@ alias:
 
   - "dr:deepseek/deepseek-reasoner"
 
-  - "g:gemini/gemini-2.5-pro-preview-05-06"
-  - "gf:gemini/gemini-2.5-flash-preview-04-17"
+  - "g:gemini/gemini-2.5-pro"
+  - "gf:gemini/gemini-2.5-flash"
 
   - "s5:claude-3-5-sonnet-latest"
   - "sf:claude-3-5-sonnet-latest"

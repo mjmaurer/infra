@@ -1,5 +1,5 @@
 # ---- llm ----
-model: gemini-2.5-flash-preview-05-20 # https://github.com/sigoden/aichat/blob/main/models.yaml
+model: gemini-2.5-flash # https://github.com/sigoden/aichat/blob/main/models.yaml
 temperature: null # Set default temperature parameter
 top_p: null # Set default top-p parameter, range (0, 1)
 

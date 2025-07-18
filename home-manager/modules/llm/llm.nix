@@ -9,8 +9,8 @@
 let
   cfg = config.modules.llm;
   cfgHome = "${config.xdg.configHome}/llm";
-  defaultModel = "gemini-2.5-flash-preview-05-20";
-  flash = "gemini-2.5-flash-preview-05-20";
+  defaultModel = "gemini-2.5-flash";
+  flash = "gemini-2.5-flash";
   pythonPkg = pkgs-latest.python312;
   llmPkg = pkgs-latest.llm;
   customPackages = import ./custom-pkgs.nix {

@@ -50,8 +50,8 @@ in
         pbc = "| pbcopy";
 
         lfc = "-f $XDG_CONFIG_HOME/llm/fragments/concise.md";
-        lmf = "-m gemini-2.5-flash-preview-05-20 -o google_search 1";
-        lmg = "-m gemini-2.5-pro-preview-05-06 -o google_search 1";
+        lmf = "-m gemini-2.5-flash -o google_search 1";
+        lmg = "-m gemini-2.5-pro -o google_search 1";
         SD = "| sd";
 
         G = "| grep";
