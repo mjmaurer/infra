@@ -52,6 +52,10 @@
         "karaoke" = {
           repoId = "karaoke";
           localRepoPath = "/var/lib/karaoke";
+          ensureLocalPath = {
+            owner = "root";
+            group = config.users.groups.karaoke.name;
+          };
           autoInit = true;
           autoBackup = true;
         };
