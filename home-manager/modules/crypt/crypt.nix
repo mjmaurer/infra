@@ -31,7 +31,7 @@ in
   options.modules.crypt = {
     remoteHost = lib.mkOption {
       type = lib.types.bool;
-      default = false; # !isDarwin;
+      default = false; # !isDarwin; Disabled for all as it causes issues with importing public key
       description = ''
         If true, the host is primarily accessed remotely,
         and so gpg-agent won't create a local socket and 
