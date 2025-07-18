@@ -7,6 +7,7 @@
 }:
 let
   cfg = config.modules.duplicacy;
+  # Also need to add as a group at the end of the file
   repoIds = [
     "nas"
     "karaoke"
@@ -468,9 +469,11 @@ in
 
         users.users.${username}.extraGroups = [
           "nas"
+          "karaoke"
         ];
         users.groups.${systemdGroupName} = { };
         users.groups.nas = { };
+        users.groups.karaoke = { };
       })
     ]
   );
