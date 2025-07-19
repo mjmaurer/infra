@@ -1,6 +1,7 @@
 {
   lib,
   pkgs,
+  pkgs-latest,
   nix-colors,
   username,
   ...
@@ -81,35 +82,35 @@
       meslo-lgs-nf
 
       # Nix
-      nil
-      nix-prefetch-git
-      nix-search-cli
-      nixfmt-rfc-style
-      cachix
+      pkgs-latest.nil
+      pkgs-latest.nix-prefetch-git
+      pkgs-latest.nix-search-cli
+      pkgs-latest.nixfmt-rfc-style
+      pkgs-latest.cachix
       # nixpkgs-fmt
       # vulnix (was causing buidl issues)
 
       # Git
       git-lfs
-      gh
+      pkgs-latest.gh
 
       # Other
-      ripgrep
-      rclone
+      pkgs-latest.ripgrep
+      pkgs-latest.rclone
+      pkgs-latest.devenv
+      pkgs-latest.speedtest-cli
+      pkgs-latest.awscli2
       glow
       yt-dlp
       gdown
       bat
       fd
       tree
-      devenv
       wget
       neofetch
       unzip
-      speedtest-cli
       p7zip
       thefuck
-      awscli2
       tldr
     ];
   };
@@ -117,6 +118,7 @@
   programs = {
     direnv = {
       enable = true;
+      package = pkgs-latest.direnv;
       nix-direnv.enable = true;
       enableBashIntegration = true;
       enableZshIntegration = true;
