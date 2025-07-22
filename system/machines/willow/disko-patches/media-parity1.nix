@@ -1,26 +1,27 @@
 let
-  # [1,0]
-  mediaParityDisk1 = "/dev/disk/by-id/wwn-0x5000cca260ed767d";
-  mediaParityMnt1 = "/mnt/media/parity1";
-  mediaParityName1 = "mediaparity1";
+  # [1,1] - 18TB
+  # NOTE: parity1 no longer exists, it was replaced entirely by this. 
+  mediaParityDisk2 = "/dev/disk/by-id/wwn-0x5000cca28456de24"; 
+  mediaParityMnt2 = "/mnt/media/parity2";
+  mediaParityName2 = "mediaparity2";
 in
 {
   disko.devices = {
     disk = {
-      ${mediaParityName1} = {
-        device = mediaParityDisk1;
+      ${mediaParityName2} = {
+        device = mediaParityDisk2;
         type = "disk";
         content = {
           type = "gpt";
           partitions = {
             disk = {
-              name = mediaParityName1;
-              label = mediaParityName1;
+              name = mediaParityName2;
+              label = mediaParityName2;
               size = "100%";
               content = {
                 type = "filesystem";
                 format = "xfs";
-                mountpoint = mediaParityMnt1;
+                mountpoint = mediaParityMnt2;
                 mountOptions = [
                   "defaults"
                   "nofail"
