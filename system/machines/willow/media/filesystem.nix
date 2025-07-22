@@ -27,7 +27,7 @@ in
     sync.interval = "Tue,Fri *-*-* 03:00:00 America/New_York";
     scrub.interval = "Wed *-*-* 03:00:00 America/New_York";
     parityFiles = [
-      "/mnt/media/parity1/snapraid.parity"
+      "/mnt/media/parity2/snapraid.parity"
     ];
     # Content files are used to track which files are in the snapraid pool
     # Choose three for backups purposes
