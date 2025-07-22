@@ -1,6 +1,6 @@
 let
   # [2,3]
-  mediaDisk3 = "/dev/disk/by-id/usb-BR25_UDISK_1120031603090807-0:0";
+  mediaDisk3 = "/dev/disk/by-id/wwn-0x5000cca261c6fc6f";
   mediaDiskName3 = "media3";
   mediaDiskMnt3 = "/mnt/media/disk3";
   # [1,0]
