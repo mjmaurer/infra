@@ -109,7 +109,14 @@ in
           echo "$DISK_PASSPHRASE" > "/tmp/disk.key"
           echo "Disk encryption key created at /tmp/disk.key"
         fi
-        sudo nix run github:nix-community/disko/latest -- --mode destroy,format,mount "$@"
+
+        read -p "Do you want to set the root mountpoint to '/'? (y/n): " MOUNTPOINT_CHOICE
+        MOUNTPOINT_ARG=""
+        if [[ "$MOUNTPOINT_CHOICE" == "y" || "$MOUNTPOINT_CHOICE" == "Y" ]]; then
+          MOUNTPOINT_ARG="--root-mountpoint /"
+        fi
+
+        sudo nix run github:nix-community/disko/latest -- --mode destroy,format,mount $MOUNTPOINT_ARG "$@"
         echo "Disko complete"
         if [[ -n "$LUKS_GEN" ]]; then
           echo "Removing disk encryption key file."
