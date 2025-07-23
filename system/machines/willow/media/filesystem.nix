@@ -39,6 +39,8 @@ in
     dataDisks = {
       d1 = "/mnt/media/disk1/";
       d2 = "/mnt/media/disk2/";
+      d3 = "/mnt/media/disk3/";
+      d4 = "/mnt/media/disk4/";
     };
     exclude = [
       "*.unrecoverable"
@@ -61,7 +63,8 @@ in
     diskMnts = [
       "/mnt/media/disk1"
       "/mnt/media/disk2"
-      # "/mnt/media/disk3"
+      "/mnt/media/disk3"
+      "/mnt/media/disk4"
     ];
     diskMntGlob = "/mnt/media/disk*";
     ensurePaths = [
