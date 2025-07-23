@@ -20,6 +20,7 @@
     ./disko.nix
     ./disko-patches/media1.nix
     ./disko-patches/media-parity1.nix
+    ./disko-patches/media2.nix
     ./disko-patches/nas1.nix
   ];
 
