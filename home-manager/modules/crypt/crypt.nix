@@ -42,6 +42,8 @@ in
     };
   };
 
+  imports = [ ./rclone-client.conf.nix ];
+
   config = lib.mkMerge [
     {
       home.packages = [
