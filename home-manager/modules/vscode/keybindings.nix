@@ -56,6 +56,11 @@ in
     key = "right";
     when = conditionDiffArrows;
   }
+  {
+    command = "claude-code.acceptProposedDiff";
+    key = "alt+enter";
+    when = conditionDiffArrows;
+  }
   # ---------------------------------- Debug ---------------------------------
   {
     command = "testing.debugAtCursor";
@@ -162,11 +167,12 @@ in
     key = "alt+enter";
     when = "inChat";
   }
-  {
-    command = "chatEditor.action.acceptHunk";
-    key = "alt+enter";
-    when = "editorFocus";
-  }
+  # This works but was conflicting with claude
+  # {
+  #  command = "chatEditor.action.acceptHunk";
+  #  key = "alt+enter";
+  #  when = "editorFocus";
+  #}
   {
     command = "chatEditor.action.accept";
     key = "alt+shift+enter";

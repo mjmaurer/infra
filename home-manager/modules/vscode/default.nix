@@ -60,6 +60,7 @@ in
               github.copilot
               github.copilot-chat
               github.vscode-pull-request-github
+              anthropic.claude-code
               visualstudioexptteam.intellicode-api-usage-examples
               visualstudioexptteam.vscodeintellicode
               ms-vscode-remote.remote-containers

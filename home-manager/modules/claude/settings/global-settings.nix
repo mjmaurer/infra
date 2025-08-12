@@ -4,7 +4,6 @@
 # "Bash(rm -rf:*)" - Matches all commands that start with "rm -rf"
 {
   includeCoAuthoredBy = false;
-  preferredNotifChannel = "terminal_bell";
   permissions = {
     allow = [
       "WebFetch(domain:github.com)"
@@ -14,12 +13,12 @@
       "Bash(nixfmt:*)"
       "Edit(AI_README.md)"
       "Edit(README.md)"
+      "Edit(AGENTS.md)"
     ];
     deny = [
 
     ];
   };
-
   env = {
     DISABLE_AUTOUPDATER = 1;
     DISABLE_ERROR_REPORTING = 1;
