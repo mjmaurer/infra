@@ -4,6 +4,7 @@
   osConfig ? null,
   pkgs,
   pkgs-latest,
+  isDarwin,
   ...
 }:
 let
@@ -45,6 +46,49 @@ let
         null
     else
       null;
+  streamdownConfig = ''
+    [features]
+    CodeSpaces = false
+    Clipboard  = true
+    Logging    = false
+    Timeout    = 0.1
+    Savebrace  = true
+
+    [style]
+    Margin          = 2 
+    ListIndent      = 2
+    PrettyPad       = true
+    PrettyBroken    = true
+    Width           = 0
+
+    HSV = [0.147, 0.137, 0.976]
+
+    # Code blocks / dark surfaces: darker so blocks stand out (~1.9:1 vs page)
+    # For gruvbox-light (currently broken see https://github.com/day50-dev/Streamdown/issues/26)
+    # Dark = { H = 1.2, S = 1.5, V = 1.1 }
+    # for 'native':
+    Dark = { H = 0.0, S = 0.0, V = 0.13 }
+
+    # Blockquotes / small headings: much higher contrast for readability (≥4.5:1)
+    Grey   = { H = 1.00, S = 1.15, V = 0.46 }
+
+    # Inline code & table headers: a bit richer but still “chip-y”
+    # (good contrast for text on the chip, ~1.64 vs page, ~4.65 for #654735 text)
+    Mid    = { H = 1.57, S = 1.4, V = 0.84 }
+
+    # Bullets / links / rules: a touch more saturated blue but still accessible (≥4.6:1)
+    Symbol = { H = 3.60, S = 3.60, V = 0.52 }
+
+    # Headers (keep strong contrast)
+    Head   = { H = 0.43, S = 3.50, V = 0.41 }
+
+    # H1/H2 accent (slightly richer, still ≥5.8:1)
+    Bright = { H = 0.43, S = 3.60, V = 0.50 }
+
+    # Code token colors (unchanged)
+    # Syntax = "gruvbox-light"
+    Syntax = "native"
+  '';
 in
 {
   options.modules.llm = {
@@ -114,6 +158,9 @@ in
       ".local/state/llm/keep" = {
         text = "";
       };
+      "Library/Application Support/streamdown/config.toml" = lib.mkIf (isDarwin) {
+        text = streamdownConfig;
+      };
     };
 
     xdg.configFile = {
@@ -128,6 +175,9 @@ in
       };
       "llm/default_model.txt" = {
         text = defaultModel;
+      };
+      "streamdown/config.toml" = lib.mkIf (!isDarwin) {
+        text = streamdownConfig;
       };
     };
 
@@ -146,4 +196,3 @@ in
     };
   };
 }
- 

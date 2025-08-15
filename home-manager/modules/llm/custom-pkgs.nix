@@ -11,12 +11,12 @@ let
 
     streamdown = pythonPkg.pkgs.buildPythonPackage rec {
       pname = "streamdown";
-      version = "0.30.0";
+      version = "0.34.0";
       format = "pyproject";
 
       src = pkgs.fetchurl {
-        url = "https://github.com/day50-dev/Streamdown/archive/refs/tags/v0.30.0.tar.gz";
-        sha256 = "sha256-Uox8kJHPRjeQ2S1TUO3aBWnGQRDMvFWhFd/HMs4T87c=";
+        url = "https://github.com/day50-dev/Streamdown/archive/refs/tags/v0.34.0.tar.gz";
+        sha256 = "sha256-+ow5FxuZuk7H9IA3cxW47GlozKomidsjMJVtlH12Ri4=";
       };
 
       nativeBuildInputs = with pythonPkg.pkgs; [
