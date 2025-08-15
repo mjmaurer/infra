@@ -24,4 +24,16 @@
     DISABLE_ERROR_REPORTING = 1;
     DISABLE_TELEMETRY = 1;
   };
+  hooks = {
+    Stop = [
+      {
+        hooks = [
+          {
+            type = "command";
+            command = "afplay ${../sounds/short_whistle.mp3}";
+          }
+        ];
+      }
+    ];
+  };
 }
