@@ -29,7 +29,7 @@ rg() {
 
 # ------------------------------------ FZF ----------------------------------- #
 
-export VSCODE="cursor"
+export VSCODE="code"
 export FZF_DEFAULT_COMMAND='fd --type f --strip-cwd-prefix'
 export FZF_ALT_C_COMMAND="" # Disable
 export FZF_COMPLETION_TRIGGER=","
