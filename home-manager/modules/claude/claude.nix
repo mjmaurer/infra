@@ -38,9 +38,6 @@ in
       # https://github.com/anthropics/claude-code/issues/4808
       ".claude/settings.json.source" = {
         text = lib.generators.toJSON { } (import ./settings/user-settings.nix);
-      };
-      ".claude/settings.json" = {
-        text = lib.generators.toJSON { } (import ./settings/user-settings.nix);
         onChange = ''
           source="${config.home.homeDirectory}/.claude/settings.json.source"
           target="${config.home.homeDirectory}/.claude/settings.json"
