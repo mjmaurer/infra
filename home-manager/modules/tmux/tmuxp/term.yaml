@@ -12,4 +12,5 @@ windows:
           - cmd: ""
         focus: true
       - shell_command:
-          - cmd: "aidw"
+          - cmd: "cl"
+
