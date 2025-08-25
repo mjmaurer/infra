@@ -25,6 +25,16 @@
     DISABLE_TELEMETRY = 1;
   };
   hooks = {
+    Notification = [
+      {
+        hooks = [
+          {
+            type = "command";
+            command = "afplay ${../sounds/short_whistle.mp3}";
+          }
+        ];
+      }
+    ];
     Stop = [
       {
         hooks = [
