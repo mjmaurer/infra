@@ -5,7 +5,7 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cl
+          - cl --ide
   # - window_name: aider-watch
   #   panes:
   #     - shell_command:
