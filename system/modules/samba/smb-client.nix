@@ -1,5 +1,7 @@
 /* ----------------------------- TROUBLESHOOTING ---------------------------- */
 # First, check if tailscale is up for any error
+# Next, try umount + automount
+# Then, try deleting the auto_content line from auto_master and rebuild
 {
   username,
   lib,
