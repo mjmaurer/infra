@@ -1,3 +1,5 @@
+# TROUBLESHOOTING
+# For SQL issues, delete ~/.config/llm/logs.db
 {
   lib,
   config,
