@@ -60,7 +60,7 @@ in
               github.copilot
               github.copilot-chat
               github.vscode-pull-request-github
-              anthropic.claude-code
+              # anthropic.claude-code
               visualstudioexptteam.intellicode-api-usage-examples
               visualstudioexptteam.vscodeintellicode
               ms-vscode-remote.remote-containers
@@ -150,6 +150,13 @@ in
             ])
             ++ (pkgs-latest.vscode-utils.extensionsFromVscodeMarketplace [
               # Manually added extensions
+              # antrhopic.claude-code above was broken. try uncommenting
+              {
+                name = "claude-code";
+                publisher = "anthropic";
+                version = "1.0.113";
+                sha256 = "sha256-MmHQ5fVqcwfnXOHVLfJN9AZh/oRCMv+jCfniKesIB9I=";
+              }
 
               # {
               #   name = "";
