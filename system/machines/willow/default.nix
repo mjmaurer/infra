@@ -31,7 +31,7 @@
 
     # Extra home modules to load.
     home-manager.users.${username} = {
-      imports = [ ../../../home-manager/modules/insta360/insta360.nix ];
+      imports = [ ];
     };
 
     modules.sops.enableMinimalSecrets = true;
