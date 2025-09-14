@@ -20,12 +20,14 @@ bool convert_clip(const std::vector<std::string>& in_paths,
                   int height,
                   int bitrate_kbps,
                   STITCH_TYPE stitch_type,
-                  bool enable_flow_stab)
+                  bool enable_flow_stab,
+                  bool use_h265)
 {
     std::mutex m;
     std::condition_variable cv;
     bool finished = false;
     bool success = false;
+    int progress = -1;
 
     auto stitcher = std::make_shared<VideoStitcher>();
 
@@ -35,9 +37,18 @@ bool convert_clip(const std::vector<std::string>& in_paths,
     stitcher->SetOutputBitRate((int64_t)bitrate_kbps * 1000);
     stitcher->SetStitchType(stitch_type);
     stitcher->EnableFlowState(enable_flow_stab);
+    stitcher->EnableCuda(true);
+    stitcher->EnableStitchFusion(true);
+    if (use_h265) {
+        stitcher->EnableH265Encoder();
+    }
 
     stitcher->SetStitchProgressCallback([&](int process, int error) {
-        if (process == 100) {
+        if (progress != process) {
+            progress = process;
+            std::cout << "\r⏳  Processing " << fs::path(in_paths[0]).filename() << " ... " << progress << "%" << std::flush;
+        }
+        if (progress == 100) {
             std::unique_lock<std::mutex> lck(m);
             success = true;
             finished = true;
@@ -60,8 +71,8 @@ bool convert_clip(const std::vector<std::string>& in_paths,
     cv.wait(lck, [&] { return finished; });
 
     if (success) {
-        std::cout << "✅  " << fs::path(in_paths[0]).filename() << " → "
-                  << out.filename() << '\n';
+        std::cout << "\r✅  " << fs::path(in_paths[0]).filename() << " → "
+                  << out.filename() << std::string(20, ' ') << '\n';
     }
     return success;
 }
@@ -81,6 +92,7 @@ int main(int argc, char* argv[])
         ("p,preset",    "Stitch preset (template|dynamic|of|ai)",
                                             cxxopts::value<std::string>()->default_value("dynamic"))
         ("s,stabilize", "Enable FlowState stabilisation", cxxopts::value<bool>()->default_value("true"))
+        ("h265",        "Use H.265/HEVC encoder")
         ("recursive",   "Recurse into sub-folders")
         ("help",        "Show help");
 
@@ -106,6 +118,7 @@ int main(int argc, char* argv[])
     else if (pstr == "ai")       stitch = STITCH_TYPE::AIFLOW;
 
     bool flow_stab = args["stabilize"].as<bool>();
+    bool use_h265  = args.count("h265") > 0;
 
     // SDK environment must be initialised once per process
     InitEnv();                                                // GPU required in v3.x ✔  [oai_citation:0‡GitHub](https://github.com/Insta360Develop/MediaSDK-Cpp)
@@ -144,8 +157,11 @@ int main(int argc, char* argv[])
         fs::path out_file = out_dir / entry.path().stem();
         out_file += ".mp4";
     
+        // Clear the line for new progress output
+        std::cout << "\r" << std::string(80, ' ') << "\r";
+    
         if (convert_clip(input_paths, out_file, w, h, br_kbps,
-                         stitch, flow_stab))
+                         stitch, flow_stab, use_h265))
             ++converted;
     }
 
