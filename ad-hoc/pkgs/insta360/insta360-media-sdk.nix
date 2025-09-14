@@ -68,6 +68,5 @@ stdenv.mkDerivation {
   meta = with lib; {
     description = "Insta360 Media SDK for Linux";
     platforms = platforms.linux;
-    license = licenses.unfree;
   };
 }
