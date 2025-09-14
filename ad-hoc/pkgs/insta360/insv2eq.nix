@@ -19,6 +19,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
+    stdenv.cc.cc
   ];
 
   buildInputs = [
@@ -72,6 +73,8 @@ stdenv.mkDerivation rec {
       ''${FFMPEG_LIBRARIES}
       pthread
       dl
+      stdc++
+      m
     )
 
     # Set rpath for runtime
@@ -89,8 +92,16 @@ stdenv.mkDerivation rec {
     mkdir -p $out/bin
     cp insv2eq $out/bin/
 
-    # Ensure the binary can find the SDK libraries at runtime
-    patchelf --set-rpath "${insta360-media-sdk}/lib:$(patchelf --print-rpath $out/bin/insv2eq)" $out/bin/insv2eq || true
+    # Ensure the binary can find all required libraries at runtime
+    patchelf --set-rpath "${
+      lib.makeLibraryPath [
+        insta360-media-sdk
+        ffmpeg
+        vulkan-loader
+        cudaPackages.cudatoolkit
+        stdenv.cc.cc.lib
+      ]
+    }:${insta360-media-sdk}/lib" $out/bin/insv2eq
   '';
 
   meta = with lib; {
