@@ -6,7 +6,10 @@ rec {
     inputs.flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = inputs.nixpkgs.legacyPackages.${system};
+        pkgs = import inputs.nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+        };
         sops-nix-pkgs = inputs.sops-nix.packages.${system};
         lib = inputs.nixpkgs.lib;
       in
@@ -68,7 +71,8 @@ rec {
         colors = import ./colors.nix { lib = inputs.nixpkgs.lib; };
         pubkeys = import ./pubkeys.nix;
         isDarwin = system == "aarch64-darwin";
-      } // extraSpecialArgs;
+      }
+      // extraSpecialArgs;
       mkHomeManagerStandalone =
         {
           modules ? [ ],
@@ -127,18 +131,17 @@ rec {
         inputs.darwin.lib.darwinSystem {
           system = if system == "aarch64-darwin" then system else throw "System must be aarch64-darwin";
           specialArgs = mkSpecialArgs;
-          modules =
-            [
-              inputs.home-manager.darwinModules.home-manager
-              (mkHomeManagerModuleConfig {
-                inherit defaultHomeModules extraHomeModules homeStateVersion;
-              })
-              {
-                system.stateVersion = systemStateVersion;
-              }
-            ]
-            ++ defaultSystemModules
-            ++ extraSystemModules;
+          modules = [
+            inputs.home-manager.darwinModules.home-manager
+            (mkHomeManagerModuleConfig {
+              inherit defaultHomeModules extraHomeModules homeStateVersion;
+            })
+            {
+              system.stateVersion = systemStateVersion;
+            }
+          ]
+          ++ defaultSystemModules
+          ++ extraSystemModules;
         };
       mkNixosSystem =
         {
