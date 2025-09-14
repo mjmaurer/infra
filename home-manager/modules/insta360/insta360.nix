@@ -125,7 +125,7 @@ let
   };
 in
 {
-  home.packages = [ insv2eq ];
+  home.packages = lib.optional (builtins.pathExists sdkPath) [ insv2eq ];
 
   # Print a warning if the SDK file doesn't exist
   warnings = lib.optional (
