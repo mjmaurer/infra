@@ -9,7 +9,7 @@ let
 
     src = pkgs.fetchurl {
       url = "file://${sdkPath}";
-      sha256 = "YOUR_SHA256_HASH_HERE";
+      sha256 = "907440d96540e949a27dab489357f5aeee5f3cfc5f6011c3d1e6dc428f783421";
     };
 
     nativeBuildInputs = with pkgs; [
