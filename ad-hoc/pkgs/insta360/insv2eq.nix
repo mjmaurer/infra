@@ -68,7 +68,7 @@ stdenv.mkDerivation rec {
     )
 
     target_link_libraries(insv2eq
-      ins_media_sdk
+      MediaSDK
       ''${FFMPEG_LIBRARIES}
       pthread
       dl
