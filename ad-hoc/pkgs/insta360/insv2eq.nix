@@ -3,14 +3,21 @@
   lib,
   cmake,
   pkg-config,
+  autoPatchelfHook,
   cxxopts,
   ffmpeg,
   insta360-media-sdk,
   vulkan-loader,
   cudaPackages,
+  libGL,
+  libglvnd,
+  mesa,
+  xorg,
+  wayland,
+  libdrm,
 }:
 
-stdenv.mkDerivation rec {
+cudaPackages.backendStdenv.mkDerivation rec {
   pname = "insv2eq";
   version = "0.1";
 
@@ -19,7 +26,7 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [
     cmake
     pkg-config
-    stdenv.cc.cc
+    autoPatchelfHook
   ];
 
   buildInputs = [
@@ -28,6 +35,14 @@ stdenv.mkDerivation rec {
     vulkan-loader
     cudaPackages.cudatoolkit
     insta360-media-sdk
+    cudaPackages.backendStdenv.cc.cc.lib
+    libGL
+    libglvnd
+    mesa
+    xorg.libX11
+    xorg.libXext
+    wayland
+    libdrm
   ];
 
   # Set up environment for finding the SDK
@@ -88,20 +103,24 @@ stdenv.mkDerivation rec {
         fi
   '';
 
+  # Specify runtime library paths for autoPatchelfHook
+  runtimeDependencies = [
+    insta360-media-sdk
+    ffmpeg
+    vulkan-loader
+    cudaPackages.cudatoolkit
+    libGL
+    libglvnd
+    mesa
+    xorg.libX11
+    xorg.libXext
+    wayland
+    libdrm
+  ];
+
   installPhase = ''
     mkdir -p $out/bin
     cp insv2eq $out/bin/
-
-    # Ensure the binary can find all required libraries at runtime
-    patchelf --set-rpath "${
-      lib.makeLibraryPath [
-        insta360-media-sdk
-        ffmpeg
-        vulkan-loader
-        cudaPackages.cudatoolkit
-        stdenv.cc.cc.lib
-      ]
-    }:${insta360-media-sdk}/lib" $out/bin/insv2eq
   '';
 
   meta = with lib; {

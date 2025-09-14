@@ -21,7 +21,8 @@ bool convert_clip(const std::vector<std::string>& in_paths,
                   int bitrate_kbps,
                   STITCH_TYPE stitch_type,
                   bool enable_flow_stab,
-                  bool use_h265)
+                  bool use_h265,
+                  bool use_cpu)
 {
     std::mutex m;
     std::condition_variable cv;
@@ -37,8 +38,12 @@ bool convert_clip(const std::vector<std::string>& in_paths,
     stitcher->SetOutputBitRate((int64_t)bitrate_kbps * 1000);
     stitcher->SetStitchType(stitch_type);
     stitcher->EnableFlowState(enable_flow_stab);
-    stitcher->EnableCuda(true);
+    stitcher->EnableCuda(false);
+    // stitcher->SetSoftwareCodecUsage(true, true);
     stitcher->EnableStitchFusion(true);
+    if (use_cpu) {
+        stitcher->SetImageProcessingAccelType(ins::ImageProcessingAccel::kCPU);
+    }
     if (use_h265) {
         stitcher->EnableH265Encoder();
     }
@@ -93,6 +98,7 @@ int main(int argc, char* argv[])
                                             cxxopts::value<std::string>()->default_value("dynamic"))
         ("s,stabilize", "Enable FlowState stabilisation", cxxopts::value<bool>()->default_value("true"))
         ("h265",        "Use H.265/HEVC encoder")
+        ("cpu",        "Use CPU rather than GPU")
         ("recursive",   "Recurse into sub-folders")
         ("help",        "Show help");
 
@@ -119,6 +125,7 @@ int main(int argc, char* argv[])
 
     bool flow_stab = args["stabilize"].as<bool>();
     bool use_h265  = args.count("h265") > 0;
+    bool use_cpu  = args.count("cpu") > 0;
 
     // SDK environment must be initialised once per process
     InitEnv();                                                // GPU required in v3.x ✔  [oai_citation:0‡GitHub](https://github.com/Insta360Develop/MediaSDK-Cpp)
@@ -161,7 +168,7 @@ int main(int argc, char* argv[])
         std::cout << "\r" << std::string(80, ' ') << "\r";
     
         if (convert_clip(input_paths, out_file, w, h, br_kbps,
-                         stitch, flow_stab, use_h265))
+                         stitch, flow_stab, use_h265, use_cpu))
             ++converted;
     }
 

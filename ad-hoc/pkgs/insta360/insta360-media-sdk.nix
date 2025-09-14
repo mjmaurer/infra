@@ -5,10 +5,15 @@
   dpkg,
   autoPatchelfHook,
   libGL,
+  libglvnd,
+  mesa,
   vulkan-loader,
   cudaPackages,
   zlib,
   libpng,
+  xorg,
+  wayland,
+  libdrm,
 }:
 
 stdenv.mkDerivation {
@@ -34,11 +39,17 @@ stdenv.mkDerivation {
 
   buildInputs = [
     libGL
+    libglvnd
+    mesa
     vulkan-loader
     cudaPackages.cudatoolkit
     stdenv.cc.cc.lib
     zlib
     libpng
+    xorg.libX11
+    xorg.libXext
+    wayland
+    libdrm
   ];
 
   unpackPhase = ''
