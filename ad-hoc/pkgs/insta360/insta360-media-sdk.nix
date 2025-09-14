@@ -7,6 +7,8 @@
   libGL,
   vulkan-loader,
   cudaPackages,
+  zlib,
+  libpng,
 }:
 
 stdenv.mkDerivation {
@@ -35,6 +37,8 @@ stdenv.mkDerivation {
     vulkan-loader
     cudaPackages.cudatoolkit
     stdenv.cc.cc.lib
+    zlib
+    libpng
   ];
 
   unpackPhase = ''
