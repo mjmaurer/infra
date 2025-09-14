@@ -29,6 +29,11 @@
 
     # systemd.services.zfs-mount.enable = false;
 
+    # Extra home modules to load.
+    home-manager.users.${username} = {
+      imports = [ ../../../home-manager/modules/insta360/insta360.nix ];
+    };
+
     modules.sops.enableMinimalSecrets = true;
 
     modules.duplicacy = {
