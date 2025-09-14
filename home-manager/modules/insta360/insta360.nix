@@ -127,4 +127,9 @@ let
 in
 {
   home.packages = lib.optional (builtins.pathExists sdkPath) insv2eq;
+
+  # Print a warning if the SDK file doesn't exist
+  warnings = lib.optional (
+    !(builtins.pathExists sdkPath)
+  ) "Insta360 SDK not found at ${sdkPath}. The insv2eq tool will not be available.";
 }
