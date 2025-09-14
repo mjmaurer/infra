@@ -52,7 +52,6 @@ let
     ];
 
     buildInputs = with pkgs; [
-      gcc17
       cxxopts
       ffmpeg
       vulkan-loader
