@@ -1,7 +1,7 @@
 {
   stdenv,
   lib,
-  fetchurl,
+  requireFile,
   dpkg,
   autoPatchelfHook,
   libGL,
@@ -13,12 +13,16 @@ stdenv.mkDerivation {
   pname = "insta360-media-sdk";
   version = "3.0.5.1";
 
-  # You'll need to copy the .deb file to this location or update the URL
-  src = fetchurl {
-    # For now, using a placeholder URL - you'll need to host this file somewhere
-    # or copy it to the nix store manually
-    url = "file:///nas/content/code/sdks/insta360mediasdk/libMediaSDK-dev-3.0.5.1-20250618_195946-amd64/libMediaSDK-dev-3.0.5.1-20250618_195946-amd64.deb";
+  src = requireFile {
+    name = "libMediaSDK-dev-3.0.5.1-20250618_195946-amd64.deb";
     sha256 = "907440d96540e949a27dab489357f5aeee5f3cfc5f6011c3d1e6dc428f783421";
+    message = ''
+      Please add the Insta360 Media SDK .deb file to the Nix store:
+
+      nix-store --add-fixed sha256 /nas/content/code/sdks/insta360mediasdk/libMediaSDK-dev-3.0.5.1-20250618_195946-amd64/libMediaSDK-dev-3.0.5.1-20250618_195946-amd64.deb
+
+      Then try building again.
+    '';
   };
 
   nativeBuildInputs = [
