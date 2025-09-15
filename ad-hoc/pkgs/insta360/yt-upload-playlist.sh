@@ -56,10 +56,12 @@ failed_uploads=()
 
 for file in "${video_files[@]}"; do
   title=$(basename "$file" .mp4)
+  filename=$(basename "$file")
   echo "Uploading '$title'..."
 
   if youtubeuploader \
     -privacy "$PRIVACY" \
+    -filename "$filename" \
     -title "$title" \
     -description "" \
     -notify false \
@@ -67,10 +69,10 @@ for file in "${video_files[@]}"; do
     -playlistID "$PLAYLIST_ID" \
     "$file"; then
     echo "Successfully uploaded '$title'."
-    successful_uploads+=("$(basename "$file")")
+    successful_uploads+=("$filename")
   else
     echo "Failed to upload '$title'." >&2
-    failed_uploads+=("$(basename "$file")")
+    failed_uploads+=("$filename")
   fi
   echo "--------------------"
 done
