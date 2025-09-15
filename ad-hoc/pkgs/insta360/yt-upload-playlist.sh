@@ -61,13 +61,12 @@ for file in "${video_files[@]}"; do
 
   if youtubeuploader \
     -privacy "$PRIVACY" \
-    -filename "$filename" \
+    -filename "$file" \
     -title "$title" \
     -description "" \
     -notify false \
     -secrets $CLIENT_SECRETS_FILE \
-    -playlistID "$PLAYLIST_ID" \
-    "$file"; then
+    -playlistID "$PLAYLIST_ID"; then
     echo "Successfully uploaded '$title'."
     successful_uploads+=("$filename")
   else
