@@ -20,7 +20,7 @@ in
 
     credentialStore = lib.mkOption {
       type = lib.types.str;
-      default = "";
+      default = if pkgs.stdenv.isLinux then "cache" else "";
       description = "The gcm credential store to use. Leaving unset automatically uses OS-appropriate store (but doesn't support linux).";
     };
   };
@@ -56,16 +56,8 @@ in
         credential = {
           helper = "manager";
           guiPrompt = !pkgs.stdenv.isLinux;
-          cache.timeout = "86400";
-          credentialStore =
-            if cfg.credentialStore != "" then
-              cfg.credentialStore
-            else if pkgs.stdenv.isLinux then
-              "cache"
-            else
-              # Let GCM auto-detect on Darwin
-              lib.mkForce null;
-
+          cacheOptions = "--timeout 86400";
+          credentialStore = lib.mkIf (cfg.credentialStore != "") cfg.credentialStore;
           "https://github.com".username = "mjmaurer";
         };
         # merge.tool = "vscode";
