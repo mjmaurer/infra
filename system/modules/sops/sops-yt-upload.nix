@@ -17,7 +17,7 @@ in
         ...
       }:
       {
-        home.file.".config/youtubeuploader/client_secret.json" = {
+        home.file.".config/youtubeuploader/client_secrets.json" = {
           source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."yt-client-secret.json".path;
         };
       }
