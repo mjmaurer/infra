@@ -88,7 +88,6 @@ creation_rules:
           - *mjmaurer
         age: # Ad-hoc
           - *willow
-
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:
