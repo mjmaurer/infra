@@ -119,8 +119,16 @@ cudaPackages.backendStdenv.mkDerivation rec {
   ];
 
   installPhase = ''
-    mkdir -p $out/bin
-    cp insv2eq $out/bin/
+        mkdir -p $out/bin
+        cp insv2eq $out/bin/insv2eq-unwrapped
+        
+        # Create wrapper script that sets MEDIASDK_ROOT
+        cat > $out/bin/insv2eq << 'EOF'
+    #!/bin/bash
+    export MEDIASDK_ROOT="${insta360-media-sdk}"
+    exec "$0-unwrapped" "$@"
+    EOF
+        chmod +x $out/bin/insv2eq
   '';
 
   meta = with lib; {

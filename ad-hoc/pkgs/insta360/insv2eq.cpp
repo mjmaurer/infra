@@ -26,6 +26,8 @@ bool convert_clip(const std::vector<std::string>& in_paths,
 {
     std::mutex m;
     std::condition_variable cv;
+    std::cout << "convert_clip start" << std::endl;
+
     bool finished = false;
     bool success = false;
     int progress = -1;
@@ -46,6 +48,23 @@ bool convert_clip(const std::vector<std::string>& in_paths,
     }
     if (use_h265) {
         stitcher->EnableH265Encoder();
+    }
+    
+    // Set AI stitcher model if using AI preset
+    if (stitch_type == STITCH_TYPE::AIFLOW) {
+        // Look for model file in the SDK installation
+        const char* mediasdk_root = std::getenv("MEDIASDK_ROOT");
+        if (mediasdk_root) {
+            std::string model_path = std::string(mediasdk_root) + "/modelfile/ai_stitcher_v1.ins";
+            if (fs::exists(model_path)) {
+                stitcher->SetAiStitchModelFile(model_path);
+                std::cout << "Using AI stitcher model: " << model_path << std::endl;
+            } else {
+                std::cerr << "Warning: AI stitcher model not found at: " << model_path << std::endl;
+            }
+        } else {
+            std::cerr << "Warning: MEDIASDK_ROOT not set, cannot locate AI stitcher model" << std::endl;
+        }
     }
 
     stitcher->SetStitchProgressCallback([&](int process, int error) {
