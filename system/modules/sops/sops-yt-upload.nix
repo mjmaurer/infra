@@ -9,11 +9,20 @@ let
   sopsFile = ./secrets/yt-upload.yaml;
 in
 {
-  home-manager.users.${username} = {
-    home.file.".config/yt-upload-playlist/client_secret.json" = {
-      source = lib.file.mkOutOfStoreSymlink config.sops.templates."yt-client-secret.json".path;
-    };
-  };
+  home-manager.users.${username}.imports = [
+    (
+      {
+        config,
+        osConfig,
+        ...
+      }:
+      {
+        home.file.".config/yt-upload-playlist/client_secret.json" = {
+          source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates."yt-client-secret.json".path;
+        };
+      }
+    )
+  ];
 
   sops = {
     secrets = {
