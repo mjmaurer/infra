@@ -14,6 +14,8 @@
     ../../modules/samba/smb-server.nix
     ../../modules/virtualisation.nix
 
+    ../../modules/sops/sops-yt-upload.nix
+
     ./hardware-configuration.nix
     ./media
 

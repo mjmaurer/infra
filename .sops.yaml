@@ -49,6 +49,12 @@ creation_rules:
           - *mjmaurer
         age:
           - *willow
+  - path_regex: system/modules/sops/secrets/yt-upload.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age:
+          - *willow
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:
