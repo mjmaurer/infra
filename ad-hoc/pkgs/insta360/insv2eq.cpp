@@ -156,17 +156,35 @@ int main(int argc, char* argv[])
                      fs::directory_options::none;
 
     size_t converted = 0;
+    size_t ignored_lrv = 0;
+    size_t total_clips = 0;
+    std::vector<std::string> failed_clips;
     for (auto&& entry : fs::recursive_directory_iterator(in_dir, walk_opt)) {
         if (!entry.is_regular_file() || entry.path().extension() != ".insv") {
             continue;
         }
     
         std::string filename_str = entry.path().filename().string();
+
+        if (filename_str.rfind("LRV_", 0) == 0) {
+            std::string vid_filename = "VID_" + filename_str.substr(4);
+            size_t pos = vid_filename.find("_11_");
+            if (pos != std::string::npos) {
+                vid_filename.replace(pos, 4, "_00_");
+                fs::path vid_path = entry.path().parent_path() / vid_filename;
+                if (fs::exists(vid_path)) {
+                    ignored_lrv++;
+                    continue;
+                }
+            }
+        }
+
         if (filename_str.find("_10_") != std::string::npos) {
             // _10_ files are handled with their _00_ counterparts
             continue;
         }
     
+        total_clips++;
         std::vector<std::string> input_paths;
         input_paths.push_back(entry.path().string());
     
@@ -187,10 +205,23 @@ int main(int argc, char* argv[])
         std::cout << "\r" << std::string(80, ' ') << "\r";
     
         if (convert_clip(input_paths, out_file, w, h, br_kbps,
-                         stitch, flow_stab, use_h265, use_cpu))
+                         stitch, flow_stab, use_h265, use_cpu)) {
             ++converted;
+        } else {
+            failed_clips.push_back(entry.path().filename().string());
+        }
     }
 
-    std::cout << "\n==> Finished.  " << converted << " clip(s) converted.\n";
+    size_t failed = total_clips - converted;
+    std::cout << "\n==> Finished.  " << converted << " out of " << total_clips
+              << " clip(s) converted. " << failed << " clip(s) failed. "
+              << ignored_lrv << " LRV file(s) ignored.\n";
+
+    if (!failed_clips.empty()) {
+        std::cout << "\nFailed clips:\n";
+        for (const auto& filename : failed_clips) {
+            std::cout << " - " << filename << "\n";
+        }
+    }
     return 0;
 }
