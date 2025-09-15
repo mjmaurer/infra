@@ -2,25 +2,39 @@
 
 set -euo pipefail
 
+PRIVACY="private"
+
+while getopts "p:" opt; do
+  case $opt in
+    p) PRIVACY="$OPTARG" ;;
+    \?) exit 1 ;; # getopts will print an error
+  esac
+done
+shift $((OPTIND - 1))
+
 if [[ $# -ne 2 ]]; then
-  echo "Usage: $0 <directory> <playlist_name>"
+  echo "Usage: $0 [-p <privacy>] <directory> <playlist_id>"
   exit 1
 fi
 
 DIRECTORY="$1"
-PLAYLIST_NAME="$2"
+PLAYLIST_ID="$2"
+
+if [[ "$PRIVACY" != "public" && "$PRIVACY" != "private" && "$PRIVACY" != "unlisted" ]]; then
+  echo "Error: Invalid privacy: '$PRIVACY'. Must be 'public', 'private', or 'unlisted'." >&2
+  exit 1
+fi
 
 if [[ ! -d "$DIRECTORY" ]]; then
   echo "Error: Directory not found at '$DIRECTORY'" >&2
   exit 1
 fi
 
-CONFIG_DIR="$HOME/.config/yt-upload-playlist"
-CLIENT_SECRETS_FILE="$CONFIG_DIR/client_secret.json"
-TOKEN_FILE="$CONFIG_DIR/token.json"
+CONFIG_DIR="$HOME/.config/youtubeuploader"
+CLIENT_SECRETS_FILE="$CONFIG_DIR/client_secrets.json"
 
 if [[ ! -f "$CLIENT_SECRETS_FILE" ]]; then
-  echo "ERROR: client_secret.json not found." >&2
+  echo "ERROR: client_secrets.json not found." >&2
   echo "Please obtain your OAuth 2.0 client ID from the Google Cloud Console" >&2
   echo "and place it at: $CLIENT_SECRETS_FILE" >&2
   exit 1
@@ -44,13 +58,13 @@ for file in "${video_files[@]}"; do
   title=$(basename "$file" .mp4)
   echo "Uploading '$title'..."
 
-  if youtube-upload \
-    --privacy=private \
-    --title="$title" \
-    --playlist="$PLAYLIST_NAME" \
-    --noauth_local_webserver \
-    --client-secrets="$CLIENT_SECRETS_FILE" \
-    --credentials-file="$TOKEN_FILE" \
+  if youtubeuploader \
+    -privacy "$PRIVACY" \
+    -title "$title" \
+    -description "" \
+    -notify false \
+    -secrets $CLIENT_SECRETS_FILE \
+    -playlistID "$PLAYLIST_ID" \
     "$file"; then
     echo "Successfully uploaded '$title'."
     successful_uploads+=("$(basename "$file")")

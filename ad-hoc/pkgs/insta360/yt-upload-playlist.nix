@@ -1,8 +1,8 @@
 {
   stdenv,
   lib,
-  python3,
   makeWrapper,
+  youtubeuploader,
 }:
 
 stdenv.mkDerivation rec {
@@ -20,7 +20,7 @@ stdenv.mkDerivation rec {
     mkdir -p $out/bin
     install -D -m 755 $src $out/bin/yt-upload-playlist
     wrapProgram $out/bin/yt-upload-playlist \
-      --prefix PATH : "${lib.makeBinPath [ python3.pkgs.youtube-upload ]}"
+      --prefix PATH : "${lib.makeBinPath [ youtubeuploader ]}"
     runHook postInstall
   '';
 
