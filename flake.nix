@@ -162,6 +162,9 @@
             {
               systemStateVersion = 5;
               homeStateVersion = "25.05";
+              extraSystemModules = [
+                ./system/machines/aspen
+              ];
             };
 
         default =
