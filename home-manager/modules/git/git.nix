@@ -55,8 +55,18 @@ in
         core.excludesfile = "~/.config/git/ignore";
         credential = {
           helper = "manager";
+          guiPrompt = !pkgs.stdenv.isLinux;
+          cache.timeout = "86400";
+          credentialStore =
+            if cfg.credentialStore != "" then
+              cfg.credentialStore
+            else if pkgs.stdenv.isLinux then
+              "cache"
+            else
+              # Let GCM auto-detect on Darwin
+              lib.mkForce null;
+
           "https://github.com".username = "mjmaurer";
-          credentialStore = lib.mkIf (cfg.credentialStore != "") cfg.credentialStore;
         };
         # merge.tool = "vscode";
         # mergetool.vscode.cmd = "code --wait --merge $REMOTE $LOCAL $BASE $MERGED";
