@@ -146,11 +146,13 @@ in
         "alt-tab"
         "bitwarden"
         "superwhisper"
+        "tailscale-app"
         # "karabiner-elements"
         # "spotify"
         # "slack"
         # "zoom"
-      ] ++ cfg.extraCasks;
+      ]
+      ++ cfg.extraCasks;
       taps = [
         # "homebrew/cask-fonts"
         # "xorpse/formulae"

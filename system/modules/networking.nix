@@ -53,11 +53,7 @@ in
           networking = {
             computerName = derivationName;
           };
-          services.tailscale = {
-            enable = true;
-            package = pkgs.tailscale;
-            # overrideLocalDNS = true;
-          };
+          # Tailscale is managed by Homebrew on Darwin
         }
       else
         # NixOS
