@@ -47,22 +47,22 @@ creation_rules:
           - *mjmaurer
         age: *dev-clients
   # ==== AI ====
-  - path_regex: system/modules/ai/secrets/openrouter.yaml$
+  - path_regex: system/modules/sops/vault/ai/openrouter.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
         age: *dev-clients
-  - path_regex: system/modules/ai/secrets/gemini.yaml$
+  - path_regex: system/modules/sops/vault/ai/gemini.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
         age: *dev-clients
-  - path_regex: system/modules/ai/secrets/openai.yaml$
+  - path_regex: system/modules/sops/vault/ai/openai.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
         age: *full-clients
-  - path_regex: system/modules/ai/secrets/other.yaml$
+  - path_regex: system/modules/sops/vault/ai/other.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
@@ -71,7 +71,7 @@ creation_rules:
   # ==== Common ====
 
   # ==== Module/App Specific ====
-  - path_regex: system/modules/sops/secrets/yt-upload.yaml$
+  - path_regex: system/modules/sops/vault/yt-upload.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
