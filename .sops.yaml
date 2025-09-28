@@ -9,52 +9,80 @@ keys:
     - &maple age1vgdqnptd3zawh6yew778m0z36y7e7jllygc83wrezq6calsxqg0qhun5t3
     - &willow age1mya8weyrutxpszdd992xtepfrt9zvz0dumzmxvtuja7gnrwwgglsqxwmdk
     - &dove age1a2xfudr0e7gxvlr7gql0p5yzr746dx0ujd8npwvstu25quhe94pqpms5nz
+  # Host Groups
+  # NOTE: Should match the tags defined in `mylib.nix` and set in `flake.nix` for each machine.
+  # `Ad-hoc` means the secret isn't enabled by default based on tags. 
+  - &full-clients
+    - *smac
+    - *aspen
+  - &dev-clients
+    - *smac
+    - *aspen  
+    - *willow
+  - &linux-hosts
+    - *maple
+    - *willow
+    - *dove
 
 creation_rules:
-  # --------------------------------- Common --------------------------------- #
-  - path_regex: system/modules/sops/secrets/common.yaml$
-    key_groups:
-      - pgp:
-          - *mjmaurer
-        age:
-          - *aspen
-          - *smac
-          - *maple
-          - *willow
-          - *dove
-  # Daily Drivers
-  - path_regex: system/modules/sops/secrets/full.yaml$
-    key_groups:
-      - pgp:
-          - *mjmaurer
-        age:
-          - *aspen
-          - *smac
-  # Servers I occasionally code on
-  - path_regex: system/modules/sops/secrets/minimal.yaml$
-    key_groups:
-      - pgp:
-          - *mjmaurer
-        age:
-          - *maple
-          - *willow
+  # --------------------------------- Notes --------------------------------- #
   - path_regex: lib/troubleshooting.md$
     key_groups:
       - pgp:
           - *mjmaurer
-  # --------------------------- Specific Services ----------------------------- #
-  - path_regex: system/modules/duplicacy/secrets.yaml$
+  # --------------------------------- Common --------------------------------- #
+  - path_regex: system/modules/sops/vault/nixos-host.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
-        age:
-          - *willow
+        age: *linux-hosts
+  - path_regex: system/modules/sops/vault/gpg.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *full-clients
+  - path_regex: system/modules/sops/vault/smb.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *dev-clients
+  # ==== AI ====
+  - path_regex: system/modules/ai/secrets/openrouter.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *dev-clients
+  - path_regex: system/modules/ai/secrets/gemini.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *dev-clients
+  - path_regex: system/modules/ai/secrets/openai.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *full-clients
+  - path_regex: system/modules/ai/secrets/other.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *full-clients
+  # --------------------------- Specific Services ----------------------------- #
+  # ==== Common ====
+
+  # ==== Module/App Specific ====
   - path_regex: system/modules/sops/secrets/yt-upload.yaml$
     key_groups:
       - pgp:
           - *mjmaurer
-        age:
+        age: *full-clients
+  - path_regex: system/modules/duplicacy/secrets.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: # Ad-hoc
           - *willow
+
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:

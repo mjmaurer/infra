@@ -27,6 +27,15 @@ rec {
       system,
       derivationName,
       username ? defaultUsername,
+      defaultTags ? (
+        if system == "aarch64-darwin" then
+          [ "darwin" "all" ]
+        else if system == "x86_64-linux" then
+          [ "linux" "all" ]
+        else
+          [ "all" ]
+      ),
+      tags ? [ ],
       extraSpecialArgs ? { },
     }:
     rec {
@@ -68,7 +77,12 @@ rec {
             # })
           ];
         };
+        sysTags = (defaultTags ++ tags);
         colors = import ./colors.nix { lib = inputs.nixpkgs.lib; };
+        mylib = import ./mylib.nix {
+          lib = inputs.nixpkgs.lib;
+          sysTags = sysTags;
+        };
         pubkeys = import ./pubkeys.nix;
         isDarwin = system == "aarch64-darwin";
       }
@@ -119,7 +133,7 @@ rec {
             inputs.sops-nix.darwinModules.sops
             # impermanence.nixosModules.impermanence
 
-            ./common.nix
+            ./global-options.nix
           ],
           extraSystemModules ? [ ],
           defaultHomeModules ? [
@@ -159,7 +173,7 @@ rec {
             # ../system/modules/impermanence.nix
             # inputs.impermanence.nixosModules.impermanence
 
-            ./common.nix
+            ./global-options.nix
           ],
           extraSystemModules ? [ ],
           defaultHomeModules ? [
