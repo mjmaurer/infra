@@ -24,9 +24,9 @@ in
 
   sops = rec {
     hasSopsTemplate = name: osConfig: osConfig ? sops && builtins.hasAttr name osConfig.sops.templates;
-    hasSopsSecret = name: osConfig: osConfig ? sops && builtins.hasAttr name osConfig.sops.secret;
+    hasSopsSecret = name: osConfig: osConfig ? sops && builtins.hasAttr name osConfig.sops.secrets;
     sopsTemplatePath = name: osConfig: osConfig.sops.templates.${name}.path;
-    sopsSecretPath = name: osConfig: osConfig.sops.templates.${name}.path;
+    sopsSecretPath = name: osConfig: osConfig.sops.secrets.${name}.path;
 
     maybeSopsTemplate =
       name: osConfig: config:
