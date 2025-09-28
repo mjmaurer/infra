@@ -57,6 +57,9 @@
           (sys.withConfig {
             system = "x86_64-linux";
             derivationName = "maple";
+            tags = [
+              "linux"
+            ];
           }).mkNixosSystem
             {
               homeStateVersion = "25.05";
@@ -71,6 +74,10 @@
           (sys.withConfig {
             system = "x86_64-linux";
             derivationName = "willow";
+            tags = [
+              "linux"
+              "dev-client"
+            ];
           }).mkNixosSystem
             {
               homeStateVersion = "25.05";
@@ -84,6 +91,9 @@
           (sys.withConfig {
             system = "x86_64-linux";
             derivationName = "dove";
+            tags = [
+              "linux"
+            ];
           }).mkNixosSystem
             {
               homeStateVersion = "25.05";
@@ -117,6 +127,11 @@
             system = "aarch64-darwin";
             derivationName = "smac";
             username = "mmaurer7";
+            tags = [
+              "darwin"
+              "dev-client"
+              "full-client"
+            ];
           }).mkDarwinSystem
             {
               systemStateVersion = 5;
@@ -138,6 +153,11 @@
           (sys.withConfig {
             system = "aarch64-darwin";
             derivationName = "aspen";
+            tags = [
+              "darwin"
+              "dev-client"
+              "full-client"
+            ];
           }).mkDarwinSystem
             {
               systemStateVersion = 5;
