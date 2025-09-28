@@ -7,8 +7,7 @@
   ...
 }:
 let
-  cfg = config.modules.ai-secrets;
-  otherSopsFile = ./vault/ai/other.yaml;
+  otherSopsFile = ../vault/ai/other.yaml;
 in
 {
 
@@ -48,31 +47,31 @@ in
 
   config = lib.mkMerge [
 
-    (lib.optionalAttrs cfg.enableGemini {
+    (lib.mkIf config.modules.ai-secrets.enableGemini {
       sops.secrets = {
         apiKeyGemini = {
-          sopsFile = ./vault/ai/gemini.yaml;
+          sopsFile = ../vault/ai/gemini.yaml;
         };
       };
     })
 
-    (lib.optionalAttrs cfg.enableOpenai {
+    (lib.mkIf config.modules.ai-secrets.enableOpenai {
       sops.secrets = {
         apiKeyOpenai = {
-          sopsFile = ./vault/ai/openai.yaml;
+          sopsFile = ../vault/ai/openai.yaml;
         };
       };
     })
 
-    (lib.optionalAttrs cfg.enableOpenrouter {
+    (lib.mkIf config.modules.ai-secrets.enableOpenrouter {
       sops.secrets = {
         apiKeyOpenrouter = {
-          sopsFile = ./vault/ai/openrouter.yaml;
+          sopsFile = ../vault/ai/openrouter.yaml;
         };
       };
     })
 
-    (lib.optionalAttrs cfg.enableOtherAi {
+    (lib.mkIf config.modules.ai-secrets.enableOtherAi {
       sops.secrets = {
         apiKeyAnthropic = {
           sopsFile = otherSopsFile;
