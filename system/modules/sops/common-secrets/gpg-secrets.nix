@@ -36,13 +36,12 @@ in
       secrets = {
         gpgAuthKeygrip = {
           owner = config.users.users.${username}.name;
-          path = "${config.users.users.home}/.gnupg/sshcontrol";
           mode = "0444";
           sopsFile = gpgSopsFile;
         };
         gpgPublicKey = {
           owner = config.users.users.${username}.name;
-          path = "${config.users.users.home}/.gnupg/pubkey.asc";
+          path = "${config.users.users.${username}.home}/.gnupg/pubkey.asc";
           mode = "0444";
           sopsFile = gpgSopsFile;
         };
