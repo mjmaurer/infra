@@ -1,7 +1,6 @@
 {
   lib,
   config,
-  osConfig ? null,
   pkgs,
   pkgs-latest,
   ...

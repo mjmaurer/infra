@@ -30,6 +30,7 @@ in
 
     ../modules/homebrew/homebrew.nix
     ../modules/aerospace/aerospace.nix
+    # ../modules/intellibar
   ];
 
   config = {
@@ -84,6 +85,7 @@ in
         askForPasswordDelay = 0;
       };
       NSGlobalDomain = {
+        AppleShowAllFiles = true;
         AppleShowAllExtensions = true;
         # normal minimum is 15 (225 ms), maximum is 120 (1800 ms)
         # Setting this too high will affect kanata (any_key + hold_key) will repeat any_key
@@ -105,6 +107,7 @@ in
         NSGlobalDomain = {
           # Add a context menu item for showing the Web Inspector in web views
           WebKitDeveloperExtras = true;
+          AppleShowAllFiles = true;
         };
         "com.apple.desktopservices" = {
           # Avoid creating .DS_Store files on network or USB volumes

@@ -11,6 +11,7 @@
 # - You can't get gpg to listen to a custom socket path, don't even try.
 {
   osConfig ? null,
+  mylib,
   lib,
   config,
   isDarwin,
@@ -80,10 +81,7 @@ in
         gpg = {
           enable = true;
           homedir = gpgHomedir;
-          publicKeys = lib.mkIf (osConfig ? sops) [
-            # Enabled / available for all
-            { source = osConfig.sops.secrets.gpgPublicKey.path; }
-          ];
+          publicKeys = mylib.sops.maybeSopsSecretList "gpgPublicKey" osConfig config;
           # TODO: consider mutableKeys = false;
           settings = import ./gpg.conf.nix {
             remoteHost = cfg.remoteHost;
@@ -156,10 +154,8 @@ in
       # GPG keys (by keygrip ID) to expose via SSH
       # Replaces gpg-agent's `sshKeys` option
       home.file."${gpgHomedir}/sshcontrol" =
-        lib.mkIf (osConfig ? sops && builtins.hasAttr "gpg_sshcontrol" osConfig.sops.templates)
-          {
-            source = config.lib.file.mkOutOfStoreSymlink osConfig.sops.templates.gpg_sshcontrol.path;
-          };
+        mylib.sops.maybeSopsTemplateSymlink "gpg_sshcontrol" osConfig
+          config;
       home.sessionVariablesExtra = (
         lib.optionalString (config.services.gpg-agent.enableSshSupport) ''
           if [[ -z "''${SSH_AUTH_SOCK}" ]] || [[ "''${SSH_AUTH_SOCK}" =~ '^/private/tmp/com\.apple\.launchd\.[^/]+/Listeners$' ]]; then

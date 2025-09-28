@@ -2,6 +2,7 @@
   osConfig ? null,
   pkgs,
   lib,
+  mylib,
   config,
   derivationName,
   ...
@@ -133,9 +134,9 @@ in
         # The unset is a hack to source the file multiple times as needed
         unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
 
-        ${lib.optionalString (osConfig ? sops && builtins.hasAttr "shell.env" osConfig.sops.templates) ''
+        ${lib.optionalString (mylib.sops.hasSopsTemplate "shell.env" osConfig) ''
           # --------------------------------- SOPS Secrets --------------------------------
-          source ${osConfig.sops.templates."shell.env".path}
+          source ${mylib.sops.sopsTemplatePath "shell.env" osConfig}
         ''}
 
         source ${./defaults.sh}

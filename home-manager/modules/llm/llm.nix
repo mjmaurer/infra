@@ -2,6 +2,7 @@
 # For SQL issues, delete ~/.config/llm/logs.db
 {
   lib,
+  mylib,
   config,
   osConfig ? null,
   pkgs,
@@ -38,16 +39,6 @@ let
   );
   mdFragPath = "$XDG_CONFIG_HOME/llm/fragments/markdown-output.md";
   conciseFragPath = "$XDG_CONFIG_HOME/llm/fragments/concise.md";
-  keysPath =
-    if osConfig != null then
-      if builtins.hasAttr "llm-keys-full" osConfig.sops.templates then
-        osConfig.sops.templates.llm-keys-full.path
-      else if builtins.hasAttr "llm-keys-minimal" osConfig.sops.templates then
-        osConfig.sops.templates.llm-keys-minimal.path
-      else
-        null
-    else
-      null;
   streamdownConfig = ''
     [features]
     CodeSpaces = false
@@ -166,9 +157,7 @@ in
     };
 
     xdg.configFile = {
-      "llm/keys.json" = lib.mkIf (keysPath != null) {
-        source = config.lib.file.mkOutOfStoreSymlink keysPath;
-      };
+      "llm/keys.json" = mylib.sops.maybeSopsTemplateSymlink "llm-keys" osConfig config;
       "llm/templates" = {
         source = ./templates;
       };

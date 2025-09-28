@@ -29,7 +29,6 @@
     ../modules/tmux/tmux.nix
     ../modules/aider/aider.nix
     ../modules/claude/claude.nix
-    ../modules/intellibar/intellibar.nix
     ../modules/aichat/aichat.nix
     ../modules/llm/llm.nix
     ../modules/neovim/neovim.nix

@@ -1,10 +1,11 @@
-/* ----------------------------- TROUBLESHOOTING ---------------------------- */
+# ----------------------------- TROUBLESHOOTING ----------------------------
 # First, check if tailscale is up for any error
 # Next, try umount + automount
 # Then, try deleting the auto_content line from auto_master and rebuild
 {
   username,
   lib,
+  mylib,
   config,
   isDarwin,
   pkgs,
@@ -19,7 +20,10 @@ in
   options.modules.smbClient = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = false;
+      default = mylib.sysTagsIn [
+        "darwin"
+        "full-client"
+      ];
       description = "Enable SMB client module.";
     };
 

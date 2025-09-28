@@ -20,7 +20,6 @@
     firefox.enable = false;
     wayland.enable = false;
     alfred.enable = true;
-    intellibar.enable = lib.mkDefault true;
     commonShell = {
       enableShellTmuxTimeout = true;
       sessionVariables = {

@@ -1,6 +1,5 @@
 # Includes SSH, GPG, and Yubikey
 {
-  osConfig ? null,
   lib,
   config,
   isDarwin,
