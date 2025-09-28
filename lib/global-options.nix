@@ -1,6 +1,12 @@
-{ config, lib, ... }:
 {
-  options.common = {
+  config,
+  lib,
+  pkgs,
+  ...
+}:
+{
+  options.global = {
+    # TODO: remove
     maybeImpermPrefix = lib.mkOption {
       type = lib.types.str;
       readOnly = true;
