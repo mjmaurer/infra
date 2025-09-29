@@ -1,14 +1,18 @@
 session_name: ai-fast
 windows:
   - window_name: ai-fast
-    layout: even-horizontal
+    # Three even horizontal, with the rightmost split into two vertical panes
+    # Can get this string by creating ideal layout, then running `display-message -p "#{window_layout}"` in tmux
+    layout: a578,253x61,0,0{84x61,0,0,443,83x61,85,0,444,84x61,169,0[84x30,169,0,445,84x30,169,31,446]}
     options:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'echo "gpt-oss-120b high" && llmmd loh lfs lonline "${AI_CMD}"'
+          - cmd: 'echo "gpt-oss-120b high" && llmmd loh lfs "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'echo "qwen3-thinking high" && llmmd lqt lfs lonline "${AI_CMD}"'
+          - cmd: 'echo "qwen3-thinking high" && llmmd lqt lfs "${AI_CMD}"'
       - shell_command:
           - cmd: 'echo "o3 medium" && llmmd ltm "${AI_CMD}"'
+      - shell_command:
+          - cmd: 'echo "gemini-flash online" && llmmd lgf lfs "${AI_CMD}"'
