@@ -12,6 +12,7 @@ keys:
   # Host Groups
   # NOTE: Should match the tags defined in `mylib.nix` and set in `flake.nix` for each machine.
   # `Ad-hoc` means the secret isn't enabled by default based on tags. 
+  # NOTE: Remember to run 'sops updatekeys <yaml_path>' after modifying these groups.
   - &full-clients
     - *smac
     - *aspen
@@ -57,6 +58,11 @@ creation_rules:
       - pgp:
           - *mjmaurer
         age: *dev-clients
+  - path_regex: system/modules/sops/vault/ai/cerebras.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *full-clients
   - path_regex: system/modules/sops/vault/ai/openai.yaml$
     key_groups:
       - pgp:
