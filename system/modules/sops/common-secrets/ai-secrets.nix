@@ -28,6 +28,14 @@ in
         "dev-client"
       ];
     };
+    enableCerebras = lib.mkOption {
+      type = lib.types.bool;
+      default = mylib.sysTagsIn [
+        "darwin"
+        "full-client"
+        "dev-client"
+      ];
+    };
     enableOpenai = lib.mkOption {
       type = lib.types.bool;
       default = mylib.sysTagsIn [
@@ -59,6 +67,14 @@ in
       sops.secrets = {
         apiKeyOpenai = {
           sopsFile = ../vault/ai/openai.yaml;
+        };
+      };
+    })
+
+    (lib.mkIf config.modules.ai-secrets.enableCerebras {
+      sops.secrets = {
+        apiKeyCerebras = {
+          sopsFile = ../vault/ai/cerebras.yaml;
         };
       };
     })

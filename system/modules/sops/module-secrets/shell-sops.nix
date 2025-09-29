@@ -36,6 +36,9 @@ in
             config.sops.placeholder ? apiKeyGemini
           ) "export GEMINI_API_KEY=${config.sops.placeholder.apiKeyGemini}"}
           ${lib.optionalString (
+            config.sops.placeholder ? apiKeyCerebras
+          ) "export CEREBRAS_API_KEY=${config.sops.placeholder.apiKeyCerebras}"}
+          ${lib.optionalString (
             config.sops.placeholder ? apiKeyAnthropic
           ) "export CLAUDE_API_KEY=${config.sops.placeholder.apiKeyAnthropic}"}
           ${lib.optionalString (

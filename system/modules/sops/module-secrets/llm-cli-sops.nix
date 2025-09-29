@@ -31,6 +31,8 @@ in
               if config.sops.placeholder ? apiKeyAnthropic then config.sops.placeholder.apiKeyAnthropic else null;
             gemini =
               if config.sops.placeholder ? apiKeyGemini then config.sops.placeholder.apiKeyGemini else null;
+            cerebras =
+              if config.sops.placeholder ? apiKeyCerebras then config.sops.placeholder.apiKeyCerebras else null;
             codestral =
               if config.sops.placeholder ? apiKeyCodestral then config.sops.placeholder.apiKeyCodestral else null;
             voyage =
