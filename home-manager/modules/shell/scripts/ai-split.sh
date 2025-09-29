@@ -1,17 +1,17 @@
 export PATH="$PATH:/opt/homebrew/bin:~/.nix-profile/bin"
 
-if [[ "$@" == "f "* ]]; then
-  echo "Fast mode"
+if [[ "$@" == "t "* ]]; then
+  echo "Thinking mode"
   export AI_CMD="${@:2}"  # Remove first 2 characters ('f ')
-  export TMUXP_SESSION="ai-fast"
+  export TMUXP_SESSION="ai"
 elif [[ "$@" == "c "* ]]; then
   echo "Code mode"
   export AI_CMD="${@:2}"  # Remove first 2 characters ('c ')
   export TMUXP_SESSION="ai-code"
 else
-  echo "Normal mode"
+  echo "Fast mode"
   export AI_CMD="$@"
-  export TMUXP_SESSION="ai"
+  export TMUXP_SESSION="ai-fast"
 fi
 
 export WINDOW_TITLE="$TMUXP_SESSION"

@@ -191,6 +191,8 @@ in
             lfc = "-f ${fragDir}/code.md";
             lft = "-f ${fragDir}/thinking-high.md";
 
+            lonline = web.exa;
+
             lfh = "-m gpt-5 ${reason.high}";
             lfm = "-m gpt-5 ${reason.medium}";
             lfl = "-m gpt-5 ${reason.low}";
