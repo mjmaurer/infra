@@ -1,0 +1,14 @@
+session_name: ai-fast
+windows:
+  - window_name: ai-fast
+    layout: even-horizontal
+    options:
+      automatic-rename: false
+    panes:
+      - shell_command:
+          - cmd: 'echo "gpt-oss-120b high" && llmmd loh "${AI_CMD}"'
+        focus: true
+      - shell_command:
+          - cmd: 'echo "qwen3-thinking high" && llmbar lgt "${AI_CMD}"'
+      - shell_command:
+          - cmd: 'echo "o3 medium" && llmbar ltm "${AI_CMD}"'
