@@ -13,8 +13,7 @@
 let
   cfg = config.modules.llm;
   cfgHome = "${config.xdg.configHome}/llm";
-  defaultModel = "gemini-2.5-flash";
-  flash = "gemini-2.5-flash";
+  defaultModel = "openrouter/openai/gpt-oss-120b";
   pythonPkg = pkgs-latest.python312;
   llmPkg = pkgs-latest.llm;
   customPackages = import ./custom-pkgs.nix {
@@ -31,6 +30,7 @@ let
       # llm-anthropic
       llm-gemini
       llm-jq
+      customPackages.llm-openrouter # this is available, but just outdated
       customPackages.llm-fragments-github
       customPackages.llm-fragments-site-text
       customPackages.llm-cmd-comp
@@ -38,7 +38,7 @@ let
     ]
   );
   mdFragPath = "$XDG_CONFIG_HOME/llm/fragments/markdown-output.md";
-  conciseFragPath = "$XDG_CONFIG_HOME/llm/fragments/concise.md";
+  succinctFragPath = "$XDG_CONFIG_HOME/llm/fragments/succinct.md";
   streamdownConfig = ''
     [features]
     CodeSpaces = false
@@ -105,6 +105,11 @@ in
       (pkgs.writeShellScriptBin "llmmd" ''
         llm -f ${mdFragPath} "$@" | sd
       '')
+      (pkgs.writeShellScriptBin "llmhistory" ''
+        llm logs --json -n 20 \
+          | jq -r '.[].prompt | gsub("\n"; " ") | .[0:250]' \
+          | awk '!seen[$0]++ { print $0; print "" }'
+      '')
       (pkgs.writeShellScriptBin "llmweb" ''
         llm -f site:$1 -f ${mdFragPath} "$${@:2}" | sd
       '')
@@ -129,17 +134,6 @@ in
             "and any notable aspects."
           ]
         }" | sd
-      '')
-      (pkgs.writeShellScriptBin "llmfollowup" ''
-        llm -f ${conciseFragPath} -f ${mdFragPath} -c "$@" | sd
-      '')
-      (pkgs.writeShellScriptBin "llmbar" ''
-        llm -f ${conciseFragPath} -f ${mdFragPath} "$@" | sd
-      '')
-      (pkgs.writeShellScriptBin "llmhistory" ''
-        llm logs --json -n 20 \
-          | jq -r '.[].prompt | gsub("\n"; " ") | .[0:250]' \
-          | awk '!seen[$0]++ { print $0; print "" }'
       '')
     ];
 
@@ -172,17 +166,63 @@ in
       };
     };
 
-    modules.commonShell = {
-      shellAliases = {
-        a = "llmcmd";
-        ac = "sd --exec \"llm chat -t quick\"";
-        ai = "llm -t quick";
-        af = "llmfollowup";
-        aiw = "llmweb";
-        aiws = "llmwebsummarize";
-        aig = "llmgithub";
-        aigs = "llmgithubsummarize";
-        ah = "llmhistory";
+    modules = {
+      zsh = {
+        shellGlobalAliases =
+          let
+            reason = {
+              high = "-o reasoning_effort high";
+              medium = "-o reasoning_effort medium";
+              low = "-o reasoning_effort low";
+            };
+            web = {
+              exa = "-o online 1"; # Openrouter provided Exa search
+              goog = "-o google_search 1";
+              # Openai resposnes api does support web, but llm doesn't support that
+              # openai = "-o extra_body '{\"only\": [\"cerebras\"]}'"
+            };
+            provider = {
+              cerebras = "-o provider '{\"only\": [\"cerebras\"]}'";
+            };
+            fragDir = "$XDG_CONFIG_HOME/llm/fragments";
+          in
+          {
+            lfs = "-f ${fragDir}/succinct.md";
+            lfc = "-f ${fragDir}/code.md";
+            lft = "-f ${fragDir}/thinking-high.md";
+
+            lfh = "-m gpt-5 ${reason.high}";
+            lfm = "-m gpt-5 ${reason.medium}";
+            lfl = "-m gpt-5 ${reason.low}";
+            lth = "-m o3 ${reason.high}";
+            ltm = "-m o3 ${reason.medium}";
+            ltl = "-m o3 ${reason.low}";
+            loh = "-m openrouter/openai/gpt-oss-120b ${reason.high} ${provider.cerebras}";
+            lom = "-m openrouter/openai/gpt-oss-120b ${reason.medium} ${provider.cerebras}";
+            lol = "-m openrouter/openai/gpt-oss-120b ${reason.low} ${provider.cerebras}";
+            lqc = "-m openrouter/qwen/qwen3-coder ${reason.high} ${provider.cerebras}";
+            lqt = "-m openrouter/qwen/qwen3-235b-a22b-thinking-2507 ${reason.high} ${provider.cerebras}";
+            lgf = "-m gemini-2.5-flash ${web.goog}";
+            lgp = "-m gemini-2.5-pro ${web.goog}";
+
+            SD = "| sd";
+          };
+      };
+      commonShell = {
+        shellAliases = {
+          a = "llmcmd";
+          ai = "llm -t quick";
+          ac = "sd --exec \"llm chat -t quick\"";
+          af = "llmmd -c";
+          aiw = "llmweb";
+          aiws = "llmwebsummarize";
+          aig = "llmgithub";
+          aigs = "llmgithubsummarize";
+          ah = "llmhistory";
+
+          # i.e. openrouter/openai/gpt-oss-120b
+          aioptions = "llm models --options -q ";
+        };
       };
     };
   };

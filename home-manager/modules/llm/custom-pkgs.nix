@@ -47,12 +47,12 @@ let
 
     llm-cmd-comp = pythonPkg.pkgs.buildPythonPackage rec {
       pname = "llm-cmd-comp";
-      version = "1.1.1";
+      version = "1.2.0";
       format = "pyproject";
 
       src = pkgs.fetchurl {
-        url = "https://files.pythonhosted.org/packages/source/l/llm_cmd_comp/llm_cmd_comp-1.1.1.tar.gz";
-        sha256 = "sha256-YyqVN53AG8C41UlX3zY8Lv+ApueCorNUZUalf87Rht8=";
+        url = "https://files.pythonhosted.org/packages/source/l/llm_cmd_comp/llm_cmd_comp-1.2.0.tar.gz";
+        sha256 = "sha256-bsczL/o4cXUgumCYGwQPF+TMTKT9jXFbcgra/NSngyM=";
       };
 
       nativeBuildInputs = with pythonPkg.pkgs; [
@@ -139,6 +139,40 @@ let
       meta = with lib; {
         description = "LLM fragments for GitHub";
         homepage = "https://github.com/simonw/llm-fragments-github";
+        license = licenses.asl20;
+      };
+    };
+
+    llm-openrouter = pythonPkg.pkgs.buildPythonPackage rec {
+      pname = "llm-openrouter";
+      version = "0.5";
+      format = "pyproject";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/simonw/llm-openrouter/archive/refs/tags/0.5.tar.gz";
+        sha256 = "sha256-MkXobkACveEd+pACYr0RQICaPlxC1M6S9S9HRQ4/Eag=";
+      };
+
+      nativeBuildInputs = with pythonPkg.pkgs; [
+        setuptools
+        wheel
+      ];
+      # Dependencies
+      propagatedBuildInputs = with pythonPkg.pkgs; [
+        llm
+        httpx
+        openai
+      ];
+
+      # Disable tests - enable if you have specific test dependencies
+      doCheck = false;
+
+      # Basic import check
+      pythonImportsCheck = [ "llm_openrouter" ];
+
+      meta = with lib; {
+        description = "LLM fragments for OpenRouter";
+        homepage = "https://github.com/simonw/llm-openrouter";
         license = licenses.asl20;
       };
     };

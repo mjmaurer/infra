@@ -23,7 +23,7 @@ $DIFF
 
 Format the response as a conventional commit message, without quotes or explanations."
 
-COMMIT_MSG=$(echo "$PROMPT" | llm --no-log -o thinking_budget 0)
+COMMIT_MSG=$(echo "$PROMPT" | llm --no-log)
 
 if gpg_output_and_error=$(gpg --card-status 2>&1); then
   no_gpg_or_error=false
