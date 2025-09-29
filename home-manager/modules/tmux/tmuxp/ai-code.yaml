@@ -6,9 +6,9 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'echo "qwen3-coder high" && llmmd lqc "${AI_CMD}"'
+          - cmd: 'echo "qwen3-coder high" && llmmd lqc lfc "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'echo "gpt-oss-120b high" && llmmd loh "${AI_CMD}"'
+          - cmd: 'echo "gpt-oss-120b high" && llmmd loh lfc "${AI_CMD}"'
       - shell_command:
-          - cmd: 'echo "o3 high" && llmbar lth "${AI_CMD}"'
+          - cmd: 'echo "o3 high" && llmmd lth lfc "${AI_CMD}"'

@@ -9,6 +9,6 @@ windows:
           - cmd: 'echo "gpt-oss-120b high" && llmmd loh "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'echo "qwen3-thinking high" && llmbar lgt "${AI_CMD}"'
+          - cmd: 'echo "qwen3-thinking high" && llmmd lgt "${AI_CMD}"'
       - shell_command:
-          - cmd: 'echo "o3 medium" && llmbar ltm "${AI_CMD}"'
+          - cmd: 'echo "o3 medium" && llmmd ltm "${AI_CMD}"'

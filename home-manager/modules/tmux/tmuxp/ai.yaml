@@ -6,7 +6,7 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'echo "gemini-pro web" && llmmd lgf "${AI_CMD}"'
+          - cmd: 'echo "gemini-pro web (with thinking frag)" && llmmd lgf lft "${AI_CMD}"'
         focus: true
       - shell_command:
           - cmd: 'echo "o3 high" && llmmd lth "${AI_CMD}"'
