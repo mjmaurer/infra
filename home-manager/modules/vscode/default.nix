@@ -57,8 +57,10 @@ in
 
               vscodevim.vim
               github.copilot
-              github.copilot-chat
-              github.vscode-pull-request-github
+              # NOTE: These two always break because they need to be in
+              # sync with vscode version. Just install manually if needed.
+              # github.copilot-chat
+              # github.vscode-pull-request-github
               # anthropic.claude-code
               visualstudioexptteam.intellicode-api-usage-examples
               visualstudioexptteam.vscodeintellicode
