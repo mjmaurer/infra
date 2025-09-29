@@ -12,6 +12,11 @@ in
 {
   options.modules.zsh = {
     enable = lib.mkEnableOption "zsh";
+    shellGlobalAliases = mkOption {
+      type = with types; attrsOf str;
+      default = {};
+      description = "Global aliases to add to zsh";
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -41,18 +46,13 @@ in
           source ~/.zshrc
         '';
       };
-      shellGlobalAliases = {
+      shellGlobalAliases = cfg.shellGlobalAliases // {
         hp = "HEAD~1";
         hpp = "HEAD~2";
         hppp = "HEAD~3";
         # Ripgrep context / copy mode
         rgC = "--no-line-number -A 10 -B 10";
         pbc = "| pbcopy";
-
-        lfc = "-f $XDG_CONFIG_HOME/llm/fragments/concise.md";
-        lmf = "-m gemini-2.5-flash -o google_search 1";
-        lmg = "-m gemini-2.5-pro -o google_search 1";
-        SD = "| sd";
 
         G = "| grep";
         GC = "| grep -C 3";
