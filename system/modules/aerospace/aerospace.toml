@@ -228,6 +228,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace web'
 
 [[on-window-detected]]
+if.app-id = 'com.brave.Browser'
+check-further-callbacks = false
+run = 'move-node-to-workspace web'
+
+[[on-window-detected]]
 if.app-id = 'com.microsoft.edgemac'
 check-further-callbacks = false
 run = 'move-node-to-workspace web'
