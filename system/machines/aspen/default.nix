@@ -8,9 +8,7 @@
 }:
 {
 
-  imports = [
-    ../../modules/sops/sops-yt-upload.nix
-  ];
+  imports = [];
 
   config = {
     # Extra home modules to load.
