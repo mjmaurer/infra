@@ -27,8 +27,7 @@
     ../modules/crypt/crypt.nix
     ../modules/git/git.nix
     ../modules/tmux/tmux.nix
-    ../modules/aider/aider.nix
-    ../modules/claude/claude.nix
+    ../modules/ai/ai.nix
     ../modules/aichat/aichat.nix
     ../modules/llm/llm.nix
     ../modules/neovim/neovim.nix
@@ -37,8 +36,10 @@
   # When adding here, consider if these should be disabled for some OS.
   modules = {
     tmux.enable = lib.mkDefault true;
+    ai.enable = lib.mkDefault true;
     aider.enable = lib.mkDefault true;
     claude.enable = lib.mkDefault true;
+    codex-cli.enable = lib.mkDefault true;
     aichat.enable = lib.mkDefault true;
     llm.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;

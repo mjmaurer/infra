@@ -23,17 +23,11 @@ in
       # claude-package
       pkgs-latest.claude-code
 
-      (pkgs.writeShellScriptBin "claude-setup" ''
+      (pkgs.writeShellScriptBin "claude-agent-setup" ''
         ${builtins.readFile ./setup.sh}
       '')
     ];
     home.file = {
-      ".claude/CLAUDE.md" = {
-        source = ./GLOBAL_CLAUDE.md;
-      };
-      ".claude/LOCAL_CLAUDE_TMPL.md" = {
-        source = ./LOCAL_CLAUDE_TMPL.md;
-      };
       # Claude Code will make updates to this, so we need to make it writable
       # https://github.com/anthropics/claude-code/issues/4808
       ".claude/settings.json.source" = {
@@ -65,8 +59,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        cl = "claude-setup && claude";
-        clp = "claude-setup && claude -p";
+        cl = "ai-setup && claude";
+        clp = "ai-setup && claude -p";
       };
     };
   };

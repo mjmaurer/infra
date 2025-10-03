@@ -26,16 +26,13 @@ in
       (pkgs-latest.aider-chat.withOptional {
         withPlaywright = true;
       })
-      (pkgs.writeShellScriptBin "aider-setup" ''
+      (pkgs.writeShellScriptBin "aider-agent-setup" ''
         ${builtins.readFile ./setup.sh}
       '')
     ];
     home.file = {
       ".config/aider/.aiderinclude" = {
         text = "";
-      };
-      ".config/aider/RULES.md" = {
-        source = ./GLOBAL_AIDER.md;
       };
       ".aider.conf.yml" = {
         source = ./settings/aider.conf.yml;
@@ -48,8 +45,8 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        aid = "aider-setup && aider --aiderignore .devdata/.aider/.aiderignore";
-        aidw = "aider-setup && aider --aiderignore .devdata/.aider/.aiderignore --watch-files";
+        aid = "ai-setup && aider --aiderignore .devdata/.aider/.aiderignore";
+        aidw = "ai-setup && aider --aiderignore .devdata/.aider/.aiderignore --watch-files";
       };
     };
   };
