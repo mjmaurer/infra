@@ -8,10 +8,14 @@
     allow = [
       "WebFetch(domain:github.com)"
       "WebFetch(domain:raw.githubusercontent.com)"
+
       "Bash(nix flake check:*)"
       "Bash(nix-instantiate --parse:*)"
       "Bash(nixfmt:*)"
-      "Edit(AI_README.md)"
+
+      "Bash(git status:*)"
+      "Bash(git diff:*)"
+
       "Edit(README.md)"
       "Edit(AGENTS.md)"
     ];
@@ -19,6 +23,8 @@
 
     ];
   };
+  # Don't use servers in project's mcp.json by default
+  enableAllProjectMcpServers = false;
   env = {
     DISABLE_AUTOUPDATER = 1;
     DISABLE_ERROR_REPORTING = 1;

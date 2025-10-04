@@ -50,7 +50,7 @@ in
         '';
       };
       ".claude/local-settings-tmpl.json" = {
-        text = lib.generators.toJSON { } (import ./settings/local-settings-tmpl.nix);
+        source = ./settings/local-settings-tmpl.jsonc;
       };
       ".claude/commands" = {
         source = ./commands;
@@ -58,10 +58,15 @@ in
     };
 
     modules.commonShell = {
-      shellAliases = {
-        cl = "ai-setup && claude";
-        clp = "ai-setup && claude -p";
-      };
+      shellAliases =
+        let
+          # See mcp.json.nix for mcp.json
+          baseClaude = "ai-setup && claude --mcp-config ~/.config/ai/mcp.json";
+        in
+        {
+          cl = baseClaude;
+          clp = "${baseClaude} -p";
+        };
     };
   };
 }
