@@ -1,0 +1,38 @@
+# Project Specific Instructions 
+
+Follow these rules when modifying code.
+
+## CONVENTIONS
+
+- Use type annotations wherever possible
+- Prioritize *clarity, simplicity, maintainability and robustness*.
+- Strive to make code easy to test.
+
+## DEPENDENCIES
+
+This section documents select project dependencies. Each dependency below lists where you can find relevant documentation / information. When authoring a change that involves a given dependency, you should use the links below to look up additional context if needed.
+
+## Kanata
+
+This is a keystroke remapping tool.
+
+Documentation: https://raw.githubusercontent.com/jtroo/kanata/refs/heads/main/docs/config.adoc
+
+## Disko
+
+This is a Nix module that let's you define your filesystem partitioning / configuration with Nix. This project only runs disko on initial installation, however, any future changes are reflected in Disko. If editing a disko.nix file, you should also generate a patch script that makes the same edits imperatively.
+
+Documentation Index: https://github.com/nix-community/disko/blob/master/docs/INDEX.md
+Example Implementations: https://github.com/nix-community/disko/tree/master/example
+
+## COMMANDS
+
+This section documents a list of commands that you should be prepared to run if necessary. The section is broken down by the programming language, and then the purpose of the command (linting, testing, running)
+
+### Nix
+
+#### Linting
+
+- `nix-instantiate --parse <file_path> > /dev/null`: It should be run following any edits to check validity of a file
+- `nix flake check -L`: This command is used to check the validity of a nix flake. It should be run on request to check the validity of a project with a `flake.nix` file.
+- `nixfmt <file>`: This command formats a file. It should be run following any edits
