@@ -13,13 +13,8 @@ reasoning-effort: "high"
 # anthropic
 thinking-tokens: "8k"
 
-file:
-  - AI_README.md
-
 read:
-  - ~/.config/aider/RULES.md
-  - CLAUDE.md
-  - AI_README.md
+  - AGENTS.md
 
 alias:
   - "oo:o1"
