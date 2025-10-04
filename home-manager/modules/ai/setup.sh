@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
 if [ -d .git ]; then
-    # Create common AI directories
-    mkdir -p .devdata/.ai
-    mkdir -p .ai
-
     # Copy AGENTS.md template if it doesn't exist
     if [ ! -f ./AGENTS.md ]; then
         if [ -f $XDG_CONFIG_HOME/ai/AGENTS.md ]; then

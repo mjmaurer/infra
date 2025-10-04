@@ -30,6 +30,9 @@ in
       ".config/ai/AGENTS.md" = {
         source = ./AGENTS.md;
       };
+      ".config/ai/mcp.json" = {
+        text = lib.generators.toJSON { } (import ./mcp.json.nix);
+      };
     };
   };
 }
