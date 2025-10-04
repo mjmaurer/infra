@@ -28,10 +28,10 @@ in
     # Store centralized AGENTS.md in config directory
     home.file = {
       ".config/ai/AGENTS.md" = {
-        source = ./AGENTS.md;
+        source = ./AGENTS_TMPL.md;
       };
       ".config/ai/mcp.json" = {
-        text = lib.generators.toJSON { } (import ./mcp.json.nix);
+        text = lib.generators.toJSON { pretty = true; } (import ./mcp.json.nix);
       };
     };
   };
