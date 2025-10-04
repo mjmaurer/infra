@@ -20,7 +20,7 @@ in
 
     modules.commonShell = {
       shellAliases = {
-        cx = "codex";
+        cx = "ai-setup && codex";
       };
     };
   };

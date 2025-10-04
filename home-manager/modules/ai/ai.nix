@@ -31,7 +31,7 @@ in
         source = ./AGENTS_TMPL.md;
       };
       ".config/ai/mcp.json" = {
-        text = lib.generators.toJSON { pretty = true; } (import ./mcp.json.nix);
+        source = (pkgs.formats.json { }).generate "mcp.json" (import ./mcp.json.nix);
       };
     };
   };

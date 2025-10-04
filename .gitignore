@@ -11,6 +11,7 @@ dev
 NOTES.md
 .direnv
 .devdata
+.mcp.json
 CLAUDE.md
 
 dev
