@@ -43,7 +43,7 @@ in
         profiles.default = {
           enableUpdateCheck = false;
           enableExtensionUpdateCheck = false;
-          userSettings = import ./settings.nix;
+          userSettings = import ./settings.nix { inherit pkgs-latest; };
           userTasks = import ./tasks.nix;
           keybindings = import ./keybindings.nix { editor = "vscode"; };
           extensions =

@@ -1,3 +1,4 @@
+{ pkgs-latest }:
 let
   vimNormalAndVisual = [
     {
@@ -79,7 +80,10 @@ let
         "g"
         "r"
       ];
-      commands = [ "git.revertSelectedRanges" "diffEditor.revert" ];
+      commands = [
+        "git.revertSelectedRanges"
+        "diffEditor.revert"
+      ];
     }
   ];
 in
@@ -155,6 +159,7 @@ in
   "diffEditor.codeLens" = true;
   "diffEditor.useInlineViewWhenSpaceIsLimited" = false;
   "diffEditor.ignoreTrimWhitespace" = false;
+  "direnv.path.executable" = "${pkgs-latest.direnv}/bin/direnv";
   "direnv.restart.automatic" = true;
   "editor.accessibilitySupport" = "off";
   "editor.cursorStyle" = "line";
@@ -431,8 +436,8 @@ in
   "leetcode.workspaceFolder" = "/Users/mmaurer7/code/problems/problems";
   "mypy.enabled" = false;
   "nix.enableLanguageServer" = true;
-  "nix.formatterPath" = "nixfmt";
-  "nix.serverPath" = "nil";
+  "nix.formatterPath" = "${pkgs-latest.nixfmt-rfc-style}/bin/nixfmt";
+  "nix.serverPath" = "${pkgs-latest.nil}/bin/nil";
   "nix.serverSettings" = {
     nil = {
       diagnostics = {
@@ -442,7 +447,7 @@ in
         ];
       };
       formatting = {
-        command = [ "nixfmt" ];
+        command = [ "${pkgs-latest.nixfmt-rfc-style}/bin/nixfmt" ];
       };
     };
   };
@@ -700,7 +705,10 @@ in
         "b"
         "h"
       ];
-      commands = [ "workbench.action.closePanel" "gitlens.diffLineWithWorking" ];
+      commands = [
+        "workbench.action.closePanel"
+        "gitlens.diffLineWithWorking"
+      ];
     }
     {
       # Duplicated in case I forget
@@ -709,7 +717,10 @@ in
         "g"
         "g"
       ];
-      commands = [ "workbench.action.closePanel" "gitlens.diffLineWithWorking" ];
+      commands = [
+        "workbench.action.closePanel"
+        "gitlens.diffLineWithWorking"
+      ];
     }
     {
       # git show blame commit
