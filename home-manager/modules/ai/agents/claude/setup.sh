@@ -24,7 +24,7 @@ if [ -d .git ]; then
     fi
 
     if [ ! -f ./mcp.json ] && [ -f ~/.config/ai/mcp.json ]; then
-        echo "Creating symlink mcp.json -> ~/.config/ai/mcp.json"
-        ln -s ~/.config/ai/mcp.json mcp.json
+        echo "Creating symlink .mcp.json -> ~/.config/ai/mcp.json"
+        ln -s ~/.config/ai/mcp.json .mcp.json
     fi
 fi

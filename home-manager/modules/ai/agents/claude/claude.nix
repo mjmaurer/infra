@@ -61,7 +61,9 @@ in
       shellAliases =
         let
           # See mcp.json.nix for mcp.json
-          baseClaude = "ai-setup && claude --mcp-config ~/.config/ai/mcp.json";
+          baseClaude = "ai-setup && claude"; # --mcp-config ~/.config/ai/mcp.json";
+          # mcp.json is symlinked in each project so
+          # we can default to `enableAllProjectMcpServers = false;`
         in
         {
           cl = baseClaude;
