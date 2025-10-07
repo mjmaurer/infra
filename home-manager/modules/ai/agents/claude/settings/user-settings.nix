@@ -36,7 +36,7 @@
         hooks = [
           {
             type = "command";
-            command = "afplay ${../sounds/short_whistle.mp3}";
+            command = "afplay ${../../../sounds/short_whistle.mp3}";
           }
         ];
       }
@@ -46,7 +46,7 @@
         hooks = [
           {
             type = "command";
-            command = "afplay ${../sounds/short_whistle.mp3}";
+            command = "afplay ${../../../sounds/short_whistle.mp3}";
           }
         ];
       }
