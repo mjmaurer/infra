@@ -12,6 +12,6 @@
         "github:utensils/mcp-nixos"
         "--"
       ];
-    };
+    } ;
   };
 }
