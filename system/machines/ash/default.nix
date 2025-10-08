@@ -49,8 +49,8 @@
 
     modules.networking = {
       wiredInterfaces = [
-        "eth0"
-        "eth1"
+        "enp4s0"
+        "enp5s0"
       ];
     };
 
