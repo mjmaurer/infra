@@ -1,3 +1,5 @@
+# ----------------------------- TROUBLESHOOTING ----------------------------
+# Probably can't use --gpus (use --device nvidia.com/gpu=all instead): https://github.com/NixOS/nixpkgs/issues/337873#issuecomment-2320357105
 {
   pkgs,
   lib,
