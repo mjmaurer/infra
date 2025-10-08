@@ -14,9 +14,9 @@
       {
         # This was recently added:
         defaultSession = lib.mkIf (config.programs.sway.enable) "sway";
-        lightdm = lib.mkIf (!hasNvidia) {
-          enable = true;
-          greeters.gtk.enable = true;
+        lightdm = {
+          enable = !hasNvidia;
+          greeters.gtk.enable = !hasNvidia;
         };
       };
   };
