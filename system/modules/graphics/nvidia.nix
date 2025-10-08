@@ -34,6 +34,18 @@ in
         nvtop # NVIDIA GPU monitoring utility
 
         glxinfo # from mesa-demos
+
+        nvidia-vaapi-driver
+        # nv-codec-headers-12
+        # nvtopPackages.full
+
+        # Accelerated graphics support for NVIDIA GPUs:
+        mesa
+        vulkan-tools
+        libva-utils
+        vdpauinfo
+        # May not be needed when using nvidia-vaapi-driver:
+        # libvdpau-va-gl
       ];
       environment.sessionVariables = {
         WLR_NO_HARDWARE_CURSORS = "1";
@@ -49,20 +61,6 @@ in
           mount-nvidia-executables = true;
         };
         nvidia = {
-          extraPackages = with pkgs; [
-            nvidia-vaapi-driver
-            # nv-codec-headers-12
-            # nvtopPackages.full
-
-            # Accelerated graphics support for NVIDIA GPUs:
-            mesa
-            vulkan-tools
-            libva-utils
-            vdpauinfo
-            # May not be needed when using nvidia-vaapi-driver:
-            # libvdpau-va-gl
-          ];
-
           # closed-source driver is required for CUDA/NVLink
           # Only supported by: https://github.com/NVIDIA/open-gpu-kernel-modules#compatible-gpus
           open = false;
@@ -103,7 +101,7 @@ in
           driSupport = true;
           # driSupport32Bit = true;
           # HW video decode
-          extraPackages = with pkgs; [ nvidia-vaapi-driver ];
+          # extraPackages = with pkgs; [ nvidia-vaapi-driver ];
         };
       };
 
