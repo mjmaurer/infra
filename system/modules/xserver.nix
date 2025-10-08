@@ -7,13 +7,17 @@
   services.xserver = {
     enable = true;
     autorun = false;
-    displayManager = {
-      # This was recently added: 
-      defaultSession = lib.mkIf (config.programs.sway.enable) "sway";
-      lightdm = lib.mkIf (!(config.modules ? nvidia)) {
-        enable = true;
-        greeters.gtk.enable = true;
+    displayManager =
+      let
+        hasNvidia = lib.hasAttrByPath [ "modules" "nvidia" ] config;
+      in
+      {
+        # This was recently added:
+        defaultSession = lib.mkIf (config.programs.sway.enable) "sway";
+        lightdm = lib.mkIf (!hasNvidia) {
+          enable = true;
+          greeters.gtk.enable = true;
+        };
       };
-    };
   };
 }

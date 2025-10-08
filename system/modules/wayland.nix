@@ -28,7 +28,7 @@
     in
     ''
       if [[ -z $DISPLAY ]] && [[ $(tty) = /dev/tty1 ]]; then
-            sway${lib.optionalString hasNvidia " --unsupported-gpu"} -V > .sway-log 2>&1
+            sway${lib.optionalString hasNvidia " --unsupported-gpu"} -V > ~/.local/state/sway/sway.log 2>&1
       fi
     '';
 }
