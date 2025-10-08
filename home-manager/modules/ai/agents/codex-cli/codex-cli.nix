@@ -31,7 +31,7 @@ in
               mcp_servers = mcpConfig.mcpServers;
               notify = [ "whistle" ];
             };
-            mcpTomlText = nix-std.lib.toTOML mcpRenamed;
+            mcpTomlText = nix-std.lib.serde.toTOML mcpRenamed;
           in
           baseConfig + "\n" + mcpTomlText;
 
