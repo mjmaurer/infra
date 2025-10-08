@@ -30,9 +30,9 @@ in
               mcp_servers = mcpConfig.mcpServers;
               notify = [ "whistle" ];
             };
-            mcpToml = (pkgs.formats.toml { }).generate "mcp.toml" mcpRenamed;
+            mcpTomlText = lib.generators.toTOML { } mcpRenamed;
           in
-          baseConfig + "\n" + builtins.readFile mcpToml;
+          baseConfig + "\n" + mcpTomlText;
 
         onChange = ''
           source="${config.home.homeDirectory}/.codex/config.toml.source"
