@@ -108,8 +108,6 @@ in
     }
 
     (lib.mkIf config.modules.nvidia.enableCUDA {
-      programs.cuda.enable = true;
-
       environment.systemPackages = with pkgs; [
         cudaPackages.cudatoolkit
         cudaPackages.nccl
