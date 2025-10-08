@@ -9,6 +9,7 @@ keys:
     - &maple age1vgdqnptd3zawh6yew778m0z36y7e7jllygc83wrezq6calsxqg0qhun5t3
     - &willow age1mya8weyrutxpszdd992xtepfrt9zvz0dumzmxvtuja7gnrwwgglsqxwmdk
     - &dove age1a2xfudr0e7gxvlr7gql0p5yzr746dx0ujd8npwvstu25quhe94pqpms5nz
+    - &ash age18dju7s0yfrt3cexjexjqdhzr6y5vrngu2kq6yq65plm7a59w4qdsmh2ud2
   # Host Groups
   # NOTE: Should match the tags defined in `mylib.nix` and set in `flake.nix` for each machine.
   # `Ad-hoc` means the secret isn't enabled by default based on tags. 
@@ -20,10 +21,12 @@ keys:
     - *smac
     - *aspen  
     - *willow
+    - *ash
   - &linux-hosts
     - *maple
     - *willow
     - *dove
+    - *ash
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
@@ -107,3 +110,9 @@ creation_rules:
           - *mjmaurer
         age:
           - *dove
+  - path_regex: system/machines/ash/secrets.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age:
+          - *ash
