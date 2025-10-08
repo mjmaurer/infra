@@ -1,4 +1,4 @@
-{ ... }:
+{ config, lib, ... }:
 {
   # Nix unfortunately uses "services.xserver" for some wayland
   # configuration for legacy reasons.
@@ -7,9 +7,13 @@
   services.xserver = {
     enable = true;
     autorun = false;
-    displayManager.lightdm = {
-      enable = true;
-      greeters.gtk.enable = true;
+    displayManager = {
+      # This was recently added: 
+      defaultSession = lib.mkIf (config.programs.sway.enable) "sway";
+      lightdm = lib.mkIf (!(config.modules ? nvidia)) {
+        enable = true;
+        greeters.gtk.enable = true;
+      };
     };
   };
 }
