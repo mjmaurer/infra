@@ -61,7 +61,10 @@ in
           systemd.network = {
             enable = true;
 
-            wait-online.timeout = 10;
+            wait-online = {
+              anyInterface = true;
+              timeout = 10;
+            };
 
             networks = lib.mkMerge [
               {

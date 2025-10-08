@@ -51,8 +51,6 @@
       wiredInterfaces = [
         "enp4s0"
         "enp5s0"
-        "eth0"
-        "eth1"
       ];
     };
 
