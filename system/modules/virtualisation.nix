@@ -32,7 +32,13 @@ in
         enable = true;
         enableNvidia = cfg.enableNvidia;
         defaultNetwork.settings.dns_enabled = true;
-        dockerCompat = true;
+        dockerCompat = !cfg.withDocker;
+        autoPrune.enable = true;
+      };
+
+      docker = lib.mkIf cfg.withDocker {
+        enable = true;
+        enableNvidia = cfg.enableNvidia;
         autoPrune.enable = true;
       };
     };
