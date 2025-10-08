@@ -69,7 +69,23 @@
                 ./system/common/headed-minimal.nix
               ];
             };
-
+        ash =
+          (sys.withConfig {
+            system = "x86_64-linux";
+            derivationName = "ash";
+            tags = [
+              "linux"
+              "dev-client"
+            ];
+          }).mkNixosSystem
+            {
+              homeStateVersion = "25.05";
+              systemStateVersion = "24.05";
+              extraSystemModules = [
+                ./system/machines/ash
+                ./system/common/headed-minimal.nix
+              ];
+            };
         willow =
           (sys.withConfig {
             system = "x86_64-linux";
