@@ -26,20 +26,23 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
    - Change `Boot Mode` to `UEFI only` (or make sure to boot the UEFI entry for the live-iso USB)
    - [Optional] Move the USB up in the boot order
 1. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
-1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso` 
+1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso`
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
-   - **Debugging:**  `live-iso` (previosly `nixos`) should resolve via router DNS, but if not you have to use IP
+   - **Debugging:** `live-iso` (previosly `nixos`) should resolve via router DNS, but if not you have to use IP
 
 1. Get the disk device IDs using `ls -l /dev/disk/by-id`. You will use this to write the the disko config.
 1. Get the kernel module for your network card for initrd: `lspci -k | grep -iA8 'network\|ethernet'`
 1. Get the interface names: `networkctl list` or `ip link`
+
+   - **NOTE:** Network interfaces may change after install. Make sure to follow notes after nixos-anywhere command
+
 1. Continue to `NixOS (Remote Machine)` section below
 
 ## Install: NixOS (Remote Machine)
 
 1. Create (or copy) a new directory under `system/machines`, with `secrets.yaml`, `default.nix`, `disko.nix`, and an empty `hardware-configuration.nix`
-1. Fill in `default.nix` and `disko.nix` with the values from above 
+1. Fill in `default.nix` and `disko.nix` with the values from above
 1. Create a preauthorized Tailscale auth key (single-use or alternatively a reusable key thats only valid for a day)
 
    - Add the tailscale key as a sops secret
@@ -61,7 +64,11 @@ nix run github:nix-community/nixos-anywhere -- \
    --build-on remote --print-build-logs
 ```
 
-1. Remove USB, reboot and enjoy! NOTE: You should probably use headless/remote reboot first thing to make sure it works (`sshk root@maple-init`). See remote LUKS section below for more info
+1. Remove USB, reboot and enjoy!
+
+   - **NOTE:** Network interfaces may have changed. Rerun `networkctl list` after ssh
+   - **NOTE:** Make sure to commit and push hardware-configurations.nix before rebuilding
+   - NOTE: You should probably use headless/remote reboot first thing to make sure it works (`sshk root@maple-init`). See remote LUKS section below for more info
 
 ## Install: Darwin
 
@@ -156,6 +163,7 @@ Disko doesn't have great support for [in-place updates](https://github.com/nix-c
 Make any modifications needed to `system/machines/$HOST/disko.nix`, and then you could ask an LLM to create a starter bash script for the changes given the diff. Once applies, you should commit these to `system/machines/$HOST/fs-patches` just to keep track.
 
 Then, you might be able to mount without a rebuild (but you should probably just rebuild):
+
 ```
 # Dry run first (it should only format new disks):
 sudo nix run github:nix-community/disko -- --dry-run --mode mount ~/infra/system/machines/$HOST/disko.nix
@@ -163,7 +171,7 @@ sudo nix run github:nix-community/disko -- --dry-run --mode mount ~/infra/system
 sudo nix run github:nix-community/disko -- --mode mount ~/infra/system/machines/$HOST/disko.nix
 ```
 
-## Decrypting LUKS Drive Remotely via SSH on Reboot 
+## Decrypting LUKS Drive Remotely via SSH on Reboot
 
 Just ssh like normal, however, use a hostname of `${hostname}-init`. This way, tailscale doesn't interfere, and we don't have to deal with known_host issues due to changing key.
 
@@ -171,7 +179,7 @@ Just ssh like normal, however, use a hostname of `${hostname}-init`. This way, t
 sshk root@maple-init
 # Wait for boot
 sshk mjmaurer@maple
-# Note: Could also use `maple.localdomain` for non-tailscale 
+# Note: Could also use `maple.localdomain` for non-tailscale
 # Note: If you can't login after boot, it could be because tailscale didnt start up correctly
 ```
 
@@ -245,7 +253,7 @@ pkcs11-tool --login --test
 
 # Debugging if that test fails (seems like using git signing breaks / resets something):
 # - ykman list (most reliable)
-# - Try existing current shell or reopening a new shell 
+# - Try existing current shell or reopening a new shell
 # - The act of running the below commands with OPENSC_DEBUG
 # - Plug out / plug in
 # - yubi-switch
