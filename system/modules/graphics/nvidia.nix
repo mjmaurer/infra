@@ -29,18 +29,14 @@ in
 
       environment.systemPackages = with pkgs; [
         # Useful tools for nvidia:
-        nvidia-smi
-        nvidia-settings # NVIDIA GUI utility
-        nvtop # NVIDIA GPU monitoring utility
-
-        glxinfo # from mesa-demos
+        nvtopPackages.full # cpu / gpu monitoring utility
 
         nvidia-vaapi-driver
-        # nv-codec-headers-12
-        # nvtopPackages.full
+        nv-codec-headers-12 # ffmpeg nvenc support
 
         # Accelerated graphics support for NVIDIA GPUs:
         mesa
+        mesa-demos
         vulkan-tools
         libva-utils
         vdpauinfo
