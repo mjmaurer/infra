@@ -26,7 +26,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
    - Change `Boot Mode` to `UEFI only`
    - [Optional] Move the USB up in the boot order
 1. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
-1. Confirm you can SSH into it: `ssh -p 22 -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso` 
+1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso` 
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
    - **Debugging:**  `live-iso` (previosly `nixos`) should resolve via router DNS, but if not you have to use IP
