@@ -98,8 +98,7 @@ in
         # OpenGL / Vulkan layers and 32-bit support (Steam, Wine)
         opengl = {
           enable = true;
-          driSupport = true;
-          # driSupport32Bit = true;
+          driSupport32Bit = true;
           # HW video decode
           # extraPackages = with pkgs; [ nvidia-vaapi-driver ];
         };
