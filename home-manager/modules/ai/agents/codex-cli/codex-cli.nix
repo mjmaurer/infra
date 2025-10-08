@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  nix-std,
   pkgs,
   pkgs-latest,
   ...
@@ -30,7 +31,7 @@ in
               mcp_servers = mcpConfig.mcpServers;
               notify = [ "whistle" ];
             };
-            mcpTomlText = lib.generators.toTOML { } mcpRenamed;
+            mcpTomlText = nix-std.lib.toTOML mcpRenamed;
           in
           baseConfig + "\n" + mcpTomlText;
 
