@@ -33,7 +33,6 @@ in
       default = mylib.sysTagsIn [
         "darwin"
         "full-client"
-        "dev-client"
       ];
     };
     enableOpenai = lib.mkOption {
