@@ -32,7 +32,7 @@ in
   "nixos-init-yubikey-match" = {
     match = "host ${hostListInitString}";
     user = "root";
-    port = 2222;
+    port = 22;
     extraOptions = {
       PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
     };
