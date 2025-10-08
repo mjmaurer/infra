@@ -101,6 +101,9 @@ in
             # Used by systemd-resolved
             nameservers = nameservers;
 
+            # Could disable ipv6 if worried about attack surface 
+            # enableIPv6 = false;
+
             firewall = {
               enable = true;
               # Always allow traffic from Tailscale network

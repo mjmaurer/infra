@@ -113,6 +113,10 @@ in
 
     services.samba = {
       enable = true;
+      # This would allow local network access, but it wasn't much faster
+      # and opens up more attack surface.
+      # Local - 940 Mbps; Tailscale - 890 Mbps
+      # openFirewall = true;
 
       settings =
         let
