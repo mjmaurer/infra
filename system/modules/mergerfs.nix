@@ -91,7 +91,7 @@ in
     };
   };
 
-  config = {
+  config = lib.mkIf cfg.enable {
     environment.systemPackages = [
       pkgs.mergerfs
     ];
