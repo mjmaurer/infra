@@ -10,6 +10,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 - Clone this repo to `~/infra` and cd into it
 - Run `nix develop ".#new-host"` to enter a shell which walks through steps of creating keys / config for new host. The following assumes you have a NEW_HOST_DATA environment variable created by this.
+  - MAKE SURE to follow the sops instructions to update .sops.yaml
 - For Home Manager / Darwin:
   - [Install Nix](https://nixos.org/download) (Also consider [this alternative installer](https://github.com/DeterminateSystems/nix-installer))
   - You need to run `export NIX_CONFIG="extra-experimental-features = nix-command flakes ca-derivations"` first. This can be removed once `--extra-experimental-features` on the commands below starts working again.
@@ -25,19 +26,20 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
    - Change `Boot Mode` to `UEFI only`
    - [Optional] Move the USB up in the boot order
 1. Boot into the USB. It should start an SSH server automatically, and uses dhcpcd (check dhcpcd logs if theres an issue)
-1. Confirm you can SSH into it: `ssh -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso` 
+1. Confirm you can SSH into it: `ssh -p 22 -I ~/.nix-profile/lib/libykcs11.dylib root@live-iso` 
 
    - **Debugging:** Make sure you can generate a public key from your resident PIV (See PIV README section). If not, try unplugging/replugging
    - **Debugging:**  `live-iso` (previosly `nixos`) should resolve via router DNS, but if not you have to use IP
 
 1. Get the disk device IDs using `ls -l /dev/disk/by-id`. You will use this to write the the disko config.
-1. Get the kernel module for your network card for initrd: `lspci -v | grep -iA8 'network\|ethernet'`
+1. Get the kernel module for your network card for initrd: `lspci -k | grep -iA8 'network\|ethernet'`
 1. Get the interface names: `networkctl list` or `ip link`
 1. Continue to `NixOS (Remote Machine)` section below
 
 ## Install: NixOS (Remote Machine)
 
 1. Create (or copy) a new directory under `system/machines`, with `secrets.yaml`, `default.nix`, `disko.nix`, and an empty `hardware-configuration.nix`
+1. Fill in `default.nix` and `disko.nix` with the values from above 
 1. Create a preauthorized Tailscale auth key (single-use or alternatively a reusable key thats only valid for a day)
 
    - Add the tailscale key as a sops secret
