@@ -875,14 +875,12 @@ in
       commands = [ "editor.gotoPreviousFold" ];
     }
     {
-      # Jumplist prev
-      # "<C-o>"
       before = [
         "<leader>"
         "j"
         "j"
       ];
-      commands = [ "workbench.action.openPreviousRecentlyUsedEditor" ];
+      commands = [ "workbench.action.navigateBack" ];
     }
     {
       before = [
@@ -890,7 +888,7 @@ in
         "k"
         "k"
       ];
-      commands = [ "workbench.action.openNextRecentlyUsedEditor" ];
+      commands = [ "workbench.action.navigateForward" ];
     }
     # The navigation stack only affects certain navigations (like GoToDefinition)
     # I'll call this the "view" or "vim" stack
@@ -912,12 +910,14 @@ in
       commands = [ "workbench.action.navigateForwardInNavigationLocations" ];
     }
     {
+      # Jumplist prev
+      # "<C-o>"
       before = [
         "<leader>"
         "j"
         "f"
       ];
-      commands = [ "workbench.action.navigateBack" ];
+      commands = [ "workbench.action.openPreviousRecentlyUsedEditor" ];
     }
     {
       before = [
@@ -925,7 +925,7 @@ in
         "k"
         "f"
       ];
-      commands = [ "workbench.action.navigateForward" ];
+      commands = [ "workbench.action.openNextRecentlyUsedEditor" ];
     }
     {
       before = [
