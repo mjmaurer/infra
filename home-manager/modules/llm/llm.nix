@@ -105,6 +105,20 @@ in
       (pkgs.writeShellScriptBin "llmmd" ''
         llm -f ${mdFragPath} "$@" | sd
       '')
+      # Exports LLM_ARGS for use in llmchat sessions
+      (pkgs.writeShellScriptBin "llmchat" ''
+        set -euo pipefail
+
+        if [ "$#" -gt 1 ]; then
+          # All but last arg become LLM_ARGS (preserve zsh global alias expansion)
+          export LLM_ARGS="''${*:1:$(( $# - 1 ))}"
+        else
+          export LLM_ARGS=""
+        fi
+
+        printf '%s\n' "$LLM_ARGS"
+        llmmd "$@"
+      '')
       (pkgs.writeShellScriptBin "llmhistory" ''
         llm logs --json -n 20 \
           | jq -r '.[].prompt | gsub("\n"; " ") | .[0:250]' \
@@ -215,7 +229,7 @@ in
           a = "llmcmd";
           ai = "llm -t quick";
           ac = "sd --exec \"llm chat -t quick\"";
-          af = "llmmd -c";
+          af = "llmmd -c $LLM_ARGS";
           aiw = "llmweb";
           aiws = "llmwebsummarize";
           aig = "llmgithub";
