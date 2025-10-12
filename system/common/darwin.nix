@@ -34,7 +34,7 @@ in
   ];
 
   config = {
-    
+
     # Never change this here. Only in flake.nix
     system.stateVersion = lib.mkDefault 5;
 
@@ -50,16 +50,16 @@ in
       #   pkgs.coreutils
       # ];
     };
-  
+
     modules.darwin.enable = lib.mkDefault true;
     modules.homebrew.enable = lib.mkDefault true;
     modules.smbClient = {
       enable = lib.mkDefault true;
     };
-  
+
     # Add ability to used TouchID for sudo authentication
     security.pam.services.sudo_local.touchIdAuth = true;
-  
+
     system.defaults = lib.mkIf cfg.enable {
       finder = {
         AppleShowAllExtensions = true;
@@ -67,7 +67,7 @@ in
         QuitMenuItem = true; # Enable quit in Finder app menu bar
         ShowPathbar = true;
         ShowStatusBar = true;
-  
+
         _FXShowPosixPathInTitle = true;
         # When performing a search, search the current folder by default
         FXDefaultSearchScope = "SCcf";
@@ -92,10 +92,10 @@ in
         InitialKeyRepeat = 18;
         # normal minimum is 2 (30 ms), maximum is 120 (1800 ms)
         KeyRepeat = 3;
-  
+
         # "com.apple.swipescrolldirection" = false; # enable natural scrolling(default to true)
         "com.apple.sound.beep.feedback" = 0; # disable beep sound when pressing volume up/down key
-  
+
         NSAutomaticCapitalizationEnabled = false;
         NSAutomaticDashSubstitutionEnabled = false;
         NSAutomaticPeriodSubstitutionEnabled = false;
@@ -128,7 +128,7 @@ in
           # Ascii: https://www.ascii-code.com/
           # Key_codes: https://eastmanreference.com/complete-list-of-applescript-key-codes
           # Modifiers: https://gist.github.com/stephancasas/74c4621e2492fb875f0f42778d432973
-  
+
           # Might be easier to set the shorcut in system prefs, then run
           # `defaults read com.apple.symbolichotkeys` to get the values.
           # Also helping for seeing if there are conflicts
@@ -223,25 +223,41 @@ in
         };
       };
     };
-  
+
+    # Allows for more tty prompts (for tmux)
+    launchd.daemons.set-ptmx-max = {
+      serviceConfig = {
+        Label = "org.nix-darwin.set-ptmx-max";
+        ProgramArguments = [
+          "/usr/sbin/sysctl"
+          "-w"
+          "kern.tty.ptmx_max=1024"
+        ];
+        RunAtLoad = true;
+        KeepAlive = false;
+        StandardOutPath = "/var/log/set-ptmx-max.out.log";
+        StandardErrorPath = "/var/log/set-ptmx-max.err.log";
+      };
+    };
+
     system.activationScripts."copyApps".text = ''
       #!/usr/bin/env bash
       mkdir -p ${screenshotDir}
-  
+
       # From https://github.com/LnL7/nix-darwin/issues/214#issuecomment-2050027696
-  
+
       # This used to work, but doesn't now
       # apps_source="${config.users.users.${username}.home}/Applications"
-  
+
       apps_source="$HOME/Applications/Home Manager Apps"
-  
+
       # Darwin system app source. Already copied by Darwin to "/Applications/Nix Apps"
       #apps_source="${config.system.build.applications}/Applications"
-  
+
       app_target="$HOME/Applications/Nix Trampolines"
-  
+
       mkdir -p "$app_target"
-  
+
       echo "Copying apps from $apps_source to $app_target"
       ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --delete --copy-unsafe-links "$apps_source/" "$app_target"
     '';
