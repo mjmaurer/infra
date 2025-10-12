@@ -3,6 +3,7 @@
   lib,
   config,
   isDarwin,
+  pkgs,
   pkgs-latest,
   nix-vscode-extensions,
   system,
@@ -43,7 +44,7 @@ in
         profiles.default = {
           enableUpdateCheck = false;
           enableExtensionUpdateCheck = false;
-          userSettings = import ./settings.nix { inherit pkgs-latest; };
+          userSettings = import ./settings.nix { inherit pkgs pkgs-latest; };
           userTasks = import ./tasks.nix;
           keybindings = import ./keybindings.nix { editor = "vscode"; };
           extensions =

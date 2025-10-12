@@ -1,4 +1,4 @@
-{ pkgs-latest }:
+{ pkgs, pkgs-latest }:
 let
   vimNormalAndVisual = [
     {
@@ -538,6 +538,8 @@ in
     };
   };
   "terminal.integrated.defaultProfile.osx" = "tmux-pwd";
+  # If this doesnt work, try killing tmux server and resetting
+  # if that doesnt work, try opening code from terminal with `code .`
   "terminal.integrated.profiles.osx" = {
     tmux-pwd = {
       # Used to have -i here (but don't need it I think. was causing problems for automation profile usage)
