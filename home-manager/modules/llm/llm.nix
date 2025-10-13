@@ -108,7 +108,6 @@ in
       # Exports LLM_ARGS for use in llmchat sessions
       (pkgs.writeShellScriptBin "llmchat" ''
         # Don't use set -e when script might be sourced
-        # Don't use set -u as it can break zsh widgets when sourced
         set -o pipefail
 
         if [ "$#" -gt 1 ]; then
@@ -116,7 +115,7 @@ in
           # Store as an array so JSON or spaced values remain single args
           # LLM_ARGS_ARR=("''${@:1:$#-1}")
           LLM_ARGS_ARR=("''${@:1:$(( $# - 1 ))}")
-          # Optional: keep a printable string for logging/debug
+          # for logging/debug:
           LLM_ARGS=""
           for _arg in "''${LLM_ARGS_ARR[@]}"; do
             if [ -z "$LLM_ARGS" ]; then

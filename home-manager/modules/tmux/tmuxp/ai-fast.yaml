@@ -8,11 +8,11 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'echo "gpt-oss-120b high" && llmmd loh lfs "${AI_CMD}"'
+          - cmd: 'source llmchat loh lfs "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'echo "qwen3-thinking high" && llmmd lqt lfs "${AI_CMD}"'
+          - cmd: 'source llmchat lqt lfs "${AI_CMD}"'
       - shell_command:
-          - cmd: 'echo "o3 medium" && llmmd ltm "${AI_CMD}"'
+          - cmd: 'source llmchat ltm "${AI_CMD}"'
       - shell_command:
-          - cmd: 'echo "gemini-flash online" && llmmd lgf lfs "${AI_CMD}"'
+          - cmd: 'source llmchat lgf lfs "${AI_CMD}"'

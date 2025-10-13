@@ -6,9 +6,9 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'echo "gemini-pro web (with thinking frag)" && llmmd lgf lft "${AI_CMD}"'
+          - cmd: 'source llmchat lgf lft "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'echo "o3 high" && llmmd lth "${AI_CMD}"'
+          - cmd: 'source llmchat lth "${AI_CMD}"'
       - shell_command:
-          - cmd: 'echo "gpt5 high" && llmmd lfh "${AI_CMD}"'
+          - cmd: 'source llmchat lfh "${AI_CMD}"'
