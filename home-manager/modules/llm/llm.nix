@@ -107,17 +107,33 @@ in
       '')
       # Exports LLM_ARGS for use in llmchat sessions
       (pkgs.writeShellScriptBin "llmchat" ''
-        set -euo pipefail
+        # Don't use set -e when script might be sourced
+        # Don't use set -u as it can break zsh widgets when sourced
+        set -o pipefail
 
         if [ "$#" -gt 1 ]; then
-          # All but last arg become LLM_ARGS (preserve zsh global alias expansion)
-          export LLM_ARGS="''${*:1:$(( $# - 1 ))}"
+          # All but last arg become pre-args, preserve original word boundaries
+          # Store as an array so JSON or spaced values remain single args
+          # LLM_ARGS_ARR=("''${@:1:$#-1}")
+          LLM_ARGS_ARR=("''${@:1:$(( $# - 1 ))}")
+          # Optional: keep a printable string for logging/debug
+          LLM_ARGS=""
+          for _arg in "''${LLM_ARGS_ARR[@]}"; do
+            if [ -z "$LLM_ARGS" ]; then
+              LLM_ARGS="$_arg"
+            else
+              LLM_ARGS="$LLM_ARGS $_arg"
+            fi
+          done
+          export LLM_ARGS
         else
+          unset LLM_ARGS_ARR
           export LLM_ARGS=""
         fi
 
-        printf '%s\n' "$LLM_ARGS"
         llmmd "$@"
+        export LLM_CID=$(llm logs --json -n 1 | jq -r '.[0].conversation_id')
+        printf '%s\ncid=%s\n' "$LLM_ARGS" "$LLM_CID"
       '')
       (pkgs.writeShellScriptBin "llmhistory" ''
         llm logs --json -n 20 \
@@ -125,7 +141,7 @@ in
           | awk '!seen[$0]++ { print $0; print "" }'
       '')
       (pkgs.writeShellScriptBin "llmweb" ''
-        llm -f site:$1 -f ${mdFragPath} "$${@:2}" | sd
+        llm -f site:$1 -f ${mdFragPath} "''${@:2}" | sd
       '')
       (pkgs.writeShellScriptBin "llmwebsummarize" ''
         llm -f site:$1 -f ${mdFragPath} "${
@@ -136,7 +152,7 @@ in
         }"
       '')
       (pkgs.writeShellScriptBin "llmgithub" ''
-        llm -f github:$1 -f ${mdFragPath} "$${@:2}" | sd
+        llm -f github:$1 -f ${mdFragPath} "''${@:2}" | sd
       '')
       (pkgs.writeShellScriptBin "llmgithubsummarize" ''
         llm -f github:$1 -f ${mdFragPath} "${
@@ -229,7 +245,7 @@ in
           a = "llmcmd";
           ai = "llm -t quick";
           ac = "sd --exec \"llm chat -t quick\"";
-          af = "llmmd -c $LLM_ARGS";
+          af = ''llmmd --cid "$LLM_CID" "''${(@)LLM_ARGS_ARR}"'';
           aiw = "llmweb";
           aiws = "llmwebsummarize";
           aig = "llmgithub";
