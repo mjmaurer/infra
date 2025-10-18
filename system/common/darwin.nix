@@ -21,7 +21,7 @@ in
     ../modules/basic.nix
     ../modules/users.nix
     ../modules/networking.nix
-    ../modules/samba/smb-client.nix
+    ../modules/samba/smb-client-darwin.nix
 
     ../modules/sops
 
@@ -53,9 +53,6 @@ in
 
     modules.darwin.enable = lib.mkDefault true;
     modules.homebrew.enable = lib.mkDefault true;
-    modules.smbClient = {
-      enable = lib.mkDefault true;
-    };
 
     # Add ability to used TouchID for sudo authentication
     security.pam.services.sudo_local.touchIdAuth = true;

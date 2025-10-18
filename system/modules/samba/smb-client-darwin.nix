@@ -1,3 +1,8 @@
+# ----------------------------- SETUP ----------------------------
+# In Finder: Go -> Connect to Server... -> smb://mjmaurer@willow/content
+# Save password in Keychain when prompted
+# In System Settings -> General -> Login Items, add the share folder to the login picker
+# Optional: Manually create 'nas' folder in $HOME and add to Finder favorites (add nas shares under it)
 # ----------------------------- TROUBLESHOOTING ----------------------------
 # First, check if tailscale is up for any error
 # Next, try umount + automount
@@ -12,15 +17,16 @@
   ...
 }:
 let
-  cfg = config.modules.smbClient;
   localShareName = "content";
   remoteShareName = "content";
 
   uid = toString config.modules.users.uid;
   gid = toString config.modules.users.gid;
 
-  nasMountPath = "/System/Volumes/Data/nas";
-  nasBaseName = lib.baseNameOf nasMountPath;
+  # Place to store aliases (manually) to NAS shares added with Finder
+  nasShareAliasDir = "${config.users.users.${username}.home}/nas";
+  # Finder determines this when shares are manually added, so this is just a hardcode:
+  shareMountDir = "/Volumes/";
 
   # mountScript = pkgs.writeShellScript "smbfs-mount-shares" ''
   #   set -euo pipefail
@@ -105,71 +111,113 @@ in
   #   '';
   # };
 
-  system.activationScripts.postActivation =
-    let
-      mountPathNoSlash = builtins.substring 1 ((builtins.stringLength nasMountPath) - 1) nasMountPath;
-    in
-    {
-      text = ''
-        set -euo pipefail
+  environment.systemPackages = [
+    (pkgs.writeShellScriptBin "mountshare" ''
+      set -euo pipefail
+      shareMountPath="${shareMountDir}${remoteShareName}"
+      if [[ -d "$shareMountPath" ]]; then
+        echo "$shareMountPath exists. Assuming its already mounted."
+      else
+        # Could enable add_subdirectory in postActivation script if this is annoying (slight risk)
+        sudo mkdir -p "$shareMountPath"
+        sudo chown ${uid}:${gid} "$shareMountPath"
+        smb_pass=$(security find-internet-password -s "willow" -a "mjmaurer" -r "smb " -D "Network Password" -w)
+        mount_smbfs //mjmaurer:$smb_pass@willow/content "$shareMountPath"
+      fi
+    '')
+  ];
 
-        if ! grep -qE "^${nasBaseName}[[:space:]]" /etc/synthetic.conf 2>/dev/null; then
-          echo "${nasBaseName}\t${mountPathNoSlash}" | tee -a /etc/synthetic.conf
+  system.activationScripts.postActivation = {
+    text = ''
+      set -euo pipefail
 
-          echo "------ NOTE ------- Added 'nas' to /etc/synthetic.conf. Reboot once for /nas to appear."
-        fi
-        mkdir -p ${nasMountPath} 
-        chown ${uid}:${gid} ${nasMountPath}
-        # Disable spotlight indexing on the nas mount (can be slow and annoying):
-        touch ${nasMountPath}/.metadata_never_index
-      '';
-    };
+      if [ "$(ls -A ${nasShareAliasDir})" = ".metadata_never_index" ]; then
+        echo "----- NOTE ------ ${nasShareAliasDir} is empty. After adding shares in Finder, you may want to move them here for easier access in Finder."
+      fi
+
+      # Ensure user mount path exists (for synthetic.conf)
+      mkdir -p ${nasShareAliasDir}
+      chown ${uid}:${gid} ${nasShareAliasDir}
+      chmod 700 ${nasShareAliasDir}
+      # Try to disable spotlight indexing on the alias dir (probably does nothing):
+      touch ${nasShareAliasDir}/.metadata_never_index
+
+      # Allow user to create subdirs under /Volumes (needed for mountshare script)
+      # sudo chmod +a "user:${username} allow add_subdirectory" /Volumes
+
+      # Finder shows mounts under /Volumes, so we need to expose /nas at the root (requires one reboot)
+      if ! grep -qE "^nas[[:space:]]" /etc/synthetic.conf 2>/dev/null; then
+        printf "nas\tVolumes\n" | tee -a /etc/synthetic.conf
+
+        echo "------ NOTE ------- Added 'nas' to /etc/synthetic.conf. Reboot once for /nas to appear."
+      fi
+    '';
+  };
+
+  # environment = {
+  #   systemPackages = [
+  #     (pkgs.writeShellScript "smbfs-mount-shares" ''
+  #     '')
+  #   ];
+  # };
 
   # Per-user LaunchAgent so it can read the user's Login Keychain
-  launchd.user.agents.mountSamba = let
-    mountOpts = "soft,rw,nosuid";
-  in{
-    enable = true;
-    serviceConfig = {
-      Label = "mountSamba";
-      ProgramArguments = [
-        (pkgs.writeShellScript "smbfs-mount-shares" ''
-          set -euo pipefail
+  # launchd.user.agents.mountSamba =
+  #   let
+  #     mountOpts = "soft,rw,nosuid";
+  #   in
+  #   {
+  #     command = "${
+  #       pkgs.writeShellApplication {
+  #         name = "smbfs-mount-shares";
+  #         text = ''
+  #           set -euo pipefail
 
-          nasUrl="mjmaurer@$SAMBA_HOST"
-          contentShareUrl="//$nasUrl/content"
+  #           echo "Mounting samba shares to ${nasMountPath}"
 
-          # If already content mounted, exit cleanly
-          if mount | awk '{print $3}' | grep -Fxq "$contentShareUrl"; then
-            exit 0
-          fi
+  #           nasUrl="mjmaurer@willow"
+  #           contentShareUrl="//$nasUrl/content"
 
-          # Mount using Keychain credentials (-N avoids prompting)
-          /sbin/mount_smbfs -N -o ${mountOpts} "$contentShareUrl" ${nasMountPath} || {
-            echo "mount_smbfs failed for \"$contentShareUrl\" -> ${nasMountPath}. Make sure your SMB password is saved in your Login Keychain (see module docs)." >&2
-            exit 1
-          }
-        '')
-      ];
-      RunAtLoad = true;
+  #           # If already content mounted, exit cleanly
+  #           if mount | awk '{print $3}' | grep -Fxq "$contentShareUrl"; then
+  #             exit 0
+  #           fi
 
-      # Re-run when the network (re)appears; mount_smbfs returns immediately
-      KeepAlive = {
-        NetworkState = true;
-      };
+  #           contentMntPath="${nasMountPath}/content"
+  #           mkdir -p $contentMntPath
+  #           chown ${uid}:${gid} $contentMntPath
 
-      # Avoid tight loops if it fails repeatedly
-      ThrottleInterval = 30;
+  #           # Mount using Keychain credentials (-N avoids prompting)
+  #           /sbin/mount_smbfs -N -o ${mountOpts} "$contentShareUrl" $contentMntPath || {
+  #             echo "mount_smbfs failed for \"$contentShareUrl\" -> ${nasMountPath}. Make sure your SMB password is saved in your Login Keychain (see module docs)." >&2
+  #             exit 1
+  #           }
+  #         '';
+  #       }
+  #     }/bin/smbfs-mount-shares";
+  #     serviceConfig = {
+  #       Label = "mountSamba";
+  #       RunAtLoad = true;
 
-      # Agent should run in GUI sessions
-      LimitLoadToSessionType = "Aqua";
+  #       # Re-run when the network (re)appears; mount_smbfs returns immediately
+  #       # Might not work
+  #       # KeepAlive = {
+  #       #   NetworkState = true;
+  #       # };
 
-      StandardOutPath = "/tmp/mount-samba.log";
-      StandardErrorPath = "/tmp/mount-samba.err";
+  #       # Avoid tight loops if it fails repeatedly
+  #       ThrottleInterval = 30;
+  #       StartInterval = 600; # try every 10 minutes
 
-      EnvironmentFile = config.sops.templates."mountSecrets".path;
-    };
-  };
+  #       # Agent should run in GUI sessions
+  #       # LimitLoadToSessionType = "Aqua";
+
+  #       StandardOutPath = "/tmp/mount-samba.log";
+  #       StandardErrorPath = "/tmp/mount-samba.err";
+
+  #       # EnvironmentFile = config.sops.templates."mountSecrets".path;
+  #     };
+  #   };
 
   # launchd.user.agents."nas.favorite" = lib.mkIf cfg.addToFinderFavorites {
   #   enable = true;
@@ -189,7 +237,7 @@ in
         content = ''
           SAMBA_HOST=${config.sops.placeholder.smbHost}
         '';
-        reloadUnits = [ "mountSamba.user" ];
+        # reloadUnits = [ "mountSamba.user" ];
       };
     };
   };

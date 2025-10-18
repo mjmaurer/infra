@@ -194,7 +194,6 @@
               homeStateVersion = "25.05";
               extraSystemModules = [
                 {
-                  modules.smbClient.enable = false;
                   modules.homebrew.enable = false;
                   modules.darwin.enable = false;
                 }
