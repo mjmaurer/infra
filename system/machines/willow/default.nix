@@ -74,7 +74,8 @@
         "full" = {
           path = "/nas";
           comment = "Full Share";
-          browseable = true;
+          # Prevents finder from auto-finding/connecting to this share:
+          browseable = false;
           readOnly = true;
           guestOk = false;
           validUsers = [ "mjmaurer" ];
