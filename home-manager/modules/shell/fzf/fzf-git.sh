@@ -91,14 +91,10 @@ elif [[ $# -gt 1 ]]; then
     branch=$(git describe --exact-match --tags 2> /dev/null || git rev-parse --short HEAD)
   fi
 
-  diff() {
-    # git show --pretty=format:"" -U0 HEAD~4 | awk 'BEGIN{RS="diff --git"; FS="\n"} {gsub(/\n/, " "); for (i = 1; i <= NF; i++) if ($i ~ /^--- a\// || $i ~ /^\+\+\+ b\//) print $1, $i; else if ($i ~ /^diff --git/) print $1; }'
-    if [[ -z "$1" && -z "$2" ]]; then
-      git diff --pretty=format:"" --name-only
-    else
-      git diff --pretty=format:"" --name-only "$1" "$2"
-    fi
-  }
+  #diff() {
+    ## git show --pretty=format:"" -U0 HEAD~4 | awk 'BEGIN{RS="diff --git"; FS="\n"} {gsub(/\n/, " "); for (i = 1; i <= NF; i++) if ($i ~ /^--- a\// || $i ~ /^\+\+\+ b\//) print $1, $i; else if ($i ~ /^diff --git/) print $1; }'
+    # git diff --pretty=format:"" --name-only "$@"
+  #}
 
   skip_remote=false
   # Only supports GitHub for now
@@ -109,7 +105,13 @@ elif [[ $# -gt 1 ]]; then
       ;;
     diff)
       echo $'Enter (open file in difftool) ╱ CTRL-S (toggle sort) ╱\nCTRL-A (show all diffs)\n'
-      diff $2 $3
+      # diff "${@:2}"
+      # Frustratingly __fzf_git requires at least one argument for diff
+      if [[ "$2" == "" ]]; then
+        git diff --pretty=format:"" --name-only "${@:3}"
+      else
+        git diff --pretty=format:"" --name-only "${@:2}"
+      fi
       skip_remote=true
       ;;
     branch|remote-branch)
@@ -221,23 +223,40 @@ _fzf_git_tags() {
 
 
 _fzf_git_diff() {
-  # File-by-file diff between two specific commits. 
+  # File-by-file diff between two specific commits.
   _fzf_git_check || return
-  local commit1=${1:-}
-  # Set to HEAD by default if commit1 is not empty:
-  local commit2=${2:-${commit1:+HEAD}}
-  local message="Working Diff"
-  if [[ -n "$commit1" && -n "$commit2" ]]; then
-    message="Diff from ${commit1:0:6} to ${commit2:0:6}"
+  local commit1=""
+  local commit2=""
+  local -a flags=()
+
+  # Extract non-flag arguments as commits, collect flags separately
+  for arg in "$@"; do
+    if [[ "$arg" != -* ]]; then
+      if [[ -z "$commit1" ]]; then
+        commit1="$arg"
+      elif [[ -z "$commit2" ]]; then
+        commit2="$arg"
+      fi
+    else
+      flags+=("$arg")
+    fi
+  done
+
+  # Set to HEAD by default if commit1 is not empty and not already HEAD:
+  if [[ -z "$commit2" && -n "$commit1" && "$commit1" != "HEAD" ]]; then
+    commit2="HEAD"
   fi
-  bash "$__fzf_git" diff "$commit1" "$commit2" |
+  local message="git diff ${commit1:0:6} ${commit2:0:6} ${flags[@]}"
+
+  # Frustratingly __fzf_git requires at least one argument for diff (see above), so we quote commit1
+  bash "$__fzf_git" diff "$commit1" $commit2 "${flags[@]}" |
   _fzf_git_fzf --ansi --no-sort --bind 'ctrl-s:toggle-sort' \
     --border-label "$message" \
     --header-lines 3 \
     --bind "enter:execute-silent:git difftool --no-prompt $commit1 $commit2 -- {}" \
     --bind "ctrl-a:become(bash -ic '_fzf_git_all_diffs')" \
     --color hl:underline,hl+:underline \
-    --preview "git diff $commit1 $commit2 --color=$(__fzf_git_color .) -- {} | $(__fzf_git_pager)"
+    --preview "git diff $commit1 $commit2 "${flags[@]}" --color=$(__fzf_git_color .) -- {} | $(__fzf_git_pager) 2>&1 || true"
 }
 
 _fzf_git_show() {

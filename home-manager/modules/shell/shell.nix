@@ -227,7 +227,9 @@ in
         "grs" = "git restore --staged";
         "gc" = "git commit -v";
         "gsh" = "_fzf_git_show";
-        "gd" = "_fzf_git_diff";
+        "gd" = "_fzf_git_diff HEAD"; # Includes staged and unstaged
+        "gds" = "_fzf_git_diff --staged";
+        "gdu" = "_fzf_git_diff"; # Just unstaged
         "gad" = "_fzf_git_all_diffs";
         "gcs" = "git commit -v --gpg-sign";
         "ga" = "git add $(_fzf_git_files)";
