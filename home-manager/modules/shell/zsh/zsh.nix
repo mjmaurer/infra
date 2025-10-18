@@ -145,14 +145,14 @@ in
         # Others: direnv
         plugins = [
           "vi-mode"
-          "thefuck"
+          # "thefuck"
           "aws"
           "docker"
-          "helm"
-          "kubectl"
-          "yarn"
-          "poetry"
-          "tailscale"
+          # "helm"
+          # "kubectl"
+          # "yarn"
+          # "poetry"
+          # "tailscale"
           "tmux"
         ];
         # theme = "robbyrussell";

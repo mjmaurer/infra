@@ -249,6 +249,7 @@ in
         "als" = "print -z $(_fzf_search_alias)";
         "fdd" = "fd -td";
         "fdf" = "fd -tf";
+        "ms" = "mountshare"; # See smb-client-darwin.nix
         "nix-shell" = "nix-shell --command 'zsh'";
         "ns" = "nix-shell";
         "nd" = "nix develop --command 'zsh'";
