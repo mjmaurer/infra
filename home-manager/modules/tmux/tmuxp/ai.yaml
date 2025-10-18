@@ -6,7 +6,7 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'source llmchat lgf lft "${AI_CMD}"'
+          - cmd: 'source llmchat lgp lft "${AI_CMD}"'
         focus: true
       - shell_command:
           - cmd: 'source llmchat lth "${AI_CMD}"'
