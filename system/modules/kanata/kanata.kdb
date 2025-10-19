@@ -168,17 +168,17 @@
 )
 
 (deflayermap (number)
-  u   7 
-  i   8
-  o   9
-  j   4
-  k   5
-  l   6
-  m   1
-  ,   2
-  .   3
-  h   0
-  n   0
+  u   (fork 7 (unmod (lsft) Numpad7) (lsft))
+  i   (fork 8 (unmod (lsft) Numpad8) (lsft)) 
+  o   (fork 9 (unmod (lsft) Numpad9) (lsft))
+  j   (fork 4 (unmod (lsft) Numpad4) (lsft))
+  k   (fork 5 (unmod (lsft) Numpad5) (lsft))
+  l   (fork 6 (unmod (lsft) Numpad6) (lsft))
+  m   (fork 1 (unmod (lsft) Numpad1) (lsft))
+  ,   (fork 2 (unmod (lsft) Numpad2) (lsft))
+  .   (fork 3 (unmod (lsft) Numpad3) (lsft))
+  h   (fork 0 (unmod (lsft) Numpad0) (lsft))
+  n   (fork 0 (unmod (lsft) Numpad0) (lsft))
 )
 
 ;; -------------------------------- Aliases ------------------------------------ #
