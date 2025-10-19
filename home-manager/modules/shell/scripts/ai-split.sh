@@ -1,12 +1,18 @@
 export PATH="$PATH:/opt/homebrew/bin:~/.nix-profile/bin"
 
-if [[ "$@" == "t "* ]]; then
+if [[ "$@" == ". "* ]]; then
+  echo "Custom session mode"
+  # Remove the period and space
+  args="${@:2}"
+  export TMUXP_SESSION="ai-${args%% *}"
+  export AI_CMD="${args#* }"
+elif [[ "$@" == "t "* ]]; then
   echo "Thinking mode"
-  export AI_CMD="${@:2}"  # Remove first 2 characters ('f ')
+  export AI_CMD="${@:2}"
   export TMUXP_SESSION="ai"
 elif [[ "$@" == "c "* ]]; then
   echo "Code mode"
-  export AI_CMD="${@:2}"  # Remove first 2 characters ('c ')
+  export AI_CMD="${@:2}"
   export TMUXP_SESSION="ai-code"
 else
   echo "Fast mode"

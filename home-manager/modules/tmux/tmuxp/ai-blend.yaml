@@ -1,0 +1,18 @@
+session_name: ai-blender
+windows:
+  - window_name: ai-blender
+    # Three even horizontal, with the rightmost split into two vertical panes
+    # Can get this string by creating ideal layout, then running `display-message -p "#{window_layout}"` in tmux
+    layout: a578,253x61,0,0{84x61,0,0,443,83x61,85,0,444,84x61,169,0[84x30,169,0,445,84x30,169,31,446]}
+    options:
+      automatic-rename: false
+    panes:
+      - shell_command:
+          - cmd: 'source llmchat ltblend loh lfs "${AI_CMD}"'
+        focus: true
+      - shell_command:
+          - cmd: 'source llmchat ltblend lgf lfs "${AI_CMD}"'
+      - shell_command:
+          - cmd: 'source llmchat ltblend lqt lfs "${AI_CMD}"'
+      - shell_command:
+          - cmd: 'source llmchat ltblend ltm "${AI_CMD}"'

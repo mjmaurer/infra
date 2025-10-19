@@ -214,11 +214,14 @@ in
               cerebras = "-o provider '{\"only\": [\"cerebras\"]}'";
             };
             fragDir = "$XDG_CONFIG_HOME/llm/fragments";
+            tmplDir = "$XDG_CONFIG_HOME/llm/templates";
           in
           {
             lfs = "-f ${fragDir}/succinct.md";
             lfc = "-f ${fragDir}/code.md";
             lft = "-f ${fragDir}/thinking-high.md";
+
+            ltblend = "-t ${tmplDir}/blender.yaml";
 
             lonline = web.exa;
 
