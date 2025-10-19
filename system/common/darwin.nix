@@ -142,11 +142,11 @@ in
             "28" = {
               enabled = true;
               value = {
-                # cmd+3
+                # cmd+shift+3
                 parameters = [
                   51
                   20
-                  1048576
+                  1179648
                 ];
                 type = "standard";
               };
@@ -168,11 +168,11 @@ in
             "30" = {
               enabled = true;
               value = {
-                # cmd+4
+                # cmd+shift+4
                 parameters = [
                   52
                   21
-                  1048576
+                  1179648
                 ];
                 type = "standard";
               };
@@ -194,11 +194,11 @@ in
             "53" = {
               enabled = true;
               value = {
-                # cmd+9
+                # cmd+shift+9
                 parameters = [
                   57
                   25
-                  1048576
+                  1179648
                 ];
                 type = "standard";
               };
@@ -207,11 +207,11 @@ in
             "54" = {
               enabled = true;
               value = {
-                # cmd+0
+                # cmd+shift+0
                 parameters = [
                   48
                   29
-                  1048576
+                  1179648
                 ];
                 type = "standard";
               };
