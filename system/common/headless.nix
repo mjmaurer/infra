@@ -22,6 +22,8 @@
     ../modules/sops
     ../modules/duplicacy/duplicacy.nix
     ../modules/mergerfs.nix
+
+    ../modules/samba/smb-common.nix
   ];
 
   config = {

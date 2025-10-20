@@ -18,6 +18,7 @@ in
         "darwin"
         "full-client"
         "dev-client"
+        "nas-access"
       ];
     };
   };

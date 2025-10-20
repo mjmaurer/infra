@@ -468,11 +468,9 @@ in
         };
 
         users.users.${username}.extraGroups = [
-          "nas"
           "karaoke"
         ];
         users.groups.${systemdGroupName} = { };
-        users.groups.nas = { };
         users.groups.karaoke = { };
       })
     ]

@@ -27,6 +27,8 @@ keys:
     - *willow
     - *dove
     - *ash
+  - &nas-access
+    - *ash
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
@@ -49,7 +51,9 @@ creation_rules:
     key_groups:
       - pgp:
           - *mjmaurer
-        age: *dev-clients
+        age:
+          - *dev-clients
+          - *nas-access
   # ==== AI ====
   - path_regex: system/modules/sops/vault/ai/openrouter.yaml$
     key_groups:
