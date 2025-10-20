@@ -62,6 +62,7 @@ cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
 cmd-ctrl-e = 'workspace code --auto-back-and-forth'
 cmd-ctrl-w = 'workspace web --auto-back-and-forth'
 cmd-ctrl-g = 'workspace files --auto-back-and-forth'
+cmd-ctrl-b = 'workspace blender --auto-back-and-forth'
 cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
@@ -79,6 +80,12 @@ cmd-ctrl-shift-e = [
 cmd-ctrl-shift-w = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window web',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-b = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window blender',
     'layout tiling',
     'join-with up',
 ]
@@ -360,6 +367,11 @@ run = 'move-node-to-workspace files'
 if.app-id = 'com.apple.finder'
 check-further-callbacks = false
 run = 'move-node-to-workspace files'
+
+[[on-window-detected]]
+if.app-id = 'org.blenderfoundation.blender'
+check-further-callbacks = false
+run = 'move-node-to-workspace blender'
 
 [[on-window-detected]]
 if.app-id = 'org.eyebeam.SelfControl'
