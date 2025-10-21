@@ -75,6 +75,7 @@
             derivationName = "ash";
             tags = [
               "linux"
+              "nas-access"
               "dev-client"
             ];
           }).mkNixosSystem
