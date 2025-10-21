@@ -236,6 +236,8 @@ in
     };
 
     # -- Sonarr -------------------------------------------------------------
+    # sqlite3 sonarr.db "update EpisodeFiles set MediaInfo=NULL where json_valid(MediaInfo)=0;"
+    # sqlite3 sonarr.db "SELECT Id, RelativePath FROM EpisodeFiles WHERE json_valid(MediaInfo) = 0;"
     sonarr = mkContainer { user = "sonarr"; } {
       image = "lscr.io/linuxserver/sonarr:latest";
       ports = [ "8989:8989" ];

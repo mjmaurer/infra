@@ -319,6 +319,13 @@ Note: This also depends on the `addGpgSshIdentity` activation, which sets ~/.ssh
 
 If there are any error messages at all during a build / rebuild, it could cause a potential issue with something downstream.
 
+## NixOS
+
+### Stale Mounts
+
+When changing fileSystems, this might appear as `(file not found "*.mount")`.
+A reboot will fix it until this issue is resolved: https://github.com/NixOS/nixpkgs/issues/398523
+
 ## Darwin
 
 ### Launchd
