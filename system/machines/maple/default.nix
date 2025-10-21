@@ -18,8 +18,6 @@
 
   config = {
 
-    modules.sops.enableMinimalSecrets = true;
-
     sops.secrets.oneTimeTailscaleAuthKey = {
       sopsFile = ./secrets.yaml;
     };

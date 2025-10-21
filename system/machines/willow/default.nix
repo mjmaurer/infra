@@ -34,8 +34,6 @@
       imports = [ ];
     };
 
-    modules.sops.enableMinimalSecrets = true;
-
     modules.duplicacy = {
       enableServices = true;
       repos = {
