@@ -55,8 +55,7 @@ in
     };
 
     sops.templates."smb-credentials" = {
-      path = "/run/secrets/smb-credentials";
-      # mode = "0400";
+      mode = "0400";
       content = ''
         username=mjmaurer
         password=${config.sops.placeholder.smbPassword}
