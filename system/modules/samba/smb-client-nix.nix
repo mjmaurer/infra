@@ -14,7 +14,7 @@ let
   mountPoint = "${mountRoot}/${shareName}";
 
   # Use declared UID helper (kept consistent across the repo)
-  uid = toString config.modules.users.uid;
+  uid = toString config.users.users.${username}.uid;
   nasGroup = config.users.groups.nas.name;
 in
 {
