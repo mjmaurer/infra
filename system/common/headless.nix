@@ -24,6 +24,7 @@
     ../modules/mergerfs.nix
 
     ../modules/samba/smb-common.nix
+    ../modules/samba/smb-client-nix.nix
   ];
 
   config = {
