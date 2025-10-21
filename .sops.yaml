@@ -51,9 +51,9 @@ creation_rules:
     key_groups:
       - pgp:
           - *mjmaurer
-        age:
-          - *dev-clients
-          - *nas-access
+        age: *dev-clients
+        merge:
+          - age: *nas-access
   # ==== AI ====
   - path_regex: system/modules/sops/vault/ai/openrouter.yaml$
     key_groups:

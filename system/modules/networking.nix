@@ -38,6 +38,25 @@ in
       default = "100.64.0.0/10";
       description = "The IP range used by Tailscale.";
     };
+    # On client, need to either:
+    # - `tailscale up --accept-routes=true`
+    # - or in GUI:
+    tailscaleSubnetRouter = lib.mkOption {
+      type = lib.types.submodule {
+        options = {
+          enabled = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+            description = "Enable this machine as a Tailscale subnet router.";
+          };
+          subnet = lib.mkOption {
+            type = lib.types.str;
+            description = "Subnet to advertise via Tailscale";
+          };
+        };
+      };
+      description = "Configuration for ensuring the local repository path exists.";
+    };
   };
 
   config = lib.mkMerge [
@@ -104,7 +123,7 @@ in
             # Used by systemd-resolved
             nameservers = nameservers;
 
-            # Could disable ipv6 if worried about attack surface 
+            # Could disable ipv6 if worried about attack surface
             # enableIPv6 = false;
 
             firewall = {
@@ -125,15 +144,17 @@ in
             fallbackDns = nameservers;
           };
 
+          # ---- NOTE -----: Might need to refresh the authKeyFile for a headless machine when changing this
           services.tailscale = {
             enable = true;
             package = pkgs.tailscale;
             openFirewall = true;
             interfaceName = tailscaleInterface;
-            useRoutingFeatures = lib.mkDefault "none";
+            useRoutingFeatures = if cfg.tailscaleSubnetRouter.enabled then "server" else "none";
             disableTaildrop = lib.mkDefault false;
-            # extraUpFlags = [ "--login-server" ];
-
+            extraUpFlags = lib.optionals cfg.tailscaleSubnetRouter.enabled [
+              "--advertise-routes=${cfg.tailscaleSubnetRouter.subnet}"
+            ];
             authKeyFile = config.sops.secrets.oneTimeTailscaleAuthKey.path;
           };
           services.fail2ban = {
