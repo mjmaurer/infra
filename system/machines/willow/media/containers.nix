@@ -54,6 +54,7 @@ let
         # This apparently doesn't work with linuxserver.io images:
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = lib.mkIf (user != null && group != null && runAsUser) "${user}:${group}";
+        pull = "newer";
 
         # NOTE: I gave up on rootless. See 9fd2c5c for closest attempt.
         # Need linger and subgid on user, and might want to run as a single 'media' user
@@ -94,7 +95,10 @@ in
     (mkUser 7 "bazarr" [ ])
     (mkUser 8 "qbit" [ ])
     (mkUser 9 "sab" [ ])
-    (mkUser 10 "plex" [ "video" "render" ])
+    (mkUser 10 "plex" [
+      "video"
+      "render"
+    ])
     (mkUser 11 "wizarr" [ ])
     (mkUser 12 "byparr" [ ])
     (mkUser 13 "unpackerr" [ ])
