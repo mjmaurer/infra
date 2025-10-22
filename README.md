@@ -68,6 +68,7 @@ nix run github:nix-community/nixos-anywhere -- \
 
    - **NOTE:** Network interfaces may have changed. Rerun `networkctl list` after ssh
    - **NOTE:** Make sure to commit and push hardware-configurations.nix before rebuilding
+   - **NOTE:** Make sure to add tailscale tags as appropriate in order to connect 
    - NOTE: You should probably use headless/remote reboot first thing to make sure it works (`sshk root@maple-init`). See remote LUKS section below for more info
 
 ## Install: Darwin

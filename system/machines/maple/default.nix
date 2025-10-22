@@ -39,7 +39,7 @@
       ];
       tailscaleSubnetRouter = {
         enabled = true;
-        subnet = "172.48.0.1/24";
+        subnet = "172.48.0.0/24";
       };
     };
 

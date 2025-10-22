@@ -6,7 +6,9 @@
 }:
 let
   hostListString = builtins.concatStringsSep "," nixosHostnames;
-  hostListInitString = builtins.concatStringsSep "," (map (h: "${h}-init") nixosHostnames);
+  hostListInitString = builtins.concatStringsSep "," (
+    map (h: "${h}-init,${h}-init.localdomain") nixosHostnames
+  );
 in
 {
   "nixos-yubikey-match" = {

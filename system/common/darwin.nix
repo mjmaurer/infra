@@ -22,7 +22,6 @@ in
     ../modules/users.nix
     ../modules/networking.nix
     ../modules/samba/smb-client-darwin.nix
-    ../modules/samba/smb-common.nix
 
     ../modules/sops
 

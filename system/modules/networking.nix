@@ -41,6 +41,9 @@ in
     # On client, need to either:
     # - `tailscale up --accept-routes=true`
     # - or in GUI:
+    # On Admin page:
+    # - For machine: approve the routes
+    # - Add to access control list
     tailscaleSubnetRouter = lib.mkOption {
       type = lib.types.submodule {
         options = {
