@@ -4,6 +4,7 @@ let
   insta360 = import ./insta360 { inherit (pkgs) callPackage; };
   colmap = import ./colmap { inherit (pkgs) writeShellApplication colmapWithCuda; };
 in
+# Call these with `nix run ~/infra#pkg-name`
 {
   # xpo = pkgs.callPackage ./xpo { };
   build-live-iso = pkgs.callPackage ./build-live-iso.nix { };
