@@ -285,6 +285,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace music'
 
 [[on-window-detected]]
+if.app-id = 'com.podurama.podcast'
+check-further-callbacks = false
+run = 'move-node-to-workspace music'
+
+[[on-window-detected]]
 if.app-id = 'com.apple.podcasts'
 check-further-callbacks = false
 run = 'move-node-to-workspace music'
