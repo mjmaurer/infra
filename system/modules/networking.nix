@@ -54,10 +54,12 @@ in
           };
           subnet = lib.mkOption {
             type = lib.types.str;
+            default = "";
             description = "Subnet to advertise via Tailscale";
           };
         };
       };
+      default = { };
       description = "Configuration for ensuring the local repository path exists.";
     };
   };
