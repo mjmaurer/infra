@@ -60,6 +60,7 @@ in
         username=mjmaurer
         password=${config.sops.placeholder.smbPassword}
       '';
+      # reloadUnits = [ "nas-${shareName}.automount" "nas-${shareName}.mount" ];
     };
 
     # Mount the NAS content share with systemd automount
@@ -74,8 +75,7 @@ in
         "dir_mode=0770"
         # Behavior
         "rw"
-        "vers=3.0"
-        "iocharset=utf8"
+        "vers=3.1.1"
         "_netdev"
         # Mount on first access; unmount after idle period
         "noauto"
