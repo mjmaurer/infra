@@ -231,7 +231,9 @@ if [[ -e "$OUT_DIR" ]]; then
     die "--out directory already exists: $OUT_DIR (refusing to overwrite). Please choose a new path or remove it."
 fi
 mkdir -p "$OUT_DIR"/{sparse,dense,logs}
-DB="$OUT_DIR/database.db"
+DB_OUT="$OUT_DIR/database.db"
+DB="/tmp/colmap_database.db"
+rm -f "$DB"
 SPARSE="$OUT_DIR/sparse"
 DENSE="$OUT_DIR/dense"
 LOGS="$OUT_DIR/logs"
@@ -356,6 +358,11 @@ else
 fi
 
 title "Done"
+# Move database from /tmp to output dir and clean up
+if [[ -f "$DB" ]]; then
+    cp -f "$DB" "$DB_OUT"
+    rm -f "$DB"
+fi
 echo "Outputs:"
 echo "  Sparse model:  $MODEL_PATH"
 echo "  Dense folder:  $DENSE"
