@@ -3,6 +3,7 @@
 # Save password in Keychain when prompted
 # In System Settings -> General -> Login Items, add the share folder to the login picker
 # Optional: Manually create 'nas' folder in $HOME and add to Finder favorites (add nas shares under it)
+# Optional: Add shortcut (OptOnKeyboard+Shift+S): Open shortcuts app and use 'connect to server'. Go to 'i' button to add shortcut  (and dont allow from lockscreen) 
 # ----------------------------- TROUBLESHOOTING ----------------------------
 # First, check if tailscale is up for any error
 # Next, try umount + automount
