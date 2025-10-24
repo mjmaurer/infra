@@ -37,6 +37,7 @@ cmd-ctrl-shift-f = ['flatten-workspace-tree', 'layout v_accordion']
 cmd-ctrl-y = 'layout h_tiles v_accordion'
 # cmd-ctrl-shift-f = 'fullscreen'
 alt-cmd-ctrl-x = 'close'
+alt-cmd-ctrl-o = 'exec-and-forget shortcuts run mount_smb'
 
 cmd-ctrl-h = 'focus left'
 cmd-ctrl-j = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace down'

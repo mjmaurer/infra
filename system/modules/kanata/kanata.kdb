@@ -196,11 +196,11 @@
 ;; NOTE: tap-timeout helps with holding down the tap key (i.e. for OS-level repeating)
 ;; If it's 200 and you tap the tap key of 'a', holding 'a' again within 200ms will result in a hold of 'a'.
 (defalias
-  ;; Hyper Key (lalt -> lmet lctl)
+  ;; ====== Hyper Key (lalt -> lmet lctl)
   hyp (multi $hypkey1 $hypkey2)
   end-hyp (multi (release-key $hypkey1) (release-key $hypkey2))
 
-  ;; Alt / Arrow Layer
+  ;; ====== Alt / Arrow Layer
   raltarr (multi $arrkey (layer-while-held alt-arrow))
   rgt     (unmod ($arrkey) rght)
   lft     (unmod ($arrkey) left)
@@ -208,17 +208,17 @@
   dwn     (fork (unmod ($arrkey) down) (unmod $syskeys pgdn) $hypkeys)
   up      (fork (unmod ($arrkey) up)   (unmod $syskeys pgup) $hypkeys)
 
-  ;; tab mode (Using vim keys in default layer for nav)
+  ;; ====== tab mode (Using vim keys in default layer for nav)
   tabmode  (multi tab (layer-switch default) (release-layer alt-arrow)) 
   alttab  (fork (unmod tab) @tabmode $hypkeys)
 
-  ;; Number Layer
+  ;; ====== Number Layer
   f       (tap-hold-release $tap-timeout $hold-time f (layer-while-held number))
 
-  ;; Tab Layer
+  ;; ====== Tab Layer
   tab     (fork (one-shot-press 1000 (layer-while-held tab)) tab (rsft))
 
-  ;; Semicolon (paren and left S-num) Layer
+  ;; ====== Semicolon (paren and left S-num) Layer
   d       (tap-hold-release $tap-timeout $hold-time d (layer-while-held semicolon))
   ;       (tap-hold-release $tap-timeout $hold-time ; (layer-while-held semicolon))
   /       (tap-hold-release $tap-timeout $hold-time / $slash-mod)
