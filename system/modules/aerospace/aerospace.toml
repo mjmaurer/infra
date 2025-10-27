@@ -379,30 +379,25 @@ if.app-id = 'org.blenderfoundation.blender'
 check-further-callbacks = false
 run = 'move-node-to-workspace blender'
 
-[[on-window-detected]]
-if.app-id = 'org.eyebeam.SelfControl'
-check-further-callbacks = false
-run = ['layout floating']
+# [[on-window-detected]]
+# if.app-id = 'org.eyebeam.SelfControl'
+# check-further-callbacks = false
+# run = ['layout tiling']
 
-[[on-window-detected]]
-if.app-id = 'com.apple.systempreferences'
-check-further-callbacks = false
-run = ['layout floating']
+# [[on-window-detected]]
+# if.app-id = 'com.apple.systempreferences'
+# check-further-callbacks = false
+# run = ['layout floating']
 
-[[on-window-detected]]
-if.app-id = 'org.pqrs.Karabiner-Elements.Settings'
-check-further-callbacks = false
-run = ['layout floating']
+# [[on-window-detected]]
+# if.app-id = 'com.apple.SystemProfiler'
+# check-further-callbacks = false
+# run = ['layout floating']
 
-[[on-window-detected]]
-if.app-id = 'com.apple.SystemProfiler'
-check-further-callbacks = false
-run = ['layout floating']
-
-[[on-window-detected]]
-if.app-id = 'org.gpgtools.pinentry-mac'
-check-further-callbacks = false
-run = ['layout floating']
+# [[on-window-detected]]
+# if.app-id = 'org.gpgtools.pinentry-mac'
+# check-further-callbacks = false
+# run = ['layout floating']
 
 # Catch-all for 'other'
 [[on-window-detected]]
