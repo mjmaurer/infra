@@ -1,3 +1,8 @@
+# TROUBLESHOOTING
+# Sometimes an app can request no global shortcuts for a period.
+# Bitwarden is common culprit, but you can find the app with:
+# ioreg -l -w 0 | grep -i SecureInput
+# ps -p <pid> -o pid,comm=
 {
   lib,
   config,
