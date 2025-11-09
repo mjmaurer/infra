@@ -121,6 +121,23 @@
               ];
 
             };
+        bluejay =
+          (sys.withConfig {
+            system = "x86_64-linux";
+            derivationName = "bluejay";
+            tags = [
+              "linux"
+            ];
+          }).mkNixosSystem
+            {
+              homeStateVersion = "25.05";
+              systemStateVersion = "24.05";
+              extraSystemModules = [
+                ./system/machines/bluejay
+                ./system/common/cloud.nix
+              ];
+
+            };
 
         live-iso =
           (sys.withConfig {
