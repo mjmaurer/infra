@@ -135,6 +135,9 @@
                 ./system/machines/bluejay
                 ./system/common/cloud.nix
               ];
+              defaultHomeModules = [
+                ./home-manager/common/nixos.nix
+              ];
             };
         live-iso =
           (sys.withConfig {
