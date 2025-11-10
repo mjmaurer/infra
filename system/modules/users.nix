@@ -83,7 +83,7 @@ in
                   pubkeys.sshPubYkcKey
                   pubkeys.sshPubBw
                 ];
-                hashedPasswordFile = config.sops.secrets.mjmaurerHashedPassword.path;
+                # hashedPasswordFile = config.sops.secrets.mjmaurerHashedPassword.path;
               };
             };
           };

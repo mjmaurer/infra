@@ -139,6 +139,7 @@
                 ./system/common/nixos.nix
                 ./system/modules/nix.nix
                 ./system/modules/basic.nix
+                ./system/modules/networking.nix
                 ./system/modules/ssh.nix
                 inputs.disko.nixosModules.disko
               ];
