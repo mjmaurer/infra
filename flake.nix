@@ -119,7 +119,6 @@
                 ./system/machines/dove
                 ./system/common/cloud.nix
               ];
-
             };
         bluejay =
           (sys.withConfig {
@@ -136,9 +135,7 @@
                 ./system/machines/bluejay
                 ./system/common/cloud.nix
               ];
-
             };
-
         live-iso =
           (sys.withConfig {
             system = "x86_64-linux";

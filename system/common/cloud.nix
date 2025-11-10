@@ -15,4 +15,10 @@
 
     ../modules/sops
   ];
+
+  config = {
+    nix.settings = {
+      download-buffer-size = 524288000; # 500MB
+    };
+  };
 }
