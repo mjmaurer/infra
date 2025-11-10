@@ -51,6 +51,7 @@ Because Home Manager is managed separately from NixOS / Darwin, NixOS / Darwin m
 
 ```sh
 cd ~/infra
+NEW_HOST_DATA=/path/from/new-host-script
 NEW_HOST=<machine_name>
 # Or live-iso.localdomain
 IP=live-iso
@@ -58,6 +59,7 @@ PKPATH=<my_liveiso_ssh_key_path>
 # Note for cloud: Remove --disk-encryption-keys
 nix run github:nix-community/nixos-anywhere -- \
     -i "$PKPATH" --flake ".#$NEW_HOST" --target-host root@$IP \
+   --ssh-option 'ConnectTimeout=30' --ssh-option 'ServerAliveInterval=30' --ssh-option 'ServerAliveCountMax=3' \
    --extra-files "$NEW_HOST_DATA/ssh_host_keys" \
    --disk-encryption-keys /tmp/disk.key "$NEW_HOST_DATA/luks_keys/disk.key" \
    --generate-hardware-config nixos-generate-config "./system/machines/$NEW_HOST/hardware-configuration.nix" \
@@ -70,6 +72,31 @@ nix run github:nix-community/nixos-anywhere -- \
    - **NOTE:** Make sure to commit and push hardware-configurations.nix before rebuilding
    - **NOTE:** Make sure to add tailscale tags as appropriate in order to connect 
    - NOTE: You should probably use headless/remote reboot first thing to make sure it works (`sshk root@maple-init`). See remote LUKS section below for more info
+
+### Notes on Small VPSs
+
+It may be easier to do a minimal install on very small VPSs. SOPS especially has trouble building without crashing the install.
+
+In the flake.nix mkNixosSystem inputs (and comment out any issues in  the machine's default.nix):
+
+```
+defaultSystemModules = [
+   ./system/common/minimal.nix
+   inputs.disko.nixosModules.disko
+];
+defaultHomeModules = [ ];
+```
+
+You may also want to pre-configure swap on the machine before install:
+
+```
+sudo fallocate -l 4G /swapfile || sudo dd if=/dev/zero of=/swapfile bs=1M count=4096
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
+After, undo those changes, ssh and rebuild. You may need to add `-p 2222` manually and use the IP since the ssh config hostname won't match.
 
 ## Install: Darwin
 
