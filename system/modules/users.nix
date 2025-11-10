@@ -14,6 +14,11 @@ in
 {
 
   options.modules.users = {
+    minimalInstall = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Disable SOPS-managed user setup for minimal installs.";
+    };
     uid = lib.mkOption {
       type = lib.types.int;
       default = if pkgs.stdenv.isDarwin then 502 else config.users.users.${username}.uid;
@@ -83,7 +88,11 @@ in
                   pubkeys.sshPubYkcKey
                   pubkeys.sshPubBw
                 ];
-                # hashedPasswordFile = config.sops.secrets.mjmaurerHashedPassword.path;
+                hashedPasswordFile =
+                  if !config.modules.users.minimalInstall then
+                    config.sops.secrets.mjmaurerHashedPassword.path
+                  else
+                    null;
               };
             };
           };

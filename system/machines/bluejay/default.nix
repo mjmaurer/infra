@@ -36,6 +36,7 @@
       efiInstallAsRemovable = true;
     };
 
+    modules.users.minimalInstall = true;
     modules.networking = {
       minimalInstall = true;
       wiredInterfaces = [ "ens3" ];
