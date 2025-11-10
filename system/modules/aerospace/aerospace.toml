@@ -384,11 +384,6 @@ run = 'move-node-to-workspace blender'
 # check-further-callbacks = false
 # run = ['layout tiling']
 
-[[on-window-detected]]
-if.app-id = 'com.apple.systempreferences'
-check-further-callbacks = true
-run = ['fullscreen']
-
 # [[on-window-detected]]
 # if.app-id = 'com.apple.SystemProfiler'
 # check-further-callbacks = false
