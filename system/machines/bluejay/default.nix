@@ -36,9 +36,10 @@
       efiInstallAsRemovable = true;
     };
 
-    # modules.networking = {
-    #   wiredInterfaces = [ "ens3" ];
-    # };
+    modules.networking = {
+      minimalInstall = true;
+      wiredInterfaces = [ "ens3" ];
+    };
 
     networking = {
       # Unique host ID for ZFS.

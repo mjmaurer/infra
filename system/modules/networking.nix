@@ -19,6 +19,11 @@ let
 in
 {
   options.modules.networking = {
+    minimalInstall = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = "Disable sops and Tailscale setup for minimal installs.";
+    };
     wiredInterfaces = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       description = "networkctl list / ip link. A list of names for the primary wired network interfaces (e.g., eno1, eth0).";
@@ -131,7 +136,7 @@ in
             # Could disable ipv6 if worried about attack surface
             # enableIPv6 = false;
 
-            firewall = {
+            firewall = lib.mkIf (!cfg.minimalInstall) {
               enable = true;
               # Always allow traffic from Tailscale network
               trustedInterfaces = [ tailscaleInterface ];
@@ -150,7 +155,7 @@ in
           };
 
           # ---- NOTE -----: Might need to refresh the authKeyFile for a headless machine when changing this
-          services.tailscale = {
+          services.tailscale = lib.mkIf (!cfg.minimalInstall) {
             enable = true;
             package = pkgs.tailscale;
             openFirewall = true;
@@ -160,9 +165,9 @@ in
             extraUpFlags = lib.optionals cfg.tailscaleSubnetRouter.enabled [
               "--advertise-routes=${cfg.tailscaleSubnetRouter.subnet}"
             ];
-            authKeyFile = config.sops.secrets.oneTimeTailscaleAuthKey.path;
+            authKeyFile = if cfg.minimalInstall then null else config.sops.secrets.oneTimeTailscaleAuthKey.path;
           };
-          services.fail2ban = {
+          services.fail2ban = lib.mkIf (!cfg.minimalInstall) {
             enable = true;
             maxretry = 5;
             # Tailscale Range
