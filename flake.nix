@@ -133,9 +133,16 @@
               systemStateVersion = "24.05";
               extraSystemModules = [
                 ./system/machines/bluejay
-                ./system/common/cloud.nix
+                # ./system/common/cloud.nix
               ];
-              defaultHomeModules = [];
+              defaultSystemModules = [
+                ./system/common/nixos.nix
+                ./system/modules/nix.nix
+                ./system/modules/basic.nix
+                ./system/modules/ssh.nix
+                inputs.disko.nixosModules.disko
+              ];
+              defaultHomeModules = [ ];
             };
         live-iso =
           (sys.withConfig {
