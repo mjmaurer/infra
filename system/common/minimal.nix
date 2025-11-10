@@ -9,6 +9,13 @@
   ];
 
   config = {
+    swapDevices = [
+      {
+        device = "/swapfile";
+        size = 4096;
+      }
+    ];
+
     modules.users.minimalInstall = true;
     modules.networking.minimalInstall = true;
   };
