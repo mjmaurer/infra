@@ -98,7 +98,7 @@ in
           };
           security.sudo = {
             # If we're doing a quick minimal install, don't require password for sudo
-            wheelNeedPassword = !config.modules.users.minimalInstall;
+            wheelNeedsPassword = !config.modules.users.minimalInstall;
             enable = true;
             extraRules = [
               {
