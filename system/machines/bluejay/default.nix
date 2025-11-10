@@ -15,6 +15,10 @@
 
   config = {
 
+    nix.settings = {
+      download-buffer-size = 104857600; # 100MB
+    };
+
     sops.secrets = {
       oneTimeTailscaleAuthKey = {
         sopsFile = ./secrets.yaml;
