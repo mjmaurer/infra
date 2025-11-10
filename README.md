@@ -56,10 +56,12 @@ NEW_HOST=<machine_name>
 IP=live-iso
 PKPATH=<my_liveiso_ssh_key_path>
 # Note for cloud: Remove --disk-encryption-keys
+# The `download-buffer-size` may also help on remote machines
 nix run github:nix-community/nixos-anywhere -- \
     -i "$PKPATH" --flake ".#$NEW_HOST" --target-host root@$IP \
    --extra-files "$NEW_HOST_DATA/ssh_host_keys" \
    --disk-encryption-keys /tmp/disk.key "$NEW_HOST_DATA/luks_keys/disk.key" \
+   --option download-buffer-size 524288000 \
    --generate-hardware-config nixos-generate-config "./system/machines/$NEW_HOST/hardware-configuration.nix" \
    --build-on remote --print-build-logs
 ```
