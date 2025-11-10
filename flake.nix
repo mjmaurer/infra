@@ -136,11 +136,7 @@
                 # ./system/common/cloud.nix
               ];
               defaultSystemModules = [
-                ./system/common/nixos.nix
-                ./system/modules/nix.nix
-                ./system/modules/basic.nix
-                ./system/modules/networking.nix
-                ./system/modules/ssh.nix
+                ./system/common/minimal.nix
                 inputs.disko.nixosModules.disko
               ];
               defaultHomeModules = [ ];
