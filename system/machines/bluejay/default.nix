@@ -14,20 +14,19 @@
   ];
 
   config = {
-
     nix.settings = {
       download-buffer-size = 104857600; # 100MB
     };
 
-    # sops.secrets = {
-    #   oneTimeTailscaleAuthKey = {
-    #     sopsFile = ./secrets.yaml;
-    #   };
-    #   mjmaurerHashedPassword = {
-    #     neededForUsers = true;
-    #     sopsFile = ./secrets.yaml;
-    #   };
-    # };
+    sops.secrets = {
+      oneTimeTailscaleAuthKey = {
+        sopsFile = ./secrets.yaml;
+      };
+      mjmaurerHashedPassword = {
+        neededForUsers = true;
+        sopsFile = ./secrets.yaml;
+      };
+    };
 
     boot.loader.grub = {
       # no need to set devices, disko will add all devices that have a EF02 partition to the list already
