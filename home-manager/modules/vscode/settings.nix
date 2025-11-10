@@ -120,6 +120,12 @@ in
   "[nix]" = {
     "editor.defaultFormatter" = "jnoortheen.nix-ide";
   };
+  "[dockercompose]" = {
+    "editor.insertSpaces" = true;
+    "editor.tabSize" = 2;
+    "editor.autoIndent" = "advanced";
+    "editor.defaultFormatter" = "redhat.vscode-yaml";
+  };
   # For debugger:
   "python.testing.pytestEnabled" = true; # Doesn't seem to be working for some reason
   "python.testing.pytestArgs" = [
