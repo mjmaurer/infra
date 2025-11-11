@@ -41,7 +41,7 @@ in
     in
     {
       image = "ghcr.io/mjmaurer/okie-dokie-karaoke:latest";
-      pull = "newer";
+      pull = "always";
       autoRemoveOnStop = true;
       extraOptions = [ "--replace" ];
 
