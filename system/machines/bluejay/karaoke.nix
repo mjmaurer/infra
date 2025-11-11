@@ -70,6 +70,9 @@ in
     virtualHosts."${karaokeDomain}" = {
       enableACME = true;
       forceSSL = true;
+      extraConfig = ''
+        client_max_body_size 30M;
+      '';
       locations."/" = {
         proxyPass = "http://127.0.0.1:${toString hostPort}";
       };
