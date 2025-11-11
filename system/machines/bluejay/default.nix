@@ -9,6 +9,8 @@
 {
 
   imports = [
+    ../../modules/virtualisation.nix
+
     ./hardware-configuration.nix
     ./disko.nix
   ];
