@@ -126,6 +126,9 @@ in
     "editor.autoIndent" = "advanced";
     "editor.defaultFormatter" = "redhat.vscode-yaml";
   };
+  "[github-actions-workflow]" = {
+    "editor.defaultFormatter" = "redhat.vscode-yaml";
+  };
   # For debugger:
   "python.testing.pytestEnabled" = true; # Doesn't seem to be working for some reason
   "python.testing.pytestArgs" = [
