@@ -10,8 +10,6 @@ let
   hostPort = 4000; # Host port that nginx will proxy to
   containerPort = 8000; # Port the app listens on inside the container
   hostStateDir = "/var/lib/karaoke"; # Persistent storage on the host
-  mediaNamedVolume = "karaoke_media_volume";
-  staticNamedVolume = "karaoke_static_volume";
 in
 {
   networking.firewall.allowedTCPPorts = [
@@ -30,7 +28,10 @@ in
 
   # Ensure persistent storage exists
   systemd.tmpfiles.rules = [
-    "d ${hostStateDir} 0750 root root - -"
+    "d ${hostStateDir} 0755 root root - -"
+    "d ${hostStateDir}/static 0755 root root - -"
+    "d ${hostStateDir}/media 0755 root root - -"
+    "d ${hostStateDir}/data 0755 root root - -"
   ];
 
   # Karaoke container
@@ -47,9 +48,9 @@ in
       # Bind only on loopback so it's reachable only via nginx
       ports = [ "127.0.0.1:${toString hostPort}:${toString containerPort}" ];
       volumes = [
-        "${mediaNamedVolume}:${containerWorkDir}/media"
-        "${staticNamedVolume}:${containerWorkDir}/static"
-        "${hostStateDir}:${containerWorkDir}/data"
+        "${hostStateDir}/media:${containerWorkDir}/media"
+        "${hostStateDir}/static:${containerWorkDir}/static"
+        "${hostStateDir}/data:${containerWorkDir}/data"
       ];
       environmentFiles = [ config.sops.templates."karaoke.env".path ];
       environment = {
@@ -72,6 +73,14 @@ in
       locations."/" = {
         proxyPass = "http://127.0.0.1:${toString hostPort}";
       };
+      locations."/static/".extraConfig = ''
+        autoindex on;
+        alias ${hostStateDir}/static/;
+      '';
+      locations."/media/".extraConfig = ''
+        autoindex on;
+        alias ${hostStateDir}/media/;
+      '';
     };
   };
 
