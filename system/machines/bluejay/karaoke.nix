@@ -87,10 +87,10 @@ in
   sops = {
     secrets = {
       karaokeUserPassword = {
-        sopsFile = "./secrets.yaml";
+        sopsFile = ./secrets.yaml;
       };
       karaokeSecretKey = {
-        sopsFile = "./secrets.yaml";
+        sopsFile = ./secrets.yaml;
       };
     };
 
