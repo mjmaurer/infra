@@ -211,7 +211,7 @@ in
               # openai = "-o extra_body '{\"only\": [\"cerebras\"]}'"
             };
             provider = {
-              cerebras = "-o provider '{\"only\": [\"cerebras\"]}'";
+              cerebras = "-o provider '{\"order\": [\"cerebras\"], \"allow_fallbacks\": true, \"sort\": \"throughput\"}'";
             };
             fragDir = "$XDG_CONFIG_HOME/llm/fragments";
             tmplDir = "$XDG_CONFIG_HOME/llm/templates";
