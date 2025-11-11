@@ -13,6 +13,7 @@
 
     ./hardware-configuration.nix
     ./disko.nix
+    ./karaoke.nix
   ];
 
   config = {
