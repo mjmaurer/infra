@@ -18,11 +18,11 @@ let
   llmPkg = pkgs-latest.llm;
   customPackages = import ./custom-pkgs.nix {
     inherit
-      pkgs
       lib
       pythonPkg
       # llmPkg
       ;
+    pkgs = pkgs-latest;
   };
   llmPyEnv = pythonPkg.withPackages (
     ps: with ps; [
@@ -142,6 +142,9 @@ in
       (pkgs.writeShellScriptBin "llmweb" ''
         llm -f site:$1 -f ${mdFragPath} "''${@:2}" | sd
       '')
+      (pkgs.writeShellScriptBin "llmsave" ''
+        tmux capture-pane -S -32768 \; save-buffer ${cfgHome}/saved/$1 \; delete-buffer
+      '')
       (pkgs.writeShellScriptBin "llmwebsummarize" ''
         llm -f site:$1 -f ${mdFragPath} "${
           builtins.concatStringsSep " " [
@@ -186,6 +189,9 @@ in
       };
       "llm/fragments" = {
         source = ./fragments;
+      };
+      "llm/state/keep" = {
+        text = "";
       };
       "llm/default_model.txt" = {
         text = defaultModel;
@@ -244,6 +250,7 @@ in
       };
       commonShell = {
         shellAliases = {
+          asave = "llmsave";
           a = "llmcmd";
           ai = "llm -t quick";
           ac = "sd --exec \"llm chat -t quick\"";
