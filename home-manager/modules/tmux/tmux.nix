@@ -6,6 +6,21 @@
 }:
 let
   cfg = config.modules.tmux;
+  tmuxpDir = ./tmuxp;
+  tmuxpDirContents = builtins.readDir tmuxpDir;
+  aiFiles =
+    builtins.filter (n:
+      tmuxpDirContents.${n} == "regular"
+      && lib.hasPrefix "ai" n
+      && (lib.hasSuffix ".yaml" n || lib.hasSuffix ".yml" n))
+    (builtins.attrNames tmuxpDirContents);
+  stripExt = n:
+    if lib.hasSuffix ".yaml" n then
+      lib.removeSuffix ".yaml" n
+    else
+      lib.removeSuffix ".yml" n;
+  aiSessions = builtins.map stripExt aiFiles;
+  aiSessionsStr = lib.concatStringsSep " " aiSessions;
 in
 #   tmux-super-fingers = pkgs.tmuxPlugins.mkTmuxPlugin
 #     {
@@ -24,6 +39,9 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    # Expose available ai* tmuxp sessions to shells/scripts
+    home.sessionVariables.TMUXP_AI_SESSIONS = aiSessionsStr;
+
     xdg.configFile = {
       # AI? what is tmuxp?
       "tmuxp" = {

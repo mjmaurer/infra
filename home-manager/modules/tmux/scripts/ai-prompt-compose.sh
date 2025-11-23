@@ -23,22 +23,47 @@ select_script="${tmpdir}/select.sh"
 cat > "$select_script" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
+
+# Build list from TMUXP_AI_SESSIONS, fallback to a sane default
+modes=()
+if [ -n "${TMUXP_AI_SESSIONS:-}" ]; then
+  for s in ${TMUXP_AI_SESSIONS}; do
+    modes+=("$s")
+  done
+else
+  modes=(ai-fast ai-code ai)
+fi
+
 mode=""
 while [ -z "$mode" ]; do
   clear
-  printf "Select AI profile:\n\n"
-  printf "  1) fast      - single fast model\n"
-  printf "  2) code      - code assistants\n"
-  printf "  3) thinking  - o3/sonnet trio\n"
-  printf "  q) cancel\n\n"
-  printf "> "
+  printf "Select AI tmuxp session:\n\n"
+  i=1
+  for s in "${modes[@]}"; do
+    printf "  %d) %s\n" "$i" "$s"
+    i=$((i+1))
+  done
+  printf "  q) cancel\n\n> "
   read -r ans
   case "${ans}" in
-    1|fast|f) mode="fast" ;;
-    2|code|c) mode="code" ;;
-    3|thinking|t) mode="thinking" ;;
     q|Q) exit 130 ;;
-    *) ;;
+    '' ) ;;  # re-prompt
+    * )
+      if [[ "$ans" =~ ^[0-9]+$ ]]; then
+        idx=$((ans-1))
+        if [ $idx -ge 0 ] && [ $idx -lt ${#modes[@]} ]; then
+          mode="${modes[$idx]}"
+        fi
+      else
+        # allow typing the name directly
+        for s in "${modes[@]}"; do
+          if [ "$ans" = "$s" ]; then
+            mode="$s"
+            break
+          fi
+        done
+      fi
+      ;;
   esac
 done
 printf "%s" "$mode" > "$1"
@@ -53,6 +78,7 @@ fi
 [ -s "$sel_file" ] || { rm -rf "$tmpdir"; exit 130; }
 mode="$(cat "$sel_file")"
 
+
 # Popup 2: compose the prompt in Neovim
 : > "$prompt_file"
 if ! tmux display-popup -t "$TARGET_CLIENT" -w 80% -h 80% -E "nvim '+set ft=markdown' '+setlocal spell' '+startinsert' '$prompt_file'"; then
@@ -66,18 +92,4 @@ if [ -z "${prompt// /}" ]; then
   exit 0
 fi
 
-case "$mode" in
-  fast)
-    exec "$HOME/.local/bin/ai-split.sh" "$prompt"
-    ;;
-  code)
-    exec "$HOME/.local/bin/ai-split.sh" c "$prompt"
-    ;;
-  thinking)
-    exec "$HOME/.local/bin/ai-split.sh" t "$prompt"
-    ;;
-  *)
-    echo "Unknown mode: $mode" >&2
-    exit 1
-    ;;
-esac
+exec "$HOME/.local/bin/ai-split.sh" ". $mode" "$prompt"
