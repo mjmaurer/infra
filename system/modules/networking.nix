@@ -1,3 +1,8 @@
+# TROUBLESHOOTING
+# Nixos - sometimes DNS gets in a bad state. Run:
+# sudo resolvectl flush-caches
+# sudo resolvectl reset-server-features
+# sudo systemctl restart systemd-resolved
 {
   lib,
   config,
