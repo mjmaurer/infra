@@ -2,6 +2,12 @@
 set -euo pipefail
 export PATH="$PATH:/opt/homebrew/bin:$HOME/.nix-profile/bin"
 
+# This script accepts no CLI arguments; mode is chosen via tmux picker
+if [ "$#" -gt 0 ]; then
+  echo "Error: ai-prompt-compose takes no arguments. Use the tmux picker to choose a mode." >&2
+  exit 2
+fi
+
 # Require a running tmux client to target the popup at
 if ! tmux list-clients >/dev/null 2>&1; then
   echo "No tmux clients found; ensure tmux is running." >&2
@@ -92,4 +98,4 @@ if [ -z "${prompt// /}" ]; then
   exit 0
 fi
 
-exec "$HOME/.local/bin/ai-split.sh" ". $mode" "$prompt"
+exec "$HOME/.local/bin/ai-split.sh" ". " "$mode $prompt"

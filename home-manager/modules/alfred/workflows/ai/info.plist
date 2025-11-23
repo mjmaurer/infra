@@ -99,7 +99,7 @@
                     <key>text</key>
                     <string>AI (Vim)</string>
                     <key>withspace</key>
-                    <true/>
+                    <false/>
                 </dict>
                 <key>type</key>
                 <string>alfred.workflow.input.keyword</string>
@@ -116,7 +116,7 @@
                     <key>escaping</key>
                     <integer>102</integer>
                     <key>script</key>
-                    <string>~/.local/bin/ai-prompt-compose.sh $@</string>
+                    <string>~/.local/bin/ai-prompt-compose.sh</string>
                     <key>scriptargtype</key>
                     <integer>1</integer>
                     <key>scriptfile</key>
