@@ -31,6 +31,16 @@ in
         recursive = true;
       };
     };
+    home.file = {
+      ".local/bin/ai-split.sh" = {
+        source = ./scripts/ai-split.sh;
+        executable = true;
+      };
+      ".local/bin/ai-prompt-compose.sh" = {
+        source = ./scripts/ai-prompt-compose.sh;
+        executable = true;
+      };
+    };
     programs.tmux = {
       enable = true;
       tmuxp.enable = true;

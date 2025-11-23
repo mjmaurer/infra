@@ -123,10 +123,6 @@ in
         # Toggle expanded display on startup
         text = "\\x";
       };
-      ".local/bin/ai-split.sh" = {
-        source = ./scripts/ai-split.sh;
-        executable = true;
-      };
     };
     modules.commonShell = {
       initExtraFirst = ''
