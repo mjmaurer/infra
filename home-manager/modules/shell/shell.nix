@@ -235,9 +235,12 @@ in
         "ga" = "git add $(_fzf_git_files)";
         "gaf" = "git add $(_fzf_git_files)";
         "gaa" = "git add --all";
-        "gac" = "gaf && gcai"; # gcai is defined in git-commit-ai.sh
+        # gcai - is defined in git-commit-ai.sh
+        "gac" = "gaf && gcai";
         "gs" = "git status";
         "gsf" = "git status $(_fzf_git_files)";
+        "gst" = "git stash";
+        "gstp" = "git stash pop";
         "gle" = "git_local_exclude";
         "poe" = "poetry run poe";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
