@@ -35,6 +35,7 @@
         w3m
         ripgrep
         unzip
+        lsof
         xxd
         tcpdump
         neovim
