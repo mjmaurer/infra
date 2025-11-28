@@ -10,6 +10,6 @@
       DO_NOT_TRACK = "True";
       ANONYMIZED_TELEMETRY = "False";
     };
-    openFirewall = false;
+    openFirewall = true;
   };
 }
