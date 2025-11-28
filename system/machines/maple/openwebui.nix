@@ -11,6 +11,9 @@
       ];
     });
     environment = {
+      # See https://github.com/NixOS/nixpkgs/pull/431395#issuecomment-3161532401
+      FRONTEND_BUILD_DIR = "${config.services.open-webui.stateDir}/build";
+      SENTENCE_TRANSFORMERS_HOME = "${config.services.open-webui.stateDir}/transformers_home";
       SCARF_NO_ANALYTICS = "True";
       DO_NOT_TRACK = "True";
       ANONYMIZED_TELEMETRY = "False";
