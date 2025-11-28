@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  pkgs-latest,
   derivationName,
   username,
   ...
@@ -14,6 +15,8 @@
 
     ./hardware-configuration.nix
     ./disko.nix
+
+    ./openwebui.nix
   ];
 
   config = {
