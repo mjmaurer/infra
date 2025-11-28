@@ -9,6 +9,7 @@ let
     # Machine where development might occur (i.e. git usage, vim, ai, etc)
     "dev-client"
     "nas-access"
+    "cloudflare"
   ];
   # Validate sysTags
   _ = lib.assertMessage (lib.all (tag: lib.elem tag possibleSysTags) sysTags) (

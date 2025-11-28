@@ -1,7 +1,18 @@
-{ pkgs-latest, config, ... }:
+{
+  pkgs-latest,
+  config,
+  lib,
+  ...
+}:
 let
   hostStateDir = "/var/lib/openwebui";
   containerStateDir = "/state";
+
+  caddyPkg = pkgs-latest.caddy.withPlugins {
+    plugins = [ "github.com/caddy-dns/cloudflare" ];
+    # Replace this with the real hash after first build error suggests it.
+    vendorHash = lib.fakeSha256;
+  };
 in
 {
   virtualisation.oci-containers.containers."open-webui" = {
@@ -12,7 +23,7 @@ in
     autoRemoveOnStop = true;
     extraOptions = [ "--replace" ];
 
-    ports = [ "0.0.0.0:8181:8181/tcp" ];
+    ports = [ "127.0.0.1:8181:8181/tcp" ];
     volumes = [
       "${hostStateDir}:/app/backend/data"
     ];
@@ -28,24 +39,31 @@ in
     };
   };
 
+  services.caddy = {
+    enable = true;
+    package = caddyPkg;
+    virtualHosts."ai.maurer.exposed".extraConfig = ''
+      tls mjmaurer777@gmail.com {
+        dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+      }
+      reverse_proxy 127.0.0.1:8181
+    '';
+  };
+
+  sops.templates."maple-caddy.env" = {
+    content = ''
+      CLOUDFLARE_API_TOKEN=${config.sops.placeholder.cloudflareDnsApiToken}
+    '';
+    mode = "0400";
+    owner = "root";
+    group = "root";
+  };
+
+  systemd.services.caddy.serviceConfig.EnvironmentFile = [
+    config.sops.templates."maple-caddy.env".path
+  ];
+
   systemd.tmpfiles.rules = [
     "d ${hostStateDir} 0755 root root -"
   ];
-
-  # sops = {
-  #   templates = {
-  #     "openwebui.env" = {
-  #       content = ''
-  #         DEFAULT_USER_PASSWORD=${config.sops.placeholder.karaokeUserPassword}
-  #         DJANGO_SECRET_KEY=${config.sops.placeholder.karaokeSecretKey}
-  #       '';
-  #     };
-  #   };
-  # };
-
-  # modules.ai-secrets = {
-  #   enableOpenrouter = true;
-  #   enableGemini = true;
-  #   enableOpenai = true;
-  # };
 }

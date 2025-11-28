@@ -31,6 +31,8 @@ keys:
     - *ash
   - &nas-access
     - *ash
+  - &cloudflare
+    - *maple
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
@@ -56,6 +58,11 @@ creation_rules:
         age: *dev-clients
         merge:
           - age: *nas-access
+  - path_regex: system/modules/sops/vault/cloudflare.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *cloudflare
   # ==== AI ====
   - path_regex: system/modules/sops/vault/ai/openrouter.yaml$
     key_groups:
