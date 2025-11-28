@@ -1,6 +1,6 @@
 { pkgs-latest, config, ... }:
 let
-  hostStateDir = "/var/lib/open-webui";
+  hostStateDir = "/var/lib/openwebui";
   containerStateDir = "/state";
 in
 {
