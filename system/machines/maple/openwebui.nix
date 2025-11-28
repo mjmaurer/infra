@@ -1,6 +1,6 @@
 { pkgs-latest, config, ... }:
 let
-  hostStateDir = "/var/lib/open-webui";
+  hostStateDir = "/var/lib/openwebui";
   containerStateDir = "/state";
 in
 {
@@ -15,15 +15,10 @@ in
     ports = [ "0.0.0.0:8181:8181/tcp" ];
     volumes = [
       "${hostStateDir}:/app/backend/data"
-      "${hostStateDir}:${containerStateDir}"
     ];
     # environmentFiles = [ config.sops.templates."openwebui.env".path ];
     environment = {
       PORT = "8181";
-      FRONTEND_BUILD_DIR = "${containerStateDir}/build";
-      SENTENCE_TRANSFORMERS_HOME = "${containerStateDir}/transformers_home";
-      STATIC_DIR = "${containerStateDir}/static";
-      DATA_DIR = "${containerStateDir}/data";
 
       WEBUI_URL = "http://localhost:8181";
 
@@ -35,10 +30,6 @@ in
 
   systemd.tmpfiles.rules = [
     "d ${hostStateDir} 0755 root root -"
-    "d ${hostStateDir}/data 0755 root root -"
-    "d ${hostStateDir}/build 0755 root root -"
-    "d ${hostStateDir}/transformers_home 0755 root root -"
-    "d ${hostStateDir}/static 0755 root root -"
   ];
 
   # sops = {
