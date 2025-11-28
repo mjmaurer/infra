@@ -10,8 +10,7 @@ let
 
   caddyPkg = pkgs-latest.caddy.withPlugins {
     plugins = [ "github.com/caddy-dns/cloudflare" ];
-    # Replace this with the real hash after first build error suggests it.
-    vendorHash = lib.fakeSha256;
+    hash = lib.fakeSha256;
   };
 in
 {
