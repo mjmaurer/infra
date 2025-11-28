@@ -32,7 +32,7 @@ alias:
 
   - "dr:deepseek/deepseek-reasoner"
 
-  - "g:gemini/gemini-3-pro-preview"
+  - "g:openrouter/google/gemini-3-pro-preview"
   - "gf:gemini/gemini-2.5-flash"
 
   - "s5:claude-3-5-sonnet-latest"
