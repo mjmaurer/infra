@@ -12,11 +12,12 @@ in
     autoRemoveOnStop = true;
     extraOptions = [ "--replace" ];
 
-    ports = [ "0.0.0.0:8181:8080/tcp" ];
+    ports = [ "0.0.0.0:8181:8181/tcp" ];
     volumes = [
       "${hostStateDir}:${containerStateDir}"
     ];
     environment = {
+      PORT = "8181";
       FRONTEND_BUILD_DIR = "${containerStateDir}/build";
       SENTENCE_TRANSFORMERS_HOME = "${containerStateDir}/transformers_home";
       STATIC_DIR = "${containerStateDir}/static";
