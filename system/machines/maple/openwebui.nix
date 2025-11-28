@@ -44,6 +44,7 @@ in
     virtualHosts."ai.maurer.exposed".extraConfig = ''
       tls mjmaurer777@gmail.com {
         dns cloudflare {env.CLOUDFLARE_API_TOKEN}
+        resolvers 1.1.1.1
       }
       reverse_proxy 127.0.0.1:8181
     '';
