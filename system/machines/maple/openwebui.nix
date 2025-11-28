@@ -51,7 +51,7 @@ in
   #   };
   # };
 
-  options.modules.ai-secrets = {
+  modules.ai-secrets = {
     enableOpenrouter = true;
     enableGemini = true;
     enableOpenai = true;
