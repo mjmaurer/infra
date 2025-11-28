@@ -16,6 +16,7 @@ in
     ./common-secrets/gpg-secrets.nix
     ./common-secrets/nixos-host-secrets.nix
     ./common-secrets/smb-secrets.nix
+    ./common-secrets/cloudflare-secrets.nix
 
     ./module-secrets/llm-cli-sops.nix
     ./module-secrets/shell-sops.nix
