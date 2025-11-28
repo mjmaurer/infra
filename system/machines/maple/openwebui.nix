@@ -9,7 +9,7 @@ let
   containerStateDir = "/state";
 
   caddyPkg = pkgs-latest.caddy.withPlugins {
-    plugins = [ "github.com/caddy-dns/cloudflare" ];
+    plugins = [ "github.com/caddy-dns/cloudflare@v0.2.2" ];
     hash = lib.fakeSha256;
   };
 in
