@@ -5,7 +5,7 @@ let
 in
 {
   virtualisation.oci-containers.containers."open-webui" = {
-    image = "ghcr.io/open-webui/open-webui:latest";
+    image = "ghcr.io/open-webui/open-webui:main";
 
     pull = "always";
     autoStart = true;
@@ -16,6 +16,7 @@ in
     volumes = [
       "${hostStateDir}:${containerStateDir}"
     ];
+    # environmentFiles = [ config.sops.templates."openwebui.env".path ];
     environment = {
       PORT = "8181";
       FRONTEND_BUILD_DIR = "${containerStateDir}/build";
@@ -38,4 +39,21 @@ in
     "d ${hostStateDir}/transformers_home 0755 root root -"
     "d ${hostStateDir}/static 0755 root root -"
   ];
+
+  # sops = {
+  #   templates = {
+  #     "openwebui.env" = {
+  #       content = ''
+  #         DEFAULT_USER_PASSWORD=${config.sops.placeholder.karaokeUserPassword}
+  #         DJANGO_SECRET_KEY=${config.sops.placeholder.karaokeSecretKey}
+  #       '';
+  #     };
+  #   };
+  # };
+
+  options.modules.ai-secrets = {
+    enableOpenrouter = true;
+    enableGemini = true;
+    enableOpenai = true;
+  };
 }
