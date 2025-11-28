@@ -38,13 +38,19 @@ in
     };
   };
 
+  systemd.tmpfiles.rules = [
+    "d ${hostStateDir} 0755 root root -"
+  ];
+
   services.caddy = {
     enable = true;
     package = caddyPkg;
     virtualHosts."ai.maurer.exposed".extraConfig = ''
       tls mjmaurer777@gmail.com {
         dns cloudflare {$CLOUDFLARE_API_TOKEN}
-        resolvers 1.1.1.1
+        resolvers 1.1.1.1 1.0.0.1 8.8.8.8
+        propagation_delay 15s
+        propagation_timeout -1
       }
       reverse_proxy 127.0.0.1:8181
     '';
@@ -61,9 +67,5 @@ in
 
   systemd.services.caddy.serviceConfig.EnvironmentFile = [
     config.sops.templates."maple-caddy.env".path
-  ];
-
-  systemd.tmpfiles.rules = [
-    "d ${hostStateDir} 0755 root root -"
   ];
 }
