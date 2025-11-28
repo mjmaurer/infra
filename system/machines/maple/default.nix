@@ -16,6 +16,7 @@
     ./hardware-configuration.nix
     ./disko.nix
 
+    ../../modules/virtualisation.nix
     ./openwebui.nix
   ];
 
