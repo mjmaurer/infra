@@ -1,6 +1,6 @@
 { pkgs-latest, config, ... }:
 let
-  hostStateDir = "/var/lib/openwebui";
+  hostStateDir = "/var/lib/open-webui";
   containerStateDir = "/state";
 in
 {
@@ -14,6 +14,7 @@ in
 
     ports = [ "0.0.0.0:8181:8181/tcp" ];
     volumes = [
+      "${hostStateDir}:/app/backend/data"
       "${hostStateDir}:${containerStateDir}"
     ];
     # environmentFiles = [ config.sops.templates."openwebui.env".path ];
