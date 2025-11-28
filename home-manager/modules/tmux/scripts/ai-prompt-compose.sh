@@ -8,29 +8,20 @@ if [ "$#" -gt 0 ]; then
   exit 2
 fi
 
-# Require a running tmux client to target the popup at
-if ! tmux list-clients >/dev/null 2>&1; then
-  echo "No tmux clients found; ensure tmux is running." >&2
-  exit 1
-fi
-TARGET_CLIENT="$(tmux list-clients -F '#{client_name}' | head -n1)"
-if [ -z "${TARGET_CLIENT:-}" ]; then
-  echo "No attached tmux clients found." >&2
-  exit 1
-fi
-
+# Decouple from tmux: one dedicated Alacritty window handles both selection and prompt
 workdir="${HOME}/.local/state/llm"
 mkdir -p "$workdir"
 tmpdir="$(mktemp -d "${workdir}/compose.XXXXXX")"
 sel_file="${tmpdir}/mode"
 prompt_file="${tmpdir}/prompt.md"
 select_script="${tmpdir}/select.sh"
+compose_script="${tmpdir}/compose.sh"
 
+# Build the selection UI script
 cat > "$select_script" <<'EOS'
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Build list from TMUXP_AI_SESSIONS, fallback to a sane default
 modes=()
 if [ -n "${TMUXP_AI_SESSIONS:-}" ]; then
   for s in ${TMUXP_AI_SESSIONS}; do
@@ -53,7 +44,7 @@ while [ -z "$mode" ]; do
   read -r ans
   case "${ans}" in
     q|Q) exit 130 ;;
-    '' ) ;;  # re-prompt
+    '' ) ;;
     * )
       if [[ "$ans" =~ ^[0-9]+$ ]]; then
         idx=$((ans-1))
@@ -61,7 +52,6 @@ while [ -z "$mode" ]; do
           mode="${modes[$idx]}"
         fi
       else
-        # allow typing the name directly
         for s in "${modes[@]}"; do
           if [ "$ans" = "$s" ]; then
             mode="$s"
@@ -76,26 +66,100 @@ printf "%s" "$mode" > "$1"
 EOS
 chmod +x "$select_script"
 
-# Popup 1: choose the tmuxp profile
-if ! tmux display-popup -t "$TARGET_CLIENT" -w 60% -h 40% -E "$select_script '$sel_file'"; then
-  rm -rf "$tmpdir"
+# Build the combined compose flow to run inside Alacritty
+cat > "$compose_script" <<'EOS'
+#!/usr/bin/env bash
+set -euo pipefail
+export PATH="$PATH:/opt/homebrew/bin:$HOME/.nix-profile/bin"
+unset TMUX || true
+
+SELECT="$1"
+SEL_FILE="$2"
+PROMPT_FILE="$3"
+
+# Cleanup tmpdir on exit
+TMPDIR="$(dirname "$PROMPT_FILE")"
+cleanup() { rm -rf "$TMPDIR" 2>/dev/null || true; }
+trap cleanup EXIT
+
+# 1) Mode picker
+"$SELECT" "$SEL_FILE" || exit 130
+if [ ! -s "$SEL_FILE" ]; then
   exit 130
 fi
-[ -s "$sel_file" ] || { rm -rf "$tmpdir"; exit 130; }
-mode="$(cat "$sel_file")"
+mode="$(cat "$SEL_FILE")"
 
+# 2) Prompt compose in Neovim
+: > "$PROMPT_FILE"
+nvim '+set ft=markdown' '+setlocal spell' '+startinsert' "$PROMPT_FILE"
 
-# Popup 2: compose the prompt in Neovim
-: > "$prompt_file"
-if ! tmux display-popup -t "$TARGET_CLIENT" -w 80% -h 80% -E "nvim '+set ft=markdown' '+setlocal spell' '+startinsert' '$prompt_file'"; then
-  rm -rf "$tmpdir"
-  exit 130
-fi
-
-prompt="$(sed -e 's/[[:space:]]*$//' "$prompt_file")"
+prompt="$(sed -e 's/[[:space:]]*$//' "$PROMPT_FILE")"
 if [ -z "${prompt// /}" ]; then
-  rm -rf "$tmpdir"
   exit 0
 fi
 
-exec "$HOME/.local/bin/ai-split.sh" ". " "$mode $prompt"
+# 3) Launch AI tmuxp session, fully detached from this window
+if command -v setsid >/dev/null 2>&1; then
+  setsid -f "$HOME/.local/bin/ai-split.sh" ". " "$mode $prompt" >/dev/null 2>&1
+else
+  nohup "$HOME/.local/bin/ai-split.sh" ". " "$mode $prompt" >/dev/null 2>&1 &
+  disown || true
+fi
+
+# Determine the final window title for this mode (matches ai-split.sh logic)
+if [[ "$mode" == ai || "$mode" == ai-* ]]; then
+  target_title="$mode"
+else
+  target_title="ai-$mode"
+fi
+
+# Wait briefly for the new window to appear, then optionally focus it
+if command -v aerospace >/dev/null 2>&1; then
+  for _ in {1..30}; do
+    id="$(aerospace list-windows --all --json \
+      | jq -r --arg t "$target_title" \
+        '.[] | select(."app-name"=="alacritty" and ."window-title"==$t) | ."window-id"' \
+      | xargs)"
+    if [[ -n "${id// /}" ]]; then
+      aerospace focus --window-id "$id" 2>/dev/null || true
+      break
+    fi
+    sleep 0.1
+  done
+else
+  # Fallback: small delay to avoid teardown race if aerospace isn't available
+  sleep 0.5
+fi
+
+exit 0
+EOS
+chmod +x "$compose_script"
+
+# Helper to close existing window by title (if aerospace is available)
+close_by_title() {
+  if command -v aerospace >/dev/null 2>&1; then
+    local id
+    id=$(
+      aerospace list-windows --all --json \
+        | jq -r --arg title "$1" \
+          '.[] | select(."app-name" == "alacritty" and ."window-title" == $title) | ."window-id"' \
+        | xargs
+    )
+    if [[ -n "${id// /}" ]]; then
+      aerospace close --window-id "$id"
+    fi
+  fi
+}
+
+COMPOSE_TITLE="AI Compose"
+close_by_title "$COMPOSE_TITLE"
+
+# Launch in background so this terminal isn't blocked
+alacritty \
+  --working-directory "$workdir" \
+  -o font.size=13 \
+  --title "$COMPOSE_TITLE" \
+  --command ~/.nix-profile/bin/zsh -lc "'$compose_script' '$select_script' '$sel_file' '$prompt_file'" \
+  >/dev/null 2>&1 </dev/null &
+
+exit 0

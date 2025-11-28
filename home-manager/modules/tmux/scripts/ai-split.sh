@@ -1,4 +1,4 @@
-export PATH="$PATH:/opt/homebrew/bin:~/.nix-profile/bin"
+export PATH="$PATH:/opt/homebrew/bin:$HOME/.nix-profile/bin"
 
 if [[ "$@" == ". "* ]]; then
   echo "Custom session mode"
@@ -46,17 +46,13 @@ export WINDOW_ID=$(
 echo "Query: '$@'"
 echo "Window ID: $WINDOW_ID"
 
-if [[ -z "${WINDOW_ID// /}" ]]; then
-  # WINDOW_ID is empty or all whitespace
+if command -v aerospace >/dev/null 2>&1 && [[ -n "${WINDOW_ID// /}" ]]; then
   echo "closing $WINDOW_ID"
-  aerospace close --window-id $WINDOW_ID
+  aerospace close --window-id "$WINDOW_ID"
 fi
-
-# Kill existing tmux session named 'ai' if it exists
-tmux kill-session -t $TMUXP_SESSION 2>/dev/null || true
 
 alacritty \
   --working-directory ~/.local/state/llm \
   -o font.size=13 \
   --title "$WINDOW_TITLE" \
-  --command ~/.nix-profile/bin/zsh -lc "tmuxp load $TMUXP_SESSION"
+  --command ~/.nix-profile/bin/zsh -lc "unset TMUX; tmux kill-session -t '$TMUXP_SESSION' 2>/dev/null || true; tmuxp load '$TMUXP_SESSION'"
