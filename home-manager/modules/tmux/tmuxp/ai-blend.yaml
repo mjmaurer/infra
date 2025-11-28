@@ -11,8 +11,8 @@ windows:
           - cmd: 'source llmchat ltblend loh lfs "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'source llmchat ltblend lgf lfs "${AI_CMD}"'
+          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; source llmchat ltblend lgf lfs "${AI_CMD}"'
       - shell_command:
-          - cmd: 'source llmchat ltblend lqt lfs "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); source llmchat ltblend lqt lfs "${AI_CMD}"'
       - shell_command:
-          - cmd: 'source llmchat ltblend ltm "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 3 )); source llmchat ltblend ltm "${AI_CMD}"'

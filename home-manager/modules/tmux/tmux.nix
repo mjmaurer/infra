@@ -40,7 +40,10 @@ in
 
   config = lib.mkIf cfg.enable {
     # Expose available ai* tmuxp sessions to shells/scripts
-    home.sessionVariables.TMUXP_AI_SESSIONS = aiSessionsStr;
+    home.sessionVariables = {
+      TMUXP_AI_SESSIONS = aiSessionsStr;
+      TMUXP_AI_STUTTER = "0.3";
+    };
 
     xdg.configFile = {
       # AI? what is tmuxp?

@@ -9,6 +9,6 @@ windows:
           - cmd: 'source llmchat lgp lft "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'source llmchat lth "${AI_CMD}"'
+          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; source llmchat lth "${AI_CMD}"'
       - shell_command:
-          - cmd: 'source llmchat lfh "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); source llmchat lfh "${AI_CMD}"'
