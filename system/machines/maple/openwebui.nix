@@ -2,6 +2,7 @@
 {
   services.open-webui = {
     enable = true;
+    host = "0.0.0.0";
     port = 8181;
     stateDir = "/var/lib/open-webui";
     package = pkgs-latest.open-webui.overridePythonAttrs (old: {
@@ -14,6 +15,6 @@
       DO_NOT_TRACK = "True";
       ANONYMIZED_TELEMETRY = "False";
     };
-    openFirewall = true;
+    openFirewall = false;
   };
 }
