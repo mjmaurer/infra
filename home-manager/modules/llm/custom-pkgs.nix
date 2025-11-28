@@ -176,6 +176,40 @@ let
         license = licenses.asl20;
       };
     };
+
+    llm-gemini = pythonPkg.pkgs.buildPythonPackage rec {
+      pname = "llm-gemini";
+      version = "0.27";
+      format = "pyproject";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/simonw/llm-gemini/archive/refs/tags/0.27.tar.gz";
+        sha256 = "sha256-YWUVITM/h1LLrG+UCtnDkokD2MWKVw5vQi2deyjsFIQ=";
+      };
+
+      nativeBuildInputs = with pythonPkg.pkgs; [
+        setuptools
+        wheel
+      ];
+      # Dependencies
+      propagatedBuildInputs = with pythonPkg.pkgs; [
+        llm
+        httpx
+        ijson
+      ];
+
+      # Disable tests - enable if you have specific test dependencies
+      doCheck = false;
+
+      # Basic import check
+      pythonImportsCheck = [ "llm_gemini" ];
+
+      meta = with lib; {
+        description = "LLM fragments for Gemini";
+        homepage = "https://github.com/simonw/llm-gemini";
+        license = licenses.asl20;
+      };
+    };
   };
 in
 pythonPackages

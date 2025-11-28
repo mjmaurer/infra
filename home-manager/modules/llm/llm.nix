@@ -28,8 +28,8 @@ let
     ps: with ps; [
       llm
       # llm-anthropic
-      llm-gemini
       llm-jq
+      customPackages.llm-gemini # this is available, but just outdated
       customPackages.llm-openrouter # this is available, but just outdated
       customPackages.llm-fragments-github
       customPackages.llm-fragments-site-text
@@ -243,7 +243,7 @@ in
             lqc = "-m openrouter/qwen/qwen3-coder ${reason.high} ${provider.cerebras}";
             lqt = "-m openrouter/qwen/qwen3-235b-a22b-thinking-2507 ${reason.high} ${provider.cerebras}";
             lgf = "-m gemini-2.5-flash ${web.goog}";
-            lgp = "-m gemini-2.5-pro ${web.goog}";
+            lgp = "-m gemini-3-pro-preview ${web.goog}";
 
             SD = "| sd";
           };
