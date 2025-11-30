@@ -18,8 +18,10 @@ let
   tailscaleInterface = "tailscale0"; # Default
   # Must support DNSSEC
   nameservers = [
-    "1.1.1.1"
-    "8.8.8.8"
+    "1.1.1.1#one.one.one.one"
+    "1.0.0.1#one.one.one.one"
+    "8.8.8.8#dns.google"
+    "8.8.4.4#dns.google"
   ];
 in
 {
@@ -109,7 +111,11 @@ in
                   };
                   dhcpV4Config = {
                     SendHostname = true;
+                    UseDNS = false;
+                    # optional: avoids DHCP search-domain chaos:
+                    UseDomains = false;
                   };
+                  dns = nameservers;
                 };
               }
               (lib.mkIf (cfg.wirelessInterfaces != null) {
@@ -120,7 +126,10 @@ in
                   };
                   dhcpV4Config = {
                     SendHostname = true;
+                    UseDNS = false;
+                    UseDomains = false;
                   };
+                  dns = nameservers;
                 };
               })
             ];
@@ -156,6 +165,7 @@ in
           services.resolved = {
             enable = true;
             dnssec = "allow-downgrade";
+            dnsovertls = "opportunistic";
             fallbackDns = nameservers;
           };
 
