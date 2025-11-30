@@ -32,6 +32,7 @@ PATH = '/opt/homebrew/bin/:${HOME}/.nix-profile/bin:${PATH}'
 
 [mode.main.binding]
 
+# -------------------------------- System --------------------------------
 cmd-ctrl-shift-c = 'reload-config'
 cmd-ctrl-shift-f = ['flatten-workspace-tree', 'layout v_accordion']
 cmd-ctrl-y = 'layout h_tiles v_accordion'
@@ -39,6 +40,7 @@ cmd-ctrl-y = 'layout h_tiles v_accordion'
 alt-cmd-ctrl-x = 'close'
 alt-cmd-ctrl-o = 'exec-and-forget shortcuts run mount_smb'
 
+# -------------------------------- Movement --------------------------------
 cmd-ctrl-h = 'focus left'
 cmd-ctrl-j = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace down'
 cmd-ctrl-k = 'focus --ignore-floating --boundaries-action wrap-around-the-workspace up'
@@ -54,6 +56,19 @@ cmd-ctrl-period = 'resize width +50'
 cmd-ctrl-shift-comma = 'resize width -150'
 cmd-ctrl-shift-period = 'resize width +150'
 
+# ---------- Secondary Monitor (ext is fixed to secondary monitor) ---------
+# NOTE: For individual windows (nodes), it's probably easier to just move it to 'ext' workspace instead of moving to monitor
+
+# cmd-ctrl-tab-h (plus)
+cmd-ctrl-shift-equal = 'move-node-to-monitor --focus-follows-window --wrap-around prev'
+# cmd-ctrl-tab-j (minus)
+cmd-ctrl-minus = 'move-workspace-to-monitor --wrap-around prev'
+# cmd-ctrl-tab-k (underscore)
+cmd-ctrl-shift-minus = 'move-workspace-to-monitor --wrap-around next'
+# cmd-ctrl-tab-l (equal)
+cmd-ctrl-equal = 'move-node-to-monitor --focus-follows-window --wrap-around next'
+
+# -------------------------------- Workspaces --------------------------------
 # See workspaces_extra mode for additional workspace switching bindings
 cmd-ctrl-v = 'workspace games --auto-back-and-forth'
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
@@ -68,15 +83,18 @@ cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
 cmd-ctrl-i = 'workspace chat --auto-back-and-forth'
+cmd-ctrl-c = 'workspace creds --auto-back-and-forth'
 cmd-ctrl-semicolon = 'workspace other --auto-back-and-forth'
-cmd-ctrl-quote = 'workspace creds --auto-back-and-forth'
+# Secondary monitor
+cmd-ctrl-quote = 'workspace ext --auto-back-and-forth'
 
 # alt-shift-t = 'move-node-to-workspace terminal'
 cmd-ctrl-shift-e = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window code',
     'layout tiling',
-    'join-with up',                                       # Another alternative is 'move right' which would limit the other code windows to 1/2 of the screen
+    # Another alternative is 'move right' which would limit the other code windows to 1/2 of the screen
+    'join-with up',
 ]
 cmd-ctrl-shift-w = [
     'layout floating',
@@ -126,6 +144,12 @@ cmd-ctrl-shift-semicolon = [
     'layout tiling',
     'join-with up',
 ]
+cmd-ctrl-shift-quote = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window ext',
+    'layout tiling',
+    'join-with up',
+]
 
 cmd-ctrl-1 = 'workspace 1'
 cmd-ctrl-2 = 'workspace 2'
@@ -160,7 +184,6 @@ cmd-ctrl-shift-2 = 'move-node-to-workspace 2'
 # `focus parent`/`focus child` are not yet supported, and it's not clear whether they
 # should be supported at all https://github.com/nikitabobko/AeroSpace/issues/5
 # alt-shift-a = 'focus parent'
-
 
 # --------------------------------------------------------------------------
 #                                  Modes                                 
@@ -209,6 +232,18 @@ k = 'move up'
 l = 'move right'
 enter = 'mode main'
 esc = 'mode main'
+
+# --------------------------------------------------------------------------
+#                              Multiple Monitors                                 
+# -------------------------------------------------------------------------- 
+
+# Can't use move-workspace-to-monitor if force assigned
+# 'main' and 'secondary' are special/fixed monitor names created by aerospace to refer to the main and secondary monitors respectively.
+[workspace-to-monitor-force-assignment]
+# Fix 'ext' workspace to secondary monitor if connected
+ext = ['secondary', 'main']
+# 4 = 'built-in'                  # Case insensitive regex substring
+# 5 = '^built-in retina display$' # Case insensitive regex match
 
 # --------------------------------------------------------------------------
 #                                  Callbacks                                 
