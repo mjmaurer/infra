@@ -82,12 +82,17 @@ TMPDIR="$(dirname "$PROMPT_FILE")"
 cleanup() { rm -rf "$TMPDIR" 2>/dev/null || true; }
 trap cleanup EXIT
 
-# 1) Mode picker
-"$SELECT" "$SEL_FILE" || exit 130
-if [ ! -s "$SEL_FILE" ]; then
-  exit 130
+# 1) Mode picker (default to 'ai' if nothing selected)
+"$SELECT" "$SEL_FILE" || true
+if [ -s "$SEL_FILE" ]; then
+  mode="$(cat "$SEL_FILE")"
+else
+  mode="ai"
 fi
-mode="$(cat "$SEL_FILE")"
+# Ensure non-empty, whitespace-trimmed mode
+if [ -z "${mode//[[:space:]]/}" ]; then
+  mode="ai"
+fi
 
 # 2) Prompt compose in Neovim
 : > "$PROMPT_FILE"
