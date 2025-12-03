@@ -6,9 +6,9 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'source llmchat lgp lft "${AI_CMD}"'
+          - cmd: 'LLM_AGENT_NAME=Gemini-Pro source llmchat lgp lft "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; source llmchat lth "${AI_CMD}"'
+          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; LLM_AGENT_NAME=o3 source llmchat lth "${AI_CMD}"'
       - shell_command:
-          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); source llmchat lfh "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); LLM_AGENT_NAME=gpt-5 source llmchat lfh "${AI_CMD}"'

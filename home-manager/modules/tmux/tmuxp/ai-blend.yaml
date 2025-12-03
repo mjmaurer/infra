@@ -8,11 +8,11 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'source llmchat ltblend loh lfs "${AI_CMD}"'
+          - cmd: 'LLM_AGENT_NAME=GPT-OSS-120B-Blend source llmchat ltblend loh lfs "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; source llmchat ltblend lgf lfs "${AI_CMD}"'
+          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; LLM_AGENT_NAME=Gemini-2.5-Flash-Blend source llmchat ltblend lgf lfs "${AI_CMD}"'
       - shell_command:
-          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); source llmchat ltblend lqt lfs "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); LLM_AGENT_NAME=Qwen-235B-Think-Blend source llmchat ltblend lqt lfs "${AI_CMD}"'
       - shell_command:
-          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 3 )); source llmchat ltblend ltm "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 3 )); LLM_AGENT_NAME=o3-Blend source llmchat ltblend ltm "${AI_CMD}"'

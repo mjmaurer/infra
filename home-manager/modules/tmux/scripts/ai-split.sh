@@ -24,6 +24,49 @@ else
   export TMUXP_SESSION="ai-fast"
 fi
 
+# Create per-session directory and kick off background summary slug
+TIMESTAMP="$(date +%Y-%m-%d_%H%M%S)"
+SESSION_ROOT="$HOME/.local/state/llm/sessions"
+CURRENT_SESSION_DIR="$SESSION_ROOT/$TIMESTAMP"
+mkdir -p "$CURRENT_SESSION_DIR"
+
+# Save initial prompt for reference
+printf '%s\n' "$AI_CMD" > "$CURRENT_SESSION_DIR/prompt.md"
+
+# Background: generate 2–3 word kebab-case slug and create a symlink
+(
+  SLUG="$(
+    llm \
+      -m openrouter/openai/gpt-oss-120b \
+      -o reasoning_effort low \
+      -o provider '{"order":["cerebras"],"allow_fallbacks": true, "sort":"throughput"}' \
+      "Generate a concise 2-3 word kebab-case ASCII-only slug summarizing this prompt. Output ONLY the slug, no quotes or punctuation:
+
+Prompt:
+$AI_CMD"
+  )"
+
+  # Sanitize: lowercase, keep [a-z0-9-], collapse dashes, trim edges
+  SLUG="$(printf '%s' "$SLUG" \
+    | tr '[:upper:]' '[:lower:]' \
+    | tr -cs 'a-z0-9-' '-' \
+    | sed -E 's/^-+//; s/-+$//; s/-+/-/g')"
+
+  if [ -n "$SLUG" ]; then
+    LINK="$SESSION_ROOT/${TIMESTAMP}_${SLUG}"
+    TARGET="$TIMESTAMP"
+    i=0
+    while [ -e "$LINK" ]; do
+      i=$((i+1))
+      LINK="$SESSION_ROOT/${TIMESTAMP}_${SLUG}-$i"
+    done
+    ln -s "$TARGET" "$LINK"
+  fi
+) &
+
+# Expose to panes
+export LLM_SESSION_DIR="$CURRENT_SESSION_DIR"
+
 # Validate against TMUXP_AI_SESSIONS if provided
 if [ -n "${TMUXP_AI_SESSIONS:-}" ]; then
   case " ${TMUXP_AI_SESSIONS} " in
@@ -52,7 +95,7 @@ if command -v aerospace >/dev/null 2>&1 && [[ -n "${WINDOW_ID// /}" ]]; then
 fi
 
 alacritty \
-  --working-directory ~/.local/state/llm \
+  --working-directory "$CURRENT_SESSION_DIR" \
   -o font.size=13 \
   --title "$WINDOW_TITLE" \
   --command ~/.nix-profile/bin/zsh -lc "unset TMUX; tmux kill-session -t '$TMUXP_SESSION' 2>/dev/null || true; tmuxp load '$TMUXP_SESSION'"

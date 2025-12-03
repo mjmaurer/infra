@@ -6,9 +6,9 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'source llmchat lqc lfc "${AI_CMD}"'
+          - cmd: 'LLM_AGENT_NAME=Qwen-3-Coder source llmchat lqc lfc "${AI_CMD}"'
         focus: true
       - shell_command:
-          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; source llmchat loh lfc "${AI_CMD}"'
+          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; LLM_AGENT_NAME=GPT-OSS-120B source llmchat loh lfc "${AI_CMD}"'
       - shell_command:
-          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); source llmchat lth lfc "${AI_CMD}"'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); LLM_AGENT_NAME=o3 source llmchat lth lfc "${AI_CMD}"'

@@ -130,9 +130,60 @@ in
           export LLM_ARGS=""
         fi
 
-        llmmd "$@"
+        if [ -n "''${LLM_SESSION_DIR:-}" ] && [ -n "''${LLM_AGENT_NAME:-}" ]; then
+          AGENT_DIR="$LLM_SESSION_DIR/$LLM_AGENT_NAME"
+          mkdir -p "$AGENT_DIR"
+          # Initialize turn counter for this agent
+          echo 1 > "$AGENT_DIR/.turn"
+
+          # First turn: save raw markdown, then render
+          llm -f ${mdFragPath} "$@" | tee "$AGENT_DIR/01_response.md" | sd
+        else
+          # Fallback to standard rendering
+          llmmd "$@"
+        fi
+
+        # Preserve CID extraction
         export LLM_CID=$(llm logs --json -n 1 | jq -r '.[0].conversation_id')
         printf '%s\ncid=%s\n' "$LLM_ARGS" "$LLM_CID"
+      '')
+      (pkgs.writeShellScriptBin "llm-followup" ''
+        set -o pipefail
+        # Require session + agent for logging; otherwise, fall back
+        if [ -z "''${LLM_SESSION_DIR:-}" ] || [ -z "''${LLM_AGENT_NAME:-}" ]; then
+          # Fall back to continuing current conversation if possible
+          if [ -n "''${LLM_CID:-}" ]; then
+            exec llm -f ${mdFragPath} --cid "$LLM_CID" "$@" | sd
+          else
+            exec llm -f ${mdFragPath} "$@" | sd
+          fi
+        fi
+
+        AGENT_DIR="$LLM_SESSION_DIR/$LLM_AGENT_NAME"
+        mkdir -p "$AGENT_DIR"
+
+        # Read and increment turn
+        if [ -s "$AGENT_DIR/.turn" ]; then
+          CURRENT_TURN="$(cat "$AGENT_DIR/.turn")"
+        else
+          CURRENT_TURN=1
+        fi
+        NEXT_TURN=$(( CURRENT_TURN + 1 ))
+
+        PROMPT_FILE="$(printf "%s/%02d_prompt.md" "$AGENT_DIR" "$NEXT_TURN")"
+        RESP_FILE="$(printf "%s/%02d_response.md" "$AGENT_DIR" "$NEXT_TURN")"
+
+        # Save the prompt exactly as provided
+        printf '%s\n' "$*" > "$PROMPT_FILE"
+
+        if [ -n "''${LLM_CID:-}" ]; then
+          llm -f ${mdFragPath} --cid "$LLM_CID" "$@" | tee "$RESP_FILE" | sd
+        else
+          llm -f ${mdFragPath} "$@" | tee "$RESP_FILE" | sd
+        fi
+
+        # Update turn counter
+        echo "$NEXT_TURN" > "$AGENT_DIR/.turn"
       '')
       (pkgs.writeShellScriptBin "llmhistory" ''
         llm logs --json -n 20 \
@@ -254,7 +305,7 @@ in
           a = "llmcmd";
           ai = "llm -t quick";
           ac = "sd --exec \"llm chat -t quick\"";
-          af = ''llmmd --cid "$LLM_CID" "''${(@)LLM_ARGS_ARR}"'';
+          af = "llm-followup";
           aiw = "llmweb";
           aiws = "llmwebsummarize";
           aig = "llmgithub";
