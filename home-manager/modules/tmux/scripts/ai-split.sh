@@ -1,5 +1,8 @@
 export PATH="$PATH:/opt/homebrew/bin:$HOME/.nix-profile/bin"
 
+# Source Nix Home Manager session variables
+. "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+
 if [[ "$@" == ". "* ]]; then
   echo "Custom session mode"
   args="${@:2}"
@@ -24,45 +27,37 @@ else
   export TMUXP_SESSION="ai-fast"
 fi
 
-# Create per-session directory and kick off background summary slug
-TIMESTAMP="$(date +%Y-%m-%d_%H%M%S)"
-SESSION_ROOT="${LLM_SESSION_ROOT:-$HOME/Documents/obsidian/Personal/_llm_sessions}"
-CURRENT_SESSION_DIR="$SESSION_ROOT/$TIMESTAMP"
-mkdir -p "$CURRENT_SESSION_DIR"
-
-# Save initial prompt for reference
-printf '%s\n' "$AI_CMD" > "$CURRENT_SESSION_DIR/prompt.md"
-
-# Background: generate 2–3 word kebab-case slug and create a symlink
-(
-  SLUG="$(
-    llm \
-      -m openrouter/openai/gpt-oss-120b \
-      -o reasoning_effort low \
-      -o provider '{"order":["cerebras"],"allow_fallbacks": true, "sort":"throughput"}' \
-      "Generate a concise 2-3 word kebab-case ASCII-only slug summarizing this prompt. Output ONLY the slug, no quotes or punctuation:
+# Generate summary slug first (used in session directory name)
+SLUG="$(
+  llm \
+    -m openrouter/openai/gpt-oss-120b \
+    -o reasoning_effort low \
+    -o provider '{"order":["cerebras"],"allow_fallbacks": true, "sort":"throughput"}' \
+    "Generate a concise 2-4 word kebab-case ASCII-only slug summarizing this prompt. Output ONLY the slug, no quotes or punctuation:
 
 Prompt:
 $AI_CMD"
-  )"
+)"
 
-  # Sanitize: lowercase, keep [a-z0-9-], collapse dashes, trim edges
-  SLUG="$(printf '%s' "$SLUG" \
-    | tr '[:upper:]' '[:lower:]' \
-    | tr -cs 'a-z0-9-' '-' \
-    | sed -E 's/^-+//; s/-+$//; s/-+/-/g')"
+# Sanitize: lowercase, keep [a-z0-9-], collapse dashes, trim edges
+SLUG="$(printf '%s' "$SLUG" \
+  | tr '[:upper:]' '[:lower:]' \
+  | tr -cs 'a-z0-9-' '-' \
+  | sed -E 's/^-+//; s/-+$//; s/-+/-/g')"
 
-  if [ -n "$SLUG" ]; then
-    LINK="$SESSION_ROOT/${TIMESTAMP}_${SLUG}"
-    TARGET="$TIMESTAMP"
-    i=0
-    while [ -e "$LINK" ]; do
-      i=$((i+1))
-      LINK="$SESSION_ROOT/${TIMESTAMP}_${SLUG}-$i"
-    done
-    ln -s "$TARGET" "$LINK"
-  fi
-)
+# Fallback if slug is empty
+if [ -z "$SLUG" ]; then
+  SLUG="session"
+fi
+
+# Create per-session directory with TIMESTAMP_SLUG
+TIMESTAMP="$(date +%Y-%m-%d-%H%M%S)"
+SESSION_ROOT="${LLM_SESSION_ROOT:-$HOME/.local/state/llm/sessions}"
+CURRENT_SESSION_DIR="$SESSION_ROOT/${TIMESTAMP}_${TMUXP_SESSION}_${SLUG}"
+mkdir -p "$CURRENT_SESSION_DIR"
+
+# Save initial prompt for reference
+printf '%s\n' "$AI_CMD" > "$CURRENT_SESSION_DIR/prompt.m-"
 
 # Expose to panes
 export LLM_SESSION_DIR="$CURRENT_SESSION_DIR"
@@ -98,8 +93,7 @@ fi
 # We must ensure the server is running first.
 TMUXP_CMD="unset TMUX; \
 tmux kill-session -t '$TMUXP_SESSION' 2>/dev/null || true; \
-tmux set-environment -g LLM_SESSION_DIR '$LLM_SESSION_DIR'; \
-tmuxp load '$TMUXP_SESSION'"
+LLM_SESSION_DIR='$LLM_SESSION_DIR' tmuxp load '$TMUXP_SESSION'"
 
 alacritty \
   --working-directory "$HOME/.local/state/llm" \

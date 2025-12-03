@@ -152,10 +152,12 @@ in
         set -o pipefail
         # Require session + agent for logging; otherwise, fall back
         if [ -z "''${LLM_SESSION_DIR:-}" ] || [ -z "''${LLM_AGENT_NAME:-}" ]; then
+          echo "LLM_SESSION_DIR or LLM_AGENT_NAME not set. Not saving response history."
           # Fall back to continuing current conversation if possible
           if [ -n "''${LLM_CID:-}" ]; then
             exec llm -f ${mdFragPath} --cid "$LLM_CID" "$@" | sd
           else
+            echo "No LLM_CID, can't use follow-up"
             exec llm -f ${mdFragPath} "$@" | sd
           fi
         fi
@@ -180,6 +182,7 @@ in
         if [ -n "''${LLM_CID:-}" ]; then
           llm -f ${mdFragPath} --cid "$LLM_CID" "$@" | tee "$RESP_FILE" | sd
         else
+          echo "No LLM_CID, can't use follow-up"
           llm -f ${mdFragPath} "$@" | tee "$RESP_FILE" | sd
         fi
 

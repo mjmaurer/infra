@@ -1,14 +1,14 @@
 session_name: ai
 windows:
-  - window_name: ai
+  - window_name: 'ai (Session Path: ${LLM_SESSION_DIR})'
     layout: even-horizontal
     options:
       automatic-rename: false
     panes:
       - shell_command:
-          - cmd: 'LLM_AGENT_NAME=Gemini-Pro source llmchat lgp lft "${AI_CMD}"; sync'
+          - cmd: 'export LLM_AGENT_NAME=gemini-3-pro-preview; source llmchat lgp lft "${AI_CMD}"; sync'
         focus: true
       - shell_command:
-          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; LLM_AGENT_NAME=o3 source llmchat lth "${AI_CMD}"; sync'
+          - cmd: 'sleep "${TMUXP_AI_STUTTER}"; export LLM_AGENT_NAME=o3; source llmchat lth "${AI_CMD}"; sync'
       - shell_command:
-          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); LLM_AGENT_NAME=gpt-5 source llmchat lfh "${AI_CMD}"; sync'
+          - cmd: 'sleep $(( TMUXP_AI_STUTTER * 2 )); export LLM_AGENT_NAME=gpt-5; source llmchat lfh "${AI_CMD}"; sync'
