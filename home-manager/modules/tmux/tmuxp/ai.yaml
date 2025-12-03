@@ -1,4 +1,6 @@
 session_name: ai
+environment:
+  LLM_SESSION_DIR: '${LLM_SESSION_DIR}'
 windows:
   - window_name: 'ai (Session Path: ${LLM_SESSION_DIR})'
     layout: even-horizontal

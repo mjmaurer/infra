@@ -13,54 +13,64 @@ if [[ "$@" == ". "* ]]; then
     export TMUXP_SESSION="ai-$first"
   fi
   export AI_CMD="${args#* }"
-elif [[ "$@" == "t "* ]]; then
-  echo "Thinking mode"
+  export AI_RECORD_SESSION="true"
+elif [[ "$@" == "f "* ]]; then
+  echo "Fast mode"
   export AI_CMD="${@:2}"
-  export TMUXP_SESSION="ai"
+  export TMUXP_SESSION="ai-fast"
+  export AI_RECORD_SESSION="false"
 elif [[ "$@" == "c "* ]]; then
   echo "Code mode"
   export AI_CMD="${@:2}"
   export TMUXP_SESSION="ai-code"
+  export AI_RECORD_SESSION="false"
 else
-  echo "Fast mode"
+  echo "Thinking mode"
   export AI_CMD="$@"
-  export TMUXP_SESSION="ai-fast"
+  export TMUXP_SESSION="ai"
+  export AI_RECORD_SESSION="true"
 fi
 
-# Generate summary slug first (used in session directory name)
-SLUG="$(
-  llm \
-    -m openrouter/openai/gpt-oss-120b \
-    -o reasoning_effort low \
-    -o provider '{"order":["cerebras"],"allow_fallbacks": true, "sort":"throughput"}' \
-    "Generate a concise 2-4 word kebab-case ASCII-only slug summarizing this prompt. Output ONLY the slug, no quotes or punctuation:
+# Decide whether to record this session
+if [ "$(printf '%s' "${AI_RECORD_SESSION:-true}" | tr '[:upper:]' '[:lower:]')" = "false" ]; then
+  # Recording disabled: no slug, no directory, empty session dir
+  export LLM_SESSION_DIR=""
+else
+  # Generate summary slug first (used in session directory name)
+  SLUG="$(
+    llm \
+      -m openrouter/openai/gpt-oss-120b \
+      -o reasoning_effort low \
+      -o provider '{"order":["cerebras"],"allow_fallbacks": true, "sort":"throughput"}' \
+      "Generate a concise 2-4 word kebab-case ASCII-only slug summarizing this prompt. Output ONLY the slug, no quotes or punctuation:
 
 Prompt:
 $AI_CMD"
-)"
+  )"
 
-# Sanitize: lowercase, keep [a-z0-9-], collapse dashes, trim edges
-SLUG="$(printf '%s' "$SLUG" \
-  | tr '[:upper:]' '[:lower:]' \
-  | tr -cs 'a-z0-9-' '-' \
-  | sed -E 's/^-+//; s/-+$//; s/-+/-/g')"
+  # Sanitize: lowercase, keep [a-z0-9-], collapse dashes, trim edges
+  SLUG="$(printf '%s' "$SLUG" \
+    | tr '[:upper:]' '[:lower:]' \
+    | tr -cs 'a-z0-9-' '-' \
+    | sed -E 's/^-+//; s/-+$//; s/-+/-/g')"
 
-# Fallback if slug is empty
-if [ -z "$SLUG" ]; then
-  SLUG="session"
+  # Fallback if slug is empty
+  if [ -z "$SLUG" ]; then
+    SLUG="session"
+  fi
+
+  # Create per-session directory with TIMESTAMP_SLUG
+  TIMESTAMP="$(date +%Y-%m-%d-%H%M%S)"
+  SESSION_ROOT="${LLM_SESSION_ROOT:-$HOME/.local/state/llm/sessions}"
+  CURRENT_SESSION_DIR="$SESSION_ROOT/${TIMESTAMP}_${TMUXP_SESSION}_${SLUG}"
+  mkdir -p "$CURRENT_SESSION_DIR"
+
+  # Save initial prompt for reference
+  printf '%s\n' "$AI_CMD" > "$CURRENT_SESSION_DIR/prompt.md"
+
+  # Expose to panes
+  export LLM_SESSION_DIR="$CURRENT_SESSION_DIR"
 fi
-
-# Create per-session directory with TIMESTAMP_SLUG
-TIMESTAMP="$(date +%Y-%m-%d-%H%M%S)"
-SESSION_ROOT="${LLM_SESSION_ROOT:-$HOME/.local/state/llm/sessions}"
-CURRENT_SESSION_DIR="$SESSION_ROOT/${TIMESTAMP}_${TMUXP_SESSION}_${SLUG}"
-mkdir -p "$CURRENT_SESSION_DIR"
-
-# Save initial prompt for reference
-printf '%s\n' "$AI_CMD" > "$CURRENT_SESSION_DIR/prompt.m-"
-
-# Expose to panes
-export LLM_SESSION_DIR="$CURRENT_SESSION_DIR"
 
 # Validate against TMUXP_AI_SESSIONS if provided
 if [ -n "${TMUXP_AI_SESSIONS:-}" ]; then
