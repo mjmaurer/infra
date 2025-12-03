@@ -46,7 +46,6 @@ in
     };
 
     xdg.configFile = {
-      # AI? what is tmuxp?
       "tmuxp" = {
         source = ./tmuxp;
         recursive = true;

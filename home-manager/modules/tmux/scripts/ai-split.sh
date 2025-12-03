@@ -26,7 +26,7 @@ fi
 
 # Create per-session directory and kick off background summary slug
 TIMESTAMP="$(date +%Y-%m-%d_%H%M%S)"
-SESSION_ROOT="$HOME/.local/state/llm/sessions"
+SESSION_ROOT="${LLM_SESSION_ROOT:-$HOME/Documents/obsidian/Personal/_llm_sessions}"
 CURRENT_SESSION_DIR="$SESSION_ROOT/$TIMESTAMP"
 mkdir -p "$CURRENT_SESSION_DIR"
 
@@ -62,7 +62,7 @@ $AI_CMD"
     done
     ln -s "$TARGET" "$LINK"
   fi
-) &
+)
 
 # Expose to panes
 export LLM_SESSION_DIR="$CURRENT_SESSION_DIR"
@@ -94,8 +94,15 @@ if command -v aerospace >/dev/null 2>&1 && [[ -n "${WINDOW_ID// /}" ]]; then
   aerospace close --window-id "$WINDOW_ID"
 fi
 
+# Set the environment variable globally on the tmux server so the new session inherits it.
+# We must ensure the server is running first.
+TMUXP_CMD="unset TMUX; \
+tmux kill-session -t '$TMUXP_SESSION' 2>/dev/null || true; \
+tmux set-environment -g LLM_SESSION_DIR '$LLM_SESSION_DIR'; \
+tmuxp load '$TMUXP_SESSION'"
+
 alacritty \
-  --working-directory "$CURRENT_SESSION_DIR" \
+  --working-directory "$HOME/.local/state/llm" \
   -o font.size=13 \
   --title "$WINDOW_TITLE" \
-  --command ~/.nix-profile/bin/zsh -lc "unset TMUX; tmux kill-session -t '$TMUXP_SESSION' 2>/dev/null || true; tmuxp load '$TMUXP_SESSION'"
+  --command ~/.nix-profile/bin/zsh -lc "$TMUXP_CMD"

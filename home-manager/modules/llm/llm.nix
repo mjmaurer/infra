@@ -137,8 +137,9 @@ in
           echo 1 > "$AGENT_DIR/.turn"
 
           # First turn: save raw markdown, then render
-          llm -f ${mdFragPath} "$@" | tee "$AGENT_DIR/01_response.md" | sd
+          llm -f ${mdFragPath} "$@" | tee "$AGENT_DIR/01_response.md" | sd; sync || true
         else
+          echo "Dir or agent variable not provided ('$LLM_SESSION_DIR/$LLM_AGENT_NAME'); running standard llmmd"
           # Fallback to standard rendering
           llmmd "$@"
         fi
@@ -182,6 +183,9 @@ in
           llm -f ${mdFragPath} "$@" | tee "$RESP_FILE" | sd
         fi
 
+        # Ensure response is flushed to disk
+        sync || true
+
         # Update turn counter
         echo "$NEXT_TURN" > "$AGENT_DIR/.turn"
       '')
@@ -219,6 +223,14 @@ in
         }" | sd
       '')
     ];
+
+    home.sessionVariables = {
+      LLM_SESSION_ROOT =
+        if config.modules.obsidian.enable then
+          "$HOME/${config.modules.obsidian.vaultPath}/_llm_sessions"
+        else
+          "${cfgHome}/sessions";
+    };
 
     home.file = {
       ".local/bin/git-commit-ai.sh" = {
