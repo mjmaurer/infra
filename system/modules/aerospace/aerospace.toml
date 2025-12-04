@@ -108,6 +108,12 @@ cmd-ctrl-shift-b = [
     'layout tiling',
     'join-with up',
 ]
+cmd-ctrl-shift-o = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window outlook',
+    'layout tiling',
+    'join-with up',
+]
 cmd-ctrl-shift-a = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window llm',
