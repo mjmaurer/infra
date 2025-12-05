@@ -74,6 +74,7 @@ cmd-ctrl-v = 'workspace games --auto-back-and-forth'
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
 cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
 cmd-ctrl-m = 'workspace music --auto-back-and-forth'
+cmd-ctrl-n = 'workspace notif --auto-back-and-forth'
 cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
 cmd-ctrl-e = 'workspace code --auto-back-and-forth'
 cmd-ctrl-w = 'workspace web --auto-back-and-forth'
@@ -129,6 +130,18 @@ cmd-ctrl-shift-r = [
 cmd-ctrl-shift-z = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window zoom',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-n = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window notif',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-m = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window music',
     'layout tiling',
     'join-with up',
 ]
@@ -320,6 +333,11 @@ run = 'move-node-to-workspace llm'
 if.app-id = 'com.microsoft.Outlook'
 check-further-callbacks = false
 run = 'move-node-to-workspace outlook'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.MobileSMS'
+check-further-callbacks = false
+run = 'move-node-to-workspace notif'
 
 [[on-window-detected]]
 if.app-id = 'com.spotify.client'
