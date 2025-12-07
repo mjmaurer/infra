@@ -153,7 +153,14 @@ in
               printf '\n'
             done | sd
             sync || true
-            exit 0
+            # If sourced, return; if executed, exit
+            if [ -n "''${ZSH_EVAL_CONTEXT:-}" ]; then
+              return 0
+            elif [ "''${BASH_SOURCE[0]:-}" != "$0" ]; then
+              return 0
+            else
+              exit 0
+            fi
           fi
 
           # Fresh session: initialize and run first inference
