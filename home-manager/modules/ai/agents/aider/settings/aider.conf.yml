@@ -3,7 +3,7 @@
 # This file lists *all* the valid configuration entries.
 # Place in your home dir, or at the root of your git repo.
 ##########################################################
-model: "gemini/gemini-2.5-pro"
+model: "openrouter/google/gemini-3-pro-preview"
 
 # editor-model: "claude-3-5-sonnet-latest" # Just used in architect. It's the best at diffs
 # editor-edit-format: "editor-diff"
