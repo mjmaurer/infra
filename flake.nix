@@ -127,6 +127,7 @@
             derivationName = "bluejay";
             tags = [
               "linux"
+              "cloudflare"
             ];
           }).mkNixosSystem
             {
