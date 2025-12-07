@@ -14,6 +14,8 @@
     ./hardware-configuration.nix
     ./disko.nix
     ./karaoke.nix
+    ./nonstopchicks.nix
+    ./caddy.nix
   ];
 
   config = {
