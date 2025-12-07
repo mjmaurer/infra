@@ -1,5 +1,10 @@
 { pkgs-latest, config, ... }:
 {
+  networking.firewall.allowedTCPPorts = [
+    80
+    443
+  ];
+
   services.caddy =
     let
       caddyPkg = pkgs-latest.caddy.withPlugins {

@@ -13,11 +13,6 @@ let
   hostStateDir = "/var/lib/karaoke"; # Persistent storage on the host
 in
 {
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
-
   # Ensure persistent storage exists
   systemd.tmpfiles.rules = [
     "d ${hostStateDir} 0755 root root - -"
