@@ -93,7 +93,7 @@ in
         "${ociBin} pull ${image}"
       ];
       ExecStart = "${ociBin} run --rm -v ${hostStateDir}/data:/data --env YOUTUBE_API_KEY ${image} npm run rebuild-cache";
-      TimeoutStartSec = "2h";
+      TimeoutStartSec = "10m";
     };
   };
 
