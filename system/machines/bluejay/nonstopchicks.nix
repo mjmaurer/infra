@@ -55,7 +55,8 @@ in
       tls mjmaurer777@gmail.com {
         dns cloudflare {$CLOUDFLARE_API_TOKEN}
         resolvers 1.1.1.1 1.0.0.1
-        propagation_timeout -1
+        propagation_timeout 10m
+        propagation_delay 1m
       }
       encode zstd gzip
       request_body {
