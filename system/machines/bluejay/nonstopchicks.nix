@@ -17,7 +17,7 @@ let
       "${pkgs.podman}/bin/podman"
     else
       "${pkgs.docker}/bin/docker";
-  image = "ghcr.io/mjmaurer/nonstopchicks:sha-41a6846";
+  image = "ghcr.io/mjmaurer/nonstopchicks:sha-564b97e";
 in
 {
   # Ensure persistent storage exists
