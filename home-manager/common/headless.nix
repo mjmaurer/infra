@@ -23,6 +23,7 @@
 
     ../modules/nix.nix
 
+    ../modules/obsidian/obsidian.nix
     ../modules/shell/shell.nix
     ../modules/crypt/crypt.nix
     ../modules/git/git.nix

@@ -13,7 +13,6 @@
 
     ../modules/ente-auth/ente-auth.nix
     ../modules/continuedev/continuedev.nix
-    ../modules/obsidian/obsidian.nix
     ../modules/repomix/repomix.nix
     ../modules/node/node.nix
   ];
