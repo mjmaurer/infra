@@ -33,6 +33,7 @@ keys:
     - *ash
   - &cloudflare
     - *maple
+    - *bluejay
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
