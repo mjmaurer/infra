@@ -1,4 +1,5 @@
 {
+  pkgs-latest,
   config,
   pkgs,
   lib,
@@ -16,15 +17,6 @@ in
     80
     443
   ];
-
-  # ACME for automatic certs
-  security.acme = {
-    acceptTerms = true;
-    defaults = {
-      email = "mjmaurer777@gmail.com";
-      group = "nginx";
-    };
-  };
 
   # Ensure persistent storage exists
   systemd.tmpfiles.rules = [
@@ -61,30 +53,27 @@ in
       };
     };
 
-  services.nginx = {
-    enable = true;
-    recommendedProxySettings = true;
-    recommendedTlsSettings = true;
-    recommendedGzipSettings = true;
-
-    virtualHosts."${karaokeDomain}" = {
-      enableACME = true;
-      forceSSL = true;
-      extraConfig = ''
-        client_max_body_size 30M;
-      '';
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString hostPort}";
-      };
-      locations."/static/".extraConfig = ''
-        autoindex on;
-        alias ${hostStateDir}/static/;
-      '';
-      locations."/media/".extraConfig = ''
-        autoindex on;
-        alias ${hostStateDir}/media/;
-      '';
-    };
+  services.caddy = {
+    virtualHosts."${karaokeDomain}".extraConfig = ''
+      tls mjmaurer777@gmail.com {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+        resolvers 1.1.1.1 1.0.0.1
+        propagation_timeout -1
+      }
+      encode zstd gzip
+      request_body {
+        max_size 30MB
+      }
+      handle_path /static/* {
+        root * ${hostStateDir}/static
+        file_server browse
+      }
+      handle_path /media/* {
+        root * ${hostStateDir}/media
+        file_server browse
+      }
+      reverse_proxy 127.0.0.1:${toString hostPort}
+    '';
   };
 
   sops = {
