@@ -90,4 +90,5 @@ alacritty \
     --working-directory "$HOME/.local/state/llm" \
     -o font.size=13 \
     --title "$SESSION_TYPE" \
-    --command ~/.nix-profile/bin/zsh -lc "$TMUXP_CMD"
+    --command ~/.nix-profile/bin/zsh -lc "$TMUXP_CMD" \
+    >/dev/null 2>&1 </dev/null &

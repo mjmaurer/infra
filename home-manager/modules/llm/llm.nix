@@ -133,10 +133,31 @@ in
         if [ -n "''${LLM_SESSION_DIR:-}" ] && [ -n "''${LLM_AGENT_NAME:-}" ]; then
           AGENT_DIR="$LLM_SESSION_DIR/$LLM_AGENT_NAME"
           mkdir -p "$AGENT_DIR"
-          # Initialize turn counter for this agent
-          echo 1 > "$AGENT_DIR/.turn"
 
-          # First turn: save raw markdown, then render
+          # Replay mode: if recorded turns exist, render them and exit
+          if ls "$AGENT_DIR"/[0-9][0-9]_*.md >/dev/null 2>&1; then
+            # Set .turn to last recorded turn so llm-followup appends correctly
+            last_turn="$(
+              ls -1 "$AGENT_DIR"/[0-9][0-9]_*.md 2>/dev/null \
+                | sed -E 's#.*/([0-9][0-9])_.*#\1#' \
+                | sort -n | tail -n1
+            )"
+            if [ -n "$last_turn" ]; then
+              printf '%s\n' "$((10#$last_turn))" > "$AGENT_DIR/.turn"
+            fi
+
+            # Concatenate in numeric then name order (01_prompt, 01_response, 02_prompt, …)
+            for f in "$AGENT_DIR"/[0-9][0-9]_*.md; do
+              [ -f "$f" ] || continue
+              cat "$f"
+              printf '\n'
+            done | sd
+            sync || true
+            exit 0
+          fi
+
+          # Fresh session: initialize and run first inference
+          echo 1 > "$AGENT_DIR/.turn"
           llm -f ${mdFragPath} "$@" | tee "$AGENT_DIR/01_response.md" | sd; sync || true
         else
           echo "Dir or agent variable not provided ('$LLM_SESSION_DIR/$LLM_AGENT_NAME'); running standard llmmd"
@@ -321,6 +342,7 @@ in
           ai = "llm -t quick";
           ac = "sd --exec \"llm chat -t quick\"";
           af = "llm-followup";
+          air = "ai-recall.sh";
           aiw = "llmweb";
           aiws = "llmwebsummarize";
           aig = "llmgithub";

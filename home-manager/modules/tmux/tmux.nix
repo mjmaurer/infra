@@ -56,6 +56,10 @@ in
         source = ./scripts/ai-split.sh;
         executable = true;
       };
+      ".local/bin/ai-recall.sh" = {
+        source = ./scripts/ai-recall.sh;
+        executable = true;
+      };
       ".local/bin/ai-prompt-compose.sh" = {
         source = ./scripts/ai-prompt-compose.sh;
         executable = true;
