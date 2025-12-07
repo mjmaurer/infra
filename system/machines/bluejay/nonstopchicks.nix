@@ -1,4 +1,5 @@
 {
+  pkgs-latest,
   config,
   pkgs,
   lib,
@@ -12,19 +13,6 @@ let
   hostStateDir = "/var/lib/nonstopchicks"; # Persistent storage on the host
 in
 {
-  networking.firewall.allowedTCPPorts = [
-    80
-    443
-  ];
-
-  security.acme = {
-    acceptTerms = true;
-    defaults = {
-      email = "mjmaurer777@gmail.com";
-      group = "nginx";
-    };
-  };
-
   # Ensure persistent storage exists
   systemd.tmpfiles.rules = [
     "d ${hostStateDir} 0755 root root - -"
@@ -41,7 +29,7 @@ in
       autoRemoveOnStop = true;
       extraOptions = [ "--replace" ];
 
-      # Bind only on loopback so it's reachable only via nginx
+      # Bind only on loopback so it's reachable only via Caddy
       ports = [ "127.0.0.1:${toString hostPort}:${toString containerPort}" ];
       volumes = [
         "${hostStateDir}/data:/data"
@@ -54,22 +42,19 @@ in
       };
     };
 
-  services.nginx = {
-    enable = true;
-    recommendedProxySettings = true;
-    recommendedTlsSettings = true;
-    recommendedGzipSettings = true;
-
-    virtualHosts."${nonstopchicksDomain}" = {
-      enableACME = true;
-      forceSSL = true;
-      extraConfig = ''
-        client_max_body_size 30M;
-      '';
-      locations."/" = {
-        proxyPass = "http://127.0.0.1:${toString hostPort}";
-      };
-    };
+  services.caddy = {
+    virtualHosts."${nonstopchicksDomain}".extraConfig = ''
+      tls mjmaurer777@gmail.com {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+        resolvers 1.1.1.1 1.0.0.1
+        propagation_timeout -1
+      }
+      encode zstd gzip
+      request_body {
+        max_size 30MB
+      }
+      reverse_proxy 127.0.0.1:${toString hostPort}
+    '';
   };
 
   sops = {
