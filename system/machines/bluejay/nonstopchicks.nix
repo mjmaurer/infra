@@ -11,11 +11,19 @@ let
   hostPort = 4001; # Host port that nginx will proxy to
   containerPort = 3000; # Port the app listens on inside the container
   hostStateDir = "/var/lib/nonstopchicks"; # Persistent storage on the host
+
+  ociBin =
+    if (config.virtualisation.oci-containers.backend or "docker") == "podman" then
+      "${pkgs.podman}/bin/podman"
+    else
+      "${pkgs.docker}/bin/docker";
+  image = "ghcr.io/mjmaurer/nonstopchicks:latest";
 in
 {
   # Ensure persistent storage exists
   systemd.tmpfiles.rules = [
     "d ${hostStateDir} 0755 root root - -"
+    "d ${hostStateDir}/data 0775 1000 1000 - -"
   ];
 
   # Nonstop Chicks container
@@ -24,7 +32,7 @@ in
       containerWorkDir = "/app";
     in
     {
-      image = "ghcr.io/mjmaurer/nonstopchicks:latest";
+      image = image;
       pull = "always";
       autoRemoveOnStop = true;
       extraOptions = [ "--replace" ];
@@ -70,6 +78,32 @@ in
           YOUTUBE_API_KEY=${config.sops.placeholder.youtubeApiKey}
         '';
       };
+    };
+  };
+
+  systemd.services.nonstopchicks-rebuild-cache = {
+    description = "Populate Nonstop Chicks cache (cache-build-env)";
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      EnvironmentFile = config.sops.templates."nonstopchicks.env".path;
+      ExecStartPre = [
+        "${pkgs.coreutils}/bin/install -d -m 0775 -o 1000 -g 1000 ${hostStateDir}/data"
+        "${ociBin} pull ${image}"
+      ];
+      ExecStart = "${ociBin} run --rm -v ${hostStateDir}/data:/data --env YOUTUBE_API_KEY ${image} npm run rebuild-cache";
+      TimeoutStartSec = "2h";
+    };
+  };
+
+  systemd.timers.nonstopchicks-rebuild-cache = {
+    wantedBy = [ "timers.target" ];
+    partOf = [ "nonstopchicks-rebuild-cache.service" ];
+    timerConfig = {
+      OnCalendar = "*-*-* 05:00:00 America/New_York";
+      Persistent = true;
+      RandomizedDelaySec = "10m";
     };
   };
 }

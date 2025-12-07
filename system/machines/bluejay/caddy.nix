@@ -17,7 +17,7 @@
       package = caddyPkg;
     };
 
-  templates = {
+  sops.templates = {
     "bluejay-caddy.env" = {
       content = ''
         CLOUDFLARE_API_TOKEN=${config.sops.placeholder.cloudflareDnsApiToken}
