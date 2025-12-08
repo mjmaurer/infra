@@ -48,7 +48,7 @@ CANDIDATES="$(
       }
     }' \
   | sed '/^$/d' \
-  | sort -u
+  | sort -ru
 )"
 
 # Build display lines: "<label-without-leading-date>	<original-relative-path>"

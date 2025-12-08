@@ -150,7 +150,7 @@ in
             for f in "$AGENT_DIR"/[0-9][0-9]_*.md; do
               [ -f "$f" ] || continue
               cat "$f"
-              printf '\n'
+              printf '-------------------------------------------------\n'
             done | sd
             sync || true
             # If sourced, return; if executed, exit
