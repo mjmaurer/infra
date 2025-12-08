@@ -32,18 +32,69 @@ echo "Using mode: $MODE"
 echo "Using globs: ${RG_GLOBS[*]}"
 echo "Using query: '$QUERY'"
 
-# Run search -> select with fzf-tmux
-SEL="$(
-    rg --line-number --no-heading --color=always "${RG_GLOBS[@]}" -- "$QUERY" "$SEARCH_ROOT" \
-    | fzf-tmux -p 90%,90% --ansi --no-sort --query "$QUERY" \
-    | sed 's/:.*//'
-)" || true
+# Build candidate list: files matching query, shown relative to SEARCH_ROOT
+# Use substring logic (not regex) so special chars in SEARCH_ROOT don't break trimming,
+# and handle optional trailing slash on SEARCH_ROOT.
+CANDIDATES="$(
+  rg -l "${RG_GLOBS[@]}" -- "$QUERY" "$SEARCH_ROOT" 2>/dev/null \
+  | awk -v root="$SEARCH_ROOT" '{
+      s=$0;
+      n=length(root);
+      if (substr(s,1,n)==root) {
+        if (substr(s,n+1,1)=="/") print substr(s,n+2);
+        else print substr(s,n+1);
+      } else {
+        print s;
+      }
+    }' \
+  | sed '/^$/d' \
+  | sort -u
+)"
 
-if [ -z "${SEL:-}" ]; then
+# Build display lines: "<label-without-leading-date>	<original-relative-path>"
+DISPLAY_CANDIDATES="$(
+  printf '%s\n' "$CANDIDATES" \
+  | awk -F/ '{
+      orig=$0;
+      origFirst=$1;
+      first=$1;
+      # Strip leading date/time from first segment:
+      # - Date: YYYY[-_ ]?MM[-_ ]?DD
+      # - Optional time: [-_ ]?HHMMSS
+      # - Optional trailing separator after date/time
+      gsub(/^[0-9]{4}[-_ ]?[01][0-9][-_ ]?[0-3][0-9]([-_ ]?[0-2][0-9][0-5][0-9][0-5][0-9])?[-_ ]?/, "", first);
+      if (first == "") first = origFirst;  # fallback if dir is only a date
+      $1=first;
+      disp=$1;
+      for (i=2;i<=NF;i++) disp=disp "/" $i;
+      print disp "\t" orig;
+    }'
+)"
+
+# --preview "cat \"${SEARCH_ROOT}/{}\"" \
+# Split-screen fzf: left = relative filename list, right = streamdown preview
+SEL_LINE="$(
+  printf '%s\n' "$DISPLAY_CANDIDATES" \
+  | fzf --ansi \
+        --no-sort \
+        --query "$QUERY" \
+        --delimiter '\t' \
+        --with-nth=1 \
+        --preview 'sh -c '"'"'sd "$1/$2"'"'"' _ '"$SEARCH_ROOT"' {2}' \
+        --preview-window=right,55%,wrap \
+        --height=100% \
+        --reverse \
+        --border \
+        --prompt 'ai-recall> '
+)" || true
+SEL_REL="$(printf '%s\n' "${SEL_LINE:-}" | awk -F'\t' '{print $2}')"
+
+if [ -z "${SEL_REL:-}" ]; then
     echo "No selection."
     exit 0
 fi
 
+SEL="${SEARCH_ROOT}/${SEL_REL}"
 SEL_BASENAME="$(basename "$SEL")"
 if [ "$SEL_BASENAME" = "prompt.md" ]; then
     LLM_SESSION_DIR="$(dirname "$SEL")"
