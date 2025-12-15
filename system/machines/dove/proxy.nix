@@ -16,63 +16,6 @@ let
   plexWebPort = 32400;
   authextraPort = 3000;
 
-  hstRoot = "/var/www/${hst}";
-
-  # ─────────────── Domain / Sub-domain snippets for reuse ──────────────
-
-  domainExtra = ''
-    proxy_set_header Host              $host;
-    proxy_set_header X-Real-IP         $remote_addr;
-    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
-    proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-Host  $host;
-    proxy_set_header X-Forwarded-Port  $server_port;
-
-    # TODO: use sendfile to serve protected media:
-    # https://stackoverflow.com/questions/39744587/serve-protected-media-files-with-django
-  '';
-
-  subdomainExtra = ''
-    # Websocket support
-    proxy_http_version 1.1;
-    proxy_cache_bypass         $http_upgrade;
-    proxy_set_header Upgrade   $http_upgrade;
-    proxy_set_header Connection "upgrade";
-    proxy_set_header X-Scheme  $scheme;
-
-    # Overrides
-    proxy_set_header X-Forwarded-Port  "";
-
-    proxy_buffers             4 256k;
-    proxy_buffer_size         128k;
-    proxy_busy_buffers_size   256k;
-
-    client_max_body_size 100M;
-
-    proxy_connect_timeout 120s;
-    proxy_send_timeout    120s;
-    proxy_read_timeout    120s;
-
-    auth_request_set $auth_cookie $upstream_http_set_cookie;
-    add_header Set-Cookie $auth_cookie; # need 'always'?
-
-    location @error403 {
-        return 302 https://${hst}/api/auth/redirect?next=$http_host$request_uri;
-    }
-
-    location /auth {
-        proxy_pass http://bobby:${toString bobbyPort}/api/user/;
-        proxy_pass_request_body off;
-        proxy_set_header Content-Length "";
-        # Might need to be X-Original-URI:
-        proxy_set_header X-Original-URL $request_uri;
-        proxy_next_upstream error http_503 non_idempotent;
-
-        #proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
-        #proxy_pass http://multiauth/;
-    }
-  '';
-
 in
 {
   imports = [
@@ -86,192 +29,67 @@ in
       443
     ];
 
-    # ------------------------------  ACME  -------------------------------
-    security.acme = {
-      acceptTerms = true;
-      maxConcurrentRenewals = 10;
-      defaults = {
-        email = "mjmaurer777@gmail.com";
-        group = "nginx";
-      };
-    };
+    services.caddy.virtualHosts."${hst}".extraConfig = ''
+      tls mjmaurer777@gmail.com {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+        resolvers 1.1.1.1 1.0.0.1
+        propagation_timeout 10m
+        propagation_delay 1m
+      }
+      encode zstd gzip
+      redir https://google.com 301
+    '';
 
-    # Ensure the ACME web-root directory exists at boot
-    systemd.tmpfiles.rules = [ "d ${hst} 0775 acme nginx - -" ];
+    services.caddy.virtualHosts."plex.${hst}".extraConfig = ''
+      tls mjmaurer777@gmail.com {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+        resolvers 1.1.1.1 1.0.0.1
+        propagation_timeout 10m
+        propagation_delay 1m
+      }
+      encode zstd gzip
 
-    # ------------------------------  NGINX  ------------------------------
-    services.nginx = {
-      enable = true;
+      # Client body size (nginx client_max_body_size 100M)
+      request_body {
+        max_size 100MB
+      }
 
-      # Could protect admin sites with this
-      # tailscaleAuth = {
-      #   enable = true;
-      #   virtualHosts = [ "rvc.${host}" "invites.${host}" ];
-      # };
+      # Preserve the legacy /auth upstream endpoint
+      # handle_path /auth* {
+      #   reverse_proxy bobby:${toString bobbyPort} {
+      #     header_up X-Original-URL {uri}
+      #     header_up Content-Length ""
+      #   }
+      # }
 
-      # package = pkgs.nginxMainline;
-      recommendedProxySettings = true;
-      recommendedTlsSettings = true;
-      recommendedGzipSettings = true;
+      # Map nginx: error_page 403 = @error403 -> redirect to auth
+      # handle_errors {
+      #   @forbidden expression {http.error.status_code} == 403
+      #   redir @forbidden https://${hst}/api/auth/redirect?next={http.request.host}{http.request.uri} 302
+      # }
 
-      commonHttpConfig = ''
-        upstream bobby-api {
-          server bobby:${toString bobbyPort};
+      # Reverse proxy to Plex with explicit headers and timeouts
+      reverse_proxy willow:${toString plexWebPort} {
+        # Match nginx proxy_set_header values
+        header_up Host {host}
+        header_up X-Real-IP {remote_host}
+        header_up X-Forwarded-For {remote_host}
+        header_up X-Forwarded-Proto {scheme}
+        header_up X-Forwarded-Host {host}
+        header_up X-Forwarded-Port {server_port}
+        header_up X-Scheme {scheme}
+
+        # WebSocket-related (nginx proxy_http_version/upgrade)
+        header_up Upgrade {>Upgrade}
+        header_up Connection {>Connection}
+
+        # Timeouts (nginx 120s)
+        transport http {
+          dial_timeout 120s
+          read_timeout 120s
+          write_timeout 120s
         }
-
-        upstream multiauth {
-          server 127.0.2.1:8000 max_fails=0 weight=5;
-          server 127.0.2.1:8001 max_fails=0;
-          # Commenting out the 8001 actually makes it work for some reason
-        }
-      '';
-
-      virtualHosts = {
-        # --------------------------------------------------------------------------
-        # Redirects
-        # --------------------------------------------------------------------------
-        # "redirect-root" = {
-        #   serverName = hst;
-        #   listen = [
-        #     {
-        #       addr = "0.0.0.0";
-        #       port = 80;
-        #     }
-        #   ];
-        #   locations = {
-        #     # "/.well-known/acme-challenge/".root = acmeDir;
-        #     "/".extraConfig = ''
-        #       return 301 https://$host$request_uri;
-        #     '';
-        #   };
-        # };
-
-        # "redirect-wildcard" = {
-        #   serverName = "*.${hst}";
-        #   listen = [
-        #     {
-        #       addr = "0.0.0.0";
-        #       port = 80;
-        #     }
-        #   ];
-        #   locations = {
-        #     # "/.well-known/acme-challenge/".root = acmeDir;
-        #     "/".extraConfig = ''
-        #       return 301 https://$host$request_uri;
-        #     '';
-        #   };
-        # };
-
-        # --------------------------------------------------------------------------
-        # Internal
-        # --------------------------------------------------------------------------
-        # "auth-extra-8000" = {
-        #   serverName = "_";
-        #   listen = [
-        #     {
-        #       addr = "127.0.2.1";
-        #       port = 8000;
-        #     }
-        #   ];
-        #   locations."/".extraConfig = ''
-        #     proxy_pass http://authextra:${toString authextraPort}/jellyauth/;
-        #     proxy_pass_request_body off;
-        #     proxy_set_header Content-Length "";
-        #     proxy_set_header X-Original-URI $request_uri;
-        #   '';
-        # };
-
-        # "auth-extra-8001" = {
-        #   serverName = "_";
-        #   listen = [
-        #     {
-        #       addr = "127.0.2.1";
-        #       port = 8001;
-        #     }
-        #   ];
-        #   locations."/".extraConfig = ''
-        #     proxy_pass http://bobby:${toString bobbyPort}/api/user/;
-        #     proxy_pass_request_body off;
-        #     proxy_set_header Content-Length "";
-        #     proxy_set_header X-Original-URI $request_uri;
-        #   '';
-        # };
-
-        # --------------------------------------------------------------------------
-        # Services
-        # --------------------------------------------------------------------------
-
-        # ------------------------------- Apex domain ------------------------------
-        "${hst}" = {
-          enableACME = true;
-          forceSSL = true;
-          root = hstRoot;
-          extraConfig = domainExtra;
-          # locations."/".proxyPass = "http://bobby-api";
-          locations."/".extraConfig = ''
-            return 301 https://google.com;
-          '';
-        };
-
-        "plex.${hst}" = {
-          enableACME = true;
-          forceSSL = true;
-          extraConfig = ''
-            ${domainExtra}
-            ${subdomainExtra}
-          '';
-
-          locations."/".extraConfig = ''
-            proxy_pass   http://willow:${toString plexWebPort}/;
-            error_page   403 = @error403;
-
-            proxy_set_header X-Plex-Client-Identifier $http_x_plex_client_identifier;
-            proxy_set_header X-Plex-Device          $http_x_plex_device;
-            proxy_set_header X-Plex-Device-Name     $http_x_plex_device_name;
-            proxy_set_header X-Plex-Platform        $http_x_plex_platform;
-            proxy_set_header X-Plex-Platform-Version $http_x_plex_platform_version;
-            proxy_set_header X-Plex-Product         $http_x_plex_product;
-            proxy_set_header X-Plex-Token           $http_x_plex_token;
-            proxy_set_header X-Plex-Version         $http_x_plex_version;
-            proxy_set_header X-Plex-Nocache         $http_x_plex_nocache;
-            proxy_set_header X-Plex-Provides        $http_x_plex_provides;
-            proxy_set_header X-Plex-Device-Vendor   $http_x_plex_device_vendor;
-            proxy_set_header X-Plex-Model           $http_x_plex_model;
-          '';
-        };
-
-        # "automatic1111.${hst}" = {
-        #   enableACME = true;
-        #   forceSSL = true;
-        #   extraConfig = ''
-        #     # Require upstream auth
-        #     auth_request /auth;
-        #     ${domainExtra}
-        #     ${subdomainExtra}
-        #   '';
-
-        #   locations."/" = {
-        #     proxyPass = "http://bobby:${toString automaticPort}/";
-        #     extraConfig = ''error_page 403 = @error403;'';
-        #   };
-        # };
-
-        # "rvc.${hst}" = {
-        #   enableACME = true;
-        #   forceSSL = true;
-        #   extraConfig = ''
-        #     # Require upstream auth
-        #     auth_request /auth;
-        #     ${domainExtra}
-        #     ${subdomainExtra}
-        #   '';
-
-        #   locations."/" = {
-        #     proxyPass = "http://bobby:${toString rvcPort}/";
-        #     extraConfig = ''error_page 403 = @error403;'';
-        #   };
-        # };
-      };
-    };
+      }
+    '';
   };
 }
