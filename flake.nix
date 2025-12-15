@@ -111,6 +111,7 @@
             derivationName = "dove";
             tags = [
               "linux"
+              "cloudflare"
             ];
           }).mkNixosSystem
             {
