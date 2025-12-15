@@ -10,7 +10,7 @@
 
   imports = [
     ../../modules/virtualisation.nix
-    ../../modules/caddy.nix
+    ../../modules/caddy/caddy.nix
 
     ./hardware-configuration.nix
     ./disko.nix

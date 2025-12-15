@@ -19,7 +19,7 @@ let
 in
 {
   imports = [
-    ../../modules/caddy.nix
+    ../../modules/caddy/caddy.nix
   ];
 
   config = {
