@@ -10,12 +10,12 @@
 
   imports = [
     ../../modules/virtualisation.nix
+    ../../modules/caddy.nix
 
     ./hardware-configuration.nix
     ./disko.nix
     ./karaoke.nix
     ./nonstopchicks.nix
-    ./caddy.nix
   ];
 
   config = {
