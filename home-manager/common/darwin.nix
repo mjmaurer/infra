@@ -21,6 +21,15 @@
     wayland.enable = false;
     alfred.enable = true;
     commonShell = {
+      dirHashes =
+        let
+          icloudPath = "${config.home.homeDirectory}/Library/Mobile Documents/com~apple~CloudDocs/";
+        in
+        {
+          icloud = icloudPath;
+          icl = icloudPath;
+          ic = icloudPath;
+        };
       enableShellTmuxTimeout = true;
       sessionVariables = {
         TERM = "xterm-256color";
