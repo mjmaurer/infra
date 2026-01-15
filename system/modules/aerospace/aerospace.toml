@@ -325,6 +325,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace llm'
 
 [[on-window-detected]]
+if.app-name-regex-substring = 'Open WebUI'
+check-further-callbacks = false
+run = 'move-node-to-workspace llm'
+
+[[on-window-detected]]
 if.app-id = 'com.openai.chat'
 check-further-callbacks = false
 run = 'move-node-to-workspace llm'
