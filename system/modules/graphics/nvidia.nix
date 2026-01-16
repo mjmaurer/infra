@@ -109,7 +109,7 @@ in
         cudaPackages.cudatoolkit
         cudaPackages.nccl
         cudaPackages.cudnn
-        cudaPackages.cutensor
+        cudaPackages.libcutensor
         # cudaPackages.cuda_cudart
         # cudaPackages.cuda_nvcc
         # cudaPackages.cuda_cccl
