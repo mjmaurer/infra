@@ -111,7 +111,6 @@
       neofetch
       unzip
       p7zip
-      thefuck
       tldr
     ];
   };

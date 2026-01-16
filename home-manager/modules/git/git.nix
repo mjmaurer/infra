@@ -2,6 +2,7 @@
   lib,
   config,
   pkgs,
+  pkgs-latest,
   ...
 }:
 let
@@ -27,29 +28,33 @@ in
 
   config = lib.mkIf cfg.enable {
     # Another option is https://github.com/hickford/git-credential-oauth
-    home.packages = [ pkgs.git-credential-manager ];
+    # Just using latest because build was breaking on Darwin with 25.11 stable
+    # https://github.com/NixOS/nixpkgs/issues/479348 
+    home.packages = [ pkgs-latest.git-credential-manager ];
 
     programs.git = {
       enable = true;
-      userName = "Michael Maurer";
       package = pkgs.gitFull;
-      userEmail = email;
-      aliases = {
-        diffall = "git add --intent-to-add . && git --no-pager diff && git reset";
-        dap = "git add --intent-to-add . && git diff && git reset";
-        da = "diffall";
-        pr = "pull --rebase";
-        gc = "commit -v";
-        gcs = "commit -v --gpg-sign";
-        ga = "add --all";
-        s = "status";
-        dt = "difftool -y";
-      };
       signing = {
         key = cfg.signingKey;
         signByDefault = cfg.signingKey != "";
       };
-      extraConfig = {
+      settings = {
+        user = {
+          name = "Michael Maurer";
+          email = email;
+        };
+        alias = {
+          diffall = "git add --intent-to-add . && git --no-pager diff && git reset";
+          dap = "git add --intent-to-add . && git diff && git reset";
+          da = "diffall";
+          pr = "pull --rebase";
+          gc = "commit -v";
+          gcs = "commit -v --gpg-sign";
+          ga = "add --all";
+          s = "status";
+          dt = "difftool -y";
+        };
         init.defaultBranch = "main";
         core.editor = "nvim";
         core.excludesfile = "~/.config/git/ignore";

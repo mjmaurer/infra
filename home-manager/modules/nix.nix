@@ -10,7 +10,7 @@ in
       gc = {
         # Friday at 7pm
         automatic = true;
-        frequency = "weekly";
+        dates = "weekly";
         options = lib.mkDefault "--delete-older-than 90d";
       };
     };

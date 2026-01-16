@@ -145,7 +145,6 @@ in
         # Others: direnv
         plugins = [
           "vi-mode"
-          # "thefuck"
           "aws"
           "docker"
           # "helm"
