@@ -111,6 +111,9 @@
   o    (unicode ó)
   u    (unicode ú)
   n    (unicode ñ)
+
+  /    (unicode ¿)
+  .    (unicode ¡)
 )
 
 ;; --------------------- Semicolon Layer (Parens and Left-side S-Num) ------------------------------------ #
@@ -209,6 +212,7 @@
 ;; If it's 200 and you tap the tap key of 'a', holding 'a' again within 200ms will result in a hold of 'a'.
 (defalias
   ;; ====== Hyper Key (lalt -> lmet lctl)
+  ;; ====== NOTE: 'Sys key' (hypkey + arrkey) bindings are set in aerospace 
   hyp (multi $hypkey1 $hypkey2)
   end-hyp (multi (release-key $hypkey1) (release-key $hypkey2))
 
