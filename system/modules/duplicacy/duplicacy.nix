@@ -53,9 +53,12 @@ in
   options.modules.duplicacy = {
     # Just installs duplicacy and basic scripts
     enable = lib.mkEnableOption "duplicacy";
-    enableServices = mylib.sysTagsIn [
-      "duplicacy"
-    ];
+    enableServices = lib.mkOption {
+      type = lib.types.bool;
+      default = mylib.sysTagsIn [
+        "duplicacy"
+      ];
+    };
     autoBackupCron = lib.mkOption {
       type = lib.types.str;
       default = "Mon *-*-* 05:00:00 America/New_York";
