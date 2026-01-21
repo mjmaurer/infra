@@ -97,7 +97,7 @@ in
 
     address = lib.mkOption {
       type = lib.types.str;
-      default = "[::]";
+      default = "0.0.0.0";
       description = "IP address for services and RPC communication";
     };
 
@@ -220,16 +220,13 @@ in
       wants = [ "garage.service" ];
       wantedBy = [ "multi-user.target" ];
 
-      environment =
-        lib.recursiveUpdate
-          {
-            PORT = toString cfg.ports.webui;
-            CONFIG_PATH = "/etc/garage.toml";
-            API_BASE_URL = "http://127.0.0.1:${toString cfg.ports.admin}";
-            S3_ENDPOINT_URL = "http://127.0.0.1:${toString cfg.ports.s3}";
-            S3_REGION = cfg.s3Region;
-          }
-          cfg.webui.extraEnvironment;
+      environment = lib.recursiveUpdate {
+        PORT = toString cfg.ports.webui;
+        CONFIG_PATH = "/etc/garage.toml";
+        API_BASE_URL = "http://127.0.0.1:${toString cfg.ports.admin}";
+        S3_ENDPOINT_URL = "http://127.0.0.1:${toString cfg.ports.s3}";
+        S3_REGION = cfg.s3Region;
+      } cfg.webui.extraEnvironment;
 
       serviceConfig = {
         Type = "simple";
