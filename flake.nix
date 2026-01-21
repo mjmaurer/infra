@@ -61,6 +61,7 @@
               "linux"
               "garage"
               "cloudflare"
+              "duplicacy"
             ];
           }).mkNixosSystem
             {
@@ -96,6 +97,7 @@
             tags = [
               "linux"
               "dev-client"
+              "duplicacy"
             ];
           }).mkNixosSystem
             {

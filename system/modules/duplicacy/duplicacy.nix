@@ -2,6 +2,7 @@
   config,
   lib,
   username,
+  mylib,
   pkgs,
   ...
 }:
@@ -12,6 +13,7 @@ let
     "nas"
     "karaoke"
     "media-config"
+    "maple-garage"
   ];
 
   systemdGroupName = "duplicacy-secrets";
@@ -51,7 +53,9 @@ in
   options.modules.duplicacy = {
     # Just installs duplicacy and basic scripts
     enable = lib.mkEnableOption "duplicacy";
-    enableServices = lib.mkEnableOption "duplicacy systemd services";
+    enableServices = mylib.sysTagsIn [
+      "duplicacy"
+    ];
     autoBackupCron = lib.mkOption {
       type = lib.types.str;
       default = "Mon *-*-* 05:00:00 America/New_York";
@@ -169,10 +173,12 @@ in
             wantedBy = if repoCfgItem.autoInit then [ "multi-user.target" ] else lib.mkForce [ ];
             after = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
+            ]
+            ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             requires = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
+            ]
+            ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "simple";
@@ -193,10 +199,12 @@ in
             wantedBy = if repoCfgItem.autoInitRestore then [ "multi-user.target" ] else lib.mkForce [ ];
             after = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
+            ]
+            ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             requires = [
               "network-online.target"
-            ] ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
+            ]
+            ++ lib.optional (repoCfgItem.ensureLocalPath != null) "systemd-tmpfiles-resetup.service";
             restartIfChanged = false;
             serviceConfig = {
               Type = "simple";

@@ -11,6 +11,7 @@ let
     "nas-access"
     "cloudflare"
     "garage"
+    "duplicacy"
   ];
   # Validate sysTags
   _ = lib.assertMessage (lib.all (tag: lib.elem tag possibleSysTags) sysTags) (

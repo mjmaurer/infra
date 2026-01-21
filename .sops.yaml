@@ -37,6 +37,9 @@ keys:
     - *dove
   - &garage
     - *maple
+  - &duplicacy
+    - *willow
+    - *maple
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
@@ -72,6 +75,11 @@ creation_rules:
       - pgp:
           - *mjmaurer
         age: *garage
+  - path_regex: system/modules/duplicacy/secrets.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *duplicacy
   # ==== AI ====
   - path_regex: system/modules/sops/vault/ai/openrouter.yaml$
     key_groups:
@@ -107,12 +115,6 @@ creation_rules:
       - pgp:
           - *mjmaurer
         age: *full-clients
-  - path_regex: system/modules/duplicacy/secrets.yaml$
-    key_groups:
-      - pgp:
-          - *mjmaurer
-        age: # Ad-hoc
-          - *willow
   # --------------------------------- Machines --------------------------------- #
   - path_regex: system/machines/maple/secrets.yaml$
     key_groups:

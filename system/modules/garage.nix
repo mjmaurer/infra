@@ -1,6 +1,7 @@
 {
   lib,
   config,
+  derivationName,
   mylib,
   pkgs,
   ...
@@ -41,6 +42,19 @@ in
       type = lib.types.str;
       default = "1";
       description = "Replication mode (1, 2, 3, or 1-4-8)";
+    };
+
+    duplicacy = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Duplicacy integration for Garage backups";
+      };
+      repoName = lib.mkOption {
+        type = lib.types.str;
+        default = "${derivationName}-garage";
+        description = "Name of the Duplicacy repository for Garage backups";
+      };
     };
 
     ports = {
@@ -121,6 +135,18 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+
+    modules.duplicacy = lib.mkIf cfg.duplicacy.enable {
+      enableServices = true;
+      repos = {
+        ${cfg.duplicacy.repoName} = {
+          repoId = cfg.duplicacy.repoName;
+          localRepoPath = cfg.rootDir;
+          autoInit = true;
+          autoBackup = true;
+        };
+      };
+    };
 
     services.garage = {
       enable = true;
