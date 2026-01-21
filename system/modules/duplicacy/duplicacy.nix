@@ -153,6 +153,8 @@ in
           "nas"
         else if repoId == "media-config" then
           "media"
+        else if repoId == "maple-garage" then
+          "garage"
         else
           repoId;
 
@@ -483,6 +485,7 @@ in
         ];
         users.groups.${systemdGroupName} = { };
         users.groups.karaoke = { };
+        users.groups.garage = { };
       })
     ]
   );
