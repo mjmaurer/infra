@@ -154,7 +154,7 @@ in
         else if repoId == "media-config" then
           "media"
         else if repoId == "maple-garage" then
-          "garage"
+          "maple-garage"
         else
           repoId;
 
@@ -485,7 +485,7 @@ in
         ];
         users.groups.${systemdGroupName} = { };
         users.groups.karaoke = { };
-        users.groups.garage = { };
+        users.groups.maple-garage = { };
       })
     ]
   );
