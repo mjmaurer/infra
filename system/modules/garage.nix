@@ -237,8 +237,6 @@ in
         EnvironmentFile = config.sops.templates."garage-webui.env".path;
         Restart = "always";
         RestartSec = "5s";
-        User = "garage";
-        Group = "garage";
       };
     };
 
