@@ -1,3 +1,4 @@
+# https://nixos.org/manual/nixos/stable/#module-services-garage
 {
   config,
   pkgs,

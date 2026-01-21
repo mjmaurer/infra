@@ -126,7 +126,7 @@ in
       enable = true;
       package = cfg.package;
       logLevel = cfg.logLevel;
-      environmentFile = config.sops.templates."mountSecrets".path;
+      environmentFile = config.sops.templates."garage.env".path;
       extraEnvironment = cfg.extraEnvironment;
 
       settings = lib.recursiveUpdate {
