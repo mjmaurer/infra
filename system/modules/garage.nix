@@ -182,7 +182,7 @@ in
         data_dir = "${cfg.rootDir}/data";
         db_engine = "sqlite";
 
-        replication_factory = 1;
+        replication_factor = 1;
         consistency_mode = "consistent";
         compression_level = 1;
 
