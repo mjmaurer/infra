@@ -18,7 +18,7 @@ in
       ];
     };
 
-    package = lib.mkPackageOption pkgs "garage" { };
+    package = lib.mkPackageOption pkgs "garage_2" { };
 
     logLevel = lib.mkOption {
       type = lib.types.enum [
