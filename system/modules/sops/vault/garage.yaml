@@ -1,6 +1,8 @@
 garageRpcSecret: ENC[AES256_GCM,data:ZRI+B2jTQoMRIPD4ebYPlTx/KDVo65PBonD6+8kjUPb+fuxXg96ujuekeuvQa3IbtnfwuOoCRAldXg0JHW1zgg==,iv:PmZaUdKu2kQh6qK7qQq3PT57FmzkDm9sjQ0HhzxVE/w=,tag:hMIzzqAD2wxMBN58xK6zMA==,type:str]
 garageAdminToken: ENC[AES256_GCM,data:pI1PGrXwpfh1RYNnZ+gIrJipovaRGsvDEKYA5Fa6/xFpSOej1SqrZdJoBfkNE5tD9+KEtzpTbOeeJ9wvsZLGEA==,iv:RE1C/m8Vfaa6iJCvQPcODjaZB4VA1AYienCP9XJuXOM=,tag:j0ruptIVmJTaCM3Dej2VHg==,type:str]
 garageMetricsToken: ENC[AES256_GCM,data:jU1k99Fj/CcUu/x+aAk7h/hBNt2+ZQb3QB5fD8uHSriSa4HCjkU0QcdfzGOPQG/3gA5YR6Oebv+1V0X8VYV3dw==,iv:Tc2vNZv64OSbd3LwRejPLyit6XE2A1Va+KLiZ52x/VU=,tag:aUHSSOukmf9ZHPN62aSueA==,type:str]
+#ENC[AES256_GCM,data:4Mwsp1rNQjQXM10dHw==,iv:d/A/6+Ow+4FQQXWFTEopqzyC25BbibbYbe2fIdXnvl0=,tag:vrLibLnpyyVM0bJS6JUgZA==,type:comment]
+garageWebuiUserPass: ENC[AES256_GCM,data:GwpZ/9zlGw9pVVUeuBQyjwxsxsMm0xK8slcvEuooxFtpO3xTaIBXXwPbdcihpZiGRRjoVo8e4kUbyij92epbP7SrukgN,iv:xqeGrCTvKRTOqT2KE+1aNtNw/svmsDaTfWPoIWy4KlU=,tag:upC3O3AX01ToxbQGll3KwQ==,type:str]
 sops:
     age:
         - recipient: age1vgdqnptd3zawh6yew778m0z36y7e7jllygc83wrezq6calsxqg0qhun5t3
@@ -12,8 +14,8 @@ sops:
             TkNsenpMK09KbmtFZEtiRDZtQlB4c3cKx6M22q0Tm201SWD8g65cVDDzFYjSv9jC
             0gD7BMws1cagmIe3Jq3SRrJgfiDkIl04iDUeca6i6jHHEPYrLdQJAw==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2026-01-21T04:28:07Z"
-    mac: ENC[AES256_GCM,data:2SHGKk6m74ElyTSc7Fxtth8Hx4JT2O32IyJRvbPvnOr0D0L77FOP1wq/Hw9P2RUI7avysb2pmHasuU8hQDfl1sgft1ob9N2d6S0ZoELRDIY+4wyZzcbQnWAJM2WXrbzoP5sQVS0cZ38D+ehj+3nvzbG3eDp2qkrrkDchQIVV3WY=,iv:s6yN6hkSlSJy4Bv3VNqwy651zXh6TXNfL8Ghc53xePA=,tag:pvgX2OkS+IUBWU61iF9fag==,type:str]
+    lastmodified: "2026-01-21T05:18:40Z"
+    mac: ENC[AES256_GCM,data:huq0XsEzmolB9fp4J2Qm3g/nDndrotSaFpJzl7pUOwA4nZf5ThMncFsZcZxm0lrau83oigOYTmUJ01D5D0nIhISHg9DxLUsYfHP5r839vtpobwI4fVvNN00YH4IL7WKijjz382tupp9gId8KfO07NolWGqUSJ0S2riDsjWRl+Gg=,iv:bJfmNb6WVvHthHu/uwg8uvt0Nn5BILsZW69j4PxYQY8=,tag:ceEy1q0SVDhVeYcblzAqnQ==,type:str]
     pgp:
         - created_at: "2026-01-21T03:52:16Z"
           enc: |-

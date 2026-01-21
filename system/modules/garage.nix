@@ -87,6 +87,12 @@ in
         default = 3904;
         description = "Port for K2V API";
       };
+
+      webui = lib.mkOption {
+        type = lib.types.port;
+        default = 3909;
+        description = "Port for Garage Web UI";
+      };
     };
 
     address = lib.mkOption {
@@ -131,6 +137,22 @@ in
       type = lib.types.attrs;
       default = { };
       description = "Additional Garage configuration settings";
+    };
+
+    webui = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Garage Web UI";
+      };
+
+      package = lib.mkPackageOption pkgs "garage-webui" { };
+
+      extraEnvironment = lib.mkOption {
+        type = lib.types.attrsOf lib.types.str;
+        default = { };
+        description = "Extra environment variables to pass to Garage Web UI";
+      };
     };
   };
 
@@ -188,6 +210,38 @@ in
       } cfg.extraSettings;
     };
 
+    # Garage Web UI service
+    systemd.services.garage-webui = lib.mkIf cfg.webui.enable {
+      description = "Garage Web UI";
+      after = [
+        "network.target"
+        "garage.service"
+      ];
+      wants = [ "garage.service" ];
+      wantedBy = [ "multi-user.target" ];
+
+      environment =
+        lib.recursiveUpdate
+          {
+            PORT = toString cfg.ports.webui;
+            CONFIG_PATH = "/etc/garage.toml";
+            API_BASE_URL = "http://127.0.0.1:${toString cfg.ports.admin}";
+            S3_ENDPOINT_URL = "http://127.0.0.1:${toString cfg.ports.s3}";
+            S3_REGION = cfg.s3Region;
+          }
+          cfg.webui.extraEnvironment;
+
+      serviceConfig = {
+        Type = "simple";
+        ExecStart = "${cfg.webui.package}/bin/garage-webui";
+        EnvironmentFile = config.sops.templates."garage-webui.env".path;
+        Restart = "always";
+        RestartSec = "5s";
+        User = "garage";
+        Group = "garage";
+      };
+    };
+
     # Firewall configuration
     networking.firewall = lib.mkIf cfg.openFirewall {
       allowedTCPPorts = [
@@ -196,6 +250,9 @@ in
         cfg.ports.web
         cfg.ports.admin
         cfg.ports.k2v
+      ]
+      ++ lib.optionals cfg.webui.enable [
+        cfg.ports.webui
       ];
     };
   };

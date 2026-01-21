@@ -31,6 +31,14 @@ in
           '';
           # Newlines in 'content' are needed!
         };
+        "garage-webui.env" = {
+          content = ''
+            API_ADMIN_KEY=${config.sops.placeholder.garageAdminToken}
+            AUTH_USER_PASS=${config.sops.placeholder.garageWebuiUserPass}
+
+          '';
+          # Newlines in 'content' are needed!
+        };
       };
       secrets = {
         garageRpcSecret = {
@@ -40,6 +48,9 @@ in
           sopsFile = garageSopsFile;
         };
         garageMetricsToken = {
+          sopsFile = garageSopsFile;
+        };
+        garageWebuiUserPass = {
           sopsFile = garageSopsFile;
         };
       };
