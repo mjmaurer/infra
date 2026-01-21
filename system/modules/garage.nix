@@ -182,7 +182,8 @@ in
         data_dir = "${cfg.rootDir}/data";
         db_engine = "sqlite";
 
-        replication_mode = cfg.replicationMode;
+        replication_factory = 1;
+        consistency_mode = "consistent";
         compression_level = 1;
 
         rpc_bind_addr = "${cfg.address}:${toString cfg.ports.rpc}";
