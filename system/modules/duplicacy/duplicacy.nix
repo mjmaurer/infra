@@ -19,7 +19,7 @@ let
   systemdGroupName = "duplicacy-secrets";
 
   escapeStringForShellDoubleQuotes =
-    str: lib.replaceChars [ "\\" "\"" "$" "`" ] [ "\\\\" "\\\"" "\\$" "\\\`" ] str;
+    str: lib.replaceStrings [ "\\" "\"" "$" "`" ] [ "\\\\" "\\\"" "\\$" "\\\`" ] str;
 
   # Import scripts from separate files
   dupBackupScript = import ./scripts/dup-backup.nix {
