@@ -35,6 +35,8 @@ keys:
     - *maple
     - *bluejay
     - *dove
+  - &garage
+    - *maple
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
@@ -65,6 +67,11 @@ creation_rules:
       - pgp:
           - *mjmaurer
         age: *cloudflare
+  - path_regex: system/modules/sops/vault/garage.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *garage
   # ==== AI ====
   - path_regex: system/modules/sops/vault/ai/openrouter.yaml$
     key_groups:

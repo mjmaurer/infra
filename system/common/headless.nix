@@ -25,6 +25,7 @@
 
     ../modules/samba/smb-common.nix
     ../modules/samba/smb-client-nix.nix
+    ../modules/garage.nix
   ];
 
   config = {

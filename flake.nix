@@ -59,6 +59,7 @@
             derivationName = "maple";
             tags = [
               "linux"
+              "garage"
               "cloudflare"
             ];
           }).mkNixosSystem

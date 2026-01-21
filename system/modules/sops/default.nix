@@ -17,6 +17,7 @@ in
     ./common-secrets/nixos-host-secrets.nix
     ./common-secrets/smb-secrets.nix
     ./common-secrets/cloudflare-secrets.nix
+    ./common-secrets/garage-secrets.nix
 
     ./module-secrets/llm-cli-sops.nix
     ./module-secrets/shell-sops.nix

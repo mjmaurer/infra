@@ -10,6 +10,7 @@ let
     "dev-client"
     "nas-access"
     "cloudflare"
+    "garage"
   ];
   # Validate sysTags
   _ = lib.assertMessage (lib.all (tag: lib.elem tag possibleSysTags) sysTags) (
