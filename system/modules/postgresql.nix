@@ -52,12 +52,10 @@ in
         ]
       );
       default = {
-        listen_addresses = "*";
         log_connections = true;
         log_statement = "all";
         logging_collector = true;
         log_disconnections = true;
-        log_destination = "stderr,csvlog";
         timezone = "UTC";
       };
       description = "PostgreSQL configuration settings";
@@ -114,6 +112,7 @@ in
   config = lib.mkIf cfg.enable {
     services.postgresql = {
       enable = true;
+      enableTCPIP = true;
       package = cfg.package;
       port = cfg.port;
       dataDir = cfg.dataDir;
