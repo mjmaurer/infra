@@ -128,6 +128,7 @@ in
     sops = {
       templates = {
         "postgresInitScript" = {
+          owner = config.users.users.postgres.name;
           content = ''
             alter user postgres with password '${config.sops.placeholder.postgresPassword}';
 
