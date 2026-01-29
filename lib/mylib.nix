@@ -12,6 +12,7 @@ let
     "cloudflare"
     "garage"
     "duplicacy"
+    "postgresql"
   ];
   # Validate sysTags
   _ = lib.assertMessage (lib.all (tag: lib.elem tag possibleSysTags) sysTags) (

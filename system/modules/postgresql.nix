@@ -123,9 +123,19 @@ in
       extraPlugins = cfg.extraPlugins;
       ensureDatabases = cfg.ensureDatabases;
       ensureUsers = cfg.ensureUsers;
+      initialScript = config.sops.templates.postgresInitScript.path;
+    };
 
-      # Load environment file for secrets
-      environmentFile = config.sops.templates."postgresql.env".path;
+    sops = {
+      templates = {
+        "postgresInitScript" = {
+          content = ''
+            alter user postgres with password '${config.sops.placeholder.postgresPassword}';
+
+          '';
+          # Newlines in 'content' are needed!
+        };
+      };
     };
 
     # Firewall configuration

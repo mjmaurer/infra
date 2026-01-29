@@ -40,6 +40,8 @@ keys:
   - &duplicacy
     - *willow
     - *maple
+  - &postgresql
+    - *maple
 
 creation_rules:
   # --------------------------------- Notes --------------------------------- #
@@ -75,6 +77,11 @@ creation_rules:
       - pgp:
           - *mjmaurer
         age: *garage
+  - path_regex: system/modules/sops/vault/postgresql.yaml$
+    key_groups:
+      - pgp:
+          - *mjmaurer
+        age: *postgresql
   - path_regex: system/modules/duplicacy/secrets.yaml$
     key_groups:
       - pgp:

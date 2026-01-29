@@ -1,0 +1,37 @@
+postgresPassword: ENC[AES256_GCM,data:6QEOiMIRhkjZdGI44Yo1KqxarRsI6Jv8Ibol8JwysjskIqE=,iv:P40giVKi6vKyGaSQXZAZ2bDbNdrGqn0bkqL6j/S8zio=,tag:cGT2sNQxS0yqJ819nXf31w==,type:str]
+sops:
+    age:
+        - recipient: age1vgdqnptd3zawh6yew778m0z36y7e7jllygc83wrezq6calsxqg0qhun5t3
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSA5U1F6QmVQcjZCdGh5ZmVV
+            NkliUWN1VVZuTWFCYTNpMXZ4MWUxN3I1YWhRCk9zTVVjOGpYV09iYXJBbmdzWnlv
+            L2dreFhBQlF5ekhnc1o2V1dFV1dmdTAKLS0tIFpJNzhUR0c5MEFmdENEN3UrRkdZ
+            Q1FvalBOeXd1aDNNN3dUVi9XMkxKa1UKh9d5AuntSpiipW8uuIHT30fn5U06vE09
+            snICo7HfHR/5p8GyrGLTYbgdEhpsl8Zxzbz38gN9Py9fE3OsRw0X0w==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2026-01-29T05:36:24Z"
+    mac: ENC[AES256_GCM,data:ZWWFhwycX2Ujl54AZ0+4QdFbo4P/n2Zbaancl3jDEeDi5/0e8qUIerkXuLxjEh09AXirfmS1dwhGW6LX7mfO6mV2mmT2QJyU1GPg+WvxgIvHcKozhYsSTW23UsNlLK4Y05o/JvTl4YzlyWtSgwO6F1klLJcZ0mLV9ARtMW+78QA=,iv:N+SNWJi1UVDcT1UAv+v/jDm5EmtFNKAvfhDlmjE0UOc=,tag:P/KpN2mUohiDAhVqjPAF9Q==,type:str]
+    pgp:
+        - created_at: "2026-01-29T05:33:49Z"
+          enc: |-
+            -----BEGIN PGP MESSAGE-----
+
+            hQIMAwAAAAAAAAAAARAAmScUi9hFns5Dvl4F0VYgn7xUvSOB+KVC5pIcISNK47S3
+            iTaplrRqeIOL9o6wABcxYu95tPKB5Lv9GVuX0gLf1kR3q8rJiOuVRgcvGLDvmupD
+            mevk6uwWb3uCkDtDOlIi87ZuHNbeGGjGYJsk5Dkd04nr/3khJ3ZnqT7lkxTR4Q+O
+            OSLIbgymjkAh5kbyFX8AyLgDKldxxtOA0OK3YFVg551i+kquk211Yal4DZXapNGq
+            uYcycBMd/3hgKjgcY4s4kT36eC/9uMg6VLJITlBL40JRMJI5SREdP5odotF2JAZv
+            6kDlh1ysRR4NzBKdeR/jtxATd3GiThJdPt5+Q4dVdzrmxTcYtvHwj9i9fy1BthmN
+            CpytrZ4DiBR0Fo+TOgZsxsKLPngdrSq9nASOrlTUEc4W2jxCu1g8XhAN9iC4lHkF
+            ItHrpDMQjq1QpmZKX5GnJYSwg4C13Kr6X7bna0eOTGQ2ee57DO8deRbYgkKxl8ao
+            Plqam8/9Py34BkPoOGuJjDJz0TdQ5xPXuV1UghDKEEjR+GW9fttoevJHnbgTYJzU
+            yAQ0EKqBYANzMHUhr1QiJt2+nWl/0SjTSjIQ6yDbgf1srun+oF8LX077S5NGovW7
+            q7nX3XHjK/SkT7qSZmRnq0sRtB+sWXcQhwQOOS7laTZSUyIcmezrksp6apBkHnbS
+            XgHpnwGLsi97TgAk7pDyAlghEYt5WZ+7Uz9D1LGVrDO7OWZHiHlOsajg0ujJHkg/
+            y8KQkeyL4db7fG4F0ew2PF2506JfhOqz9XtQrJrHRqKkW54a4LmYqhTuS0iuVhc=
+            =7Vez
+            -----END PGP MESSAGE-----
+          fp: B3BA2EB7DD7FD95682FB2123470DDCD84F727EEE
+    unencrypted_suffix: _unencrypted
+    version: 3.10.2

@@ -62,6 +62,7 @@
               "garage"
               "cloudflare"
               "duplicacy"
+              "postgresql"
             ];
           }).mkNixosSystem
             {
