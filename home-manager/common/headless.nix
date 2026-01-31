@@ -101,6 +101,7 @@
       pkgs-latest.devenv
       pkgs-latest.speedtest-cli
       pkgs-latest.awscli2
+      postgresql
       glow
       yt-dlp
       gdown
