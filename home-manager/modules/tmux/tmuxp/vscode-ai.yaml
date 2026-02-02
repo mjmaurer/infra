@@ -1,11 +1,11 @@
-session_name: ${WORKSPACE}-aider
+session_name: ${WORKSPACE}-ai
 windows:
-  - window_name: aider
+  - window_name: claude
     options:
       automatic-rename: false
     panes:
       - shell_command:
-          - cl --ide
+          - ai-sandbox cl --ide
   # - window_name: aider-watch
   #   panes:
   #     - shell_command:

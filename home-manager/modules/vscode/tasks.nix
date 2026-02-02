@@ -34,12 +34,12 @@ in
     (
       defaultTerminalTaskConfig
       // {
-        label = "Aider";
+        label = "AI";
         command = "tmuxp";
         args = [
           "load"
           "--yes"
-          "vscode-aider"
+          "vscode-ai"
         ];
       }
     )
