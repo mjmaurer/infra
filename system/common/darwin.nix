@@ -21,6 +21,7 @@ in
     ../modules/basic.nix
     ../modules/users.nix
     ../modules/networking.nix
+    ../modules/sandbox/sandbox-darwin.nix
     ../modules/samba/smb-client-darwin.nix
 
     ../modules/sops

@@ -1,0 +1,126 @@
+(version 1)
+
+
+;; A conservative sandbox profile:
+;; - deny by default
+;; - allow network (Claude needs API)
+;; - allow RW in passed CWD param
+;; - allow typical runtime dirs (~/.config, ~/Library, /tmp, etc)
+;; - allow reading system libs and basic system paths
+
+;; Default deny: only allow what we explicitly whitelist.
+(deny default)
+
+;; Allow system 
+(allow network*)
+
+;; Allow basic process operations needed by many CLI tools.
+;; (Signals for child processes, etc.)
+(allow process-exec*)
+(allow process-fork)
+(allow sysctl-read)
+(allow mach-lookup (global-name "com.apple.dyld"))
+(allow mach-lookup (global-name "com.apple.system.notification_center"))
+(allow file-read-metadata)
+(allow file-read* (literal "/"))
+(allow file-read* (literal "/Users/mmaurer7"))
+(allow file-read* (literal "/Users/mmaurer7/Library/Application\ Support/Google/Chrome"))
+(allow file-read* (literal "/Users/mmaurer7/Library/Application\ Support/BraveSoftware/Brave-Browser"))
+(allow file-read* (subpath "/private"))
+(allow file-read* (subpath "/System/Volumes/Preboot"))
+(allow file-read* (subpath "/System/Volumes/Data"))
+(allow file-ioctl file-read* file-write* (subpath "/dev"))
+(allow file-read* (subpath "/usr"))
+(allow file-read* (subpath "/System"))
+(allow process-info-pidinfo)
+(allow user-preference-read)
+(allow system-socket)
+;;(allow forbidden-exec-sugid)
+(allow signal)
+
+;; Allow IPC mechanisms commonly used on macOS.
+;; This is intentionally broad to avoid breaking VS Code extension comms.
+(allow mach-lookup)
+(allow ipc-posix-shm)
+(allow ipc-sysv*)
+;; (allow ipc-sysv-shm)
+;; (allow ipc-sysv-sem)
+;; (allow ipc-sysv-msg)
+
+;;(allow file-read* file-write*
+;;    (subpath "/Users/mmaurer7/.vscode/extensions")
+;; (subpath "/Users/mmaurer7/.vscode-insiders/extensions")
+;; )
+
+
+;; Standard macOS machinery (DNS, XPC, etc)
+(allow mach-lookup
+    (global-name "com.apple.system.logger")
+    (global-name "com.apple.system.notification_center")
+    (global-name "com.apple.distributed_notifications@1v3")
+    (global-name "com.apple.xpc.launchd")
+    (global-name "com.apple.trustd")
+    (global-name "com.apple.SecurityServer")
+    (global-name "com.apple.dnssd.service")
+    (global-name "com.apple.coreservices.lsd.mapdb")
+)
+
+;; --- 2. TTY / PTY Access ---
+;; Required to run interactive commands like shells or editors inside the box
+;; (allow file-read* file-write* (subpath "/dev"))
+
+;; Read access to system locations needed for normal program execution.
+(allow file-read* (subpath "/nix/store"))
+(allow file-read* (subpath "/bin"))
+(allow file-read* (subpath "/sbin"))
+(allow file-read* (subpath "/usr/bin"))
+(allow file-read* (subpath "/usr/sbin"))
+(allow file-read* (subpath "/usr/local/bin"))
+(allow file-read* (subpath "/usr/local/sbin"))
+(allow file-read* (subpath "/opt/homebrew/bin"))
+;; (allow file-read* (subpath "/System"))
+(allow file-read* (subpath "/Library"))
+;; (allow file-read* (subpath "/Applications"))
+
+;; Allow DNS and basic resolver files
+(allow file-read* (literal "/etc/resolv.conf"))
+(allow file-read* (literal "/etc/hosts"))
+(allow file-read* (subpath "/private/var/run"))
+(allow file-read* (subpath "/private/etc"))
+
+;; Temp/cache/state areas (RW).
+(allow file-read* file-write* (subpath "/tmp"))
+(allow file-read* file-write* (subpath "/private/tmp"))
+(allow file-read* file-write* (subpath "/private/var/tmp"))
+(allow file-read* file-write* (subpath "/private/var/folders"))
+
+;; User config/state.
+;; Claude tools often use ~/.config, ~/Library/Application Support, etc.
+;; (allow file-read* file-write* (subpath "/Users/mmaurer7/.config"))
+;; (allow file-read* file-write* (subpath "/Users/mmaurer7/.cache"))
+;; (allow file-read* file-write* (subpath "/Users/mmaurer7/.local/share"))
+;; (allow file-read* file-write* (subpath "/Users/mmaurer7/Library"))
+;; (allow file-read* (subpath "/Users/mmaurer7/.gitconfig"))
+;; (allow file-read* (subpath "/Users/mmaurer7/.git-credentials"))
+;; (allow file-read* (subpath "/Users/mmaurer7/.npmrc"))
+;; (allow file-read* (subpath "/Users/mmaurer7/.netrc"))
+
+
+;; Allow read/write to any path containing 'claude' (case-insensitive)
+(allow file-read* file-write* (regex ".*[cC][lL][aA][uU][dD][eE].*"))
+
+
+;; The main workspace allowlist (RW).
+; Deny env files + common backup suffixes:
+;   .env
+;   .env.<name>
+;   <name>.env
+; and any of the above optionally ending with: .bak or .backup
+; where <name> may include alphanumerics, underscore, hyphen.
+(allow file-read* file-write*
+    (require-all
+        (subpath (param "CWD"))
+        (require-not (regex "(^|/)(\\.env(\\.[-A-Za-z0-9_]+)?|[-A-Za-z0-9_]+\\.env)(\\.(bak|backup))?$"))
+    )
+)
+
