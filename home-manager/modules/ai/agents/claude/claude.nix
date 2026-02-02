@@ -20,7 +20,7 @@ in
 
   config = lib.mkIf cfg.enable {
     home.packages = [
-      # claude-package
+      # Uses claude-code flake via overlay configured in system.nix
       pkgs-latest.claude-code
 
       (pkgs.writeShellScriptBin "claude-agent-setup" ''

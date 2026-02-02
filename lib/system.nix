@@ -29,9 +29,15 @@ rec {
       username ? defaultUsername,
       defaultTags ? (
         if system == "aarch64-darwin" then
-          [ "darwin" "all" ]
+          [
+            "darwin"
+            "all"
+          ]
         else if system == "x86_64-linux" then
-          [ "linux" "all" ]
+          [
+            "linux"
+            "all"
+          ]
         else
           [ "all" ]
       ),
@@ -49,6 +55,7 @@ rec {
           nix-colors
           nix-vscode-extensions
           nix-homebrew
+          claude-code
           ;
         inherit
           username
@@ -65,6 +72,7 @@ rec {
           };
           overlays = [
             inputs.nix-vscode-extensions.overlays.default
+            inputs.claude-code.overlays.default
 
             # (self: super: {
             #   python3Packages = super.python3Packages // {
@@ -119,6 +127,9 @@ rec {
           home-manager.users.${username} = {
             imports = defaultHomeModules ++ extraHomeModules;
           };
+          # home-manager.users.ai = {
+          #   imports = [ ../home-manager/users-extra/ai-user.nix ];
+          # };
           home-manager.sharedModules = [
             { home.stateVersion = homeStateVersion; }
             inputs.sops-nix.homeManagerModules.sops

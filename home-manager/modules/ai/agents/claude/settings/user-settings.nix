@@ -6,8 +6,8 @@
   includeCoAuthoredBy = false;
   permissions = {
     allow = [
-      "WebFetch(domain:github.com)"
-      "WebFetch(domain:raw.githubusercontent.com)"
+      # "WebFetch(domain:github.com)"
+      # "WebFetch(domain:raw.githubusercontent.com)"
 
       "Bash(nix flake check:*)"
       "Bash(nix-instantiate --parse:*)"

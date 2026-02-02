@@ -11,6 +11,11 @@
     nix-std.url = "github:chessai/nix-std";
     # impermanence.url = "github:nix-community/impermanence";
 
+    claude-code = {
+      url = "github:sadjow/claude-code-nix";
+      inputs.nixpkgs.follows = "nixpkgs-latest";
+      inputs.flake-utils.follows = "flake-utils";
+    };
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";

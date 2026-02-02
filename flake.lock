@@ -33,6 +33,29 @@
         "type": "github"
       }
     },
+    "claude-code": {
+      "inputs": {
+        "flake-utils": [
+          "flake-utils"
+        ],
+        "nixpkgs": [
+          "nixpkgs-latest"
+        ]
+      },
+      "locked": {
+        "lastModified": 1769807131,
+        "narHash": "sha256-5rtatSwnCwp34hHL8qvAZe6K/efO6tkGgKQ00KaXhM4=",
+        "owner": "sadjow",
+        "repo": "claude-code-nix",
+        "rev": "ba044952833d9fa19f33d85cacdc5becb26bc08a",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sadjow",
+        "repo": "claude-code-nix",
+        "type": "github"
+      }
+    },
     "darwin": {
       "inputs": {
         "nixpkgs": [
@@ -253,6 +276,7 @@
     },
     "root": {
       "inputs": {
+        "claude-code": "claude-code",
         "darwin": "darwin",
         "disko": "disko",
         "flake-utils": "flake-utils",
