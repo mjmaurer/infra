@@ -26,6 +26,11 @@ in
         # Allow for this to be overridden by the user
         sopsFile = lib.mkDefault hostSopsFile;
       };
+      aiHashedPassword = {
+        neededForUsers = true;
+        # Allow for this to be overridden by the user
+        sopsFile = lib.mkDefault hostSopsFile;
+      };
     };
   };
 }

@@ -29,8 +29,49 @@ in
   config = lib.mkIf cfg.enable {
     # Another option is https://github.com/hickford/git-credential-oauth
     # Just using latest because build was breaking on Darwin with 25.11 stable
-    # https://github.com/NixOS/nixpkgs/issues/479348 
-    home.packages = [ pkgs-latest.git-credential-manager ];
+    # https://github.com/NixOS/nixpkgs/issues/479348
+    home.packages = [
+      pkgs-latest.git-credential-manager
+
+      (pkgs.writeShellScriptBin "sharedClone" ''
+        # Run git clone with all arguments
+        out="$(${pkgs.git}/bin/git clone --config core.sharedRepository=0770  "$@" 2>&1)"
+        status=$?
+
+        # Re-emit output so it behaves like normal git clone
+        printf '%s\n' "$out"
+
+        [ "$status" -eq 0 ] || exit "$status"
+
+        # Extract destination directory from:  Cloning into 'DIR'...
+        dest="$(printf '%s\n' "$out" | sed -n "s/^Cloning into '\\(.*\\)'\\.\\{3\\}$/\\1/p" | tail -n 1)"
+
+        # Fallback: if output parsing fails (rare), do best-effort from first non-option
+        if [ -z "$dest" ]; then
+          url=""
+          for a in "$@"; do
+            case "$a" in
+              -*) ;;
+              *) url="$a"; break ;;
+            esac
+          done
+          base="$(basename "$url")"
+          dest="''${base%.git}"
+        fi
+
+        if [ -d "''$dest" ]; then
+          echo "Applying group permissions to ''$dest..."
+          chmod -R u=rwX,g=rwX,o= "''$dest"
+          find "''$dest" -type d -exec chmod g+s {} +
+        else
+          echo "Directory ''$dest does not exist after clone."
+        fi 
+      '')
+    ];
+
+    modules.commonShell.shellAliases = {
+      sclone = "sharedClone";
+    };
 
     programs.git = {
       enable = true;
