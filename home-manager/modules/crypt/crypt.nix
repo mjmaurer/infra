@@ -104,6 +104,7 @@ in
         };
         ssh = {
           enable = true;
+          enableDefaultConfig = false;
           includes = [
             # For manual/local configurations
             "~/.ssh/config.local"
