@@ -26,6 +26,13 @@ in
       (pkgs.writeShellScriptBin "claude-agent-setup" ''
         ${builtins.readFile ./setup.sh}
       '')
+
+      (pkgs.writeShellScriptBin "cl" ''
+        set -euo pipefail
+
+        ai-setup
+        exec claude "$@"
+      '')
     ];
     home.file = {
       # Claude Code will make updates to this, so we need to make it writable
@@ -66,8 +73,7 @@ in
           # we can default to `enableAllProjectMcpServers = false;`
         in
         {
-          cl = baseClaude;
-          clp = "${baseClaude} -p";
+          clp = "cl -p";
         };
     };
   };

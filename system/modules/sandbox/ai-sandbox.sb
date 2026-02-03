@@ -23,9 +23,16 @@
 (allow mach-lookup (global-name "com.apple.system.notification_center"))
 (allow file-read-metadata)
 (allow file-read* (literal "/"))
+;; +++++++++++++++++++++ 
+;; NOTE: The difference between literal and subpath
+;; +++++++++++++++++++++ 
 (allow file-read* (literal "/Users/mmaurer7"))
 (allow file-read* (literal "/Users/mmaurer7/Library/Application\ Support/Google/Chrome"))
 (allow file-read* (literal "/Users/mmaurer7/Library/Application\ Support/BraveSoftware/Brave-Browser"))
+(allow file-read* (subpath "/Users/mmaurer7/Library/Application\ Support/pypoetry"))
+;; +++++++++++++++++++++ 
+;; NOTE: The difference between literal and subpath
+;; +++++++++++++++++++++ 
 (allow file-read* (subpath "/private"))
 (allow file-read* (subpath "/System/Volumes/Preboot"))
 (allow file-read* (subpath "/System/Volumes/Data"))
