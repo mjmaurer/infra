@@ -1,7 +1,7 @@
 {
   "permissions": {
     "allow": [],
-    "deny": []
+    "deny": ["Task(nix-expert)"]
   },
   "enabledMcpjsonServers": [
     // "nixos"

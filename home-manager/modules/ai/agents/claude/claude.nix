@@ -22,6 +22,7 @@ in
     home.packages = [
       # Uses claude-code flake via overlay configured in system.nix
       pkgs-latest.claude-code
+      pkgs-latest.mcp-nixos
 
       (pkgs.writeShellScriptBin "claude-agent-setup" ''
         ${builtins.readFile ./setup.sh}
