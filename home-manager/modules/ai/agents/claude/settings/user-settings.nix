@@ -15,9 +15,6 @@
 
       "Bash(git status:*)"
       "Bash(git diff:*)"
-
-      "Edit(README.md)"
-      "Edit(AGENTS.md)"
     ];
     deny = [
 

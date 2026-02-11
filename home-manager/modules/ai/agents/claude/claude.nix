@@ -22,7 +22,6 @@ in
     home.packages = [
       # Uses claude-code flake via overlay configured in system.nix
       pkgs-latest.claude-code
-      pkgs-latest.mcp-nixos
 
       (pkgs.writeShellScriptBin "claude-agent-setup" ''
         ${builtins.readFile ./setup.sh}
@@ -32,10 +31,12 @@ in
         set -euo pipefail
 
         ai-setup
+        unset ANTHROPIC_API_KEY
         exec claude "$@"
       '')
     ];
     home.file = {
+      /* --------------------------- User-wide settings --------------------------- */
       # Claude Code will make updates to this, so we need to make it writable
       # https://github.com/anthropics/claude-code/issues/4808
       ".claude/settings.json.source" = {
@@ -57,8 +58,9 @@ in
           chmod +w $target
         '';
       };
-      ".claude/local-settings-tmpl.json" = {
-        source = ./settings/local-settings-tmpl.jsonc;
+      /* --------------------------- Repo-wide settings tmpl --------------------------- */
+      ".claude/repo-config-nix/settings-tmpl.json" = {
+        source = ./settings/repo-settings-tmpl.jsonc;
       };
       ".claude/commands" = {
         source = ./commands;
