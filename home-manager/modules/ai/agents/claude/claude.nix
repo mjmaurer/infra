@@ -40,7 +40,7 @@ in
       # Claude Code will make updates to this, so we need to make it writable
       # https://github.com/anthropics/claude-code/issues/4808
       ".claude/settings.json.source" = {
-        text = lib.generators.toJSON { } (import ./settings/user-settings.nix);
+        source = ./settings/user-settings.jsonc;
         onChange = ''
           source="${config.home.homeDirectory}/.claude/settings.json.source"
           target="${config.home.homeDirectory}/.claude/settings.json"
