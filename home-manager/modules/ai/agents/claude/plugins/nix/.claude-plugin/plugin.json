@@ -1,0 +1,8 @@
+{
+    "name": "nix-utils",
+    "description": "Utilities for working on a nix repository.",
+    "version": "1.0.0",
+    "author": {
+        "name": "Michael Maurer"
+    }
+}
