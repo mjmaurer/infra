@@ -84,9 +84,9 @@
 
       # Nix
       pkgs-latest.nil
-      pkgs-latest.nix-prefetch-git
+      nix-prefetch-git
       pkgs-latest.nix-search-cli
-      pkgs-latest.nixfmt-rfc-style
+      pkgs-latest.nixfmt
       pkgs-latest.cachix
       # nixpkgs-fmt
       # vulnix (was causing buidl issues)
