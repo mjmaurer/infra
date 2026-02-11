@@ -135,7 +135,8 @@ in
       commands = [
         "workbench.action.closeSidebar"
         "workbench.action.closePanel"
-      ] ++ cfg.closeChat;
+      ]
+      ++ cfg.closeChat;
     };
     command = "runCommands";
     key = "alt+escape";
@@ -270,13 +271,23 @@ in
     key = "alt+t";
     when = "terminalFocus";
   }
+  # For claude:
+  {
+    "key" = "shift+enter";
+    "command" = "workbench.action.terminal.sendSequence";
+    "args" = {
+      "text" = builtins.fromJSON ''"\u001B\u000A"'';
+    };
+    "when" = "terminalFocus";
+  }
   # ------------------------- Terminal (Aider) focus -------------------------
   {
     args = {
-      commands =
-        [ "editor.action.clipboardCopyAction" ]
-        ++ cfg.closeChat
-        ++ [ "workbench.action.terminal.focusAtIndex1" ];
+      commands = [
+        "editor.action.clipboardCopyAction"
+      ]
+      ++ cfg.closeChat
+      ++ [ "workbench.action.terminal.focusAtIndex1" ];
     };
     command = "runCommands";
     key = "alt+o";

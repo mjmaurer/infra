@@ -155,6 +155,7 @@ in
   "[yaml]" = {
     "editor.defaultFormatter" = "redhat.vscode-yaml";
   };
+  "task.allowAutomaticTasks" = "on";
   "auto-open-css-modules.manualMode" = true;
   "auto-open-css-modules.openAsPreview" = false;
   "cmake.configureOnOpen" = false;
@@ -445,7 +446,7 @@ in
   "leetcode.workspaceFolder" = "/Users/mmaurer7/code/problems/problems";
   "mypy.enabled" = false;
   "nix.enableLanguageServer" = true;
-  "nix.formatterPath" = "${pkgs-latest.nixfmt-rfc-style}/bin/nixfmt";
+  "nix.formatterPath" = "${pkgs-latest.nixfmt}/bin/nixfmt";
   "nix.serverPath" = "${pkgs-latest.nil}/bin/nil";
   "nix.serverSettings" = {
     nil = {
@@ -456,7 +457,7 @@ in
         ];
       };
       formatting = {
-        command = [ "${pkgs-latest.nixfmt-rfc-style}/bin/nixfmt" ];
+        command = [ "${pkgs-latest.nixfmt}/bin/nixfmt" ];
       };
     };
   };
