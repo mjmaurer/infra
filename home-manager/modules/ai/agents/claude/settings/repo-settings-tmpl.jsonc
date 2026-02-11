@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Edit(README.md)",
+      "Edit(AGENTS.md)"
+    ],
+    "deny": [
+      "Task(nix-expert)"
+    ]
+  },
+  // Make sure to add these to mcp.json.nix as well
+  "enabledMcpjsonServers": [
+    // "nixos"
+  ],
+  "env": {}
+}
