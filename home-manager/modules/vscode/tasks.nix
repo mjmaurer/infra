@@ -55,6 +55,18 @@ in
         ];
       }
     )
+    (
+      defaultTerminalTaskConfig
+      // {
+        label = "Quick AI";
+        command = "tmuxp";
+        args = [
+          "load"
+          "--yes"
+          "vscode-quick-ai"
+        ];
+      }
+    )
     # {
     #     "label": "Aider",
     #     "type": "shell",

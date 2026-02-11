@@ -229,22 +229,33 @@ in
     key = "shift+up";
     when = "inChat";
   }
+  # -------------------------- Terminal (Quick Chat) focus -------------------------
+  # {
+  #   args = {
+  #     commands = [ "workbench.action.closePanel" ] ++ cfg.openExisting;
+  #   };
+  #   command = "runCommands";
+  #   key = "alt+a";
+  #   when = "editorFocus";
+  # }
+  # {
+  #   command = "workbench.action.focusFirstEditorGroup";
+  #   key = "alt+a";
+  #   when = "!editorFocus";
+  # }
+  # {
+  #   command = "workbench.panel.chatEditing";
+  #   key = "alt+shift+a";
+  # }
   {
-    args = {
-      commands = [ "workbench.action.closePanel" ] ++ cfg.openExisting;
-    };
-    command = "runCommands";
+    command = "workbench.action.terminal.focusAtIndex3";
     key = "alt+a";
-    when = "editorFocus";
+    when = "!terminalFocus && view.terminal.visible";
   }
   {
-    command = "workbench.action.focusFirstEditorGroup";
+    command = "workbench.action.focusActiveEditorGroup";
     key = "alt+a";
-    when = "!editorFocus";
-  }
-  {
-    command = "workbench.panel.chatEditing";
-    key = "alt+shift+a";
+    when = "terminalFocus";
   }
   # -------------------------- Terminal (Main) focus -------------------------
   {

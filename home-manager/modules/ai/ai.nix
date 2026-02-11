@@ -33,6 +33,12 @@ in
       ".config/ai/repo-config-nix/AGENTS.md" = {
         source = ./AGENTS_TMPL.md;
       };
+      ".config/ai/sounds" = {
+        source = ./sounds;
+      };
+      ".config/mcp/mcp_servers.json" = {
+        source = (pkgs.formats.json { }).generate "mcp_servers.json" (import ./mcp.json.nix);
+      };
       # ".config/ai/mcp.json" = {
       #   source = (pkgs.formats.json { }).generate "mcp.json" (import ./mcp.json.nix);
       # };

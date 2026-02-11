@@ -1,0 +1,8 @@
+session_name: ${WORKSPACE}-ai-quick
+windows:
+  - window_name: claude-quick
+    options:
+      automatic-rename: false
+    panes:
+      - shell_command:
+          - ai-sandbox cl --ide --model sonnet --no-chrome --no-session-persistence
