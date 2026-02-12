@@ -1,7 +1,8 @@
 ---
 description: How to use mcp-cli 
 disable-model-invocation: false
-allowed-tools: Bash(mcp-cli --help *), Bash(sed *)
+user-invokable: false
+allowed-tools: Bash(mcp-cli --help*), Bash(sed *)
 ---
 
 mcp-cli lets you interact with Model Context Protocol servers using a CLI tool.

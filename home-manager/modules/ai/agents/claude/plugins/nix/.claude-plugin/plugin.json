@@ -6,7 +6,11 @@
         "name": "Michael Maurer"
     },
     "license": "MIT",
-    "keywords": ["nix", "nixos", "home-manager", "darwin", "prefetch"],
-    "agents": "./agents/",
-    "skills": "./skills/"
+    "keywords": [
+        "nix",
+        "nixos",
+        "home-manager",
+        "darwin",
+        "prefetch"
+    ]
 }
