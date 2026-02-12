@@ -26,7 +26,6 @@ stdenv.mkDerivation rec {
 
     export HOME=$TMPDIR
     bun install --frozen-lockfile
-    bun build src/index.ts --compile --minify --outfile mcp-cli
 
     runHook postBuild
   '';
@@ -34,7 +33,13 @@ stdenv.mkDerivation rec {
   installPhase = ''
     runHook preInstall
 
-    install -Dm755 mcp-cli $out/bin/mcp-cli
+    mkdir -p $out/lib/mcp-cli
+    cp -r . $out/lib/mcp-cli
+
+    mkdir -p $out/bin
+    makeWrapper ${bun}/bin/bun $out/bin/mcp-cli \
+      --add-flags "run $out/lib/mcp-cli/src/index.ts" \
+      --set-default HOME "$HOME"
 
     runHook postInstall
   '';

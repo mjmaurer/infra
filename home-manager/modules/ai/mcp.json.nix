@@ -1,8 +1,7 @@
 {
   # ---------------- NOTE ------------------------
-  # You should also add a list of these to
-  # claude/settings/repo-settings-tmpl.jsonc
-  # to make it easier to set up.
+  # This is just sourced for mcp-cli.
+  # We avoid spinning these up by default via vscode, but that would be another option if we wanted to.
 
   mcpServers = {
     nixos = {
