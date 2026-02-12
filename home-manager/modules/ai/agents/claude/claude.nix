@@ -9,15 +9,22 @@ let
   cfg = config.modules.claude;
   # Build a cleaned, valid JSON file in the Nix store.
 
-  cleanedJson = json: pkgs.runCommand "claude-code-settings.json" {
-    nativeBuildInputs = [ pkgs.gnused pkgs.jq ];
-  } ''
-    # Strip // comments only at line start (preserves URLs in strings)
-    sed -E 's:^([[:space:]]*)//.*$:\1:' ${json} > $out
+  cleanedJson =
+    json:
+    pkgs.runCommand "claude-code-settings.json"
+      {
+        nativeBuildInputs = [
+          pkgs.gnused
+          pkgs.jq
+        ];
+      }
+      ''
+        # Strip // comments only at line start (preserves URLs in strings)
+        sed -E 's:^([[:space:]]*)//.*$:\1:' ${json} > $out
 
-    # Validate it is proper JSON (fails the build if not valid)
-    jq -e . $out > /dev/null
-  '';
+        # Validate it is proper JSON (fails the build if not valid)
+        jq -e . $out > /dev/null
+      '';
 
   # claude-package = import ./deriv {
   #   inherit lib;
@@ -75,6 +82,9 @@ in
       };
       ".claude/commands" = {
         source = ./commands;
+      };
+      ".claude/skills" = {
+        source = ./skills;
       };
     };
 
