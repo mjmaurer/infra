@@ -5,4 +5,4 @@ windows:
       automatic-rename: false
     panes:
       - shell_command:
-          - ai-sandbox cl --ide --model sonnet --no-chrome --no-session-persistence
+          - ai-sandbox cl --ide --model sonnet --no-chrome

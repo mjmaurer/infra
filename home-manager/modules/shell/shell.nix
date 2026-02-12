@@ -215,30 +215,42 @@ in
         # ykman list resets some odd state after git signing
         "sshk" = "ykman list && ssh";
         "gsha" = "get_archive_sha";
+        # Remotes
         "gp" = "git push";
         "gpul" = "git pull --ff-only";
         "gpf" = "git pull --ff-only";
         "gpm" = "git pull";
         "gpr" = "git pull --rebase";
-        "gr" = "git restore";
-        "grs" = "git restore --staged";
-        "gc" = "git commit -v";
-        "gsh" = "_fzf_git_show";
+        # Excluding
+        "gle" = "git_local_exclude";
+        # Stashing
+        "gt" = "git stash";
+        "gst" = "git stash";
+        "gtp" = "git stash";
+        "gsp" = "git stash pop";
+        "gstp" = "git stash pop";
+        "gsl" = "_fzf_git_stashes";
+        "gtl" = "_fzf_git_stashes";
+        "gsta" = "git stash apply stash@{0}";
+        # Diffing
         "gd" = "_fzf_git_diff HEAD"; # Includes staged and unstaged
         "gds" = "_fzf_git_diff --staged";
         "gdu" = "_fzf_git_diff"; # Just unstaged
+        # Restoring
+        "gr" = "git restore";
+        "grs" = "git restore --staged";
+        # Reviewing
+        "gsh" = "_fzf_git_show";
+        "gs" = "git status";
+        "gsf" = "git status $(_fzf_git_files)";
+        # Committing
         "gad" = "_fzf_git_all_diffs";
-        "gcs" = "git commit -v --gpg-sign";
         "ga" = "git add $(_fzf_git_files)";
         "gaf" = "git add $(_fzf_git_files)";
         "gaa" = "git add --all";
-        # gcai - is defined in git-commit-ai.sh
-        "gac" = "gaf && gcai";
-        "gs" = "git status";
-        "gsf" = "git status $(_fzf_git_files)";
-        "gst" = "git stash";
-        "gstp" = "git stash pop";
-        "gle" = "git_local_exclude";
+        "gcs" = "git commit -v --gpg-sign";
+        "gac" = "gaf && gcai"; # gcai - is defined in git-commit-ai.sh
+        "gc" = "git commit -v";
         "poe" = "poetry run poe";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
