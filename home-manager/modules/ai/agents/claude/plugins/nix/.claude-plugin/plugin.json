@@ -1,8 +1,12 @@
 {
     "name": "nix-utils",
-    "description": "Utilities for working on a nix repository.",
+    "description": "Utilities for working on a nix repository, including package/option lookup and hash prefetching.",
     "version": "1.0.0",
     "author": {
         "name": "Michael Maurer"
-    }
+    },
+    "license": "MIT",
+    "keywords": ["nix", "nixos", "home-manager", "darwin", "prefetch"],
+    "agents": "./agents/",
+    "skills": "./skills/"
 }
