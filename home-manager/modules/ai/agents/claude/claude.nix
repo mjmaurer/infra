@@ -7,6 +7,17 @@
 }:
 let
   cfg = config.modules.claude;
+  # Build a cleaned, valid JSON file in the Nix store.
+
+  cleanedJson = json: pkgs.runCommand "claude-code-settings.json" {
+    nativeBuildInputs = [ pkgs.gnused pkgs.jq ];
+  } ''
+    # Strip // comments only at line start (preserves URLs in strings)
+    sed -E 's:^([[:space:]]*)//.*$:\1:' ${json} > $out
+
+    # Validate it is proper JSON (fails the build if not valid)
+    jq -e . $out > /dev/null
+  '';
 
   # claude-package = import ./deriv {
   #   inherit lib;
@@ -36,11 +47,11 @@ in
       '')
     ];
     home.file = {
-      /* --------------------------- User-wide settings --------------------------- */
+      # --------------------------- User-wide settings ---------------------------
       # Claude Code will make updates to this, so we need to make it writable
       # https://github.com/anthropics/claude-code/issues/4808
       ".claude/settings.json.source" = {
-        source = ./settings/user-settings.jsonc;
+        source = cleanedJson ./settings/user-settings.jsonc;
         onChange = ''
           source="${config.home.homeDirectory}/.claude/settings.json.source"
           target="${config.home.homeDirectory}/.claude/settings.json"
@@ -58,7 +69,7 @@ in
           chmod +w $target
         '';
       };
-      /* --------------------------- Repo-wide settings tmpl --------------------------- */
+      # --------------------------- Repo-wide settings tmpl ---------------------------
       ".claude/repo-config-nix/settings-tmpl.json" = {
         source = ./settings/repo-settings-tmpl.jsonc;
       };

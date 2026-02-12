@@ -116,6 +116,7 @@
 ;; Allow read/write to any path containing 'claude' (case-insensitive)
 (allow file-read* file-write* (regex ".*[cC][lL][aA][uU][dD][eE].*"))
 
+(allow file-read* (subpath "/Users/mmaurer7/.config/ai"))
 
 ;; The main workspace allowlist (RW).
 ; Deny env files + common backup suffixes:
