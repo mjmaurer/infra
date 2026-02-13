@@ -12,6 +12,7 @@ if [ -d .git ]; then
     if [ -f ~/.claude/repo-config-nix/settings-tmpl.json ] && [ ! -f ./.claude/settings.json ]; then
         echo "Copying ~/.claude/repo-config-nix/settings-tmpl.json to .claude/settings.json"
         cp -p ~/.claude/repo-config-nix/settings-tmpl.json ./.claude/settings.json
+        chmod 644 ./.claude/settings.json
     fi
 
     # if [ -f ~/.config/ai/repo-config-nix/mcp.json ] && [ ! -f ./.mcp.json ]; then
