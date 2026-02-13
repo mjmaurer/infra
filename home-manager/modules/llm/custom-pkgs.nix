@@ -177,6 +177,39 @@ let
       };
     };
 
+    llm-cerebras = pythonPkg.pkgs.buildPythonPackage rec {
+      pname = "llm-cerebras";
+      version = "0.1.8";
+      format = "pyproject";
+
+      src = pkgs.fetchurl {
+        url = "https://github.com/mjmaurer/llm-cerebras/archive/c68a2be342d18850fa4ba9df7b4e2b40ed4d7d68.tar.gz";
+        sha256 = "sha256-UutwqIc7IwwEtM/qFVfXVoL8p8csuK8gN9W1651Sw90=";
+      };
+
+      nativeBuildInputs = with pythonPkg.pkgs; [
+        setuptools
+        wheel
+      ];
+      # Dependencies
+      propagatedBuildInputs = with pythonPkg.pkgs; [
+        llm
+        httpx
+      ];
+
+      # Disable tests - enable if you have specific test dependencies
+      doCheck = false;
+
+      # Basic import check
+      pythonImportsCheck = [ "llm_cerebras" ];
+
+      meta = with lib; {
+        description = "LLM fragments for Gemini";
+        homepage = "https://github.com/irthomasthomas/llm-cerebras";
+        license = licenses.asl20;
+      };
+    };
+
     llm-gemini = pythonPkg.pkgs.buildPythonPackage rec {
       pname = "llm-gemini";
       version = "0.27";

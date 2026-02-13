@@ -32,6 +32,7 @@ let
       customPackages.llm-gemini # this is available, but just outdated
       customPackages.llm-openrouter # this is available, but just outdated
       customPackages.llm-fragments-github
+      customPackages.llm-cerebras
       customPackages.llm-fragments-site-text
       customPackages.llm-cmd-comp
       customPackages.streamdown
@@ -303,6 +304,10 @@ in
               high = "-o reasoning_effort high";
               medium = "-o reasoning_effort medium";
               low = "-o reasoning_effort low";
+              zOff = "-o disable_reasoning True";
+            };
+            temp = {
+              summary = "-o temperature .15";
             };
             web = {
               exa = "-o online 1"; # Openrouter provided Exa search
@@ -331,11 +336,16 @@ in
             lth = "-m o3 ${reason.high}";
             ltm = "-m o3 ${reason.medium}";
             ltl = "-m o3 ${reason.low}";
-            loh = "-m openrouter/openai/gpt-oss-120b ${reason.high} ${provider.cerebras}";
-            lom = "-m openrouter/openai/gpt-oss-120b ${reason.medium} ${provider.cerebras}";
-            lol = "-m openrouter/openai/gpt-oss-120b ${reason.low} ${provider.cerebras}";
-            lqc = "-m openrouter/qwen/qwen3-coder ${reason.high} ${provider.cerebras}";
-            lqt = "-m openrouter/qwen/qwen3-235b-a22b-thinking-2507 ${reason.high} ${provider.cerebras}";
+
+            lzr = "-m cerebras-zai-glm-4.7";
+            lzro = "-m cerebras-zai-glm-4.7 ${reason.zOff}";
+
+            loh = "-m cerebras-gpt-oss-120b ${reason.high}";
+            lom = "-m cerebras-gpt-oss-120b ${reason.medium}";
+            lol = "-m cerebras-gpt-oss-120b ${reason.low}";
+
+            lqc = "-m cerebras-qwen-3-235b-a22b-instruct-2507";
+            lqt = "-m cerebras-qwen-3-235b-a22b-instruct-2507";
             lgf = "-m gemini-2.5-flash ${web.goog}";
             lgp = "-m gemini-3-pro-preview ${web.goog}";
 
