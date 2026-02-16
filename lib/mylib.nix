@@ -27,6 +27,23 @@ in
   # builtins.toString is equivalent
   nullToEmpty = x: if x == null then "" else x;
 
+  cleanJson =
+    pkgs: json:
+    pkgs.runCommand "claude-code-settings.json"
+      {
+        nativeBuildInputs = [
+          pkgs.gnused
+          pkgs.jq
+        ];
+      }
+      ''
+        # Strip // comments only at line start (preserves URLs in strings)
+        sed -E 's:^([[:space:]]*)//.*$:\1:' ${json} > $out
+
+        # Validate it is proper JSON (fails the build if not valid)
+        jq -e . $out > /dev/null
+      '';
+
   sops = rec {
     hasSopsTemplate = name: osConfig: osConfig ? sops && builtins.hasAttr name osConfig.sops.templates;
     hasSopsSecret = name: osConfig: osConfig ? sops && builtins.hasAttr name osConfig.sops.secrets;
