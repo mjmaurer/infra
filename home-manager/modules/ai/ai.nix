@@ -11,8 +11,9 @@ in
 {
   imports = [
     ./agents/claude/claude.nix
-    ./agents/aider/aider.nix
+    # ./agents/aider/aider.nix
     ./agents/codex-cli/codex-cli.nix
+    ./agents/opencode/opencode.nix
   ];
 
   options.modules.ai = {

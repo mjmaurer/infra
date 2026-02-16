@@ -17,7 +17,7 @@ if [ -d .git ]; then
         claude-agent-setup
     fi
 
-    if command -v aider-agent-setup &> /dev/null; then
-        aider-agent-setup
-    fi
+    # if command -v aider-agent-setup &> /dev/null; then
+    #     aider-agent-setup
+    # fi
 fi
