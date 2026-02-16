@@ -113,15 +113,6 @@ in
   };
   "[json]" = {
     "editor.defaultFormatter" = "vscode.json-language-features";
-    "json.schemaDownload.trustedDomains" = {
-      # "https://schemastore.azurewebsites.net/" = true;
-      "https://raw.githubusercontent.com/" = true;
-      "https://www.schemastore.org/" = true;
-      "https://json.schemastore.org/" = true;
-      "https://json-schema.org/" = true;
-      "https://opencode.ai/" = true;
-      # "https://biomejs.dev" = true;
-    };
   };
   "[jsonc]" = {
     "editor.defaultFormatter" = "vscode.json-language-features";
@@ -275,6 +266,15 @@ in
   #         "zsh"
   #     ]
   # }
+  "json.schemaDownload.trustedDomains" = {
+    # "https://schemastore.azurewebsites.net/" = true;
+    "https://raw.githubusercontent.com/" = true;
+    "https://www.schemastore.org/" = true;
+    "https://json.schemastore.org/" = true;
+    "https://json-schema.org/" = true;
+    "https://opencode.ai/" = true;
+    # "https://biomejs.dev" = true;
+  };
   "keyboard.dispatch" = "keyCode";
   launch = {
     compounds = [ ];
