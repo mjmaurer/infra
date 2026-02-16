@@ -140,7 +140,11 @@ in
         .aider.conf.yml
         .aiderignore
         .devdata/
-        CLAUDE.md 
+        CLAUDE.md
+        .ai/.claude/CLAUDE.md
+        .claude
+        .codex
+        .opencode
       '';
     };
 

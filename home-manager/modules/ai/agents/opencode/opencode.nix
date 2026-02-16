@@ -21,6 +21,12 @@ in
   };
 
   config = lib.mkIf cfg.enable {
+    home.packages = [
+      (pkgs.writeShellScriptBin "opencode-agent-setup" ''
+        ${builtins.readFile ./setup.sh}
+      '')
+    ];
+
     programs.opencode = {
       enable = true;
       package = pkgs-latest.opencode;
@@ -32,8 +38,11 @@ in
     };
 
     home.file = {
+      ".config/opencode/repo-config-nix/config-tmpl.json" = {
+        source = ./config/repo-config-tmpl.json;
+      };
       "${settingsPth}.source" = {
-        source = mylib.cleanJson pkgs ./opencode.config.jsonc;
+        source = mylib.cleanJson pkgs ./config/config.jsonc;
         onChange = ''
           source="${config.home.homeDirectory}/${settingsPth}.source"
           target="${config.home.homeDirectory}/${settingsPth}"

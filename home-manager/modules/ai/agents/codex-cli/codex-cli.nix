@@ -20,12 +20,18 @@ in
       (pkgs.writeShellScriptBin "whistle" ''
         ${pkgs.afplay or "/usr/bin/afplay"} ${../../sounds/short_whistle.mp3}
       '')
+      (pkgs.writeShellScriptBin "codex-agent-setup" ''
+        ${builtins.readFile ./setup.sh}
+      '')
     ];
     home.file = {
+      ".codex/repo-config-nix/config-tmpl.toml" = {
+        source = ./config/repo-config-tmpl.toml;
+      };
       ".codex/config.toml.source" = {
         text =
           let
-            baseConfig = builtins.readFile ./codex.config.toml;
+            baseConfig = builtins.readFile ./config/config.toml;
             mcpConfig = import ../../mcp.json.nix;
             mcpRenamed = {
               mcp_servers = mcpConfig.mcpServers;

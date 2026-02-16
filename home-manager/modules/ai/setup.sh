@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 
 if [ -d .git ]; then
+    # Create shared .ai directory and its .gitignore
+    mkdir -p .ai
+    if [ ! -f .ai/.gitignore ]; then
+        cat > .ai/.gitignore << 'GITIGNORE'
+.claude
+.codex
+.opencode
+GITIGNORE
+    fi
+
     # Copy AGENTS.md template if it doesn't exist
     if [ ! -f ./AGENTS.md ]; then
         if [ -f $XDG_CONFIG_HOME/ai/repo-config-nix/AGENTS.md ]; then
@@ -17,7 +27,11 @@ if [ -d .git ]; then
         claude-agent-setup
     fi
 
-    # if command -v aider-agent-setup &> /dev/null; then
-    #     aider-agent-setup
-    # fi
+    if command -v codex-agent-setup &> /dev/null; then
+        codex-agent-setup
+    fi
+
+    if command -v opencode-agent-setup &> /dev/null; then
+        opencode-agent-setup
+    fi
 fi
