@@ -33,7 +33,7 @@ in
 
     home.file = {
       "${settingsPth}.source" = {
-        source = mylib.cleanJson pkgs ./opencode_settings.jsonc;
+        source = mylib.cleanJson pkgs ./opencode.config.jsonc;
         onChange = ''
           source="${config.home.homeDirectory}/${settingsPth}.source"
           target="${config.home.homeDirectory}/${settingsPth}"
