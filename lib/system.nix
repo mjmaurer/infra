@@ -56,6 +56,7 @@ rec {
           nix-vscode-extensions
           nix-homebrew
           claude-code
+          opencode 
           ;
         inherit
           username
@@ -72,7 +73,33 @@ rec {
           };
           overlays = [
             inputs.nix-vscode-extensions.overlays.default
+
+            (final: prev: {
+              opencode = final.symlinkJoin {
+                name = "opencode-wrapped";
+                paths = [ inputs.opencode.packages.${system}.default ];
+                nativeBuildInputs = [ final.makeWrapper ];
+                postBuild = ''
+                  wrapProgram $out/bin/opencode
+                '';
+              };
+            })
+
             inputs.claude-code.overlays.default
+            # Wrap claude-code from the overlay above
+            # (final: prev: {
+            #   claude-code = final.symlinkJoin {
+            #     name = "claude-code-wrapped";
+            #     paths = [ prev.claude-code ];
+            #     nativeBuildInputs = [ final.makeWrapper ];
+            #     postBuild = ''
+            #       wrapProgram $out/bin/claude \
+            #         --set DISABLE_AUTOUPDATER 1 \
+            #         --set SOME_OTHER_VAR "value"
+            #     '';
+            #   };
+            # })
+
 
             # (self: super: {
             #   python3Packages = super.python3Packages // {

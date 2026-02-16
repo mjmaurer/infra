@@ -16,6 +16,10 @@
       inputs.nixpkgs.follows = "nixpkgs-latest";
       inputs.flake-utils.follows = "flake-utils";
     };
+    opencode = {
+      url = "github:anomalyco/opencode";
+      inputs.nixpkgs.follows = "nixpkgs-latest";
+    };
     darwin = {
       url = "github:lnl7/nix-darwin/nix-darwin-25.11";
       inputs.nixpkgs.follows = "nixpkgs";

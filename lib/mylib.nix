@@ -29,7 +29,7 @@ in
 
   cleanJson =
     pkgs: json:
-    pkgs.runCommand "claude-code-settings.json"
+    pkgs.runCommand "cleaned.json"
       {
         nativeBuildInputs = [
           pkgs.gnused
