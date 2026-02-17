@@ -6,7 +6,11 @@ rec {
     inputs.flake-utils.lib.eachDefaultSystem (
       system:
       let
-        pkgs = import inputs.nixpkgs {
+        mylib = import ./mylib.nix {
+          lib = inputs.nixpkgs-latest.lib;
+          sysTags = [];
+        };
+        pkgs-latest = import inputs.nixpkgs-latest {
           inherit system;
           config.allowUnfree = true;
         };
@@ -16,8 +20,9 @@ rec {
       f {
         inherit
           system
-          pkgs
+          pkgs-latest
           sops-nix-pkgs
+          mylib
           lib
           ;
       }

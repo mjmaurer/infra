@@ -27,6 +27,8 @@ in
   # builtins.toString is equivalent
   nullToEmpty = x: if x == null then "" else x;
 
+  py = pkgs-latest: pkgs-latest.python313;
+
   cleanJson =
     pkgs: json:
     pkgs.runCommand "cleaned.json"

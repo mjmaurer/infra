@@ -14,7 +14,7 @@ let
   cfg = config.modules.llm;
   cfgHome = "${config.xdg.configHome}/llm";
   defaultModel = "openrouter/openai/gpt-oss-120b";
-  pythonPkg = pkgs-latest.python312;
+  pythonPkg = mylib.py pkgs-latest;
   llmPkg = pkgs-latest.llm;
   customPackages = import ./custom-pkgs.nix {
     inherit

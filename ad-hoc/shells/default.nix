@@ -1,15 +1,23 @@
 {
-  pkgs,
+  pkgs-latest,
   sops-nix-pkgs,
   lib,
+  mylib,
   ...
 }:
 let
-  nix4vscode = pkgs.rustPlatform.buildRustPackage rec {
+
+  # pythonPkg = mylib.py pkgs-latest;
+  # mlflowPyEnv = pythonPkg.withPackages (
+  #   ps: with ps; [
+  #     mlflow
+  #   ]
+  # );
+  nix4vscode = pkgs-latest.rustPlatform.buildRustPackage rec {
     pname = "nix4vscode";
     version = "0.0.12"; # Use the latest version from the repo
 
-    src = pkgs.fetchFromGitHub {
+    src = pkgs-latest.fetchFromGitHub {
       owner = "nix-community";
       repo = "nix4vscode";
       rev = "21eb5896042345acd161f46416f4e826755f766f";
@@ -39,15 +47,22 @@ let
   };
 in
 {
-  new-host = import ./new-host.nix { inherit pkgs lib; };
-  default = pkgs.mkShell {
-    packages = with pkgs; [
+  new-host = import ./new-host.nix { inherit pkgs-latest lib; };
+  default = pkgs-latest.mkShell {
+    packages = with pkgs-latest; [
       sops
       age
       ssh-to-age
 
       # Guide I used to set up Yubikey (also on GitHub)
       # drduh-yubikey-guide
+
+      # Claude code tracing. needed in shell because
+      # the hook imports it
+      # (import ../mlflow.nix {
+      #   inherit (pkgs-latest) lib pkgs;
+      #   mylib = mylib;
+      # })
 
       # Store keys on paper
       paperkey
@@ -61,18 +76,18 @@ in
       # nix4vscode
       node2nix
 
-      (pkgs.writeShellScriptBin "json-to-nix" ''
+      (writeShellScriptBin "json-to-nix" ''
         nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile \"$1\")"
       '')
 
-      (pkgs.writeShellScriptBin "updatenode" ''
+      (writeShellScriptBin "updatenode" ''
         (cd ./home-manager/modules/node && node2nix - -i ./node-packages.json -c node-import.nix)
       '')
-      (pkgs.writeShellScriptBin "sopsnew" ''
+      (writeShellScriptBin "sopsnew" ''
         # Just a reminder. Use this for new hosts.
         sops "$@"
       '')
-      (pkgs.writeShellScriptBin "disko-run" ''
+      (writeShellScriptBin "disko-run" ''
         echo "This takes a path to a disko.nix patch file."
         echo "WARNING: This will destroy, format, and mount disks. Are you sure? [y/N]"
         read -r confirm
@@ -123,7 +138,7 @@ in
           rm -f /tmp/disk.key
         fi
       '')
-      (pkgs.writeShellScriptBin "sopsa" ''
+      (writeShellScriptBin "sopsa" ''
         # Uses sops with ssh key via ssh-to-age
 
         host_key_path="/etc/ssh/ssh_host_ed25519_key"

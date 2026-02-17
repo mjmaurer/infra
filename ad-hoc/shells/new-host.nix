@@ -1,20 +1,20 @@
 {
   lib,
-  pkgs,
+  pkgs-latest,
   ...
 }:
 let
-  cleanup-script = pkgs.writeScript "cleanup-temp" ''
+  cleanup-script = pkgs-latest.writeScript "cleanup-temp" ''
     if [ -d "$NEW_HOST_DATA" ]; then
       echo "Cleaning up temporary directory: $NEW_HOST_DATA"
       rm -rf "$NEW_HOST_DATA"
     fi
   '';
-  ssh-host-bootstrap = pkgs.writeScriptBin "ssh-host-bootstrap" (
+  ssh-host-bootstrap = pkgs-latest.writeScriptBin "ssh-host-bootstrap" (
     builtins.readFile ../pkgs/crypt/ssh-host-bootstrap.sh
   );
 in
-(pkgs.mkShell {
+(pkgs-latest.mkShell {
   name = "new-host-shell";
 
   packages = [

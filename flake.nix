@@ -263,13 +263,20 @@
     // sys.forEachSystem (
       {
         system,
-        pkgs,
+        pkgs-latest,
         sops-nix-pkgs,
+        mylib,
         lib,
       }:
       {
-        packages = import ./ad-hoc/pkgs { inherit self pkgs; };
-        devShells = import ./ad-hoc/shells { inherit pkgs sops-nix-pkgs lib; };
+        packages = import ./ad-hoc/pkgs {
+          inherit self pkgs-latest;
+          mylib = mylib;
+        };
+        devShells = import ./ad-hoc/shells {
+          inherit pkgs-latest sops-nix-pkgs lib;
+          mylib = mylib;
+        };
       }
     );
 }
