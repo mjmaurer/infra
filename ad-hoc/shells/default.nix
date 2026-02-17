@@ -13,6 +13,8 @@ let
   #     mlflow
   #   ]
   # );
+  claude-trace = import ./claude-trace.nix { inherit lib pkgs-latest; };
+
   nix4vscode = pkgs-latest.rustPlatform.buildRustPackage rec {
     pname = "nix4vscode";
     version = "0.0.12"; # Use the latest version from the repo
@@ -70,6 +72,8 @@ in
       yubikey-manager
       yubikey-personalization
       # yubikey-touch-detector
+
+      claude-trace
 
       fixjson
 
