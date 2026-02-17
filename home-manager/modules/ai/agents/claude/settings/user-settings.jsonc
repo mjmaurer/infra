@@ -18,7 +18,9 @@
       "Bash(git diff:*)"
     ],
     "deny": [
-
+      // Deny to remove from context
+      "mcp__ide__executeCode",
+      "NotebookEdit"
     ]
   },
   // Don't use servers in project's mcp.json by default
