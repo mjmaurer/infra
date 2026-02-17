@@ -3,7 +3,7 @@ description: Retrieves a hash for use in nix's fetchFromGitHub, fetchurl, fetchz
 disable-model-invocation: false
 model: sonnet
 context: fork
-allowed-tools: Bash(nix-prefetch-git *), Bash(nix-prefetch-url *), Bash(nix hash convert *)
+allowed-tools: Bash(nix-prefetch-git*), Bash(nix-prefetch-url *), Bash(nix hash convert *)
 <!-- agent:General -->
 ---
 
@@ -11,7 +11,6 @@ allowed-tools: Bash(nix-prefetch-git *), Bash(nix-prefetch-url *), Bash(nix hash
 
 Use nix-prefetch-git when fetching for fetchFromGitHub:
 
-!`nix-prefetch-git --help`
 
 For example, we need the 'hash' value from the following for fetchFromGitHub:
 
