@@ -4,6 +4,7 @@
   config,
   pkgs,
   pkgs-latest,
+  llm-agents,
   ...
 }:
 let
@@ -14,6 +15,9 @@ let
   #   inherit lib;
   #   pkgs = pkgs;
   # };
+
+  trace-pkgs = import ./trace.nix { inherit lib pkgs-latest; };
+  inherit (trace-pkgs) claude-trace claude-trace-viewer;
 in
 {
   options.modules.claude = {
@@ -23,7 +27,10 @@ in
   config = lib.mkIf cfg.enable {
     home.packages = [
       # Uses claude-code flake via overlay configured in system.nix
-      pkgs-latest.claude-code
+      llm-agents.claude-code
+
+      claude-trace
+      claude-trace-viewer
 
       (pkgs.writeShellScriptBin "claude-agent-setup" ''
         ${builtins.readFile ./setup.sh}

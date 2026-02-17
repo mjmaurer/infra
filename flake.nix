@@ -11,13 +11,8 @@
     nix-std.url = "github:chessai/nix-std";
     # impermanence.url = "github:nix-community/impermanence";
 
-    claude-code = {
-      url = "github:sadjow/claude-code-nix";
-      inputs.nixpkgs.follows = "nixpkgs-latest";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-    opencode = {
-      url = "github:anomalyco/opencode";
+    llm-agents = {
+      url = "github:numtide/llm-agents.nix";
       inputs.nixpkgs.follows = "nixpkgs-latest";
     };
     darwin = {

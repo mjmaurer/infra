@@ -8,7 +8,7 @@ rec {
       let
         mylib = import ./mylib.nix {
           lib = inputs.nixpkgs-latest.lib;
-          sysTags = [];
+          sysTags = [ ];
         };
         pkgs-latest = import inputs.nixpkgs-latest {
           inherit system;
@@ -55,13 +55,13 @@ rec {
         # non-default arguments to nix modules.
         # Default arguments are things like `pkgs`, `lib`, etc.
 
+        llm-agents = inputs.llm-agents.packages.${system};
+
         inherit (inputs)
           nix-std
           nix-colors
           nix-vscode-extensions
           nix-homebrew
-          claude-code
-          opencode 
           ;
         inherit
           username
@@ -79,18 +79,18 @@ rec {
           overlays = [
             inputs.nix-vscode-extensions.overlays.default
 
-            (final: prev: {
-              opencode = final.symlinkJoin {
-                name = "opencode-wrapped";
-                paths = [ inputs.opencode.packages.${system}.default ];
-                nativeBuildInputs = [ final.makeWrapper ];
-                postBuild = ''
-                  wrapProgram $out/bin/opencode
-                '';
-              };
-            })
+            # (final: prev: {
+            #   opencode = final.symlinkJoin {
+            #     name = "opencode-wrapped";
+            #     paths = [ inputs.opencode.packages.${system}.default ];
+            #     nativeBuildInputs = [ final.makeWrapper ];
+            #     postBuild = ''
+            #       wrapProgram $out/bin/opencode
+            #     '';
+            #   };
+            # })
 
-            inputs.claude-code.overlays.default
+            # inputs.claude-code.overlays.default
             # Wrap claude-code from the overlay above
             # (final: prev: {
             #   claude-code = final.symlinkJoin {
@@ -104,7 +104,6 @@ rec {
             #     '';
             #   };
             # })
-
 
             # (self: super: {
             #   python3Packages = super.python3Packages // {

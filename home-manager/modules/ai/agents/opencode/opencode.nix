@@ -2,6 +2,7 @@
   lib,
   mylib,
   config,
+  llm-agents,
   pkgs,
   pkgs-latest,
   ...
@@ -29,7 +30,7 @@ in
 
     programs.opencode = {
       enable = true;
-      package = pkgs-latest.opencode;
+      package = llm-agents.opencode;
       enableMcpIntegration = false;
       settings = {
         autoupdate = false;
