@@ -190,6 +190,13 @@ in
   "extensions.experimental.affinity" = {
     "vscodevim.vim" = 1;
   };
+  "files.exclude" = {
+    ".codex" = true;
+    ".opencode" = true;
+    ".direnv" = true;
+    ".devenv" = true;
+    ".devenv*" = true;
+  };
   "files.associations" = {
     "**/requirements{/**,*}.{txt,in}" = "pip-requirements";
     "**/templates/*.html" = "django-html";
