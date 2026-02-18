@@ -124,6 +124,7 @@ rec {
         };
         pubkeys = import ./pubkeys.nix;
         isDarwin = system == "aarch64-darwin";
+        tsScripts = import ../home-manager/ts { pkgs = pkgs-latest; };
       }
       // extraSpecialArgs;
       mkHomeManagerStandalone =
