@@ -1,8 +1,9 @@
 ---
 name: codex-cli
 description: Use when the user asks to run Codex / Codex CLI.
-context: fork
 allowed-tools: Bash(codex exec --sandbox read-only *), Bash(sed *)
+<!-- Claude -->
+context: fork
 ---
 
 # Codex Skill Guide

@@ -34,6 +34,9 @@ in
       ".config/ai/repo-config-nix/AGENTS.md" = {
         source = ./AGENTS_TMPL.md;
       };
+      ".config/ai/repo-config-nix/skills" = {
+        source = ./skills;
+      };
       ".config/ai/sounds" = {
         source = ./sounds;
       };

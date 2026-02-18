@@ -26,6 +26,9 @@ in
     ];
 
     home.file = {
+      ".pi/agent/skills" = {
+        source = ../../skills/_global;
+      };
       ".config/pi/repo-config-nix/settings.json" = {
         source = ./settings/repo-settings-tmpl.json;
       };

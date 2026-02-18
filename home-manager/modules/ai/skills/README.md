@@ -1,0 +1,1 @@
+`disable-model-invocation` isn't supported by agent skills standard, but is support by pi agent, so its included in both
