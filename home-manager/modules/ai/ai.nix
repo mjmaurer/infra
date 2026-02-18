@@ -2,11 +2,18 @@
   lib,
   config,
   pkgs,
+  mylib,
   pkgs-latest,
   ...
 }:
 let
   cfg = config.modules.ai;
+  pythonPkg = mylib.py pkgs-latest;
+  gitingestEnv = pythonPkg.withPackages (
+    ps: with ps; [
+      gitingest
+    ]
+  );
 in
 {
   imports = [
@@ -25,9 +32,12 @@ in
     home.packages = [
       pkgs-latest.mcp-nixos
       (pkgs.writeShellScriptBin "ai-setup" ''
-        ${builtins.readFile ./setup.sh}
+        ${builtins.readFile ./ai-setup.sh}
       '')
       (pkgs.callPackage ./mcp-cli.nix { })
+      (pkgs.writeShellScriptBin "gitingest" ''
+        exec "${gitingestEnv}/bin/gitingest" "$@"
+      '')
     ];
 
     # Store centralized AGENTS.md in config directory
