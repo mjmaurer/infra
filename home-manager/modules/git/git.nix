@@ -145,6 +145,7 @@ in
         .claude
         .codex
         .opencode
+        .pi
       '';
     };
 

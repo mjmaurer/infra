@@ -1,0 +1,68 @@
+{
+    // ================ Defaults as of Feb 18, 2025  =====================
+    // These had no default
+    "defaultProvider": "google",
+    "defaultModel": "gemini-3-flash-preview",
+    // High is the default for gemini models (https://ai.google.dev/gemini-api/docs/thinking)
+    "defaultThinkingLevel": "high",
+    // --------------- Extensions and resources
+    // For quick cycling:
+    "enabledModels": ["gemini-3-flash-preview", "zai-glm-4.7"],
+    "packages": [],
+    "extensions": [],
+    "skills": [],
+    "prompts": [],
+    "themes": [],
+    "enableSkillCommands": true,
+    // --------------- Thinking
+    "hideThinkingBlock": false,
+    "thinkingBudgets": {
+        "minimal": 1024,
+        "low": 4096,
+        "medium": 10240,
+        "high": 32768
+    },
+    // --------------- UI
+    "theme": "dark",
+    "quietStartup": false,
+    "collapseChangelog": false,
+    "doubleEscapeAction": "tree",
+    "editorPaddingX": 0,
+    "autocompleteMaxVisible": 5,
+    "showHardwareCursor": false,
+    // "shellPath": "",
+    // "shellCommandPrefix": "", For every bash command
+    "terminal": {
+        "showImages": true,
+        "clearOnShrink": false
+    },
+    "images": {
+        "autoResize": true,
+        "blockImages": false
+    },
+    "markdown": {
+        "codeBlockIndent": "  "
+    },
+    // --------------- Compaction
+    "compaction": {
+        "enabled": true,
+        "reserveTokens": 16384,
+        "keepRecentTokens": 20000
+    },
+    // --------------- Branch summary
+    "branchSummary": {
+        "reserveTokens": 16384
+    },
+    // --------------- Retry
+    "retry": {
+        "enabled": true,
+        "maxRetries": 3,
+        "baseDelayMs": 2000,
+        "maxDelayMs": 60000
+    },
+    // --------------- Message delivery
+    "steeringMode": "one-at-a-time",
+    "followUpMode": "one-at-a-time",
+    // --------------- Transport
+    "transport": "sse"
+}

@@ -8,6 +8,7 @@ if [ -d .git ]; then
 .claude
 .codex
 .opencode
+.pi
 GITIGNORE
     fi
 
@@ -33,5 +34,9 @@ GITIGNORE
 
     if command -v opencode-agent-setup &> /dev/null; then
         opencode-agent-setup
+    fi
+
+    if command -v pi-agent-setup &> /dev/null; then
+        pi-agent-setup
     fi
 fi
