@@ -15,7 +15,14 @@
       "Bash(nixfmt:*)",
 
       "Bash(git status:*)",
-      "Bash(git diff:*)"
+      "Bash(git diff:*)",
+
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(grep *)",
+      "Bash(ripgrep *)",
+
+      "mcp__ide__getDiagnostics"
     ],
     "deny": [
       // Deny to remove from context

@@ -41,9 +41,14 @@ in
 
         ai-setup
         unset ANTHROPIC_API_KEY
-        exec claude "$@"
+        exec ai-sandbox claude "$@"
       '')
     ];
+    modules.commonShell = {
+      shellAliases = {
+        clp = "cl -p";
+      };
+    };
     home.file = {
       # --------------------------- User-wide settings ---------------------------
       # Claude Code will make updates to this, so we need to make it writable
@@ -74,19 +79,6 @@ in
       ".claude/skills" = {
         source = ../../skills/_global;
       };
-    };
-
-    modules.commonShell = {
-      shellAliases =
-        let
-          # See mcp.json.nix for mcp.json
-          baseClaude = "ai-setup && claude"; # --mcp-config ~/.config/ai/mcp.json";
-          # mcp.json is symlinked in each project so
-          # we can default to `enableAllProjectMcpServers = false;`
-        in
-        {
-          clp = "cl -p";
-        };
     };
   };
 }

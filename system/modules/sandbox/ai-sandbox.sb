@@ -100,6 +100,7 @@
 (allow file-read* file-write* (subpath "/private/tmp"))
 (allow file-read* file-write* (subpath "/private/var/tmp"))
 (allow file-read* file-write* (subpath "/private/var/folders"))
+(allow file-read* file-write* (subpath "/var/folders"))
 
 ;; User config/state.
 ;; Claude tools often use ~/.config, ~/Library/Application Support, etc.
@@ -116,7 +117,8 @@
 ;; Allow read/write to any path containing 'claude' (case-insensitive)
 (allow file-read* file-write* (regex ".*[cC][lL][aA][uU][dD][eE].*"))
 
-(allow file-read* (subpath "/Users/mmaurer7/.config/ai"))
+(allow file-read* file-write* (subpath "/Users/mmaurer7/.config/ai"))
+(allow file-read* file-write* (subpath "/Users/mmaurer7/.pi"))
 
 ;; The main workspace allowlist (RW).
 ; Deny env files + common backup suffixes:

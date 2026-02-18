@@ -23,7 +23,18 @@ in
       (pkgs.writeShellScriptBin "pi-agent-setup" ''
         ${builtins.readFile ./setup.sh}
       '')
+
+      (pkgs.writeShellScriptBin "p" ''
+        set -euo pipefail
+
+        ai-setup
+        exec ai-sandbox pi "$@"
+      '')
     ];
+
+    modules.commonShell = {
+      shellAliases = { };
+    };
 
     home.file = {
       ".pi/agent/skills" = {
@@ -54,12 +65,6 @@ in
           cp -f $source $target
           chmod +w $target
         '';
-      };
-    };
-
-    modules.commonShell = {
-      shellAliases = {
-        p = "pi-setup && pi";
       };
     };
   };
