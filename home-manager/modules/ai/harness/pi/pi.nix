@@ -9,7 +9,7 @@
 }:
 let
   cfg = config.modules.pi;
-  settingsPth = ".config/pi/settings.json";
+  settingsPth = ".pi/agent/settings.json";
 in
 {
   options.modules.pi = {
