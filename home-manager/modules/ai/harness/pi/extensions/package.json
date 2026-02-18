@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "type": "module",
+  "description": "Pi extensions — package.json exists solely for VSCode IntelliSense",
+  "devDependencies": {
+    "@mariozechner/pi-coding-agent": "latest",
+    "@sinclair/typebox": "latest"
+  }
+}

@@ -29,6 +29,10 @@ in
       ".pi/agent/skills" = {
         source = ../../skills/_global;
       };
+      ".pi/agent/extensions" = {
+        source = ./extensions;
+        recursive = true;
+      };
       ".config/pi/repo-config-nix/settings.json" = {
         source = ./settings/repo-settings-tmpl.json;
       };
