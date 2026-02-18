@@ -72,8 +72,8 @@ in
       yubikey-personalization
       # yubikey-touch-detector
 
-      # For pi extensions
-      nodejs
+      # For pi extensions and ts scripts
+      bun
 
       fixjson
 

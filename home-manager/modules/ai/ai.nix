@@ -4,6 +4,7 @@
   pkgs,
   mylib,
   pkgs-latest,
+  tsScripts,
   ...
 }:
 let
@@ -38,6 +39,10 @@ in
       (pkgs.writeShellScriptBin "gitingest" ''
         exec "${gitingestEnv}/bin/gitingest" "$@"
       '')
+      (tsScripts.mkTsScript {
+        name = "ai-context";
+        script = ./scripts/ai-context.ts;
+      })
     ];
 
     # Store centralized AGENTS.md in config directory

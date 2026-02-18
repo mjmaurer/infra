@@ -1,0 +1,8 @@
+{
+  "name": "infra-ts-scripts",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/bun": "latest"
+  }
+}
