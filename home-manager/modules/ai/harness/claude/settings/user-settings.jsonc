@@ -21,6 +21,7 @@
       "Bash(cat *)",
       "Bash(grep *)",
       "Bash(ripgrep *)",
+      "Bash(find *)",
 
       "mcp__ide__getDiagnostics"
     ],
@@ -54,6 +55,17 @@
           {
             "type": "command",
             "command": "afplay ~/.config/ai/sounds/short_whistle.mp3"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/sanitize-bash.sh"
           }
         ]
       }

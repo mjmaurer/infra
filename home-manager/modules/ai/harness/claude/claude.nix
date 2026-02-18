@@ -76,6 +76,9 @@ in
       ".claude/repo-config-nix/settings-tmpl.json" = {
         source = ./settings/repo-settings-tmpl.jsonc;
       };
+      ".claude/hooks" = {
+        source = ./hooks;
+      };
       ".claude/skills" = {
         source = ../../skills/_global;
       };
