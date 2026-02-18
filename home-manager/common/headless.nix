@@ -40,7 +40,8 @@
     ai.enable = lib.mkDefault true;
     claude.enable = lib.mkDefault true;
     codex-cli.enable = lib.mkDefault true;
-    opencode.enable = lib.mkDefault true;
+    # opencode.enable = lib.mkDefault true;
+    pi.enable = lib.mkDefault true;
     aichat.enable = lib.mkDefault true;
     llm.enable = lib.mkDefault true;
     neovim.enable = lib.mkDefault true;

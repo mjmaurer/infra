@@ -3,7 +3,7 @@ name: nix-prefetch
 description: Retrieves a hash for use in nix's fetchFromGitHub, fetchurl, fetchzip, etc  
 allowed-tools: Bash(nix-prefetch-git*), Bash(nix-prefetch-url *), Bash(nix hash convert *)
 disable-model-invocation: false
-<!-- Claude -->
+
 model: sonnet
 context: fork
 ---

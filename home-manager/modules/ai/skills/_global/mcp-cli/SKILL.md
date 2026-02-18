@@ -3,7 +3,7 @@ name: mcp-cli
 description: How to use mcp-cli 
 allowed-tools: Bash(mcp-cli --help*), Bash(sed *)
 disable-model-invocation: false
-<!-- Claude -->
+
 user-invokable: false
 ---
 

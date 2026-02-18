@@ -13,7 +13,8 @@ in
     ./harness/claude/claude.nix
     # ./harness/aider/aider.nix
     ./harness/codex-cli/codex-cli.nix
-    ./harness/opencode/opencode.nix
+    # ./harness/opencode/opencode.nix
+    ./harness/pi/pi.nix
   ];
 
   options.modules.ai = {
