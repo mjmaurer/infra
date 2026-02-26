@@ -419,6 +419,11 @@ check-further-callbacks = false
 run = 'move-node-to-workspace files'
 
 [[on-window-detected]]
+if.app-id = 'com.apple.TextEdit'
+check-further-callbacks = false
+run = 'move-node-to-workspace files'
+
+[[on-window-detected]]
 if.app-id = 'com.microsoft.Powerpoint'
 check-further-callbacks = false
 run = 'move-node-to-workspace files'
