@@ -251,6 +251,7 @@ in
         "gcs" = "git commit -v --gpg-sign";
         "gac" = "gaf && gcai"; # gcai - is defined in git-commit-ai.sh
         "gc" = "git commit -v";
+        "gcm" = "git commit -m";
         "poe" = "poetry run poe";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh

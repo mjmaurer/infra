@@ -186,8 +186,8 @@ in
           if [ -n "''${LLM_CID:-}" ]; then
             exec llm -f ${mdFragPath} --cid "$LLM_CID" "$@" | sd
           else
-            echo "No LLM_CID, can't use follow-up"
-            exec llm -f ${mdFragPath} "$@" | sd
+            echo "No LLM_CID, just using --continue"
+            exec llm -f ${mdFragPath} --continue "$@" | sd
           fi
         fi
 

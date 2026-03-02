@@ -105,8 +105,9 @@
 ;; User config/state.
 ;; Claude tools often use ~/.config, ~/Library/Application Support, etc.
 ;; (allow file-read* file-write* (subpath "/Users/mmaurer7/.config"))
-;; (allow file-read* file-write* (subpath "/Users/mmaurer7/.cache"))
-;; (allow file-read* file-write* (subpath "/Users/mmaurer7/.local/share"))
+(allow file-read* file-write* (subpath "/Users/mmaurer7/.cache"))
+(allow file-read* (subpath "/Users/mmaurer7/.local/share"))
+(allow file-read* file-write* (subpath "/Users/mmaurer7/.local/state"))
 ;; (allow file-read* file-write* (subpath "/Users/mmaurer7/Library"))
 ;; (allow file-read* (subpath "/Users/mmaurer7/.gitconfig"))
 ;; (allow file-read* (subpath "/Users/mmaurer7/.git-credentials"))
