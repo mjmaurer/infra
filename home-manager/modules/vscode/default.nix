@@ -57,6 +57,8 @@ in
             lib.optionals cfg.enableAiExtensions (
               (with vscode-marketplace; [
                 github.copilot
+                visualstudioexptteam.intellicode-api-usage-examples
+                visualstudioexptteam.vscodeintellicode
               ])
               ++ (pkgs-latest.vscode-utils.extensionsFromVscodeMarketplace [
                 # anthropic.claude-code above was broken. try uncommenting
@@ -82,8 +84,6 @@ in
               # github.copilot-chat
               # github.vscode-pull-request-github
               # anthropic.claude-code
-              visualstudioexptteam.intellicode-api-usage-examples
-              visualstudioexptteam.vscodeintellicode
               ms-vscode-remote.remote-containers
               ms-vscode-remote.remote-ssh
               ms-vscode-remote.remote-ssh-edit
