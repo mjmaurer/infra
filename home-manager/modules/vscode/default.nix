@@ -21,7 +21,13 @@ let
 in
 # vscode-marketplace = (vsxmkt.forVSCodeVersion package.version).vscode-marketplace;
 {
-  options.modules.vscode = { };
+  options.modules.vscode = {
+    enableAiExtensions = lib.mkOption {
+      type = lib.types.bool;
+      default = true;
+      description = "Whether to enable AI-related extensions (e.g. Copilot).";
+    };
+  };
 
   config = lib.mkMerge [
     {
@@ -48,7 +54,21 @@ in
           userTasks = import ./tasks.nix;
           keybindings = import ./keybindings.nix { editor = "vscode"; };
           extensions =
-            (with vscode-marketplace; [
+            lib.optionals cfg.enableAiExtensions (
+              (with vscode-marketplace; [
+                github.copilot
+              ])
+              ++ (pkgs-latest.vscode-utils.extensionsFromVscodeMarketplace [
+                # anthropic.claude-code above was broken. try uncommenting
+                {
+                  name = "claude-code";
+                  publisher = "anthropic";
+                  version = "2.1.29";
+                  sha256 = "sha256-3sy/2jGiefiqKsCloed8qjoVti+zWkp4pUqCoc3g7o8=";
+                }
+              ])
+            )
+            ++ (with vscode-marketplace; [
               # Extensions kept up to date via:
               # https://github.com/nix-community/nix-vscode-extensions
               # Get list of extensions: https://github.com/nix-community/nix-vscode-extensions?tab=readme-ov-file#get-extensions-with-flakes
@@ -57,7 +77,6 @@ in
               # nix4vscode.github.copilot-chat
 
               vscodevim.vim
-              github.copilot
               # NOTE: These two always break because they need to be in
               # sync with vscode version. Just install manually if needed.
               # github.copilot-chat
@@ -76,7 +95,7 @@ in
               andrsdc.base16-themes
               sainnhe.gruvbox-material
               stackbreak.comment-divider
-              takumii.tabspace
+              # takumii.tabspace
               naumovs.color-highlight
 
               jnoortheen.nix-ide
@@ -95,7 +114,7 @@ in
               tamasfe.even-better-toml
               redhat.vscode-yaml
               # tyriar.luna-paint Issue with SHA mismatch
-              mrorz.language-gettext
+              # mrorz.language-gettext
 
               # TODO anysphere.pyright # cursor
 
@@ -128,6 +147,8 @@ in
               slevesque.shader
 
               jakebecker.elixir-ls
+              haskell.haskell
+              rust-lang.rust-analyzer
 
               # josetr.cmake-language-support-vscode
               # ms-vscode.cmake-tools
@@ -152,13 +173,6 @@ in
             ])
             ++ (pkgs-latest.vscode-utils.extensionsFromVscodeMarketplace [
               # Manually added extensions
-              # antrhopic.claude-code above was broken. try uncommenting
-              {
-                name = "claude-code";
-                publisher = "anthropic";
-                version = "2.1.29";
-                sha256 = "sha256-3sy/2jGiefiqKsCloed8qjoVti+zWkp4pUqCoc3g7o8=";
-              }
 
               # {
               #   name = "";
