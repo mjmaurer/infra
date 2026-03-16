@@ -259,5 +259,9 @@ in
       echo "Copying apps from $apps_source to $app_target"
       ${pkgs.rsync}/bin/rsync --archive --checksum --chmod=-w --delete --copy-unsafe-links "$apps_source/" "$app_target"
     '';
+
+    system.activationScripts.postActivation.text = lib.mkAfter ''
+      echo "activation complete"
+    '';
   };
 }

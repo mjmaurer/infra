@@ -252,6 +252,10 @@ in
         "gac" = "gaf && gcai"; # gcai - is defined in git-commit-ai.sh
         "gc" = "git commit -v";
         "gcm" = "git commit -m";
+        "gch" = "git checkout";
+        "gchb" = "git checkout -b";
+        "gb" = "git checkout";
+        "gbb" = "git checkout -b";
         "poe" = "poetry run poe";
         # "rgi" = "rgi"; For visibility. Defined in common-shellrc.sh
         # "rgf" = "rgf"; For visibility. Defined in common-shellrc.sh
@@ -269,7 +273,7 @@ in
         "ndu" = "nix flake update";
         "nrbnoreload" = lib.mkDefault "sudo nixos-rebuild switch --show-trace --flake ~/infra";
         "nrb" = ''
-          nrbnoreload;
+          nrbnoreload && echo "rebuild successful (exit 0)" || echo "rebuild FAILED (exit $?)";
           exec zsh;
         '';
         "nnf" = "new_nix_flake";
