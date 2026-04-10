@@ -73,6 +73,7 @@ cmd-ctrl-equal = 'move-node-to-monitor --focus-follows-window --wrap-around next
 cmd-ctrl-v = 'workspace games --auto-back-and-forth'
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
 cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
+cmd-ctrl-3 = 'workspace outlook --auto-back-and-forth'
 cmd-ctrl-m = 'workspace music --auto-back-and-forth'
 cmd-ctrl-n = 'workspace notif --auto-back-and-forth'
 cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
@@ -86,8 +87,10 @@ cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
 cmd-ctrl-i = 'workspace chat --auto-back-and-forth'
 cmd-ctrl-c = 'workspace creds --auto-back-and-forth'
 cmd-ctrl-semicolon = 'workspace other --auto-back-and-forth'
+cmd-ctrl-2 = 'workspace other --auto-back-and-forth'
 # Secondary monitor
 cmd-ctrl-quote = 'workspace ext --auto-back-and-forth'
+cmd-ctrl-1 = 'workspace ext --auto-back-and-forth'
 
 # alt-shift-t = 'move-node-to-workspace terminal'
 cmd-ctrl-shift-e = [
@@ -110,6 +113,12 @@ cmd-ctrl-shift-b = [
     'join-with up',
 ]
 cmd-ctrl-shift-o = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window outlook',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-3 = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window outlook',
     'layout tiling',
@@ -139,7 +148,19 @@ cmd-ctrl-shift-n = [
     'layout tiling',
     'join-with up',
 ]
+cmd-ctrl-shift-4 = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window notif',
+    'layout tiling',
+    'join-with up',
+]
 cmd-ctrl-shift-m = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window music',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-5 = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window music',
     'layout tiling',
@@ -163,26 +184,38 @@ cmd-ctrl-shift-semicolon = [
     'layout tiling',
     'join-with up',
 ]
+cmd-ctrl-shift-2 = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window other',
+    'layout tiling',
+    'join-with up',
+]
 cmd-ctrl-shift-quote = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window ext',
     'layout tiling',
     'join-with up',
 ]
+cmd-ctrl-shift-1 = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window ext',
+    'layout tiling',
+    'join-with up',
+]
 
-cmd-ctrl-1 = 'workspace 1'
-cmd-ctrl-2 = 'workspace 2'
-cmd-ctrl-3 = 'workspace 3'
-cmd-ctrl-4 = 'workspace 4'
-cmd-ctrl-5 = 'workspace 5'
-cmd-ctrl-6 = 'workspace 6'
-cmd-ctrl-7 = 'workspace 7'
-cmd-ctrl-8 = 'workspace 8'
-cmd-ctrl-9 = 'workspace 9'
-cmd-ctrl-0 = 'workspace 10'
+#cmd-ctrl-1 = 'workspace 1'
+#cmd-ctrl-2 = 'workspace 2'
+#cmd-ctrl-3 = 'workspace 3'
+#cmd-ctrl-4 = 'workspace 4'
+#cmd-ctrl-5 = 'workspace 5'
+#cmd-ctrl-6 = 'workspace 6'
+#cmd-ctrl-7 = 'workspace 7'
+#cmd-ctrl-8 = 'workspace 8'
+#cmd-ctrl-9 = 'workspace 9'
+#cmd-ctrl-0 = 'workspace 10'
 
-cmd-ctrl-shift-1 = 'move-node-to-workspace 1'
-cmd-ctrl-shift-2 = 'move-node-to-workspace 2'
+#cmd-ctrl-shift-1 = 'move-node-to-workspace 1'
+#cmd-ctrl-shift-2 = 'move-node-to-workspace 2'
 # cmd-ctrl-shift-3 = 'move-node-to-workspace 3'
 # cmd-ctrl-shift-4 = 'move-node-to-workspace 4'
 # cmd-ctrl-shift-5 = 'move-node-to-workspace 5'
