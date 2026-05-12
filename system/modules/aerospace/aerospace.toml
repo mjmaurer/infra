@@ -85,6 +85,7 @@ cmd-ctrl-a = 'workspace llm --auto-back-and-forth'
 cmd-ctrl-r = 'workspace notes --auto-back-and-forth'
 cmd-ctrl-z = 'workspace zoom --auto-back-and-forth'
 cmd-ctrl-i = 'workspace chat --auto-back-and-forth'
+cmd-ctrl-x = 'workspace daw --auto-back-and-forth'
 cmd-ctrl-c = 'workspace creds --auto-back-and-forth'
 cmd-ctrl-semicolon = 'workspace other --auto-back-and-forth'
 cmd-ctrl-2 = 'workspace other --auto-back-and-forth'
@@ -109,6 +110,12 @@ cmd-ctrl-shift-w = [
 cmd-ctrl-shift-b = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window blender',
+    'layout tiling',
+    'join-with up',
+]
+cmd-ctrl-shift-x = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window daw',
     'layout tiling',
     'join-with up',
 ]
@@ -470,6 +477,11 @@ run = 'move-node-to-workspace files'
 if.app-id = 'com.microsoft.Excel'
 check-further-callbacks = false
 run = 'move-node-to-workspace files'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.mobilelogic'
+check-further-callbacks = false
+run = 'move-node-to-workspace daw'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.finder'
