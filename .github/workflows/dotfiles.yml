@@ -20,17 +20,89 @@ jobs:
           store_path=$(nix build .#homeConfigurations.linux.config.home-files --no-link --print-out-paths --option sandbox false)
           echo "STORE_PATH=$store_path" >> "$GITHUB_ENV"
 
-      - name: "Stage dotfiles"
+      - name: "Stage portable dotfiles"
+        run: |
+          mkdir -p portable
+          copy_if_exists() {
+            src="$STORE_PATH/$1"
+            if [ -e "$src" ]; then
+              dest="portable/$1"
+              mkdir -p "$(dirname "$dest")"
+              cp -rL "$src" "$dest"
+            fi
+          }
+
+          # Shell
+          copy_if_exists .zshrc
+          copy_if_exists .bashrc
+          copy_if_exists .p10k.zsh
+          copy_if_exists .inputrc
+          copy_if_exists .psqlrc
+
+          # Git
+          copy_if_exists .gitconfig
+          copy_if_exists .config/git
+
+          # Claude Code
+          copy_if_exists .claude
+
+          # VSCode
+          copy_if_exists .config/Code
+
+          # Neovim
+          copy_if_exists .config/nvim
+
+          # Tmux
+          copy_if_exists .config/tmux
+          copy_if_exists .config/tmuxp
+
+          # Alacritty
+          copy_if_exists .config/alacritty
+
+          # Direnv
+          copy_if_exists .config/direnv
+
+          # Obsidian
+          copy_if_exists Documents/obsidian
+
+          # AI tools
+          copy_if_exists .config/aichat
+          copy_if_exists .config/ai
+          copy_if_exists .config/mcp
+          copy_if_exists .config/llm
+          copy_if_exists .config/streamdown
+          copy_if_exists .aider.conf.yml
+          copy_if_exists .aider.model.settings.yml
+          copy_if_exists .config/aider
+
+          # SSH
+          copy_if_exists .ssh/config
+
+          # Scripts
+          copy_if_exists .local/bin
+
+          echo "--- Portable dotfiles ---"
+          find portable -type f | sort
+
+      - name: "Upload portable dotfiles"
+        uses: actions/upload-artifact@v7
+        with:
+          name: dotfiles-portable
+          path: portable/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: true
+
+      - name: "Stage all dotfiles"
         run: |
           mkdir -p staging
           cp -rL "$STORE_PATH/." staging/
-          echo "--- Staged files ---"
-          find staging -type f | head -50
 
-      - name: "Upload dotfiles artifact"
+      - name: "Upload all dotfiles"
         uses: actions/upload-artifact@v7
         with:
-          name: dotfiles
+          name: dotfiles-all
           path: staging/
           include-hidden-files: true
           if-no-files-found: error
