@@ -17,7 +17,7 @@ jobs:
 
       - name: "Build home-manager config"
         run: |
-          store_path=$(nix build .#homeConfigurations.linux.activationPackage --no-link --print-out-paths)
+          store_path=$(nix build .#homeConfigurations.linux.activationPackage --no-link --print-out-paths --option sandbox false)
           echo "STORE_PATH=$store_path" >> "$GITHUB_ENV"
 
       - name: "Stage dotfiles"
