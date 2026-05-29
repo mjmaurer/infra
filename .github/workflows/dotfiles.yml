@@ -28,10 +28,11 @@ jobs:
           find staging -type f | head -50
 
       - name: "Upload dotfiles artifact"
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: dotfiles
           path: staging/
+          include-hidden-files: true
           if-no-files-found: error
           retention-days: 30
           overwrite: true
