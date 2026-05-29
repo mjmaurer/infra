@@ -22,7 +22,6 @@ in
     # Might also want to split some of these out into separate modules for headless / headless-minimal
     home.packages = with pkgs; [
       xwayland # X11 compatibility layer for Wayland
-      swaylock-effects # Screen locker for Sway with additional effects
       wl-clipboard # Command-line clipboard utilities for Wayland
       rofi # Application launcher and window switcher
       waybar # Highly customizable Wayland bar
@@ -118,6 +117,7 @@ in
         };
       };
 
+      swaylock.package = pkgs.swaylock-effects;
       swaylock.settings = {
         screenshots = true;
         clock = true;
@@ -164,7 +164,7 @@ in
           # Lock the screen with swaylock (force lock even if there are inhibitors)
           {
             timeout = 300; # seconds
-            command = "${pkgs.swaylock}/bin/swaylock -f";
+            command = "${pkgs.swaylock-effects}/bin/swaylock -f";
           }
           # After 10 minutes of inactivity:
           # Turn off all displays using DPMS
