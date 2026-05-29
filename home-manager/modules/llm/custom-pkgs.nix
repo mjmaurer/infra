@@ -16,7 +16,7 @@ let
 
       src = pkgs.fetchurl {
         url = "https://github.com/day50-dev/Streamdown/archive/refs/tags/v0.34.0.tar.gz";
-        sha256 = "sha256-+ow5FxuZuk7H9IA3cxW47GlozKomidsjMJVtlH12Ri4=";
+        sha256 = "sha256-En0995udl6xahhX2/ETuCle8APsiwVAcVu11zjWKDSE=";
       };
 
       nativeBuildInputs = with pythonPkg.pkgs; [
