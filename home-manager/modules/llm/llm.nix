@@ -90,10 +90,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    modules.commonShell.initExtraLast = lib.mkAfter ''
-      ${builtins.readFile ./llm_helpers.sh}
-    '';
-
     home.packages = [
 
       (pkgs.writeShellScriptBin "llm" ''
@@ -353,6 +349,9 @@ in
           };
       };
       commonShell = {
+        initExtraLast = lib.mkAfter ''
+          ${builtins.readFile ./llm_helpers.sh}
+        '';
         shellAliases = {
           asave = "llmsave";
           a = "llmcmd";
