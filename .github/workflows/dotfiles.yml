@@ -1,0 +1,35 @@
+name: "Build Dotfiles"
+
+on:
+  schedule:
+    - cron: "0 6 * * *" # Daily at 6am UTC
+  workflow_dispatch:
+
+jobs:
+  build-dotfiles:
+    runs-on: ubuntu-latest
+    name: "Build Dotfiles"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Provision Nix"
+        uses: ./.github/actions/runner
+
+      - name: "Build home-manager config"
+        run: |
+          store_path=$(nix build .#homeConfigurations.linux.activationPackage --no-link --print-out-paths)
+          echo "STORE_PATH=$store_path" >> "$GITHUB_ENV"
+
+      - name: "Stage dotfiles"
+        run: |
+          mkdir -p staging
+          cp -rL "$STORE_PATH/home-files/." staging/
+
+      - name: "Upload dotfiles artifact"
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotfiles
+          path: staging/
+          if-no-files-found: error
+          retention-days: 30
+          overwrite: true
