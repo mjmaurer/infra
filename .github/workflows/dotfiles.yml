@@ -15,15 +15,17 @@ jobs:
       - name: "Provision Nix"
         uses: ./.github/actions/runner
 
-      - name: "Build home-manager config"
+      - name: "Build home-manager files"
         run: |
-          store_path=$(nix build .#homeConfigurations.linux.activationPackage --no-link --print-out-paths --option sandbox false)
+          store_path=$(nix build .#homeConfigurations.linux.config.home-files --no-link --print-out-paths --option sandbox false)
           echo "STORE_PATH=$store_path" >> "$GITHUB_ENV"
 
       - name: "Stage dotfiles"
         run: |
           mkdir -p staging
-          cp -rL "$STORE_PATH/home-files/." staging/
+          cp -rL "$STORE_PATH/." staging/
+          echo "--- Staged files ---"
+          find staging -type f | head -50
 
       - name: "Upload dotfiles artifact"
         uses: actions/upload-artifact@v4
