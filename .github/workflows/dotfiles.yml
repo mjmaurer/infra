@@ -9,6 +9,8 @@ jobs:
   build-dotfiles:
     runs-on: ubuntu-latest
     name: "Build Dotfiles"
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -93,6 +95,17 @@ jobs:
           if-no-files-found: error
           retention-days: 30
           overwrite: true
+
+      - name: "Publish portable dotfiles to GitHub Release"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cd portable && zip -r ../dotfiles-portable.zip . && cd ..
+          gh release create portable-dotfiles \
+            --title "Portable Dotfiles" \
+            --notes "Auto-updated portable dotfiles." \
+            --target "${{ github.sha }}" 2>/dev/null || true
+          gh release upload portable-dotfiles dotfiles-portable.zip --clobber
 
       - name: "Stage all dotfiles"
         run: |

@@ -176,6 +176,23 @@ nix run home-manager/master -- init --switch
 
 You'd need to run `nix flake update` to update the standalone flake.
 
+## Install: Portable Dotfiles (No Nix Required)
+
+Pre-built dotfiles are published daily as a [GitHub Release](https://github.com/mjmaurer/infra/releases/tag/portable-dotfiles). The installer script downloads them and optionally installs specific categories to your home directory.
+
+```sh
+# Download only (caches to ~/.config/.mjmaurer-portable-dotfiles/)
+curl -fsSL https://raw.githubusercontent.com/mjmaurer/infra/main/scripts/install-portable-dotfiles.sh | bash
+
+# Minimal install (shell, inputrc, neovim, tmux, direnv, obsidian, scripts)
+curl -fsSL https://raw.githubusercontent.com/mjmaurer/infra/main/scripts/install-portable-dotfiles.sh | bash -s -- --install-minimal
+
+# Specific categories
+curl -fsSL https://raw.githubusercontent.com/mjmaurer/infra/main/scripts/install-portable-dotfiles.sh | bash -s -- --install-shell --install-git --install-neovim
+```
+
+Run with `--help` for all flags. Git and SSH install as drop-in (include directives) by default.
+
 # Implementation Notes
 
 ## Updating
