@@ -18,6 +18,7 @@ jobs:
       - name: "Compile karabiner.edn to karabiner.json"
         run: |
           mkdir -p ~/.config/karabiner
+          echo '{"profiles":[{"name":"Default","selected":true,"complex_modifications":{"rules":[]}}]}' > ~/.config/karabiner/karabiner.json
           cp system/modules/kanata/karabiner.edn ~/.config/karabiner.edn
           goku
 
