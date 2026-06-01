@@ -158,34 +158,8 @@ download_and_extract() {
     echo "Portable dotfiles cached at: $PORTABLE_DIR"
 }
 
-# Record diff for a single file. Args: $1=source (new), $2=target (existing location)
-record_diff() {
-    local src="$1" target="$2"
-    if [ ! -f "$target" ]; then
-        INSTALLED_FILES="${INSTALLED_FILES}  [new] ${target}\n"
-        return
-    fi
-    local d
-    d=$(diff -u "$target" "$src" 2>/dev/null || true)
-    if [ -n "$d" ]; then
-        INSTALLED_FILES="${INSTALLED_FILES}  [changed] ${target}\n"
-        DIFF_CONTENT="${DIFF_CONTENT}--- ${target}\n+++ ${src}\n${d}\n\n"
-    else
-        INSTALLED_FILES="${INSTALLED_FILES}  [unchanged] ${target}\n"
-    fi
-}
-
-# Record diffs for all files in a directory. Args: $1=source dir, $2=target dir
-record_diffs_dir() {
-    local src_dir="$1" target_dir="$2"
-    [ ! -d "$src_dir" ] && return
-    while IFS= read -r src_file; do
-        local rel="${src_file#"$src_dir"/}"
-        record_diff "$src_file" "$target_dir/$rel"
-    done < <(find "$src_dir" -type f | sort)
-}
-
 # Install a single file. Args: $1=relative path, $2=optional target override
+# Skips unchanged files, backs up changed files before overwriting.
 install_file() {
     local rel_path="$1"
     local target="${2:-$HOME/$rel_path}"
@@ -194,12 +168,26 @@ install_file() {
         echo "  [skip] $rel_path (not in portable dotfiles)"
         return
     fi
-    record_diff "$src" "$target"
-    mkdir -p "$(dirname "$target")"
-    cp -f "$src" "$target"
+    if [ ! -f "$target" ]; then
+        INSTALLED_FILES="${INSTALLED_FILES}  [new] ${target}\n"
+        mkdir -p "$(dirname "$target")"
+        cp -f "$src" "$target"
+    elif diff -q "$src" "$target" &>/dev/null; then
+        return
+    else
+        local backup="${target}.backup-${TODAY}"
+        cp -f "$target" "$backup"
+        local d
+        d=$(diff -u "$target" "$src" 2>/dev/null || true)
+        DIFF_CONTENT="${DIFF_CONTENT}--- ${target}\n+++ ${src}\n${d}\n\n"
+        INSTALLED_FILES="${INSTALLED_FILES}  [changed] ${target} (backup: ${backup})\n"
+        mkdir -p "$(dirname "$target")"
+        cp -f "$src" "$target"
+    fi
 }
 
 # Install a directory. Args: $1=relative path, $2=optional target override
+# Processes each file individually: skips unchanged, backs up changed.
 install_dir() {
     local rel_path="$1"
     local target="${2:-$HOME/$rel_path}"
@@ -208,9 +196,26 @@ install_dir() {
         echo "  [skip] $rel_path/ (not in portable dotfiles)"
         return
     fi
-    record_diffs_dir "$src" "$target"
-    mkdir -p "$target"
-    cp -a "$src/." "$target/"
+    while IFS= read -r src_file; do
+        local rel="${src_file#"$src"/}"
+        local target_file="$target/$rel"
+        if [ ! -f "$target_file" ]; then
+            INSTALLED_FILES="${INSTALLED_FILES}  [new] ${target_file}\n"
+            mkdir -p "$(dirname "$target_file")"
+            cp -f "$src_file" "$target_file"
+        elif diff -q "$src_file" "$target_file" &>/dev/null; then
+            continue
+        else
+            local backup="${target_file}.backup-${TODAY}"
+            cp -f "$target_file" "$backup"
+            local d
+            d=$(diff -u "$target_file" "$src_file" 2>/dev/null || true)
+            DIFF_CONTENT="${DIFF_CONTENT}--- ${target_file}\n+++ ${src_file}\n${d}\n\n"
+            INSTALLED_FILES="${INSTALLED_FILES}  [changed] ${target_file} (backup: ${backup})\n"
+            mkdir -p "$(dirname "$target_file")"
+            cp -f "$src_file" "$target_file"
+        fi
+    done < <(find "$src" -type f | sort)
 }
 
 # --- Drop-in handlers ---
@@ -220,12 +225,14 @@ install_git_dropin() {
     local gitconfig="$HOME/.gitconfig"
 
     if [ -f "$include_path" ]; then
-        record_diff "$include_path" "$gitconfig"
         if [ -f "$gitconfig" ] && grep -qF "$include_path" "$gitconfig" 2>/dev/null; then
-            INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Include already present in ${gitconfig}\n"
+            # Include already present — nothing to do
+            :
         elif [ -f "$gitconfig" ]; then
+            local backup="${gitconfig}.backup-${TODAY}"
+            cp -f "$gitconfig" "$backup"
             printf '\n[include]\n    path = %s\n' "$include_path" >> "$gitconfig"
-            INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Appended include to ${gitconfig}\n"
+            INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Appended include to ${gitconfig} (backup: ${backup})\n"
         else
             printf '[include]\n    path = %s\n' "$include_path" > "$gitconfig"
             INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Created ${gitconfig} with include\n"
@@ -248,23 +255,24 @@ install_ssh_dropin() {
         return
     fi
 
-    record_diff "$include_path" "$ssh_config"
-
     if [ ! -d "$ssh_dir" ]; then
         mkdir -p "$ssh_dir"
         chmod 700 "$ssh_dir"
     fi
 
     if [ -f "$ssh_config" ] && grep -qF "$include_path" "$ssh_config" 2>/dev/null; then
-        INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Include already present in ${ssh_config}\n"
+        # Include already present — nothing to do
+        :
     elif [ -f "$ssh_config" ]; then
+        local backup="${ssh_config}.backup-${TODAY}"
+        cp -f "$ssh_config" "$backup"
         local tmp
         tmp=$(mktemp)
         printf 'Include %s\n\n' "$include_path" > "$tmp"
         cat "$ssh_config" >> "$tmp"
         mv "$tmp" "$ssh_config"
         chmod 600 "$ssh_config"
-        INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Prepended Include to ${ssh_config}\n"
+        INSTALLED_FILES="${INSTALLED_FILES}  [drop-in] Prepended Include to ${ssh_config} (backup: ${backup})\n"
     else
         printf 'Include %s\n' "$include_path" > "$ssh_config"
         chmod 600 "$ssh_config"
