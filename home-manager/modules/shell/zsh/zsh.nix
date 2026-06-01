@@ -107,6 +107,11 @@ in
 
       defaultKeymap = "viins";
       initContent = lib.mkMerge [
+        # Source local pre-init config (not managed by Nix)
+        (lib.mkOrder 50 ''
+          [[ -f "$HOME/.zsh/local.pre.zsh" ]] && source "$HOME/.zsh/local.pre.zsh"
+        '')
+
         (lib.mkBefore ''
           # Show hidden files without needing to type .
           setopt globdots
@@ -206,6 +211,11 @@ in
         (lib.mkOrder 1200 ''
           [[ -f "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh" ]] && \
             source "$HOME/.zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+        '')
+
+        # Source local post-init config (not managed by Nix)
+        (lib.mkOrder 1500 ''
+          [[ -f "$HOME/.zsh/local.post.zsh" ]] && source "$HOME/.zsh/local.post.zsh"
         '')
       ];
       # profileExtra = builtins.readFile ./.zprofile;
