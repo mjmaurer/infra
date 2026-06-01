@@ -28,7 +28,12 @@ ANY_INSTALL=0
 
 # --- Cleanup ---
 CLEANUP_DIR=""
-cleanup() { [ -n "$CLEANUP_DIR" ] && rm -rf "$CLEANUP_DIR"; }
+cleanup() {
+    if [ -n "$CLEANUP_DIR" ] && [ -d "$CLEANUP_DIR" ]; then
+        chmod -R u+w "$CLEANUP_DIR" 2>/dev/null || true
+        rm -rf "$CLEANUP_DIR"
+    fi
+}
 trap cleanup EXIT
 
 # --- Diff state ---
@@ -118,20 +123,29 @@ check_deps() {
             missing=1
         fi
     done
-    [ "$missing" -eq 1 ] && exit 1
+    if [ "$missing" -eq 1 ]; then exit 1; fi
 }
 
 download_and_extract() {
     CLEANUP_DIR=$(mktemp -d)
 
     echo "Downloading portable dotfiles..."
-    curl -fsSL "$DOWNLOAD_URL" -o "$CLEANUP_DIR/dotfiles-portable.zip"
+    if ! curl -fsSL "$DOWNLOAD_URL" -o "$CLEANUP_DIR/dotfiles-portable.zip" </dev/null 2>&1; then
+        echo "Error: Failed to download portable dotfiles from:" >&2
+        echo "  $DOWNLOAD_URL" >&2
+        echo "Make sure the release exists at https://github.com/mjmaurer/infra/releases/tag/portable-dotfiles" >&2
+        exit 1
+    fi
 
     echo "Extracting..."
     unzip -qo "$CLEANUP_DIR/dotfiles-portable.zip" -d "$CLEANUP_DIR/portable"
+    chmod -R u+w "$CLEANUP_DIR/portable"
 
     # Always overwrite the portable cache
-    rm -rf "$PORTABLE_DIR"
+    if [ -d "$PORTABLE_DIR" ]; then
+        chmod -R u+w "$PORTABLE_DIR" 2>/dev/null || true
+        rm -rf "$PORTABLE_DIR"
+    fi
     mkdir -p "$PORTABLE_DIR"
     cp -a "$CLEANUP_DIR/portable/." "$PORTABLE_DIR/"
 
@@ -352,20 +366,20 @@ main() {
 
     echo ""
 
-    [ "$INSTALL_SHELL" -eq 1 ]     && do_install_shell
-    [ "$INSTALL_INPUTRC" -eq 1 ]   && do_install_inputrc
-    [ "$INSTALL_PSQLRC" -eq 1 ]    && do_install_psqlrc
-    [ "$INSTALL_GIT" -eq 1 ]       && do_install_git
-    [ "$INSTALL_CLAUDE" -eq 1 ]    && do_install_claude
-    [ "$INSTALL_VSCODE" -eq 1 ]    && do_install_vscode
-    [ "$INSTALL_NEOVIM" -eq 1 ]    && do_install_neovim
-    [ "$INSTALL_TMUX" -eq 1 ]      && do_install_tmux
-    [ "$INSTALL_ALACRITTY" -eq 1 ] && do_install_alacritty
-    [ "$INSTALL_DIRENV" -eq 1 ]    && do_install_direnv
-    [ "$INSTALL_OBSIDIAN" -eq 1 ]  && do_install_obsidian
-    [ "$INSTALL_AI_TOOLS" -eq 1 ]  && do_install_ai_tools
-    [ "$INSTALL_SSH" -eq 1 ]       && do_install_ssh
-    [ "$INSTALL_SCRIPTS" -eq 1 ]   && do_install_scripts
+    [ "$INSTALL_SHELL" -eq 1 ]     && do_install_shell     || true
+    [ "$INSTALL_INPUTRC" -eq 1 ]   && do_install_inputrc   || true
+    [ "$INSTALL_PSQLRC" -eq 1 ]    && do_install_psqlrc    || true
+    [ "$INSTALL_GIT" -eq 1 ]       && do_install_git       || true
+    [ "$INSTALL_CLAUDE" -eq 1 ]    && do_install_claude    || true
+    [ "$INSTALL_VSCODE" -eq 1 ]    && do_install_vscode    || true
+    [ "$INSTALL_NEOVIM" -eq 1 ]    && do_install_neovim    || true
+    [ "$INSTALL_TMUX" -eq 1 ]      && do_install_tmux      || true
+    [ "$INSTALL_ALACRITTY" -eq 1 ] && do_install_alacritty || true
+    [ "$INSTALL_DIRENV" -eq 1 ]    && do_install_direnv    || true
+    [ "$INSTALL_OBSIDIAN" -eq 1 ]  && do_install_obsidian  || true
+    [ "$INSTALL_AI_TOOLS" -eq 1 ]  && do_install_ai_tools  || true
+    [ "$INSTALL_SSH" -eq 1 ]       && do_install_ssh       || true
+    [ "$INSTALL_SCRIPTS" -eq 1 ]   && do_install_scripts   || true
 
     # Print summary
     echo ""
