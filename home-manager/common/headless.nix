@@ -123,7 +123,7 @@
       package = pkgs-latest.direnv;
       nix-direnv.enable = true;
       enableBashIntegration = true;
-      enableZshIntegration = true;
+      enableZshIntegration = false; # Portable: handled manually in zsh.nix initContent
       config = builtins.fromTOML ''
         [global]
         warn_timeout = "-1s"
@@ -141,13 +141,12 @@
     fzf = {
       enable = true;
       enableBashIntegration = true;
-      # I think this conflicts with zsh fzf-tab:
-      # enableZshIntegration = true;
+      enableZshIntegration = false; # Portable: handled manually in zsh.nix initContent
     };
     dircolors = {
       enable = true;
       enableBashIntegration = true;
-      enableZshIntegration = true;
+      enableZshIntegration = false; # Portable: handled manually in zsh.nix initContent
     };
   };
 }

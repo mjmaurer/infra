@@ -123,39 +123,68 @@ in
         # Toggle expanded display on startup
         text = "\\x";
       };
+      # Shell scripts installed to a portable path so the rendered .zshrc/.bashrc
+      # doesn't depend on /nix/store paths
+      ".zsh/shell-scripts/defaults.sh".source = ./defaults.sh;
+      ".zsh/shell-scripts/fzf" = {
+        source = ./fzf;
+        recursive = true;
+      };
+      ".zsh/shell-scripts/misc" = {
+        source = ./misc;
+        recursive = true;
+      };
+      ".zsh/shell-scripts/langs" = {
+        source = ./langs;
+        recursive = true;
+      };
+      ".zsh/shell-scripts/nix" = {
+        source = ./nix;
+        recursive = true;
+      };
     };
     modules.commonShell = {
       initExtraFirst = ''
         # Load home manager session variables (XDG_CONFIG_HOME, etc.)
-        # The unset is a hack to source the file multiple times as needed
-        unset __HM_SESS_VARS_SOURCED ; . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        if [[ -f "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh" ]]; then
+          unset __HM_SESS_VARS_SOURCED
+          . "$HOME/.nix-profile/etc/profile.d/hm-session-vars.sh"
+        fi
 
         ${lib.optionalString (mylib.sops.hasSopsTemplate "shell.env" osConfig) ''
           # --------------------------------- SOPS Secrets --------------------------------
           source ${mylib.sops.sopsTemplatePath "shell.env" osConfig}
         ''}
 
-        source ${./defaults.sh}
+        source "$HOME/.zsh/shell-scripts/defaults.sh"
 
         # --------------------------------- FZF --------------------------------
-        for file in ${./fzf}/*.sh; do
-          source $file
-        done
+        if [[ -d "$HOME/.zsh/shell-scripts/fzf" ]]; then
+          for file in "$HOME/.zsh/shell-scripts/fzf"/*.sh; do
+            source "$file"
+          done
+        fi
 
         # --------------------------------- Misc --------------------------------
-        for file in ${./misc}/*.sh; do
-          source $file
-        done
+        if [[ -d "$HOME/.zsh/shell-scripts/misc" ]]; then
+          for file in "$HOME/.zsh/shell-scripts/misc"/*.sh; do
+            source "$file"
+          done
+        fi
 
         # --------------------------------- Language-Specific --------------------------------
-        for file in ${./langs}/*.sh; do
-          source $file
-        done
+        if [[ -d "$HOME/.zsh/shell-scripts/langs" ]]; then
+          for file in "$HOME/.zsh/shell-scripts/langs"/*.sh; do
+            source "$file"
+          done
+        fi
 
         # --------------------------------- Nix --------------------------------
-        for file in ${./nix}/*.sh; do
-          source $file
-        done
+        if [[ -d "$HOME/.zsh/shell-scripts/nix" ]]; then
+          for file in "$HOME/.zsh/shell-scripts/nix"/*.sh; do
+            source "$file"
+          done
+        fi
 
 
         ${lib.optionalString (cfg.enableShellTmuxTimeout) ''

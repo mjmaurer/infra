@@ -52,7 +52,7 @@ All dotfiles are always cached to ~/.config/.mjmaurer-portable-dotfiles/.
 
 Install flags:
   --install-minimal     Install: shell, inputrc, neovim, tmux, direnv, obsidian, aerospace, scripts
-  --install-shell       Install .zshrc, .bashrc, .p10k.zsh
+  --install-shell       Install .zshrc, .bashrc, .p10k.zsh, shell scripts, plugins, oh-my-zsh
   --install-inputrc     Install .inputrc
   --install-psqlrc      Install .psqlrc
   --install-git         Install .gitconfig (drop-in) and .config/git/
@@ -285,11 +285,51 @@ install_ssh_dropin() {
 
 # --- Category installers ---
 
+install_oh_my_zsh() {
+    if [ -d "$HOME/.oh-my-zsh" ]; then
+        echo "  [skip] oh-my-zsh (already installed)"
+        return
+    fi
+    echo "  Installing oh-my-zsh..."
+    if ! sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" \
+        --unattended --keep-zshrc 2>&1; then
+        echo "  [warn] Failed to install oh-my-zsh" >&2
+    fi
+}
+
+install_zsh_plugins() {
+    local plugins_dir="$HOME/.zsh/plugins"
+    mkdir -p "$plugins_dir"
+
+    fetch_plugin() {
+        local name="$1" repo="$2" ref="${3:-master}"
+        if [ -d "$plugins_dir/$name" ] && [ -n "$(ls -A "$plugins_dir/$name" 2>/dev/null)" ]; then
+            echo "  [skip] $name plugin (already exists)"
+            return
+        fi
+        echo "  Fetching $name plugin..."
+        mkdir -p "$plugins_dir/$name"
+        if ! curl -fsSL "https://github.com/$repo/archive/refs/heads/${ref}.tar.gz" | \
+            tar xz --strip-components=1 -C "$plugins_dir/$name"; then
+            echo "  [warn] Failed to fetch $name plugin" >&2
+        fi
+    }
+
+    fetch_plugin "zsh-powerlevel10k" "romkatv/powerlevel10k"
+    fetch_plugin "fzf-tab" "Aloxaf/fzf-tab"
+    fetch_plugin "zsh-autosuggestions" "zsh-users/zsh-autosuggestions"
+    fetch_plugin "zsh-syntax-highlighting" "zsh-users/zsh-syntax-highlighting"
+}
+
 do_install_shell() {
     echo "Installing shell dotfiles..."
     install_file ".zshrc"
     install_file ".bashrc"
     install_file ".p10k.zsh"
+    install_dir ".zsh/shell-scripts"
+    install_dir ".zsh/plugins"
+    install_oh_my_zsh
+    install_zsh_plugins
 }
 
 do_install_inputrc() {

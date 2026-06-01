@@ -16,7 +16,7 @@ in
     };
     programs.nix-index = {
       enable = true;
-      enableZshIntegration = true;
+      enableZshIntegration = false; # Portable: handled manually in zsh.nix initContent
     };
   };
 }

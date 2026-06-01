@@ -138,7 +138,7 @@ in
             defaultCacheTtlSsh = cacheTtl;
             maxCacheTtl = maxCacheTtl;
             maxCacheTtlSsh = maxCacheTtl;
-            enableZshIntegration = true;
+            enableZshIntegration = false; # Portable: handled manually in zsh.nix initContent
             # Prefer gpg-agent over ssh-agent
             enableSshSupport = true;
             # Smartcard support. This talks to pcscd (enabled in system crypt modules):

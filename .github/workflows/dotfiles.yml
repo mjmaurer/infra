@@ -65,6 +65,10 @@ jobs:
           copy_if_exists .inputrc
           copy_if_exists .psqlrc
 
+          # Shell scripts and plugins (for portable zshrc)
+          copy_if_exists .zsh/shell-scripts
+          copy_if_exists .zsh/plugins
+
           # Git
           copy_if_exists .gitconfig
           copy_if_exists .config/git
