@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   pkgs-latest,
@@ -64,6 +65,11 @@
     # This might be set by the home-manager module for Darwin / NixOS
     username = lib.mkDefault username;
     file = {
+      # iTerm2 color profile matching the Alacritty/terminal color scheme
+      ".config/iterm2/gruvbox-material-light-hard.itermcolors".text = import ../data/iterm2-colors.nix {
+        inherit lib;
+        palette = config.colorScheme.palette;
+      };
       # Used for various REPLs (python, psql, etc.)
       ".inputrc".text = ''
         # Show completion options immediately without requiring a second tab

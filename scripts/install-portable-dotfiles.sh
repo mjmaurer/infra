@@ -328,8 +328,20 @@ do_install_shell() {
     install_file ".p10k.zsh"
     install_dir ".zsh/shell-scripts"
     install_dir ".zsh/plugins"
+    install_dir ".config/iterm2"
     install_oh_my_zsh
     install_zsh_plugins
+
+    # Print post-install notes
+    echo ""
+    echo "  NOTE: For correct prompt rendering:"
+    echo "    1. Install font: brew install --cask font-meslo-lg-nerd-font"
+    echo "    2. Set terminal font to 'MesloLGS NF'"
+    if [ -f "$HOME/.config/iterm2/gruvbox-material-light-hard.itermcolors" ]; then
+        echo "    3. Import iTerm2 color profile:"
+        echo "       open ~/.config/iterm2/gruvbox-material-light-hard.itermcolors"
+        echo "       (Then select it in Preferences > Profiles > Colors > Color Presets)"
+    fi
 }
 
 do_install_inputrc() {
