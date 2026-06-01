@@ -83,6 +83,9 @@ jobs:
           # Scripts
           copy_if_exists .local/bin
 
+          # Aerospace (system-level config, copy from repo directly)
+          cp system/modules/aerospace/aerospace.toml portable/.aerospace.toml
+
           echo "--- Portable dotfiles ---"
           find portable -type f | sort
 

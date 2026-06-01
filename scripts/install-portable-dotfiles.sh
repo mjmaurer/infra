@@ -24,6 +24,7 @@ INSTALL_OBSIDIAN=0
 INSTALL_AI_TOOLS=0
 INSTALL_SSH=0
 INSTALL_SCRIPTS=0
+INSTALL_AEROSPACE=0
 ANY_INSTALL=0
 
 # --- Cleanup ---
@@ -48,7 +49,7 @@ Downloads portable dotfiles and optionally installs them to your home directory.
 All dotfiles are always cached to ~/.config/.mjmaurer-portable-dotfiles/.
 
 Install flags:
-  --install-minimal     Install: shell, inputrc, neovim, tmux, direnv, obsidian, scripts
+  --install-minimal     Install: shell, inputrc, neovim, tmux, direnv, obsidian, aerospace, scripts
   --install-shell       Install .zshrc, .bashrc, .p10k.zsh
   --install-inputrc     Install .inputrc
   --install-psqlrc      Install .psqlrc
@@ -63,6 +64,7 @@ Install flags:
   --install-ai-tools    Install AI tool configs (aichat, mcp, llm, aider, etc.)
   --install-ssh         Install .ssh/config (drop-in)
   --install-scripts     Install .local/bin/
+  --install-aerospace   Install .aerospace.toml
 
 Options:
   --obsidian-vault PATH   Set obsidian vault install path (default: ~/Documents/obsidian)
@@ -83,7 +85,7 @@ parse_args() {
             --install-minimal)
                 INSTALL_SHELL=1; INSTALL_INPUTRC=1; INSTALL_NEOVIM=1
                 INSTALL_TMUX=1; INSTALL_DIRENV=1; INSTALL_OBSIDIAN=1
-                INSTALL_SCRIPTS=1; ANY_INSTALL=1
+                INSTALL_AEROSPACE=1; INSTALL_SCRIPTS=1; ANY_INSTALL=1
                 ;;
             --install-shell)     INSTALL_SHELL=1; ANY_INSTALL=1 ;;
             --install-inputrc)   INSTALL_INPUTRC=1; ANY_INSTALL=1 ;;
@@ -99,6 +101,7 @@ parse_args() {
             --install-ai-tools)  INSTALL_AI_TOOLS=1; ANY_INSTALL=1 ;;
             --install-ssh)       INSTALL_SSH=1; ANY_INSTALL=1 ;;
             --install-scripts)   INSTALL_SCRIPTS=1; ANY_INSTALL=1 ;;
+            --install-aerospace) INSTALL_AEROSPACE=1; ANY_INSTALL=1 ;;
             --obsidian-vault)
                 shift
                 OBSIDIAN_VAULT="${1:?--obsidian-vault requires a path argument}"
@@ -343,6 +346,11 @@ do_install_ssh() {
     install_ssh_dropin
 }
 
+do_install_aerospace() {
+    echo "Installing Aerospace config..."
+    install_file ".aerospace.toml"
+}
+
 do_install_scripts() {
     echo "Installing scripts..."
     install_dir ".local/bin"
@@ -379,6 +387,7 @@ main() {
     [ "$INSTALL_OBSIDIAN" -eq 1 ]  && do_install_obsidian  || true
     [ "$INSTALL_AI_TOOLS" -eq 1 ]  && do_install_ai_tools  || true
     [ "$INSTALL_SSH" -eq 1 ]       && do_install_ssh       || true
+    [ "$INSTALL_AEROSPACE" -eq 1 ] && do_install_aerospace || true
     [ "$INSTALL_SCRIPTS" -eq 1 ]   && do_install_scripts   || true
 
     # Print summary
