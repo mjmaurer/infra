@@ -65,9 +65,9 @@ jobs:
           copy_if_exists .inputrc
           copy_if_exists .psqlrc
 
-          # Shell scripts and plugins (for portable zshrc)
+          # Shell scripts for portable zshrc (plugins are fetched by the installer
+          # from GitHub since nix-built plugins have hardcoded nix store paths)
           copy_if_exists .zsh/shell-scripts
-          copy_if_exists .zsh/plugins
 
           # Terminal color profile (for iTerm2 etc.)
           copy_if_exists .config/iterm2

@@ -327,7 +327,6 @@ do_install_shell() {
     install_file ".bashrc"
     install_file ".p10k.zsh"
     install_dir ".zsh/shell-scripts"
-    install_dir ".zsh/plugins"
     install_dir ".config/iterm2"
     install_oh_my_zsh
     install_zsh_plugins
