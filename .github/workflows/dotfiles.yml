@@ -6,7 +6,30 @@ on:
   workflow_dispatch:
 
 jobs:
+  build-karabiner:
+    runs-on: macos-latest
+    name: "Build Karabiner Config"
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Install Goku"
+        run: brew install yqrashawn/goku/goku
+
+      - name: "Compile karabiner.edn to karabiner.json"
+        run: |
+          mkdir -p ~/.config/karabiner
+          cp system/modules/kanata/karabiner.edn ~/.config/karabiner.edn
+          goku
+
+      - name: "Upload karabiner.json"
+        uses: actions/upload-artifact@v7
+        with:
+          name: karabiner-json
+          path: ~/.config/karabiner/karabiner.json
+          if-no-files-found: error
+
   build-dotfiles:
+    needs: build-karabiner
     runs-on: ubuntu-latest
     name: "Build Dotfiles"
     permissions:
@@ -88,6 +111,12 @@ jobs:
 
           echo "--- Portable dotfiles ---"
           find portable -type f | sort
+
+      - name: "Download karabiner.json"
+        uses: actions/download-artifact@v4
+        with:
+          name: karabiner-json
+          path: portable/.config/karabiner/
 
       - name: "Upload portable dotfiles"
         uses: actions/upload-artifact@v7

@@ -288,8 +288,7 @@
    [{:type :basic
      :from {:key_code :slash
             :modifiers {:optional [:any]}}
+     :to [{:key_code :right_command}]
      :to_if_alone [{:key_code :slash}]
-     :to_if_held_down [{:key_code :right_command}]
-     :parameters {:basic.to_if_held_down_threshold_milliseconds 250
-                  :basic.to_if_alone_timeout_milliseconds 250}}]}
+     :parameters {:basic.to_if_alone_timeout_milliseconds 200}}]}
  ]}

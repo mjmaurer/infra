@@ -25,6 +25,7 @@ INSTALL_AI_TOOLS=0
 INSTALL_SSH=0
 INSTALL_SCRIPTS=0
 INSTALL_AEROSPACE=0
+INSTALL_KARABINER=0
 ANY_INSTALL=0
 
 # --- Cleanup ---
@@ -65,6 +66,7 @@ Install flags:
   --install-ssh         Install .ssh/config (drop-in)
   --install-scripts     Install .local/bin/
   --install-aerospace   Install .aerospace.toml
+  --install-karabiner   Install .config/karabiner/karabiner.json
 
 Options:
   --obsidian-vault PATH   Set obsidian vault install path (default: ~/Documents/obsidian)
@@ -85,7 +87,7 @@ parse_args() {
             --install-minimal)
                 INSTALL_SHELL=1; INSTALL_INPUTRC=1; INSTALL_NEOVIM=1
                 INSTALL_TMUX=1; INSTALL_DIRENV=1; INSTALL_OBSIDIAN=1
-                INSTALL_AEROSPACE=1; INSTALL_SCRIPTS=1; ANY_INSTALL=1
+                INSTALL_AEROSPACE=1; INSTALL_SCRIPTS=1; INSTALL_KARABINER=1; ANY_INSTALL=1
                 ;;
             --install-shell)     INSTALL_SHELL=1; ANY_INSTALL=1 ;;
             --install-inputrc)   INSTALL_INPUTRC=1; ANY_INSTALL=1 ;;
@@ -102,6 +104,7 @@ parse_args() {
             --install-ssh)       INSTALL_SSH=1; ANY_INSTALL=1 ;;
             --install-scripts)   INSTALL_SCRIPTS=1; ANY_INSTALL=1 ;;
             --install-aerospace) INSTALL_AEROSPACE=1; ANY_INSTALL=1 ;;
+            --install-karabiner) INSTALL_KARABINER=1; ANY_INSTALL=1 ;;
             --obsidian-vault)
                 shift
                 OBSIDIAN_VAULT="${1:?--obsidian-vault requires a path argument}"
@@ -351,6 +354,11 @@ do_install_aerospace() {
     install_file ".aerospace.toml"
 }
 
+do_install_karabiner() {
+    echo "Installing Karabiner config..."
+    install_dir ".config/karabiner"
+}
+
 do_install_scripts() {
     echo "Installing scripts..."
     install_dir ".local/bin"
@@ -388,6 +396,7 @@ main() {
     [ "$INSTALL_AI_TOOLS" -eq 1 ]  && do_install_ai_tools  || true
     [ "$INSTALL_SSH" -eq 1 ]       && do_install_ssh       || true
     [ "$INSTALL_AEROSPACE" -eq 1 ] && do_install_aerospace || true
+    [ "$INSTALL_KARABINER" -eq 1 ] && do_install_karabiner || true
     [ "$INSTALL_SCRIPTS" -eq 1 ]   && do_install_scripts   || true
 
     # Print summary
