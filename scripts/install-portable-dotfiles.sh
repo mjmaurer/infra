@@ -16,6 +16,7 @@ INSTALL_PSQLRC=0
 INSTALL_GIT=0
 INSTALL_CLAUDE=0
 INSTALL_VSCODE=0
+INSTALL_INTELLIJ=0
 INSTALL_NEOVIM=0
 INSTALL_TMUX=0
 INSTALL_ALACRITTY=0
@@ -57,6 +58,7 @@ Install flags:
   --install-git         Install .gitconfig (drop-in) and .config/git/
   --install-claude      Install .claude/
   --install-vscode      Install .config/Code/
+  --install-intellij    Install .ideavimrc
   --install-neovim      Install .config/nvim/
   --install-tmux        Install .config/tmux/ and .config/tmuxp/
   --install-alacritty   Install .config/alacritty/
@@ -86,7 +88,7 @@ parse_args() {
         case "$1" in
             --install-minimal)
                 INSTALL_SHELL=1; INSTALL_INPUTRC=1; INSTALL_NEOVIM=1
-                INSTALL_TMUX=1; INSTALL_DIRENV=1; INSTALL_OBSIDIAN=1
+                INSTALL_INTELLIJ=1; INSTALL_TMUX=1; INSTALL_DIRENV=1; INSTALL_OBSIDIAN=1
                 INSTALL_AEROSPACE=1; INSTALL_SCRIPTS=1; INSTALL_KARABINER=1; ANY_INSTALL=1
                 ;;
             --install-shell)     INSTALL_SHELL=1; ANY_INSTALL=1 ;;
@@ -95,6 +97,7 @@ parse_args() {
             --install-git)       INSTALL_GIT=1; ANY_INSTALL=1 ;;
             --install-claude)    INSTALL_CLAUDE=1; ANY_INSTALL=1 ;;
             --install-vscode)    INSTALL_VSCODE=1; ANY_INSTALL=1 ;;
+            --install-intellij)  INSTALL_INTELLIJ=1; ANY_INSTALL=1 ;;
             --install-neovim)    INSTALL_NEOVIM=1; ANY_INSTALL=1 ;;
             --install-tmux)      INSTALL_TMUX=1; ANY_INSTALL=1 ;;
             --install-alacritty) INSTALL_ALACRITTY=1; ANY_INSTALL=1 ;;
@@ -314,6 +317,11 @@ do_install_vscode() {
     install_dir ".config/Code"
 }
 
+do_install_intellij() {
+    echo "Installing IntelliJ (IdeaVim) config..."
+    install_file ".ideavimrc"
+}
+
 do_install_neovim() {
     echo "Installing Neovim config..."
     install_dir ".config/nvim"
@@ -396,6 +404,7 @@ main() {
     [ "$INSTALL_GIT" -eq 1 ]       && do_install_git       || true
     [ "$INSTALL_CLAUDE" -eq 1 ]    && do_install_claude    || true
     [ "$INSTALL_VSCODE" -eq 1 ]    && do_install_vscode    || true
+    [ "$INSTALL_INTELLIJ" -eq 1 ]  && do_install_intellij  || true
     [ "$INSTALL_NEOVIM" -eq 1 ]    && do_install_neovim    || true
     [ "$INSTALL_TMUX" -eq 1 ]      && do_install_tmux      || true
     [ "$INSTALL_ALACRITTY" -eq 1 ] && do_install_alacritty || true

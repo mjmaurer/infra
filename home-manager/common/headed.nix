@@ -10,6 +10,7 @@
     ./headed-minimal.nix
 
     ../modules/vscode
+    ../modules/intellij
 
     ../modules/ente-auth/ente-auth.nix
     ../modules/continuedev/continuedev.nix
@@ -19,6 +20,7 @@
 
   # When adding here, consider if these should be disabled for some OS.
   modules = {
+    intellij.enable = lib.mkDefault true;
     repomix.enable = lib.mkDefault true;
     continuedev = {
       enable = lib.mkDefault true;

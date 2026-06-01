@@ -75,6 +75,9 @@ jobs:
           # VSCode
           copy_if_exists .config/Code
 
+          # IntelliJ (IdeaVim)
+          copy_if_exists .ideavimrc
+
           # Neovim
           copy_if_exists .config/nvim
 
