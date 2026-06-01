@@ -72,8 +72,8 @@ cmd-ctrl-equal = 'move-node-to-monitor --focus-follows-window --wrap-around next
 # See workspaces_extra mode for additional workspace switching bindings
 cmd-ctrl-v = 'workspace games --auto-back-and-forth'
 cmd-ctrl-s = 'workspace slack --auto-back-and-forth'
-cmd-ctrl-o = 'workspace outlook --auto-back-and-forth'
-cmd-ctrl-3 = 'workspace outlook --auto-back-and-forth'
+cmd-ctrl-o = 'workspace suite --auto-back-and-forth'
+cmd-ctrl-3 = 'workspace suite --auto-back-and-forth'
 cmd-ctrl-m = 'workspace music --auto-back-and-forth'
 cmd-ctrl-n = 'workspace notif --auto-back-and-forth'
 cmd-ctrl-t = 'workspace terminal --auto-back-and-forth'
@@ -101,6 +101,12 @@ cmd-ctrl-shift-e = [
     # Another alternative is 'move right' which would limit the other code windows to 1/2 of the screen
     'join-with up',
 ]
+cmd-ctrl-shift-t = [
+    'layout floating',
+    'move-node-to-workspace --focus-follows-window terminal',
+    'layout tiling',
+    'join-with up',
+]
 cmd-ctrl-shift-w = [
     'layout floating',
     'move-node-to-workspace --focus-follows-window web',
@@ -121,13 +127,13 @@ cmd-ctrl-shift-x = [
 ]
 cmd-ctrl-shift-o = [
     'layout floating',
-    'move-node-to-workspace --focus-follows-window outlook',
+    'move-node-to-workspace --focus-follows-window suite',
     'layout tiling',
     'join-with up',
 ]
 cmd-ctrl-shift-3 = [
     'layout floating',
-    'move-node-to-workspace --focus-follows-window outlook',
+    'move-node-to-workspace --focus-follows-window suite',
     'layout tiling',
     'join-with up',
 ]
@@ -375,9 +381,34 @@ check-further-callbacks = false
 run = 'move-node-to-workspace llm'
 
 [[on-window-detected]]
+if.app-name-regex-substring = 'Kai'
+check-further-callbacks = false
+run = 'move-node-to-workspace llm'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'LibreChat'
+check-further-callbacks = false
+run = 'move-node-to-workspace llm'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Agents'
+check-further-callbacks = false
+run = 'move-node-to-workspace llm'
+
+[[on-window-detected]]
 if.app-id = 'com.microsoft.Outlook'
 check-further-callbacks = false
-run = 'move-node-to-workspace outlook'
+run = 'move-node-to-workspace suite'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Google Calendar'
+check-further-callbacks = false
+run = 'move-node-to-workspace suite'
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Gmail'
+check-further-callbacks = false
+run = 'move-node-to-workspace suite'
 
 [[on-window-detected]]
 if.app-id = 'com.apple.MobileSMS'
@@ -441,6 +472,18 @@ run = ['move-node-to-workspace chat']
 if.app-id = 'org.alacritty'
 check-further-callbacks = false
 run = 'move-node-to-workspace terminal'
+
+
+[[on-window-detected]]
+if.app-id = 'com.googlecode.iterm2'
+check-further-callbacks = false
+run = 'move-node-to-workspace terminal'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.terminal'
+check-further-callbacks = false
+run = 'move-node-to-workspace terminal'
+
 # run = ['layout floating']
 
 [[on-window-detected]]
