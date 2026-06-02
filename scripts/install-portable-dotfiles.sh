@@ -472,13 +472,6 @@ main() {
     echo "=== Installed files ==="
     printf '%b' "$INSTALLED_FILES"
 
-    # Print diffs
-    if [ -n "$DIFF_CONTENT" ]; then
-        echo ""
-        echo "=== Diffs ==="
-        printf '%b' "$DIFF_CONTENT"
-    fi
-
     # Save diffs
     if [ "$SAVE_DIFFS" -eq 1 ] && [ -n "$DIFF_CONTENT" ]; then
         mkdir -p "$DIFFS_DIR"
