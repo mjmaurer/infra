@@ -20,6 +20,7 @@
       echo '{"profiles":[{"name":"Default","selected":true,"complex_modifications":{"rules":[]}}]}' > "$KARABINER_JSON"
     fi
 
+    export PATH="/opt/homebrew/bin:$PATH"
     if command -v goku &>/dev/null; then
       run goku
     else

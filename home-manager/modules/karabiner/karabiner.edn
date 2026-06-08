@@ -285,11 +285,25 @@
   ;; ------------------------------------------------------------
   {:des "Slash held = right_command (mac)"
    :rules
-   [{:type :basic
+   [;; Override: slash-hold + space → "/ " (fast-typing overlap fix)
+    ;; mandatory right_command is consumed by the match, so the
+    ;; output slash and space are emitted without the modifier.
+    {:type :basic
+     :from {:key_code :spacebar
+            :modifiers {:mandatory [:right_command]
+                        :optional [:any]}}
+     :to [{:key_code :slash}
+          {:key_code :spacebar}]
+     :conditions [{:type :variable_if
+                   :name "slash-held"
+                   :value 1}]}
+    ;; Main rule: slash held = right_command (immediate activation)
+    {:type :basic
      :from {:key_code :slash
             :modifiers {:optional [:any]}}
+     :to [{:set_variable {:name "slash-held" :value 1}}
+          {:key_code :right_command}]
      :to_if_alone [{:key_code :slash}]
-     :to_if_held_down [{:key_code :right_command}]
-     :parameters {:basic.to_if_alone_timeout_milliseconds 300
-                  :basic.to_if_held_down_threshold_milliseconds 200}}]}
+     :to_after_key_up [{:set_variable {:name "slash-held" :value 0}}]
+     :parameters {:basic.to_if_alone_timeout_milliseconds 200}}]}
  ]}
