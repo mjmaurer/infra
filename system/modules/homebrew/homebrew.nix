@@ -154,11 +154,15 @@ in
       ]
       ++ cfg.extraCasks;
       taps = [
+        "yqrashawn/goku"
         # "homebrew/cask-fonts"
         # "xorpse/formulae"
         # "cmacrae/formulae"
       ];
-      brews = [ ] ++ cfg.extraFormulas; # e.g. "trippy"
+      brews = [
+        "yqrashawn/goku/goku"
+      ]
+      ++ cfg.extraFormulas; # e.g. "trippy"
 
       extraConfig = "";
     };
