@@ -11,8 +11,7 @@
  ;; ============================================================
  ;; Layer variables (set by modifier keys held in layer mode)
  ;; ============================================================
- :layers {:tab-layer       {:key :tab          :alone 200}
-          :semicolon-layer {:key :semicolon    :alone 200}
+ :layers {:semicolon-layer {:key :semicolon    :alone 200}
           :slash-layer     {:key :slash        :alone 200}
           :d-layer         {:key :d            :alone 200}
           :f-layer         {:key :f            :alone 200}
@@ -22,8 +21,7 @@
  ;; Simlayers (single-key activated layers, like kanata's
  ;; tap-hold-release into layer-while-held)
  ;; ============================================================
- :simlayers {:tab-sim       {:key :tab}
-             :semicolon-sim {:key :semicolon}
+ :simlayers {:semicolon-sim {:key :semicolon}
              :d-sim         {:key :d}
              :f-sim         {:key :f}
              :v-sim         {:key :v}}
@@ -184,28 +182,54 @@
                    :value 1}]}]}
 
   ;; ------------------------------------------------------------
-  ;; Tab layer (symbols) - hold tab
+  ;; Tab: hold = symbol layer, double-tap = tab
+  ;; Single tap produces nothing; second tap within 300ms = tab.
+  ;; ------------------------------------------------------------
+  {:des "Tab: hold = symbol layer, double-tap = tab"
+   :rules
+   [;; Double-tap: output tab when tapped while recently tapped
+    {:type :basic
+     :from {:key_code :tab
+            :modifiers {:optional [:any]}}
+     :to [{:set_variable {:name "tab-tapped" :value 0}}
+          {:key_code :tab}]
+     :conditions [{:type :variable_if
+                   :name "tab-tapped"
+                   :value 1}]}
+    ;; Main: hold → activate layer, single tap → arm double-tap
+    {:type :basic
+     :from {:key_code :tab
+            :modifiers {:optional [:any]}}
+     :to [{:set_variable {:name "tab-layer-active" :value 1}}]
+     :to_if_alone [{:set_variable {:name "tab-tapped" :value 1}}]
+     :to_after_key_up [{:set_variable {:name "tab-layer-active" :value 0}}]
+     :to_delayed_action {:to_if_invoked [{:set_variable {:name "tab-tapped" :value 0}}]
+                         :to_if_canceled [{:set_variable {:name "tab-tapped" :value 0}}]}
+     :parameters {:basic.to_if_alone_timeout_milliseconds 200
+                  :basic.to_delayed_action_delay_milliseconds 300}}]}
+
+  ;; ------------------------------------------------------------
+  ;; Tab layer (symbols) - active while tab is held
   ;; ------------------------------------------------------------
   {:des "Tab layer: symbols"
    :rules
-   [:tab-sim
-    [:r [:!Ssemicolon]]      ;; :
-    [:y [:!S6]]              ;; ^
-    [:u [:!S7]]              ;; &
-    [:i [:!Sbackslash]]      ;; |
-    [:o [:!S1]]              ;; !
-    [:p [:!Sgrave_accent_and_tilde]] ;; ~
-    [:h [:!Sequal_sign]]     ;; +
-    [:j :hyphen]
-    [:k [:!Shyphen]]         ;; _
-    [:l :equal_sign]
-    [:semicolon [:!S5]]      ;; %
-    [:quote :grave_accent_and_tilde]
-    [:n [:!S8]]              ;; *
-    [:m :slash]
-    [:comma [:!Scomma]]      ;; <
-    [:period [:!Speriod]]    ;; >
-    [:slash :backslash]]}
+   [[:r [:!Ssemicolon] ["tab-layer-active" 1]]      ;; :
+    [:y [:!S6] ["tab-layer-active" 1]]               ;; ^
+    [:u [:!S7] ["tab-layer-active" 1]]               ;; &
+    [:i [:!Sbackslash] ["tab-layer-active" 1]]       ;; |
+    [:o [:!S1] ["tab-layer-active" 1]]               ;; !
+    [:p [:!Sgrave_accent_and_tilde] ["tab-layer-active" 1]] ;; ~
+    [:h [:!Sequal_sign] ["tab-layer-active" 1]]      ;; +
+    [:j :hyphen ["tab-layer-active" 1]]
+    [:k [:!Shyphen] ["tab-layer-active" 1]]          ;; _
+    [:l :equal_sign ["tab-layer-active" 1]]
+    [:semicolon [:!S5] ["tab-layer-active" 1]]       ;; %
+    [:quote :grave_accent_and_tilde ["tab-layer-active" 1]]
+    [:n [:!S8] ["tab-layer-active" 1]]               ;; *
+    [:m :slash ["tab-layer-active" 1]]
+    [:comma [:!Scomma] ["tab-layer-active" 1]]       ;; <
+    [:period [:!Speriod] ["tab-layer-active" 1]]     ;; >
+    [:slash :backslash ["tab-layer-active" 1]]]}
 
   ;; ------------------------------------------------------------
   ;; Semicolon layer (parens & left-side shifted nums) — hold ;
