@@ -23,9 +23,14 @@ $DIFF
 
 Format the response as a conventional commit message, without quotes or explanations. If you include a scope, it should match the directory name of the changes."
 
-if ! COMMIT_MSG=$(echo "$PROMPT" | llm -m cerebras-gpt-oss-120b -o temperature .15 -o reasoning_effort high --no-log 2>/dev/null) || [[ -z "$COMMIT_MSG" ]]; then
-  echo "fallback" >&2
-  COMMIT_MSG=$(echo "$PROMPT" | llm -m openrouter/openai/gpt-oss-120b -o temperature .15 -o reasoning_effort high -o provider '{"order": ["cerebras"], "allow_fallbacks": true, "sort": "throughput"}' --no-log)
+if command -v llm &>/dev/null; then
+  if ! COMMIT_MSG=$(echo "$PROMPT" | llm -m cerebras-gpt-oss-120b -o temperature .15 -o reasoning_effort high --no-log 2>/dev/null) || [[ -z "$COMMIT_MSG" ]]; then
+    echo "fallback" >&2
+    COMMIT_MSG=$(echo "$PROMPT" | llm -m openrouter/openai/gpt-oss-120b -o temperature .15 -o reasoning_effort high -o provider '{"order": ["cerebras"], "allow_fallbacks": true, "sort": "throughput"}' --no-log)
+  fi
+else
+  echo "llm not found, falling back to claude" >&2
+  COMMIT_MSG=$(claude -p "$PROMPT" --model sonnet)
 fi
 
 if gpg_output_and_error=$(gpg --card-status 2>&1); then
