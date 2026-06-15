@@ -333,6 +333,12 @@ if.app-id = 'com.jetbrains.toolbox'
 check-further-callbacks = false
 run = 'move-node-to-workspace code'
 
+
+[[on-window-detected]]
+if.app-id = 'com.jetbrains.intellij'
+check-further-callbacks = false
+run = 'move-node-to-workspace code'
+
 [[on-window-detected]]
 # Cursor
 if.app-id = 'com.todesktop.230313mzl4w4u92'
