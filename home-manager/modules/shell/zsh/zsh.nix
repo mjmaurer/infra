@@ -171,6 +171,11 @@ in
           unset _zp
         '')
 
+        # Override oh-my-zsh's `special-dirs true` (lib/completion.zsh) — must run after oh-my-zsh
+        (lib.mkOrder 905 ''
+          zstyle ':completion:*' special-dirs false
+        '')
+
         # Portable fzf integration (replaces programs.fzf.enableZshIntegration)
         (lib.mkOrder 910 ''
           if [[ $options[zle] = on ]] && command -v fzf &>/dev/null; then
@@ -259,8 +264,6 @@ in
           zstyle ':completion:*' list-colors ''${(s.:.)LS_COLORS}
           # force zsh not to show completion menu, which allows fzf-tab to capture the unambiguous prefix
           zstyle ':completion:*' menu no
-          # Hide . and .. from completions (globdots still shows other dotfiles)
-          zstyle ':completion:*' special-dirs false
           # NOTE: fzf-tab does not follow FZF_DEFAULT_OPTS by default
           zstyle ':fzf-tab:*' fzf-flags --color=fg:1,fg+:2 --bind=tab:accept
         '';
