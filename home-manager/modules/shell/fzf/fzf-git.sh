@@ -65,7 +65,7 @@ if [[ $# -eq 1 ]]; then
       all-diffs
       ;;
     hashes)
-      echo $'CTRL-O (open in browser) ╱ CTRL-D (diff)\nCTRL-S (toggle sort) ╱ ALT-A (show all hashes)\n'
+      echo $'CTRL-O (open in browser) ╱ CTRL-D (diff) ╱ ALT-E (open in editor)\nCTRL-S (toggle sort) ╱ ALT-A (show all hashes)\n'
       hashes
       ;;
     all-hashes)
@@ -288,6 +288,7 @@ _fzf_git_hashes() {
     --bind "ctrl-o:execute-silent:bash $__fzf_git commit {}" \
     --bind "ctrl-d:execute:grep -o '[a-f0-9]\{7,\}' <<< {} | head -n 1 | xargs git diff --color=$(__fzf_git_color) > /dev/tty" \
     --bind "alt-a:change-border-label(🍇 All hashes)+reload:bash \"$__fzf_git\" all-hashes" \
+    --bind "alt-e:execute:git diff-tree --no-commit-id -r --name-only \$(grep -o '[a-f0-9]\{7,\}' <<< {} | head -n 1) | xargs ${EDITOR:-code} > /dev/tty" \
     --color hl:underline,hl+:underline \
     --preview "grep -o '[a-f0-9]\{7,\}' <<< {} | head -n 1 | xargs git show --color=$(__fzf_git_color .) | $(__fzf_git_pager)" "$@" |
   awk 'match($0, /[a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9][a-f0-9]*/) { print substr($0, RSTART, RLENGTH) }'
