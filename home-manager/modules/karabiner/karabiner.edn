@@ -33,22 +33,13 @@
  [
   ;; ------------------------------------------------------------
   ;; Chrome: Option+o -> Cmd+Shift+a (opens Chrome's tab search)
-  ;; Matches on the hardware option key state, so this fires
-  ;; regardless of how the base remaps below rewrite left/right
-  ;; option elsewhere.
+  ;; Matches on the hardware right_option key state, so this fires
+  ;; regardless of how the base remaps below rewrite right_option
+  ;; elsewhere.
   ;; ------------------------------------------------------------
   {:des "Chrome: Option+o -> Cmd+Shift+a (tab search)"
    :rules
    [{:type :basic
-     :from {:key_code :o
-            :modifiers {:mandatory [:left_option]
-                        :optional [:any]}}
-     :to [{:key_code :a
-           :modifiers [:left_command :left_shift]}]
-     :conditions [{:type :frontmost_application_if
-                   :bundle_identifiers ["^com\\.google\\.Chrome$"]}]}
-
-    {:type :basic
      :from {:key_code :o
             :modifiers {:mandatory [:right_option]
                         :optional [:any]}}
