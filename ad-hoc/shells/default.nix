@@ -78,14 +78,9 @@ in
       fixjson
 
       # nix4vscode
-      node2nix
 
       (writeShellScriptBin "json-to-nix" ''
         nix-instantiate --eval -E "builtins.fromJSON (builtins.readFile \"$1\")"
-      '')
-
-      (writeShellScriptBin "updatenode" ''
-        (cd ./home-manager/modules/node && node2nix - -i ./node-packages.json -c node-import.nix)
       '')
       (writeShellScriptBin "sopsnew" ''
         # Just a reminder. Use this for new hosts.
