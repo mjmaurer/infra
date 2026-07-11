@@ -26,10 +26,10 @@ in
       default = [ ];
       description = "Extra brews / formula to install.";
     };
-    brewPrefix = lib.mkOption {
+    prefix = lib.mkOption {
       type = lib.types.str;
-      default = "/opt/homebrew/bin";
-      description = "Homebrew prefix.";
+      default = "/opt/homebrew";
+      description = "Homebrew prefix (e.g. /opt/homebrew).";
     };
   };
 
@@ -117,7 +117,7 @@ in
 
     # Docs: https://daiderd.com/nix-darwin/manual/index.html#opt-homebrew.enable
     homebrew = {
-      brewPrefix = cfg.brewPrefix;
+      prefix = cfg.prefix;
       enable = true;
       caskArgs.no_quarantine = true;
       global = {

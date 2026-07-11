@@ -71,7 +71,7 @@ in
       fd
       tree
       wget
-      neofetch
+      fastfetch
       unzip
       p7zip
       tldr

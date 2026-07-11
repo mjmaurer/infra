@@ -13,7 +13,7 @@ let
   macAppDir = "/Applications/.Nix-Karabiner";
   deamonLaunchdName = "kanata_daemons";
   karabiner-package = import ./karabiner-driver.nix { inherit pkgs lib; };
-  kanataPath = "${config.modules.homebrew.brewPrefix}/kanata";
+  kanataPath = "${config.modules.homebrew.prefix}/bin/kanata";
   kanataPerm = "NOPASSWD";
 in
 {

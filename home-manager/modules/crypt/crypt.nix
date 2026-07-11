@@ -109,7 +109,7 @@ in
             # For manual/local configurations
             "~/.ssh/config.local"
           ];
-          matchBlocks = import ./ssh-match.conf.nix {
+          settings = import ./ssh-match.conf.nix {
             inherit
               nixosHostnames
               pkgs

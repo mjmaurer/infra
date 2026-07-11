@@ -157,8 +157,6 @@ in
               # ms-dotnettools.vscode-dotnet-runtime
               # twxs.cmake
 
-              rdebugger.r-debugger
-              reditorsupport.r
 
               redhat.java
               redhat.vscode-commons

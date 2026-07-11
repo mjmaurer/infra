@@ -117,17 +117,15 @@ in
     programs.ssh = {
       # Prefer explicit identity definitions and IdentitiesOnly to avoid fingerprinting:
       # https://github.com/drduh/YubiKey-Guide?tab=readme-ov-file#copy-public-key
-      matchBlocks = {
+      settings = {
         "git-auth" = {
-          host = "github.com";
-          identitiesOnly = true;
-          identityFile = "~/.ssh/id_rsa_yubikey.pub";
+          header = "Host github.com";
+          IdentitiesOnly = true;
+          IdentityFile = "~/.ssh/id_rsa_yubikey.pub";
           # Might just need this on mac:
-          # extraOptions = {
-          #   "IgnoreUnknown" = "AddKeysToAgent,UseKeychain";
-          #   "AddKeysToAgent" = "yes";
-          #   "UseKeychain" = "yes";
-          # };
+          # IgnoreUnknown = "AddKeysToAgent,UseKeychain";
+          # AddKeysToAgent = "yes";
+          # UseKeychain = "yes";
         };
       };
     };

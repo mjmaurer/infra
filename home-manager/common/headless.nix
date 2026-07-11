@@ -40,7 +40,7 @@
     tmux.enable = lib.mkDefault true;
     ai.enable = lib.mkDefault true;
     claude.enable = lib.mkDefault true;
-    codex-cli.enable = lib.mkDefault true;
+    codex-cli.enable = lib.mkDefault false;
     # opencode.enable = lib.mkDefault true;
     pi.enable = lib.mkDefault true;
     aichat.enable = lib.mkDefault true;
@@ -116,7 +116,7 @@
       fd
       tree
       wget
-      neofetch
+      fastfetch
       unzip
       p7zip
       tldr

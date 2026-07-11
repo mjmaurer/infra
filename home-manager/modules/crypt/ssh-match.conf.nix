@@ -12,21 +12,21 @@ let
 in
 {
   "*" = {
-    forwardAgent = false;
-    addKeysToAgent = "no";
-    compression = false;
-    serverAliveInterval = 0;
-    serverAliveCountMax = 3;
-    hashKnownHosts = false;
-    userKnownHostsFile = "~/.ssh/known_hosts";
-    controlMaster = "no";
-    controlPath = "~/.ssh/master-%r@%n:%p";
-    controlPersist = "no";
+    ForwardAgent = false;
+    AddKeysToAgent = "no";
+    Compression = false;
+    ServerAliveInterval = 0;
+    ServerAliveCountMax = 3;
+    HashKnownHosts = false;
+    UserKnownHostsFile = "~/.ssh/known_hosts";
+    ControlMaster = "no";
+    ControlPath = "~/.ssh/master-%r@%n:%p";
+    ControlPersist = "no";
   };
   "nixos-yubikey-match" = {
-    match = "host ${hostListString}";
-    user = "mjmaurer";
-    port = 2222;
+    header = "Match host ${hostListString}";
+    User = "mjmaurer";
+    Port = 2222;
     # remoteForwards = [
     #   # bind = path on *remote* ;  host = path on *local*
     #   {
@@ -34,21 +34,17 @@ in
     #     host.address = "${gpgHomedir}/S.gpg-agent";
     #   }
     # ];
-    extraOptions = {
-      PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
-      ExitOnForwardFailure = "no";
-      # Clean up stale sockets automatically:
-      StreamLocalBindUnlink = "yes";
-      # RemoteCommand = "tmux new-session -A -s main";
-      # RequestTTY = "yes";
-    };
+    PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
+    ExitOnForwardFailure = "no";
+    # Clean up stale sockets automatically:
+    StreamLocalBindUnlink = "yes";
+    # RemoteCommand = "tmux new-session -A -s main";
+    # RequestTTY = "yes";
   };
   "nixos-init-yubikey-match" = {
-    match = "host ${hostListInitString}";
-    user = "root";
-    port = 2222;
-    extraOptions = {
-      PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
-    };
+    header = "Match host ${hostListInitString}";
+    User = "root";
+    Port = 2222;
+    PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.dylib";
   };
 }

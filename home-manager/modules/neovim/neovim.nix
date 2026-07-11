@@ -16,6 +16,8 @@ in
     programs.neovim = {
       enable = true;
       vimAlias = true;
+      withRuby = false;
+      withPython3 = false;
       extraConfig = builtins.readFile ./config.vim;
       plugins = with pkgs.vimPlugins; [
         vim-polyglot

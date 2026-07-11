@@ -61,6 +61,7 @@ in
     programs.zsh = {
       enable = true;
       package = pkgs.zsh;
+      dotDir = config.home.homeDirectory;
 
       # This actually doesn't do anything since Nix gives
       # oh-my-zsh responsibility for calling compinit
