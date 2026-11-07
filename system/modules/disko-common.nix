@@ -25,6 +25,7 @@ in
     };
   };
   config = {
+
     fileSystems = lib.mkIf impermEnabled {
       "${config.modules.impermanence.impermanenceMntPath}".neededForBoot = true;
     };
