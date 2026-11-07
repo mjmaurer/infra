@@ -55,6 +55,8 @@ let
         # https://docs.linuxserver.io/general/understanding-puid-and-pgid/
         user = lib.mkIf (user != null && group != null && runAsUser) "${user}:${group}";
         pull = "newer";
+        # Opt in to `podman auto-update` (see the weekly timer below).
+        labels."io.containers.autoupdate" = "registry";
 
         # NOTE: I gave up on rootless. See 9fd2c5c for closest attempt.
         # Need linger and subgid on user, and might want to run as a single 'media' user
@@ -104,21 +106,24 @@ in
     (mkUser 13 "unpackerr" [ ])
   ];
 
-  # === Optional: nightly image refresh ======================================
-  # systemd.timers.podmanAutoUpdate = {
-  #   wantedBy = [ "timers.target" ];
-  #   partOf = [ "podman-auto-update.service" ];
-  #   timerConfig = {
-  #     OnCalendar = "03:45";
-  #     Persistent = true;
-  #   };
-  # };
-  # systemd.services.podman-auto-update = {
-  #   serviceConfig = {
-  #     Type = "oneshot";
-  #     ExecStart = "${pkgs.podman}/bin/podman auto-update --replace";
-  #   };
-  # };
+  # === Weekly image updates =================================================
+  # Enables the podman-auto-update.timer/.service that ship with podman. For each
+  # container labeled io.containers.autoupdate=registry, it pulls a newer image
+  # if one exists, restarts only that container's unit, and rolls back to the
+  # old image if the unit fails to start. The service then prunes old images.
+  # Check what it would do with: podman auto-update --dry-run
+  systemd.timers.podman-auto-update = lib.mkIf cfg.enableContainers {
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      # The empty string clears the shipped OnCalendar=daily before setting ours.
+      OnCalendar = [
+        ""
+        "Mon *-*-* 06:00:00 America/New_York"
+      ];
+      RandomizedDelaySec = 0;
+      Persistent = true; # run at next boot if willow was off at the scheduled time
+    };
+  };
 
   # === Container definitions ===============================================
   virtualisation.oci-containers.containers = lib.mkIf cfg.enableContainers {
