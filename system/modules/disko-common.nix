@@ -25,10 +25,6 @@ in
     };
   };
   config = {
-    # Explicitly keep the current default (true) to silence the 26.05 warning.
-    # 26.11 changes the default to false; switching is safer but changes behavior.
-    boot.zfs.forceImportRoot = lib.mkDefault true;
-
     fileSystems = lib.mkIf impermEnabled {
       "${config.modules.impermanence.impermanenceMntPath}".neededForBoot = true;
     };

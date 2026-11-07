@@ -24,8 +24,6 @@ in
     programs = {
       firefox = {
         enable = true;
-        # Keep the pre-26.05 default location (silences the configPath warning).
-        configPath = ".mozilla/firefox";
       };
     };
   };
