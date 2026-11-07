@@ -19,6 +19,8 @@ let
     propagatedBuildInputs = with pkgs.python3.pkgs; [
       pyudev
     ];
+    # smfc pins exact versions (e.g. pyudev==0.24.3); accept whatever nixpkgs ships.
+    pythonRelaxDeps = [ "pyudev" ];
     nativeBuildInputs = with pkgs.python3.pkgs; [
       setuptools
       wheel
