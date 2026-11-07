@@ -72,8 +72,14 @@ in
               };
             };
             # Only users/groups managed by Darwin:
-            knownUsers = [ aiUser otherUser ];
-            knownGroups = [ aiUser otherUser ];
+            knownUsers = [
+              aiUser
+              otherUser
+            ];
+            knownGroups = [
+              aiUser
+              otherUser
+            ];
           };
 
           security.sudo.extraConfig = ''
@@ -197,11 +203,13 @@ in
         }
     )
     {
+      # macOS-only: uses /bin/chmod ACLs (+a) and the `ai` group, which is only
+      # created on Darwin above. On NixOS this broke activation.
       system.activationScripts.postActivation =
         let
           codeDir = "/opt/code";
         in
-        {
+        lib.mkIf isDarwin {
           text = ''
             # Create the directory if it doesn't exist
             mkdir -p ${codeDir}
