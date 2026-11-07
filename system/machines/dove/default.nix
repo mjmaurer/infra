@@ -37,6 +37,17 @@
       wiredInterfaces = [ "ens3" ];
     };
 
+    # No AI tooling on dove (overrides the mkDefault true in home-manager/common/headless.nix).
+    # The separate `ai` system user from system/modules/users.nix is intentionally kept.
+    home-manager.users.${username}.modules = {
+      ai.enable = false;
+      claude.enable = false;
+      pi.enable = false;
+      aichat.enable = false;
+      llm.enable = false;
+      codex-cli.enable = false;
+    };
+
     networking = {
       # Unique host ID for ZFS.
       # Can generate with:
