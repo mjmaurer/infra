@@ -142,7 +142,10 @@ in
     webui = {
       enable = lib.mkOption {
         type = lib.types.bool;
-        default = true;
+        # Off: garage-webui is unmaintained upstream (last release 1.1.0, Sep 2025),
+        # removed from nixpkgs unstable, and in 26.05 needs an insecure pnpm (9.15.9).
+        # Manage Garage with the `garage` CLI instead.
+        default = false;
         description = "Enable Garage Web UI";
       };
 
