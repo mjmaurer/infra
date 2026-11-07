@@ -2,19 +2,33 @@
 let
   bun = pkgs.bun;
 
-  tsEnv = pkgs.stdenv.mkDerivation {
-    pname = "ts-env";
+  # node_modules as a fixed-output derivation: the only kind of build allowed
+  # network access inside the Nix sandbox (on by default on NixOS, off on darwin).
+  # Update `outputHash` whenever bun.lock changes: set it to lib.fakeHash, build,
+  # and copy the "got:" hash from the error.
+  tsDeps = pkgs.stdenvNoCC.mkDerivation {
+    pname = "ts-env-deps";
     version = "0.1.0";
 
-    src = ./.;
+    src = pkgs.lib.fileset.toSource {
+      root = ./.;
+      fileset = pkgs.lib.fileset.unions [
+        ./package.json
+        ./bun.lock
+      ];
+    };
 
     nativeBuildInputs = [ bun ];
+
+    dontConfigure = true;
+    dontFixup = true; # don't patch/strip anything; it would change the output hash
 
     buildPhase = ''
       runHook preBuild
 
       export HOME=$TMPDIR
-      bun install --frozen-lockfile
+      export BUN_INSTALL_CACHE_DIR=$TMPDIR/bun-cache
+      bun install --frozen-lockfile --ignore-scripts --no-progress
 
       runHook postBuild
     '';
@@ -22,14 +36,22 @@ let
     installPhase = ''
       runHook preInstall
 
-      mkdir -p $out
-      cp -r node_modules $out/node_modules
-      cp tsconfig.json $out/tsconfig.json
-      cp package.json $out/package.json
+      cp -r node_modules $out
 
       runHook postInstall
     '';
+
+    outputHashMode = "recursive";
+    outputHashAlgo = "sha256";
+    outputHash = "sha256-8f9Iujj+NdOBk1EHtgIDWEE7fjYk3wErWinLGPMKm60=";
   };
+
+  tsEnv = pkgs.runCommand "ts-env-0.1.0" { } ''
+    mkdir -p $out
+    ln -s ${tsDeps} $out/node_modules
+    cp ${./tsconfig.json} $out/tsconfig.json
+    cp ${./package.json} $out/package.json
+  '';
 
   mkTsScript =
     {
