@@ -14,9 +14,13 @@ let
       version = "0.34.0";
       format = "pyproject";
 
-      src = pkgs.fetchurl {
-        url = "https://github.com/day50-dev/Streamdown/archive/refs/tags/v0.34.0.tar.gz";
-        sha256 = "sha256-En0995udl6xahhX2/ETuCle8APsiwVAcVu11zjWKDSE=";
+      # fetchFromGitHub hashes the unpacked source, so it survives repo renames
+      # (the archive's top-level dir name is part of a fetchurl tarball hash).
+      src = pkgs.fetchFromGitHub {
+        owner = "day50-dev";
+        repo = "streamdown";
+        tag = "v${version}";
+        hash = "sha256-UcYoR374EBFYZmwNw7h5727HpCjpiU0Xif9OFU/ZTgA=";
       };
 
       nativeBuildInputs = with pythonPkg.pkgs; [

@@ -231,16 +231,12 @@ in
   #   };
   # };
 
-  sops = {
-    templates = {
-      "mountSecrets" = {
-        owner = username;
-        content = ''
-          SAMBA_HOST=${config.sops.placeholder.smbHost}
-        '';
-        # reloadUnits = [ "mountSamba.user" ];
-      };
-    };
+  sops.templates."mountSecrets" = {
+    owner = username;
+    content = ''
+      SAMBA_HOST=${config.sops.placeholder.smbHost}
+    '';
+    # reloadUnits = [ "mountSamba.user" ];
   };
 
   # NOTE: The below requires reboot to take effect

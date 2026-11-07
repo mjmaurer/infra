@@ -68,7 +68,9 @@ in
       # Store keys on paper
       paperkey
 
-      yubikey-manager
+      # yubikey-manager comes from home-manager (crypt.nix). Don't add it here:
+      # it's a Python app, so the shell would export a PYTHONPATH for
+      # pkgs-latest's Python and break the home-manager ykman when versions differ.
       yubikey-personalization
       # yubikey-touch-detector
 
