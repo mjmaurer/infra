@@ -114,12 +114,13 @@ in
       enable = true;
       enableTCPIP = true;
       package = cfg.package;
-      port = cfg.port;
       dataDir = cfg.dataDir;
       authentication = cfg.authentication;
-      settings = cfg.settings;
+      settings = cfg.settings // {
+        port = cfg.port;
+      };
       initdbArgs = cfg.initdbArgs;
-      extraPlugins = cfg.extraPlugins;
+      extensions = cfg.extraPlugins;
       ensureDatabases = cfg.ensureDatabases;
       ensureUsers = cfg.ensureUsers;
       initialScript = config.sops.templates.postgresInitScript.path;

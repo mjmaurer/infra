@@ -10,12 +10,11 @@ in
     # Xserver is just needed for lightdm and XWayland I believe.
     autorun = hasNvidia;
     displayManager = {
-      # This was recently added:
-      defaultSession = lib.mkIf (config.programs.sway.enable) "sway";
       lightdm = {
         enable = !hasNvidia;
         greeters.gtk.enable = !hasNvidia;
       };
     };
   };
+  services.displayManager.defaultSession = lib.mkIf (config.programs.sway.enable) "sway";
 }

@@ -164,9 +164,11 @@ in
           # Enable systemd-resolved for DNS management
           services.resolved = {
             enable = true;
-            dnssec = "allow-downgrade";
-            dnsovertls = "opportunistic";
-            fallbackDns = nameservers;
+            settings.Resolve = {
+              DNSSEC = "allow-downgrade";
+              DNSOverTLS = "opportunistic";
+              FallbackDNS = nameservers;
+            };
           };
 
           # ---- NOTE -----: Might need to refresh the authKeyFile for a headless machine when changing this
