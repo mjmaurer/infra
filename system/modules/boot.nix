@@ -66,15 +66,33 @@
         ssh = {
           enable = true;
           port = 2222;
-          # Prompt for the LUKS encryption password during early boot
-          # Prefer full shell so we have the option for debugging boot errors without a live-iso usb
-          shell = "/bin/cryptsetup-askpass";
+          # NixOS 26.05 switched initrd to systemd stage 1, where `cryptsetup-askpass`
+          # no longer exists (it can no longer be set as the login shell). To preserve
+          # the old behavior of prompting for the LUKS passphrase on SSH login without
+          # granting an interactive shell, force `systemctl default` as the SSH command
+          # via authorized_keys; it prompts for passphrases as needed and advances boot.
+          # See the NixOS 26.05 release notes.
+          #
+          # This path is chosen because it's the lowest-risk change for a headless box:
+          # it reuses the same initrd sshd + authorizedKeys flow that already worked, and
+          # does not depend on an interactive shell being present in the initrd.
+          #
+          # TODO(debug-shell): if we ever want a full debug shell over SSH in early boot
+          # (to debug a failed boot without a live-iso / console), do NOT just unset the
+          # shell — bashInteractive is only bundled into the systemd initrd when a shell
+          # is explicitly enabled. Instead bundle a shell and point root at it, e.g.:
+          #   boot.initrd.systemd.storePaths = [ "${pkgs.bashInteractive}/bin/bash" ];
+          #   boot.initrd.systemd.users.root.shell = "${pkgs.bashInteractive}/bin/bash";
+          # then run `systemctl default` manually after logging in. Verify with console
+          # access before relying on it headless.
           # add the Banner line to sshd_config
           # extraConfig = ''
           #   Banner /etc/ssh/issue.net
           # '';
           hostKeys = [ "/nix/secret/initrd/ssh_host_ed25519_key" ];
-          authorizedKeys = config.users.users.${username}.openssh.authorizedKeys.keys;
+          authorizedKeys = map (
+            key: ''command="systemctl default" ${key}''
+          ) config.users.users.${username}.openssh.authorizedKeys.keys;
         };
       };
     };
