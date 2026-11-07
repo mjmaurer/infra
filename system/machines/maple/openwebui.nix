@@ -14,10 +14,14 @@ let
   };
 in
 {
+  # Weekly image updates (see modules.virt.podmanAutoUpdate)
+  modules.virt.podmanAutoUpdate.enable = true;
+
   virtualisation.oci-containers.containers."open-webui" = {
     image = "ghcr.io/open-webui/open-webui:main";
 
     pull = "always";
+    labels."io.containers.autoupdate" = "registry";
     autoStart = true;
     autoRemoveOnStop = true;
     extraOptions = [ "--replace" ];

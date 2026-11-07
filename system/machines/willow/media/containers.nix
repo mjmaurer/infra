@@ -106,24 +106,8 @@ in
     (mkUser 13 "unpackerr" [ ])
   ];
 
-  # === Weekly image updates =================================================
-  # Enables the podman-auto-update.timer/.service that ship with podman. For each
-  # container labeled io.containers.autoupdate=registry, it pulls a newer image
-  # if one exists, restarts only that container's unit, and rolls back to the
-  # old image if the unit fails to start. The service then prunes old images.
-  # Check what it would do with: podman auto-update --dry-run
-  systemd.timers.podman-auto-update = lib.mkIf cfg.enableContainers {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      # The empty string clears the shipped OnCalendar=daily before setting ours.
-      OnCalendar = [
-        ""
-        "Mon *-*-* 06:00:00 America/New_York"
-      ];
-      RandomizedDelaySec = 0;
-      Persistent = true; # run at next boot if willow was off at the scheduled time
-    };
-  };
+  # === Weekly image updates (see modules.virt.podmanAutoUpdate) ==============
+  modules.virt.podmanAutoUpdate.enable = cfg.enableContainers;
 
   # === Container definitions ===============================================
   virtualisation.oci-containers.containers = lib.mkIf cfg.enableContainers {
