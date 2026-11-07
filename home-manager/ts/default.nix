@@ -36,19 +36,20 @@ let
     installPhase = ''
       runHook preInstall
 
-      cp -r node_modules $out
+      mkdir -p $out
+      cp -r node_modules $out/node_modules
 
       runHook postInstall
     '';
 
     outputHashMode = "recursive";
     outputHashAlgo = "sha256";
-    outputHash = "sha256-8f9Iujj+NdOBk1EHtgIDWEE7fjYk3wErWinLGPMKm60=";
+    outputHash = "sha256-UvxgH90mTdTI29AnhpY5yYvVecUIaXcO9out+n039GU=";
   };
 
   tsEnv = pkgs.runCommand "ts-env-0.1.0" { } ''
     mkdir -p $out
-    ln -s ${tsDeps} $out/node_modules
+    ln -s ${tsDeps}/node_modules $out/node_modules
     cp ${./tsconfig.json} $out/tsconfig.json
     cp ${./package.json} $out/package.json
   '';
