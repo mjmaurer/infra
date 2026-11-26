@@ -9,12 +9,9 @@ let
   # ──────────────── Hard-coded parameters ────────────────
   hst = "bobby.place";
 
-  # Upstream service ports (adjust to match your previous docker-compose .env)
-  bobbyPort = 5000;
-  automaticPort = 7860;
-  rvcPort = 13337;
+  # Bobby runs on ash (system/machines/ash/bobby.nix), reached over Tailscale.
+  bobbyUpstream = "ash:8000";
   plexWebPort = 32400;
-  authextraPort = 3000;
 
 in
 {
@@ -29,6 +26,21 @@ in
       443
     ];
 
+    # `import bobby_auth` in a site block = only logged-in Bobcorp Discord members get through.
+    # Bobby's /api/user/ answers 200 (logged in) or 401; 401s go to the Discord login and come
+    # back to the original URL. Browser-only: native apps (e.g. Plex on a TV) can't log in.
+    services.caddy.extraConfig = ''
+      (bobby_auth) {
+        forward_auth ${bobbyUpstream} {
+          uri /api/user/
+          @unauthorized status 401
+          handle_response @unauthorized {
+            redir https://${hst}/api/auth/redirect?next={http.request.host}{http.request.uri} 302
+          }
+        }
+      }
+    '';
+
     services.caddy.virtualHosts."${hst}".extraConfig = ''
       tls mjmaurer777@gmail.com {
         dns cloudflare {$CLOUDFLARE_API_TOKEN}
@@ -37,7 +49,10 @@ in
         propagation_delay 1m
       }
       encode zstd gzip
-      redir https://google.com 301
+      request_body {
+        max_size 100MB
+      }
+      reverse_proxy ${bobbyUpstream}
     '';
 
     services.caddy.virtualHosts."plex.${hst}".extraConfig = ''
@@ -54,19 +69,9 @@ in
         max_size 100MB
       }
 
-      # Preserve the legacy /auth upstream endpoint
-      # handle_path /auth* {
-      #   reverse_proxy bobby:${toString bobbyPort} {
-      #     header_up X-Original-URL {uri}
-      #     header_up Content-Length ""
-      #   }
-      # }
-
-      # Map nginx: error_page 403 = @error403 -> redirect to auth
-      # handle_errors {
-      #   @forbidden expression {http.error.status_code} == 403
-      #   redir @forbidden https://${hst}/api/auth/redirect?next={http.request.host}{http.request.uri} 302
-      # }
+      # Not gated by Bobby login: native Plex apps can't use the browser session.
+      # Uncomment to require it for every request (breaks TV/mobile apps):
+      # import bobby_auth
 
       # Reverse proxy to Plex with explicit headers and timeouts
       reverse_proxy willow:${toString plexWebPort} {
