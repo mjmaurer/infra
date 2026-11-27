@@ -11,6 +11,7 @@ let
 
   # Bobby runs on ash (system/machines/ash/bobby.nix), reached over Tailscale.
   bobbyUpstream = "ash:8000";
+  bobbyTestUpstream = "ash:8002";
   plexWebPort = 32400;
 
 in
@@ -53,6 +54,21 @@ in
         max_size 100MB
       }
       reverse_proxy ${bobbyUpstream}
+    '';
+
+    # Test bot (follows bobby-bot's :dev images; see system/machines/ash/bobby.nix).
+    services.caddy.virtualHosts."test.${hst}".extraConfig = ''
+      tls mjmaurer777@gmail.com {
+        dns cloudflare {$CLOUDFLARE_API_TOKEN}
+        resolvers 1.1.1.1 1.0.0.1
+        propagation_timeout 10m
+        propagation_delay 1m
+      }
+      encode zstd gzip
+      request_body {
+        max_size 100MB
+      }
+      reverse_proxy ${bobbyTestUpstream}
     '';
 
     services.caddy.virtualHosts."plex.${hst}".extraConfig = ''
