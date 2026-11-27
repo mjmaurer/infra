@@ -15,6 +15,8 @@
     ./hardware-configuration.nix
 
     ./disko.nix
+
+    ./bobby-rvc.nix
   ];
 
   config = {
