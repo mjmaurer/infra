@@ -8,6 +8,8 @@
 }:
 let
   cfg = config.modules.postgresql;
+  pg = config.services.postgresql.package;
+  appDatabases = lib.attrNames cfg.databases;
 in
 {
   options.modules.postgresql = {
@@ -107,6 +109,50 @@ in
       default = [ ];
       description = "List of users to ensure exist";
     };
+
+    databases = lib.mkOption {
+      type = lib.types.attrsOf (
+        lib.types.submodule {
+          options.passwordFile = lib.mkOption {
+            type = lib.types.str;
+            description = ''
+              File holding the user's password (e.g. a sops secret). Must be readable by the
+              postgres user (sops: owner = "postgres").
+            '';
+          };
+        }
+      );
+      default = { };
+      example = lib.literalExpression ''
+        { myapp.passwordFile = config.sops.secrets.myappPostgresPassword.path; }
+      '';
+      description = ''
+        App databases. Each gets a database and a login user of the same name that owns it,
+        with its password set from passwordFile (re-applied on every start of
+        postgresql-databases.service, so rotating the secret just works). Each user can connect
+        only to its own database. Services using one should order after
+        postgresql-databases.service.
+      '';
+    };
+
+    backup = {
+      enable = lib.mkEnableOption "nightly pg_dump of every database";
+      dir = lib.mkOption {
+        type = lib.types.str;
+        default = "/var/lib/postgresql-backups";
+        description = "Where dumps are written (<database>-<date>.dump, pg_dump custom format).";
+      };
+      onCalendar = lib.mkOption {
+        type = lib.types.str;
+        default = "*-*-* 04:30:00";
+        description = "systemd OnCalendar expression for the dump.";
+      };
+      keepDays = lib.mkOption {
+        type = lib.types.int;
+        default = 14;
+        description = "Dumps older than this many days are deleted.";
+      };
+    };
   };
 
   config = lib.mkIf cfg.enable {
@@ -121,8 +167,13 @@ in
       };
       initdbArgs = cfg.initdbArgs;
       extensions = cfg.extraPlugins;
-      ensureDatabases = cfg.ensureDatabases;
-      ensureUsers = cfg.ensureUsers;
+      ensureDatabases = cfg.ensureDatabases ++ appDatabases;
+      ensureUsers =
+        cfg.ensureUsers
+        ++ map (name: {
+          inherit name;
+          ensureDBOwnership = true;
+        }) appDatabases;
       initialScript = config.sops.templates.postgresInitScript.path;
     };
 
@@ -139,6 +190,61 @@ in
       };
     };
 
+    # Sets app database passwords and limits each app user to its own database. Statement
+    # logging is off for this session so passwords don't end up in Postgres's log.
+    systemd.services.postgresql-databases = lib.mkIf (appDatabases != [ ]) {
+      description = "Set PostgreSQL app database passwords and access";
+      after = [ "postgresql-setup.service" ];
+      requires = [ "postgresql-setup.service" ];
+      wantedBy = [ "multi-user.target" ];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+        User = "postgres";
+      };
+      script = ''
+        ${pg}/bin/psql -v ON_ERROR_STOP=1 -p ${toString cfg.port} -d postgres \
+          ${
+            lib.concatMapStringsSep " " (
+              name: ''-v ${name}="$(cat ${cfg.databases.${name}.passwordFile})"''
+            ) appDatabases
+          } <<'SQL'
+        SET log_statement = 'none';
+        ${lib.concatMapStrings (name: ''
+          ALTER ROLE "${name}" WITH LOGIN PASSWORD :'${name}';
+          REVOKE CONNECT ON DATABASE "${name}" FROM PUBLIC;
+          GRANT CONNECT ON DATABASE "${name}" TO "${name}";
+        '') appDatabases}
+        SQL
+      '';
+    };
+
+    systemd.services.postgresql-backup = lib.mkIf cfg.backup.enable {
+      description = "Dump every PostgreSQL database";
+      after = [ "postgresql.service" ];
+      requires = [ "postgresql.service" ];
+      serviceConfig = {
+        Type = "oneshot";
+        User = "postgres";
+      };
+      script = ''
+        set -euo pipefail
+        dbs=$(${pg}/bin/psql -p ${toString cfg.port} -d postgres -tAc \
+          "SELECT datname FROM pg_database WHERE NOT datistemplate")
+        for db in $dbs; do
+          ${pg}/bin/pg_dump -p ${toString cfg.port} -Fc "$db" > "${cfg.backup.dir}/$db-$(date +%F).dump"
+        done
+        ${pkgs.findutils}/bin/find ${cfg.backup.dir} -name '*.dump' -mtime +${toString cfg.backup.keepDays} -delete
+      '';
+    };
+    systemd.timers.postgresql-backup = lib.mkIf cfg.backup.enable {
+      wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnCalendar = cfg.backup.onCalendar;
+        Persistent = true;
+      };
+    };
+
     # Firewall configuration
     networking.firewall = lib.mkIf cfg.openFirewall {
       allowedTCPPorts = [ cfg.port ];
@@ -147,6 +253,7 @@ in
     # Ensure data directory exists with correct permissions
     systemd.tmpfiles.rules = [
       "d ${cfg.dataDir} 0755 postgres postgres -"
-    ];
+    ]
+    ++ lib.optional cfg.backup.enable "d ${cfg.backup.dir} 0700 postgres postgres -";
   };
 }

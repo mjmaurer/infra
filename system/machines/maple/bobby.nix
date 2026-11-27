@@ -8,8 +8,8 @@
 # tag moving, so the test bot follows every push and the real bot follows promotions.
 #
 # The GPU voice service runs on ash (system/machines/ash/bobby-rvc.nix); dove's Caddy reaches
-# these instances over Tailscale. Each instance has its own database and user, and neither can
-# connect to the other's database.
+# these instances over Tailscale. Each instance has its own database on maple's Postgres
+# (modules.postgresql.databases), which also handles passwords, access and backups.
 #
 # Before deploying, add these keys to ./secrets.yaml (`sops system/machines/maple/secrets.yaml`).
 # Per instance (prefix `bobby` for the real bot, `bobbyTest` for the test bot):
@@ -25,7 +25,6 @@
 {
   config,
   lib,
-  pkgs,
   ...
 }:
 let
@@ -33,8 +32,6 @@ let
   stateDir = "/var/lib/bobby";
   registry = "ghcr.io/mjmaurer";
   pgPort = config.modules.postgresql.port;
-  psql = "${config.services.postgresql.package}/bin/psql";
-  pgDump = "${config.services.postgresql.package}/bin/pg_dump";
 
   instances = {
     bobby = {
@@ -117,86 +114,34 @@ let
     ]
   ) (lib.attrValues instances);
 
-  databases = map (inst: inst.database) (lib.attrValues instances);
 in
 {
   imports = [ ../../modules/container-updater.nix ];
 
-  # Databases and users (one each per instance, user owns its database).
-  modules.postgresql = {
-    ensureDatabases = databases;
-    ensureUsers = map (db: {
-      name = db;
-      ensureDBOwnership = true;
-    }) databases;
-  };
+  modules.postgresql.databases = lib.mapAttrs' (
+    _: inst:
+    lib.nameValuePair inst.database {
+      passwordFile = config.sops.secrets."${inst.secretPrefix}PostgresPassword".path;
+    }
+  ) instances;
 
-  # Sets each user's password from sops and stops users connecting to other databases.
-  # Idempotent; reruns on every boot/deploy. Statement logging is off for this session so the
-  # passwords don't land in Postgres's log (maple logs all statements).
-  systemd.services.bobby-db-setup = {
-    description = "Set Bobby's Postgres passwords and database access";
-    after = [ "postgresql-setup.service" ];
-    requires = [ "postgresql-setup.service" ];
-    before = map (name: "podman-${name}.service") (lib.attrNames instances);
-    requiredBy = map (name: "podman-${name}.service") (lib.attrNames instances);
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      User = "postgres";
-    };
-    script = ''
-      ${psql} -v ON_ERROR_STOP=1 -d postgres \
-        ${
-          lib.concatMapStringsSep " " (
-            inst:
-            ''-v ${inst.database}="$(cat ${config.sops.secrets."${inst.secretPrefix}PostgresPassword".path})"''
-          ) (lib.attrValues instances)
-        } <<'SQL'
-      SET log_statement = 'none';
-      ${lib.concatMapStrings (db: ''
-        ALTER ROLE ${db} WITH LOGIN PASSWORD :'${db}';
-        REVOKE CONNECT ON DATABASE ${db} FROM PUBLIC;
-        GRANT CONNECT ON DATABASE ${db} TO ${db};
-      '') databases}
-      SQL
-    '';
-  };
+  # Start the bots only once their database users have passwords.
+  systemd.services = lib.mapAttrs' (
+    name: _:
+    lib.nameValuePair "podman-${name}" {
+      after = [ "postgresql-databases.service" ];
+      requires = [ "postgresql-databases.service" ];
+    }
+  ) instances;
 
   systemd.tmpfiles.rules = [
     "d ${stateDir} 0755 root root - -"
-    "d ${stateDir}/backups 0700 postgres postgres - -"
   ]
   ++ lib.mapAttrsToList (name: _: "d ${stateDir}/${name}/uploads 0755 1000 1000 - -") instances;
 
   virtualisation.oci-containers.containers = lib.mapAttrs mkInstance instances;
 
   modules.containerUpdater.containers = lib.attrNames instances;
-
-  # Nightly dump of both databases into ${stateDir}/backups (14 days kept).
-  systemd.services.bobby-db-backup = {
-    description = "Dump Bobby's Postgres databases";
-    after = [ "postgresql.service" ];
-    requires = [ "postgresql.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = "postgres";
-    };
-    script =
-      lib.concatMapStrings (db: ''
-        ${pgDump} -Fc ${db} > ${stateDir}/backups/${db}-$(date +%F).dump
-      '') databases
-      + ''
-        ${pkgs.findutils}/bin/find ${stateDir}/backups -name '*.dump' -mtime +14 -delete
-      '';
-  };
-  systemd.timers.bobby-db-backup = {
-    wantedBy = [ "timers.target" ];
-    timerConfig = {
-      OnCalendar = "*-*-* 04:30:00";
-      Persistent = true;
-    };
-  };
 
   sops = {
     secrets =
@@ -211,7 +156,7 @@ in
         (_: {
           sopsFile = ./secrets.yaml;
         })
-      # Read by bobby-db-setup, which runs as postgres.
+      # Read by postgresql-databases.service, which runs as postgres.
       //
         lib.genAttrs (map (inst: "${inst.secretPrefix}PostgresPassword") (lib.attrValues instances))
           (_: {

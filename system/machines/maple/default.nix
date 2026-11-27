@@ -27,6 +27,9 @@
       sopsFile = ./secrets.yaml;
     };
 
+    # Nightly pg_dump of every database (see modules/postgresql.nix).
+    modules.postgresql.backup.enable = true;
+
     # Firmware is essential for i915 driver
     hardware.firmware = [ pkgs.linux-firmware ];
 
