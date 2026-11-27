@@ -9,9 +9,9 @@ let
   # ──────────────── Hard-coded parameters ────────────────
   hst = "bobby.place";
 
-  # Bobby runs on ash (system/machines/ash/bobby.nix), reached over Tailscale.
-  bobbyUpstream = "ash:8000";
-  bobbyTestUpstream = "ash:8002";
+  # Bobby runs on maple (system/machines/maple/bobby.nix), reached over Tailscale.
+  bobbyUpstream = "maple:8000";
+  bobbyTestUpstream = "maple:8002";
   plexWebPort = 32400;
 
 in
@@ -56,7 +56,7 @@ in
       reverse_proxy ${bobbyUpstream}
     '';
 
-    # Test bot (follows bobby-bot's :dev images; see system/machines/ash/bobby.nix).
+    # Test bot (follows bobby-bot's :dev images; see system/machines/maple/bobby.nix).
     services.caddy.virtualHosts."test.${hst}".extraConfig = ''
       tls mjmaurer777@gmail.com {
         dns cloudflare {$CLOUDFLARE_API_TOKEN}

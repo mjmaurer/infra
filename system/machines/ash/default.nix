@@ -16,7 +16,7 @@
 
     ./disko.nix
 
-    ./bobby.nix
+    ./bobby-rvc.nix
   ];
 
   config = {

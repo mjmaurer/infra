@@ -18,6 +18,7 @@
 
     ../../modules/virtualisation.nix
     ./openwebui.nix
+    ./bobby.nix
   ];
 
   config = {
